@@ -1,0 +1,939 @@
+import { useEffect, useMemo, useRef, useState } from "react";
+import questionsData from "./data/questions.json";
+import { ExamState, Question } from "./types";
+
+const STORAGE_KEY = "exam-state";
+const DEFAULT_TIME = 30 * 60; // 30 分
+const PER_QUESTION_TIME = 5 * 60; // 5 分
+const MIN_ZOOM = 0.5; // 50%
+const MAX_ZOOM = 1.5; // 150%
+const CHOICE_LABELS = ["ア", "イ", "ウ", "エ", "オ", "カ", "キ", "ク", "ケ", "コ", "サ", "シ", "ス"];
+
+const initialState: ExamState = {
+  answers: {},
+  reviewFlags: {},
+  currentIndex: 0,
+  remainingSeconds: DEFAULT_TIME,
+  practiceMode: false,
+  zoom: 1,
+  mode: null,
+  hideTimer: false,
+  perQuestionGrading: false,
+  perQuestionTimer: false,
+  perQuestionRemainingSeconds: {},
+  perQuestionTimerPaused: false,
+  instructorMode: false
+};
+
+function loadState(): ExamState {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return initialState;
+  try {
+    const parsed = JSON.parse(raw) as Partial<ExamState>;
+    return { ...initialState, ...parsed };
+  } catch {
+    return initialState;
+  }
+}
+
+function saveState(state: ExamState) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function secondsToClock(sec: number) {
+  const m = Math.floor(sec / 60)
+    .toString()
+    .padStart(2, "0");
+  const s = Math.floor(sec % 60)
+    .toString()
+    .padStart(2, "0");
+  return `${m}:${s}`;
+}
+
+export default function App() {
+  const questions = useMemo<Question[]>(() => questionsData, []);
+  const [state, setState] = useState<ExamState>(() => loadState());
+  const [showList, setShowList] = useState(false);
+  const [showTimeUp, setShowTimeUp] = useState(false);
+  const [showReference, setShowReference] = useState(false);
+  const [referenceTab, setReferenceTab] = useState<"notes" | "materials">("notes");
+  const [paneRatio, setPaneRatio] = useState(0.55); // 左ペイン幅割合
+  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 769);
+  const [mobilePane, setMobilePane] = useState<"question" | "choices">("question");
+  const [showResult, setShowResult] = useState(false);
+  const [resultSummary, setResultSummary] = useState<{ correct: number; total: number; unanswered: number }>({
+    correct: 0,
+    total: questions.length,
+    unanswered: questions.length
+  });
+  const [resultDetails, setResultDetails] = useState<{ number: number; status: "correct" | "incorrect" | "unanswered" }[]>([]);
+  const [gradeNowResult, setGradeNowResult] = useState<{
+    questionId: string;
+    status: "correct" | "incorrect" | "unanswered";
+    correctLabel?: string;
+    correctText?: string;
+    selectedLabel?: string;
+    selectedText?: string;
+    videoUrl?: string;
+  } | null>(null);
+  const dividerRef = useRef<HTMLDivElement | null>(null);
+  const [currentCodeLine, setCurrentCodeLine] = useState<number>(0);
+
+  // state 永続化
+  useEffect(() => {
+    saveState(state);
+  }, [state]);
+
+  // タイマー（全体）
+  useEffect(() => {
+    if (state.practiceMode) return;
+    if (state.remainingSeconds <= 0) return;
+    const id = window.setInterval(() => {
+      setState((prev) => {
+        if (prev.practiceMode || prev.remainingSeconds <= 0) return prev;
+        const next = prev.remainingSeconds - 1;
+        if (next <= 0) {
+          setShowTimeUp(true);
+          return { ...prev, remainingSeconds: 0, practiceMode: true };
+        }
+        return { ...prev, remainingSeconds: next };
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [state.practiceMode, state.remainingSeconds]);
+
+  // タイマー（問題ごと）
+  useEffect(() => {
+    if (!state.perQuestionTimer) return;
+    if (state.practiceMode) return;
+    if (state.perQuestionTimerPaused) return;
+    const currentQuestionId = questions[state.currentIndex]?.id;
+    if (!currentQuestionId) return;
+    const questionTime = state.perQuestionRemainingSeconds[currentQuestionId];
+    if (questionTime === undefined || questionTime <= 0) return;
+    
+    const id = window.setInterval(() => {
+      setState((prev) => {
+        if (prev.perQuestionTimerPaused) return prev;
+        const currentQId = questions[prev.currentIndex]?.id;
+        if (!currentQId) return prev;
+        const currentTime = prev.perQuestionRemainingSeconds[currentQId];
+        if (currentTime === undefined || currentTime <= 0) return prev;
+        const next = currentTime - 1;
+        const updated = {
+          ...prev.perQuestionRemainingSeconds,
+          [currentQId]: next
+        };
+        if (next <= 0) {
+          // 問題ごとの時間切れの場合は、その問題の時間を0にして続行
+          return { ...prev, perQuestionRemainingSeconds: updated };
+        }
+        return { ...prev, perQuestionRemainingSeconds: updated };
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [state.perQuestionTimer, state.practiceMode, state.perQuestionTimerPaused, state.currentIndex, state.perQuestionRemainingSeconds, questions]);
+
+  // Ctrl + ホイールでズーム
+  useEffect(() => {
+    const onWheel = (e: WheelEvent) => {
+      if (!e.ctrlKey) return;
+      e.preventDefault();
+      setState((prev) => {
+        const delta = e.deltaY < 0 ? 0.05 : -0.05;
+        const zoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, prev.zoom + delta));
+        return { ...prev, zoom };
+      });
+    };
+    window.addEventListener("wheel", onWheel, { passive: false });
+    return () => window.removeEventListener("wheel", onWheel);
+  }, []);
+
+  // リサイズドラッグ（PC）
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 769);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobile) {
+      setMobilePane("question");
+    }
+  }, [isMobile]);
+
+  // 問題が変わったときにコード行をリセット（最初の非空白行に）
+  useEffect(() => {
+    const question = questions[state.currentIndex];
+    if (question?.pseudoCode) {
+      const firstNonEmptyIndex = question.pseudoCode.findIndex(line => line.trim() !== "");
+      setCurrentCodeLine(firstNonEmptyIndex >= 0 ? firstNonEmptyIndex : 0);
+    } else {
+      setCurrentCodeLine(0);
+    }
+  }, [state.currentIndex, questions]);
+
+  // キーボードイベント（講師モードで上下矢印キー、空白行をスキップ）
+  useEffect(() => {
+    if (!state.instructorMode) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      const question = questions[state.currentIndex];
+      const pseudoCode = question?.pseudoCode;
+      if (!pseudoCode || pseudoCode.length === 0) return;
+      
+      const isNonEmpty = (idx: number) => {
+        return idx >= 0 && idx < pseudoCode.length && pseudoCode[idx].trim() !== "";
+      };
+      
+      if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setCurrentCodeLine((prev) => {
+          // 上方向：現在の行より前の最初の非空白行を探す
+          for (let i = prev - 1; i >= 0; i--) {
+            if (isNonEmpty(i)) {
+              return i;
+            }
+          }
+          return prev; // 見つからなければ現在の行を維持
+        });
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setCurrentCodeLine((prev) => {
+          // 下方向：現在の行より後の最初の非空白行を探す
+          for (let i = prev + 1; i < pseudoCode.length; i++) {
+            if (isNonEmpty(i)) {
+              return i;
+            }
+          }
+          return prev; // 見つからなければ現在の行を維持
+        });
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [state.instructorMode, state.currentIndex, questions]);
+
+  // リサイズドラッグ（PC）
+  useEffect(() => {
+    const divider = dividerRef.current;
+    if (!divider) return;
+    let dragging = false;
+
+    const onDown = (e: MouseEvent) => {
+      if (window.innerWidth < 769) return; // モバイルでは無効
+      dragging = true;
+      e.preventDefault();
+    };
+    const onMove = (e: MouseEvent) => {
+      if (!dragging) return;
+      const ratio = e.clientX / window.innerWidth;
+      setPaneRatio(Math.min(0.8, Math.max(0.2, ratio)));
+    };
+    const onUp = () => {
+      dragging = false;
+    };
+
+    divider.addEventListener("mousedown", onDown);
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    return () => {
+      divider.removeEventListener("mousedown", onDown);
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+  }, []);
+
+  const currentQuestion = questions[state.currentIndex];
+
+  const handleAnswer = (choiceId: string) => {
+    setState((prev) => ({
+      ...prev,
+      answers: { ...prev.answers, [currentQuestion.id]: choiceId }
+    }));
+  };
+
+  const handleReviewToggle = () => {
+    setState((prev) => ({
+      ...prev,
+      reviewFlags: {
+        ...prev.reviewFlags,
+        [currentQuestion.id]: !prev.reviewFlags[currentQuestion.id]
+      }
+    }));
+  };
+
+  const navigate = (offset: number) => {
+    setState((prev) => {
+      const nextIndex = prev.currentIndex + offset;
+      if (nextIndex < 0 || nextIndex >= questions.length) return prev;
+      const nextQuestionId = questions[nextIndex]?.id;
+      const updated = { ...prev, currentIndex: nextIndex, perQuestionTimerPaused: false };
+      
+      // 問題ごとのタイマーが有効で、次の問題のタイマーが未初期化の場合、5分で初期化
+      if (prev.perQuestionTimer && nextQuestionId && prev.perQuestionRemainingSeconds[nextQuestionId] === undefined) {
+        updated.perQuestionRemainingSeconds = {
+          ...prev.perQuestionRemainingSeconds,
+          [nextQuestionId]: PER_QUESTION_TIME
+        };
+      }
+      
+      return updated;
+    });
+    setCurrentCodeLine(0);
+  };
+
+  const jumpTo = (index: number) => {
+    setState((prev) => {
+      const nextQuestionId = questions[index]?.id;
+      const updated = { ...prev, currentIndex: index, perQuestionTimerPaused: false };
+      
+      // 問題ごとのタイマーが有効で、次の問題のタイマーが未初期化の場合、5分で初期化
+      if (prev.perQuestionTimer && nextQuestionId && prev.perQuestionRemainingSeconds[nextQuestionId] === undefined) {
+        updated.perQuestionRemainingSeconds = {
+          ...prev.perQuestionRemainingSeconds,
+          [nextQuestionId]: PER_QUESTION_TIME
+        };
+      }
+      
+      return updated;
+    });
+    setShowList(false);
+    setCurrentCodeLine(0);
+  };
+
+  const resetZoom = () => setState((prev) => ({ ...prev, zoom: 1 }));
+
+  const markPracticeMode = () => {
+    setShowTimeUp(false);
+    setState((prev) => ({ ...prev, practiceMode: true, remainingSeconds: 0 }));
+  };
+
+  const gradeExam = () => {
+    const total = questions.length;
+    let correct = 0;
+    let unanswered = 0;
+    const details: { number: number; status: "correct" | "incorrect" | "unanswered" }[] = [];
+    questions.forEach((q) => {
+      const ans = state.answers[q.id];
+      if (!ans) {
+        unanswered += 1;
+        details.push({ number: q.number, status: "unanswered" });
+        return;
+      }
+      if (q.correctChoiceId && ans === q.correctChoiceId) {
+        correct += 1;
+        details.push({ number: q.number, status: "correct" });
+      } else {
+        details.push({ number: q.number, status: "incorrect" });
+      }
+    });
+    setResultSummary({ correct, total, unanswered });
+    setResultDetails(details.sort((a, b) => a.number - b.number));
+    setShowResult(true);
+    setState((prev) => ({
+      ...prev,
+      answers: {},
+      reviewFlags: {},
+      currentIndex: 0
+    }));
+  };
+
+  const handleFinish = () => {
+    const ok = window.confirm("終了して採点しますか？");
+    if (!ok) return;
+    gradeExam();
+  };
+
+  const startMode = (mode: "practice" | "exam", hideTimer: boolean, perQuestionGrading: boolean, perQuestionTimer: boolean, instructorMode: boolean) => {
+    setState((prev) => {
+      const newState = {
+        ...initialState,
+        ...prev,
+        mode,
+        hideTimer,
+        practiceMode: false,
+        remainingSeconds: DEFAULT_TIME,
+        perQuestionGrading,
+        perQuestionTimer,
+        perQuestionRemainingSeconds: {},
+        perQuestionTimerPaused: false,
+        instructorMode
+      };
+      
+      // 問題ごとのタイマーが有効な場合、最初の問題のタイマーを初期化
+      if (perQuestionTimer && questions.length > 0) {
+        const firstQuestionId = questions[0]?.id;
+        if (firstQuestionId) {
+          newState.perQuestionRemainingSeconds = {
+            [firstQuestionId]: PER_QUESTION_TIME
+          };
+        }
+      }
+      
+      return newState;
+    });
+    setCurrentCodeLine(0);
+  };
+
+  // コード行移動のハンドラー
+  // コード行移動のハンドラー（空白行をスキップ）
+  const moveCodeLine = (direction: "up" | "down") => {
+    setCurrentCodeLine((prev) => {
+      const pseudoCode = currentQuestion.pseudoCode;
+      if (!pseudoCode || pseudoCode.length === 0) return prev;
+      
+      const isNonEmpty = (idx: number) => {
+        return idx >= 0 && idx < pseudoCode.length && pseudoCode[idx].trim() !== "";
+      };
+      
+      if (direction === "up") {
+        // 上方向：現在の行より前の最初の非空白行を探す
+        for (let i = prev - 1; i >= 0; i--) {
+          if (isNonEmpty(i)) {
+            return i;
+          }
+        }
+        return prev; // 見つからなければ現在の行を維持
+      } else {
+        // 下方向：現在の行より後の最初の非空白行を探す
+        for (let i = prev + 1; i < pseudoCode.length; i++) {
+          if (isNonEmpty(i)) {
+            return i;
+          }
+        }
+        return prev; // 見つからなければ現在の行を維持
+      }
+    });
+  };
+
+  const togglePerQuestionTimerPause = () => {
+    setState((prev) => ({
+      ...prev,
+      perQuestionTimerPaused: !prev.perQuestionTimerPaused
+    }));
+  };
+
+  const resetPerQuestionTimer = () => {
+    setState((prev) => {
+      const currentQuestionId = questions[prev.currentIndex]?.id;
+      if (!currentQuestionId) return prev;
+      return {
+        ...prev,
+        perQuestionRemainingSeconds: {
+          ...prev.perQuestionRemainingSeconds,
+          [currentQuestionId]: PER_QUESTION_TIME
+        },
+        perQuestionTimerPaused: false
+      };
+    });
+  };
+
+  const handleGradeNow = () => {
+    const q = currentQuestion;
+    const correctId = q.correctChoiceId;
+    if (!correctId) {
+      window.alert("この問題には正解が設定されていません。");
+      return;
+    }
+    const selectedId = state.answers[q.id];
+    if (!selectedId) {
+      setGradeNowResult({
+        questionId: q.id,
+        status: "unanswered",
+        correctLabel: CHOICE_LABELS[q.choices.findIndex((c) => c.id === correctId)] ?? "",
+        correctText: q.choices.find((c) => c.id === correctId)?.text ?? "",
+        videoUrl: q.videoUrl
+      });
+      return;
+    }
+    const correctLabel = CHOICE_LABELS[q.choices.findIndex((c) => c.id === correctId)] ?? "";
+    const selectedLabel = CHOICE_LABELS[q.choices.findIndex((c) => c.id === selectedId)] ?? "";
+    const correctText = q.choices.find((c) => c.id === correctId)?.text ?? "";
+    const selectedText = q.choices.find((c) => c.id === selectedId)?.text ?? "";
+    const status = selectedId === correctId ? "correct" : "incorrect";
+    setGradeNowResult({
+      questionId: q.id,
+      status,
+      correctLabel,
+      correctText,
+      selectedLabel,
+      selectedText,
+      videoUrl: q.videoUrl
+    });
+  };
+
+  const paneStyle = useMemo(() => {
+    if (isMobile) {
+      return { gridTemplateRows: "1fr", gridTemplateColumns: "1fr" };
+    }
+    return {
+      gridTemplateColumns: `${paneRatio * 100}% 6px ${(1 - paneRatio) * 100}%`
+    };
+  }, [paneRatio, isMobile]);
+
+  return (
+    <div className="app">
+      <header className="top-bar">
+        <div className="left-controls">
+          <span className="zoom-percent" aria-label={`ズーム倍率 ${Math.round(state.zoom * 100)}%`}>
+            {Math.round(state.zoom * 100)}%
+          </span>
+          <input
+            className="zoom-slider"
+            type="range"
+            min={50}
+            max={150}
+            step={1}
+            value={Math.round(state.zoom * 100)}
+            onChange={(e) => {
+              const next = Number(e.target.value) / 100;
+              setState((p) => ({ ...p, zoom: Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, next)) }));
+            }}
+          />
+          <button className="zoom-step" onClick={() => setState((p) => ({ ...p, zoom: Math.min(MAX_ZOOM, p.zoom + 0.1) }))}>
+            ＋
+          </button>
+          <button className="zoom-step" onClick={() => setState((p) => ({ ...p, zoom: Math.max(MIN_ZOOM, p.zoom - 0.1) }))}>
+            −
+          </button>
+          <button onClick={resetZoom}>リセット</button>
+        </div>
+        <div className="right-controls">
+          <div className="right-top">
+            {!state.hideTimer && (
+              <span className="timer">
+                残り時間: {state.practiceMode ? "練習モード" : secondsToClock(state.remainingSeconds)}
+              </span>
+            )}
+            {state.hideTimer && <span className="timer">残り時間: 非表示</span>}
+            {state.perQuestionTimer && !state.practiceMode && (
+              <div className="per-question-timer-controls">
+                <span className="timer per-question-timer">
+                  問題時間: {(() => {
+                    const currentQuestionId = currentQuestion?.id;
+                    const questionTime = currentQuestionId ? state.perQuestionRemainingSeconds[currentQuestionId] : undefined;
+                    if (questionTime === undefined) return "未開始";
+                    if (questionTime <= 0) return "時間切れ";
+                    return secondsToClock(questionTime);
+                  })()}
+                  {state.perQuestionTimerPaused && " (一時停止)"}
+                </span>
+                <button
+                  className="outline small"
+                  onClick={togglePerQuestionTimerPause}
+                  title={state.perQuestionTimerPaused ? "再開" : "一時停止"}
+                >
+                  {state.perQuestionTimerPaused ? "▶" : "⏸"}
+                </button>
+                <button className="outline small" onClick={resetPerQuestionTimer} title="リセット">
+                  ↻
+                </button>
+              </div>
+            )}
+          </div>
+          <div className="right-bottom">
+            <button
+              className="outline"
+              onClick={() => {
+                setReferenceTab("notes");
+                setShowReference(true);
+              }}
+            >
+              参考資料
+            </button>
+            <button className="outline" onClick={handleFinish}>
+              終了
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {!state.mode && (
+        <div className="overlay">
+          <div className="overlay-content">
+            <h3>モード選択</h3>
+            <p>開始するモードとオプションを選んでください。</p>
+            <ModePicker onStart={startMode} />
+          </div>
+        </div>
+      )}
+
+      <main className="layout" style={paneStyle}>
+        {isMobile && (
+          <div className="mobile-toggle">
+            <button
+              className={mobilePane === "question" ? "" : "outline"}
+              onClick={() => setMobilePane("question")}
+            >
+              問題文
+            </button>
+            <button
+              className={mobilePane === "choices" ? "" : "outline"}
+              onClick={() => setMobilePane("choices")}
+            >
+              選択肢
+            </button>
+          </div>
+        )}
+
+        <section
+          className={`pane question ${isMobile && mobilePane !== "question" ? "mobile-hidden" : ""}`}
+          style={{ fontSize: `${state.zoom}rem` }}
+        >
+          <h2>{Number.isInteger(currentQuestion.number) ? `${currentQuestion.number}問: ${currentQuestion.title}` : `${Math.floor(currentQuestion.number)}#問: ${currentQuestion.title}`}</h2>
+          {currentQuestion.questionText && currentQuestion.bodyText ? (
+            <>
+              <p>{currentQuestion.questionText}</p>
+              <p>{currentQuestion.bodyText}</p>
+            </>
+          ) : (
+            currentQuestion.body && <p>{currentQuestion.body}</p>
+          )}
+          {currentQuestion.pseudoCode && (
+            <div className="pseudo">
+              <div className="pseudo-header">
+                <p className="pseudo-label">[プログラム]</p>
+                {state.instructorMode && (() => {
+                  const pseudoCode = currentQuestion.pseudoCode ?? [];
+                  const nonEmptyIndices = pseudoCode
+                    .map((line, idx) => ({ line, idx }))
+                    .filter(({ line }) => line.trim() !== "")
+                    .map(({ idx }) => idx);
+                  const firstNonEmptyIndex = nonEmptyIndices[0] ?? -1;
+                  const lastNonEmptyIndex = nonEmptyIndices[nonEmptyIndices.length - 1] ?? -1;
+                  const canMoveUp = currentCodeLine > firstNonEmptyIndex;
+                  const canMoveDown = currentCodeLine < lastNonEmptyIndex;
+                  
+                  return (
+                    <div className="pseudo-controls">
+                      <button
+                        className="outline small"
+                        onClick={() => moveCodeLine("up")}
+                        disabled={!canMoveUp}
+                        title="上へ"
+                      >
+                        ↑
+                      </button>
+                      <button
+                        className="outline small"
+                        onClick={() => moveCodeLine("down")}
+                        disabled={!canMoveDown}
+                        title="下へ"
+                      >
+                        ↓
+                      </button>
+                    </div>
+                  );
+                })()}
+              </div>
+              {currentQuestion.pseudoCode.map((line, idx) => (
+                <div key={idx} className="pseudo-line">
+                  {state.instructorMode && (
+                    <span className="pseudo-arrow">
+                      {currentCodeLine === idx && line.trim() !== "" ? (
+                        <svg
+                          width="28"
+                          height="28"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M3 3L10.07 19.97L12.58 12.58L19.97 10.07L3 3Z"
+                            fill="#2563eb"
+                            stroke="#1e40af"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      ) : (
+                        " "
+                      )}
+                    </span>
+                  )}
+                  <pre>{line}</pre>
+                </div>
+              ))}
+            </div>
+          )}
+          {currentQuestion.choices?.length > 0 && (
+            <div className="answer-group" aria-label="解答群">
+              <p className="answer-group-title">[解答群]</p>
+              <ul className="answer-group-list">
+                {currentQuestion.choices.map((c, idx) => {
+                  const head = CHOICE_LABELS[idx] ?? "";
+                  return (
+                    <li key={c.id} className="answer-group-item">
+                      <span className="answer-group-label">{head}</span>
+                      <span className="answer-group-text">{c.text}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+        </section>
+
+        <div className={`divider ${isMobile ? "mobile-hidden" : ""}`} ref={dividerRef} />
+
+        <section className={`pane choices ${isMobile && mobilePane !== "choices" ? "mobile-hidden" : ""}`}>
+          <div className="choices-header">
+            {state.perQuestionGrading && (
+              <button className="outline" onClick={handleGradeNow}>
+                今すぐ採点
+              </button>
+            )}
+          </div>
+          <div className={`choices-list ${state.reviewFlags[currentQuestion.id] ? "review-on" : ""}`}>
+            {currentQuestion.choices.map((c, idx) => {
+              const selected = state.answers[currentQuestion.id] === c.id;
+              const head = CHOICE_LABELS[idx] ?? "";
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  className={`choice-btn ${selected ? "selected" : ""}`}
+                  onClick={() => handleAnswer(c.id)}
+                  aria-pressed={selected}
+                  aria-label={head ? `${head}: ${c.text}` : c.text}
+                >
+                  {head}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      </main>
+
+      <footer className="bottom-bar" aria-label="操作ボタン">
+        <div className="bottom-bar-inner">
+          <button type="button" className="outline" onClick={() => setShowList(true)}>
+            一覧へ
+          </button>
+          <button
+            type="button"
+            onClick={handleReviewToggle}
+            className={`${state.reviewFlags[currentQuestion.id] ? "outline active" : "outline"} review-btn`}
+          >
+            あとで見返す
+          </button>
+          <div className="nav-buttons">
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="outline"
+              disabled={state.currentIndex <= 0}
+            >
+              前へ
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate(1)}
+              disabled={state.currentIndex >= questions.length - 1}
+            >
+              次へ
+            </button>
+          </div>
+        </div>
+      </footer>
+
+      {showList && (
+        <div className="overlay">
+          <div className="overlay-content">
+            <div className="overlay-header">
+              <h3>問題一覧</h3>
+              <button className="outline" onClick={() => setShowList(false)}>
+                閉じる
+              </button>
+            </div>
+            <div className="grid">
+              {questions.map((q, idx) => {
+                const answered = Boolean(state.answers[q.id]);
+                const review = Boolean(state.reviewFlags[q.id]);
+                return (
+                  <button
+                    key={q.id}
+                    onClick={() => jumpTo(idx)}
+                    className={`grid-item ${idx === state.currentIndex ? "current" : ""} ${
+                      answered ? "answered" : "unanswered"
+                    } ${review ? "review" : ""}`}
+                  >
+                    {Number.isInteger(q.number) ? `問${q.number}` : `問${Math.floor(q.number)}#`}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="legend">
+              <div className="legend-item">
+                <span className="chip unanswered" />
+                <span>未回答</span>
+              </div>
+              <div className="legend-item">
+                <span className="chip answered" />
+                <span>回答済み</span>
+              </div>
+              <div className="legend-item">
+                <span className="chip review" />
+                <span>あとで見返す</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showReference && (
+        <div className="overlay">
+          <div className="overlay-content">
+            <div className="overlay-header">
+              <h3>参考資料</h3>
+              <button className="outline" onClick={() => setShowReference(false)}>
+                閉じる
+              </button>
+            </div>
+            <div className="tabs" role="tablist" aria-label="参考資料タブ">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={referenceTab === "notes"}
+                className={`tab ${referenceTab === "notes" ? "active" : ""}`}
+                onClick={() => setReferenceTab("notes")}
+              >
+                注意事項
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={referenceTab === "materials"}
+                className={`tab ${referenceTab === "materials" ? "active" : ""}`}
+                onClick={() => setReferenceTab("materials")}
+              >
+                資料
+              </button>
+            </div>
+            <div className="tab-panel" role="tabpanel">
+              {/* 中身は後で追加 */}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showTimeUp && (
+        <div className="overlay">
+          <div className="overlay-content">
+            <h3>時間切れです</h3>
+            <p>「続ける」を押すとタイマー停止したまま練習モードで続行します。</p>
+            <button onClick={markPracticeMode}>続ける（練習モード）</button>
+          </div>
+        </div>
+      )}
+
+      {showResult && (
+        <div className="overlay">
+          <div className="overlay-content">
+            <h3>採点結果</h3>
+            <p>
+              正答 {resultSummary.correct} / {resultSummary.total}
+            </p>
+            <p>未回答 {resultSummary.unanswered}</p>
+            <p className="result-detail">
+              {resultDetails.map((d) => {
+                const mark = d.status === "correct" ? "○" : d.status === "incorrect" ? "×" : "";
+                return `問${d.number}${mark}`;
+              }).join(" ")}
+            </p>
+            <p className="result-note">※採点結果は記録されません。スクリーンショット等で保存してください（例: Windows+Shift+S）。</p>
+            <button
+              className="outline"
+              onClick={() => {
+                setShowResult(false);
+                setState((prev) => ({ ...prev, mode: null }));
+              }}
+            >
+              閉じる
+            </button>
+          </div>
+        </div>
+      )}
+
+      {gradeNowResult && (
+        <div className="overlay">
+          <div className="overlay-content">
+            <h3>この問題の結果</h3>
+            {gradeNowResult.status === "correct" && <p>正解です！</p>}
+            {gradeNowResult.status === "incorrect" && (
+              <p>
+                不正解。あなたの選択: {gradeNowResult.selectedLabel && `${gradeNowResult.selectedLabel}  ` }
+                {gradeNowResult.selectedText}
+              </p>
+            )}
+            {gradeNowResult.status === "unanswered" && <p>未回答です。</p>}
+            <p>
+              正解: {gradeNowResult.correctLabel && `${gradeNowResult.correctLabel}  `}
+              {gradeNowResult.correctText}
+            </p>
+            <button className="outline" onClick={() => setGradeNowResult(null)}>
+              閉じる
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+type ModePickerProps = {
+  onStart: (mode: "practice" | "exam", hideTimer: boolean, perQuestionGrading: boolean, perQuestionTimer: boolean, instructorMode: boolean) => void;
+};
+
+function ModePicker({ onStart }: ModePickerProps) {
+  const [mode, setMode] = useState<"practice" | "exam">("practice");
+  const [hideTimer, setHideTimer] = useState(false);
+  const [perQuestionGrading, setPerQuestionGrading] = useState(false);
+  const [perQuestionTimer, setPerQuestionTimer] = useState(false);
+  const [instructorMode, setInstructorMode] = useState(false);
+
+  return (
+    <div className="mode-picker">
+      <div className="mode-buttons">
+        <button className={mode === "practice" ? "" : "outline"} onClick={() => setMode("practice")}>
+          問題演習
+        </button>
+        <button className={mode === "exam" ? "" : "outline"} onClick={() => setMode("exam")}>
+          模擬試験
+        </button>
+      </div>
+      <div className="mode-options">
+        <label>
+          <input type="checkbox" checked={hideTimer} onChange={(e) => setHideTimer(e.target.checked)} /> 時間を表示しない
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={perQuestionGrading}
+            onChange={(e) => setPerQuestionGrading(e.target.checked)}
+          />{" "}
+          問題ごとに採点
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={perQuestionTimer}
+            onChange={(e) => setPerQuestionTimer(e.target.checked)}
+          />{" "}
+          問題ごとに時間を計る
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={instructorMode}
+            onChange={(e) => setInstructorMode(e.target.checked)}
+          />{" "}
+          講師モード
+        </label>
+      </div>
+      <button onClick={() => onStart(mode, hideTimer, perQuestionGrading, perQuestionTimer, instructorMode)}>開始</button>
+    </div>
+  );
+}
+
