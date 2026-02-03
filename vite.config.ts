@@ -9,9 +9,15 @@ import { defineConfig } from "vite";
 // })
 
 //githubで公開するための設定
-export default defineConfig({
-  base: "/fe-pubsite-questions/",
-})
+// export default defineConfig({
+//   base: "/fe-pubsite-questions/",
+// })
 
-;
+// ;
 
+import react from "@vitejs/plugin-react";
+
+export default defineConfig(({ mode }) => ({
+  plugins: [react()],
+  base: mode === "production" ? "/fe-pubsite-questions/" : "/",
+}));
