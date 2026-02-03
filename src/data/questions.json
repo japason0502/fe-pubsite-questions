@@ -502,6 +502,111 @@
     ],
     "videoUrl": "",
     "correctChoiceId": "e"
+  },
+  {
+    "id": "q21",
+    "number": 19,
+    "title": "繰り返し(for)と配列",
+    "questionText": "次の記述中の【　】に入る正しい答えを，解答群の中から選べ。ここで，配列の要素番号は1から始まるものとする。",
+    "bodyText": "以下のプログラムを実行すると，【　】と出力される。",
+    "pseudoCode": [
+      "整数型の配列: data ← {4, 7, 1, 8}",
+      "整数型: sum ← 0",
+      "整数型: i",
+      "for (i を 1 から data の要素数 まで 1 ずつ増やす)",
+      "  sum ← sum + data[i]",
+      "endfor",
+      "sum の値を出力する"
+    ],
+    "choices": [
+      { "id": "a", "text": "18" },
+      { "id": "b", "text": "19" },
+      { "id": "c", "text": "20" },
+      { "id": "d", "text": "21" },
+      { "id": "e", "text": "22" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "c"
+  },
+  {
+    "id": "q22",
+    "number": 20,
+    "title": "配列の逆順",
+    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "関数 mystery を mystery({3, 1, 4, 2}) として呼び出すと，戻り値の配列は【　】である。",
+    "pseudoCode": [
+      "○ 整数型の配列: mystery(整数型の配列: data)",
+      "整数型: n ← data の要素数",
+      "整数型の配列: result ← {n 個の未定義の値}",
+      "整数型: i",
+      "for (i を 1 から n まで 1 ずつ増やす)",
+      "    result[n - i + 1] ← data[i]",
+      "endfor",
+      "return result"
+    ],
+    "choices": [
+      { "id": "a", "text": "{3, 1, 4, 2}" },
+      { "id": "b", "text": "{2, 4, 1, 3}" },
+      { "id": "c", "text": "{1, 2, 3, 4}" },
+      { "id": "d", "text": "{4, 3, 2, 1}" },
+      { "id": "e", "text": "{2, 1, 4, 3}" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "b"
+  },
+  {
+    "id": "q23",
+    "number": 21,
+    "title": "配列への累積追加",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "関数 makeNewArray は，要素数 2 以上の整数型の配列を引数にとり，整数型の配列を返す関数である。関数 makeNewArray を makeNewArray({3, 2, 1, 6, 5, 4}) として呼び出したとき，戻り値の配列の要素番号 5 の値は【　】となる。",
+    "pseudoCode": [
+      "○ 整数型の配列: makeNewArray(整数型の配列: in)",
+      "整数型の配列: out ← {}    // 要素数0の配列",
+      "整数型: i, tail",
+      "outの末尾に in[1] の値を追加する",
+      "for (i を 2 から inの要素数 まで 1 ずつ増やす)",
+      "    tail ← out[outの要素数]",
+      "    outの末尾に (tail + in[i]) の結果を追加する",
+      "endfor",
+      "return out"
+    ],
+    "choices": [
+      { "id": "a", "text": "5" },
+      { "id": "b", "text": "6" },
+      { "id": "c", "text": "9" },
+      { "id": "d", "text": "11" },
+      { "id": "e", "text": "12" },
+      { "id": "f", "text": "17" },
+      { "id": "g", "text": "21" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "f"
+  },
+  {
+    "id": "q24",
+    "number": 22,
+    "title": "配列の値を要素番号に利用",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "関数 binSort を binSort({2, 6, 3, 1, 4, 5})として呼び出すと，戻り値は【　】である。",
+    "pseudoCode": [
+      "○ 整数型の配列: binSort(整数型の配列: data)",
+      "    整数型: n ← data の要素数",
+      "    整数型の配列: bins ← { n 個の未定義の値 }",
+      "    整数型: i",
+      "    for (i を 1 から n まで 1 ずつ増やす)",
+      "        bins[data[i]] ← data[i]",
+      "    endfor",
+      "    return bins"
+    ],
+    "choices": [
+      { "id": "a", "text": "{1, 2, 3, 4, 5, 6}" },
+      { "id": "b", "text": "{1, 2, 3, 4, 5, 未定義}" },
+      { "id": "c", "text": "{1, 2, 3, 4, 6, 5}" },
+      { "id": "d", "text": "{6, 5, 4, 3, 2, 1}" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "a"
   }
 ]
 
