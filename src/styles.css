@@ -370,6 +370,33 @@ button:disabled {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
+.grade-now-question {
+  margin: 6px 0 10px;
+  color: #334155;
+  font-weight: 600;
+}
+
+.grade-now-image {
+  margin: 10px 0 14px;
+}
+
+.grade-now-image img {
+  display: block;
+  width: 100%;
+  max-height: min(45vh, 420px);
+  object-fit: contain;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #f8fafc;
+}
+
+.grade-now-missing {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #64748b;
+  word-break: break-all;
+}
+
 .overlay-header {
   display: flex;
   justify-content: space-between;

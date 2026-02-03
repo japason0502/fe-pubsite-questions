@@ -9,6 +9,20 @@ const MIN_ZOOM = 0.5; // 50%
 const MAX_ZOOM = 1.5; // 150%
 const CHOICE_LABELS = ["ア", "イ", "ウ", "エ", "オ", "カ", "キ", "ク", "ケ", "コ", "サ", "シ", "ス"];
 
+function formatQuestionNumber(n: number) {
+  return Number.isInteger(n) ? `問${n}` : `問${Math.floor(n)}#`;
+}
+
+function questionNumberToImageKey(n: number) {
+  // 例: 4 -> "4", 4.1 -> "4_1"
+  return Number.isInteger(n) ? String(n) : String(n).replace(".", "_");
+}
+
+function getQuestionImageSrc(n: number) {
+  // GitHub Pages など base パス配下でも壊れないように BASE_URL を使う
+  return `${import.meta.env.BASE_URL}question-images/${questionNumberToImageKey(n)}.png`;
+}
+
 const initialState: ExamState = {
   answers: {},
   reviewFlags: {},
@@ -69,13 +83,17 @@ export default function App() {
   const [resultDetails, setResultDetails] = useState<{ number: number; status: "correct" | "incorrect" | "unanswered" }[]>([]);
   const [gradeNowResult, setGradeNowResult] = useState<{
     questionId: string;
+    questionNumber: number;
+    questionTitle: string;
     status: "correct" | "incorrect" | "unanswered";
     correctLabel?: string;
     correctText?: string;
     selectedLabel?: string;
     selectedText?: string;
     videoUrl?: string;
+    imageSrc: string;
   } | null>(null);
+  const [gradeNowImageError, setGradeNowImageError] = useState(false);
   const dividerRef = useRef<HTMLDivElement | null>(null);
   const [currentCodeLine, setCurrentCodeLine] = useState<number>(0);
 
@@ -429,6 +447,7 @@ export default function App() {
   };
 
   const handleGradeNow = () => {
+    setGradeNowImageError(false);
     const q = currentQuestion;
     const correctId = q.correctChoiceId;
     if (!correctId) {
@@ -439,10 +458,13 @@ export default function App() {
     if (!selectedId) {
       setGradeNowResult({
         questionId: q.id,
+        questionNumber: q.number,
+        questionTitle: q.title,
         status: "unanswered",
         correctLabel: CHOICE_LABELS[q.choices.findIndex((c) => c.id === correctId)] ?? "",
         correctText: q.choices.find((c) => c.id === correctId)?.text ?? "",
-        videoUrl: q.videoUrl
+        videoUrl: q.videoUrl,
+        imageSrc: getQuestionImageSrc(q.number)
       });
       return;
     }
@@ -453,12 +475,15 @@ export default function App() {
     const status = selectedId === correctId ? "correct" : "incorrect";
     setGradeNowResult({
       questionId: q.id,
+      questionNumber: q.number,
+      questionTitle: q.title,
       status,
       correctLabel,
       correctText,
       selectedLabel,
       selectedText,
-      videoUrl: q.videoUrl
+      videoUrl: q.videoUrl,
+      imageSrc: getQuestionImageSrc(q.number)
     });
   };
 
@@ -860,6 +885,21 @@ export default function App() {
         <div className="overlay">
           <div className="overlay-content">
             <h3>この問題の結果</h3>
+            <p className="grade-now-question">
+              {formatQuestionNumber(gradeNowResult.questionNumber)}: {gradeNowResult.questionTitle}
+            </p>
+            <div className="grade-now-image">
+              {!gradeNowImageError ? (
+                <img
+                  src={gradeNowResult.imageSrc}
+                  alt={`${formatQuestionNumber(gradeNowResult.questionNumber)}の画像`}
+                  onError={() => setGradeNowImageError(true)}
+                  loading="lazy"
+                />
+              ) : (
+                <p className="grade-now-missing">（画像が見つかりません: {gradeNowResult.imageSrc}）</p>
+              )}
+            </div>
             {gradeNowResult.status === "correct" && <p>正解です！</p>}
             {gradeNowResult.status === "incorrect" && (
               <p>
