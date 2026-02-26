@@ -382,8 +382,11 @@ button:disabled {
 
 .grade-now-image img {
   display: block;
-  width: 100%;
-  max-height: min(45vh, 420px);
+  /* 原寸（拡大しない）で表示し、はみ出るときだけ縮小する */
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 45vh;
   object-fit: contain;
   border-radius: 10px;
   border: 1px solid #e5e7eb;

@@ -506,7 +506,7 @@
   {
     "id": "q21",
     "number": 19,
-    "title": "繰り返し(for)と配列",
+    "title": "繰り返し(for)&配列",
     "questionText": "次の記述中の【　】に入る正しい答えを，解答群の中から選べ。ここで，配列の要素番号は1から始まるものとする。",
     "bodyText": "以下のプログラムを実行すると，【　】と出力される。",
     "pseudoCode": [
@@ -531,16 +531,16 @@
   {
     "id": "q22",
     "number": 20,
-    "title": "配列の逆順",
+    "title": "繰り返し(for)&配列",
     "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
-    "bodyText": "関数 mystery を mystery({3, 1, 4, 2}) として呼び出すと，戻り値の配列は【　】である。",
+    "bodyText": "関数 `mystery` を `mystery({3, 1, 4, 2})` として呼び出すと，戻り値の配列は【　】である。",
     "pseudoCode": [
       "○ 整数型の配列: mystery(整数型の配列: data)",
       "整数型: n ← data の要素数",
       "整数型の配列: result ← {n 個の未定義の値}",
       "整数型: i",
       "for (i を 1 から n まで 1 ずつ増やす)",
-      "    result[n - i + 1] ← data[i]",
+      "    result[i] ← data[n-i+1]",
       "endfor",
       "return result"
     ],
@@ -557,7 +557,7 @@
   {
     "id": "q23",
     "number": 21,
-    "title": "配列への累積追加",
+    "title": "繰り返し(for)&配列",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyText": "関数 makeNewArray は，要素数 2 以上の整数型の配列を引数にとり，整数型の配列を返す関数である。関数 makeNewArray を makeNewArray({3, 2, 1, 6, 5, 4}) として呼び出したとき，戻り値の配列の要素番号 5 の値は【　】となる。",
     "pseudoCode": [
