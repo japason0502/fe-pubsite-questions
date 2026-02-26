@@ -575,10 +575,11 @@ export default function App() {
 
       {!state.mode && (
         <div className="overlay">
-          <div className="overlay-content">
+          <div className="overlay-content overlay-content--mode-select">
             <h3>モード選択</h3>
             <p>開始するモードとオプションを選んでください。</p>
             <ModePicker onStart={startMode} />
+            <a href="https://docs.google.com/document/d/1ZeSTp8iQiQnJuN79rt70V2k_TZDqRG-LwSipn162PPo/edit?usp=sharing" target="_blank" className="usage-link">サイトの使い方はこちら</a>
           </div>
         </div>
       )}

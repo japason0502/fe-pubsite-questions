@@ -370,6 +370,23 @@ button:disabled {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
+.overlay-content--mode-select {
+  position: relative;
+  padding-bottom: 40px;
+}
+
+.usage-link {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  font-size: 0.9rem;
+  color: #2563eb;
+}
+
+.usage-link:hover {
+  text-decoration: underline;
+}
+
 .grade-now-question {
   margin: 6px 0 10px;
   color: #334155;
