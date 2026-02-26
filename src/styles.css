@@ -235,6 +235,8 @@ button.small {
 .choices-header {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 8px;
 }
 
@@ -540,6 +542,14 @@ button:disabled {
   flex-direction: column;
   gap: 6px;
   font-size: 0.95rem;
+}
+
+.mode-option-fixed {
+  opacity: 0.85;
+}
+
+.mode-option-fixed input:disabled {
+  cursor: not-allowed;
 }
 
 @media (max-width: 768px) {

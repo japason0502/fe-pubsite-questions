@@ -95,15 +95,15 @@ export default function App() {
   } | null>(null);
   const [gradeNowImageError, setGradeNowImageError] = useState(false);
   const dividerRef = useRef<HTMLDivElement | null>(null);
-  const [currentCodeLine, setCurrentCodeLine] = useState<number>(0);
 
   // state 永続化
   useEffect(() => {
     saveState(state);
   }, [state]);
 
-  // タイマー（全体）
+  // タイマー（全体）※100分数えないのときは計測しない
   useEffect(() => {
+    if (state.hideTimer) return;
     if (state.practiceMode) return;
     if (state.remainingSeconds <= 0) return;
     const id = window.setInterval(() => {
@@ -118,7 +118,7 @@ export default function App() {
       });
     }, 1000);
     return () => clearInterval(id);
-  }, [state.practiceMode, state.remainingSeconds]);
+  }, [state.hideTimer, state.practiceMode, state.remainingSeconds]);
 
   // タイマー（問題ごと）
   useEffect(() => {
@@ -179,57 +179,6 @@ export default function App() {
       setMobilePane("question");
     }
   }, [isMobile]);
-
-  // 問題が変わったときにコード行をリセット（最初の非空白行に）
-  useEffect(() => {
-    const question = questions[state.currentIndex];
-    if (question?.pseudoCode) {
-      const firstNonEmptyIndex = question.pseudoCode.findIndex(line => line.trim() !== "");
-      setCurrentCodeLine(firstNonEmptyIndex >= 0 ? firstNonEmptyIndex : 0);
-    } else {
-      setCurrentCodeLine(0);
-    }
-  }, [state.currentIndex, questions]);
-
-  // キーボードイベント（講師モードで上下矢印キー、空白行をスキップ）
-  useEffect(() => {
-    if (!state.instructorMode) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      const question = questions[state.currentIndex];
-      const pseudoCode = question?.pseudoCode;
-      if (!pseudoCode || pseudoCode.length === 0) return;
-      
-      const isNonEmpty = (idx: number) => {
-        return idx >= 0 && idx < pseudoCode.length && pseudoCode[idx].trim() !== "";
-      };
-      
-      if (e.key === "ArrowUp") {
-        e.preventDefault();
-        setCurrentCodeLine((prev) => {
-          // 上方向：現在の行より前の最初の非空白行を探す
-          for (let i = prev - 1; i >= 0; i--) {
-            if (isNonEmpty(i)) {
-              return i;
-            }
-          }
-          return prev; // 見つからなければ現在の行を維持
-        });
-      } else if (e.key === "ArrowDown") {
-        e.preventDefault();
-        setCurrentCodeLine((prev) => {
-          // 下方向：現在の行より後の最初の非空白行を探す
-          for (let i = prev + 1; i < pseudoCode.length; i++) {
-            if (isNonEmpty(i)) {
-              return i;
-            }
-          }
-          return prev; // 見つからなければ現在の行を維持
-        });
-      }
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [state.instructorMode, state.currentIndex, questions]);
 
   // リサイズドラッグ（PC）
   useEffect(() => {
@@ -297,7 +246,6 @@ export default function App() {
       
       return updated;
     });
-    setCurrentCodeLine(0);
   };
 
   const jumpTo = (index: number) => {
@@ -316,7 +264,6 @@ export default function App() {
       return updated;
     });
     setShowList(false);
-    setCurrentCodeLine(0);
   };
 
   const resetZoom = () => setState((prev) => ({ ...prev, zoom: 1 }));
@@ -389,38 +336,6 @@ export default function App() {
       }
       
       return newState;
-    });
-    setCurrentCodeLine(0);
-  };
-
-  // コード行移動のハンドラー
-  // コード行移動のハンドラー（空白行をスキップ）
-  const moveCodeLine = (direction: "up" | "down") => {
-    setCurrentCodeLine((prev) => {
-      const pseudoCode = currentQuestion.pseudoCode;
-      if (!pseudoCode || pseudoCode.length === 0) return prev;
-      
-      const isNonEmpty = (idx: number) => {
-        return idx >= 0 && idx < pseudoCode.length && pseudoCode[idx].trim() !== "";
-      };
-      
-      if (direction === "up") {
-        // 上方向：現在の行より前の最初の非空白行を探す
-        for (let i = prev - 1; i >= 0; i--) {
-          if (isNonEmpty(i)) {
-            return i;
-          }
-        }
-        return prev; // 見つからなければ現在の行を維持
-      } else {
-        // 下方向：現在の行より後の最初の非空白行を探す
-        for (let i = prev + 1; i < pseudoCode.length; i++) {
-          if (isNonEmpty(i)) {
-            return i;
-          }
-        }
-        return prev; // 見つからなければ現在の行を維持
-      }
     });
   };
 
@@ -604,9 +519,12 @@ export default function App() {
 
         <section
           className={`pane question ${isMobile && mobilePane !== "question" ? "mobile-hidden" : ""}`}
-          style={{ fontSize: `${state.zoom}rem` }}
+          style={{
+            fontSize: `${state.zoom}rem`,
+            userSelect: state.instructorMode ? "text" : "none"
+          }}
         >
-          <h2>{Number.isInteger(currentQuestion.number) ? `${currentQuestion.number}問: ${currentQuestion.title}` : `${Math.floor(currentQuestion.number)}#問: ${currentQuestion.title}`}</h2>
+          <h2>{state.instructorMode ? currentQuestion.title : (Number.isInteger(currentQuestion.number) ? `${currentQuestion.number}問: ${currentQuestion.title}` : `${Math.floor(currentQuestion.number)}#問: ${currentQuestion.title}`)}</h2>
           {currentQuestion.questionText && currentQuestion.bodyText ? (
             <>
               <p>{currentQuestion.questionText}</p>
@@ -619,65 +537,9 @@ export default function App() {
             <div className="pseudo">
               <div className="pseudo-header">
                 <p className="pseudo-label">[プログラム]</p>
-                {state.instructorMode && (() => {
-                  const pseudoCode = currentQuestion.pseudoCode ?? [];
-                  const nonEmptyIndices = pseudoCode
-                    .map((line, idx) => ({ line, idx }))
-                    .filter(({ line }) => line.trim() !== "")
-                    .map(({ idx }) => idx);
-                  const firstNonEmptyIndex = nonEmptyIndices[0] ?? -1;
-                  const lastNonEmptyIndex = nonEmptyIndices[nonEmptyIndices.length - 1] ?? -1;
-                  const canMoveUp = currentCodeLine > firstNonEmptyIndex;
-                  const canMoveDown = currentCodeLine < lastNonEmptyIndex;
-                  
-                  return (
-                    <div className="pseudo-controls">
-                      <button
-                        className="outline small"
-                        onClick={() => moveCodeLine("up")}
-                        disabled={!canMoveUp}
-                        title="上へ"
-                      >
-                        ↑
-                      </button>
-                      <button
-                        className="outline small"
-                        onClick={() => moveCodeLine("down")}
-                        disabled={!canMoveDown}
-                        title="下へ"
-                      >
-                        ↓
-                      </button>
-                    </div>
-                  );
-                })()}
               </div>
               {currentQuestion.pseudoCode.map((line, idx) => (
                 <div key={idx} className="pseudo-line">
-                  {state.instructorMode && (
-                    <span className="pseudo-arrow">
-                      {currentCodeLine === idx && line.trim() !== "" ? (
-                        <svg
-                          width="28"
-                          height="28"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M3 3L10.07 19.97L12.58 12.58L19.97 10.07L3 3Z"
-                            fill="#2563eb"
-                            stroke="#1e40af"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      ) : (
-                        " "
-                      )}
-                    </span>
-                  )}
                   <pre>{line}</pre>
                 </div>
               ))}
@@ -706,9 +568,19 @@ export default function App() {
         <section className={`pane choices ${isMobile && mobilePane !== "choices" ? "mobile-hidden" : ""}`}>
           <div className="choices-header">
             {state.perQuestionGrading && (
-              <button className="outline" onClick={handleGradeNow}>
-                今すぐ採点
-              </button>
+              <>
+                <button className="outline" onClick={handleGradeNow}>
+                  今すぐ採点
+                </button>
+                <button
+                  type="button"
+                  className="outline"
+                  disabled={!currentQuestion.videoUrl}
+                  onClick={() => currentQuestion.videoUrl && window.open(currentQuestion.videoUrl, "_blank", "noopener,noreferrer")}
+                >
+                  解説動画へ
+                </button>
+              </>
             )}
           </div>
           <div className={`choices-list ${state.reviewFlags[currentQuestion.id] ? "review-on" : ""}`}>
@@ -930,9 +802,14 @@ type ModePickerProps = {
 function ModePicker({ onStart }: ModePickerProps) {
   const [mode, setMode] = useState<"practice" | "exam">("practice");
   const [hideTimer, setHideTimer] = useState(false);
-  const [perQuestionGrading, setPerQuestionGrading] = useState(false);
-  const [perQuestionTimer, setPerQuestionTimer] = useState(false);
+  const [perQuestionGrading, setPerQuestionGrading] = useState(true);
+  const [perQuestionTimer, setPerQuestionTimer] = useState(true);
   const [instructorMode, setInstructorMode] = useState(false);
+
+  const isPractice = mode === "practice";
+  const effectiveHideTimer = isPractice ? true : hideTimer;
+  const effectivePerQuestionGrading = perQuestionGrading;
+  const effectivePerQuestionTimer = perQuestionTimer;
 
   return (
     <div className="mode-picker">
@@ -940,13 +817,19 @@ function ModePicker({ onStart }: ModePickerProps) {
         <button className={mode === "practice" ? "" : "outline"} onClick={() => setMode("practice")}>
           問題演習
         </button>
-        <button className={mode === "exam" ? "" : "outline"} onClick={() => setMode("exam")}>
+        {/* <button className={mode === "exam" ? "" : "outline"} onClick={() => setMode("exam")}>
           模擬試験
-        </button>
+        </button> */}
       </div>
       <div className="mode-options">
-        <label>
-          <input type="checkbox" checked={hideTimer} onChange={(e) => setHideTimer(e.target.checked)} /> 時間を表示しない
+        <label className={isPractice ? "mode-option-fixed" : ""}>
+          <input
+            type="checkbox"
+            checked={effectiveHideTimer}
+            onChange={(e) => setHideTimer(e.target.checked)}
+            disabled={isPractice}
+          />{" "}
+          100分数えない
         </label>
         <label>
           <input
@@ -962,7 +845,7 @@ function ModePicker({ onStart }: ModePickerProps) {
             checked={perQuestionTimer}
             onChange={(e) => setPerQuestionTimer(e.target.checked)}
           />{" "}
-          問題ごとに時間を計る
+          問題ごとに5分計る
         </label>
         <label>
           <input
@@ -973,7 +856,7 @@ function ModePicker({ onStart }: ModePickerProps) {
           講師モード
         </label>
       </div>
-      <button onClick={() => onStart(mode, hideTimer, perQuestionGrading, perQuestionTimer, instructorMode)}>開始</button>
+      <button onClick={() => onStart(mode, effectiveHideTimer, effectivePerQuestionGrading, effectivePerQuestionTimer, instructorMode)}>開始</button>
     </div>
   );
 }
