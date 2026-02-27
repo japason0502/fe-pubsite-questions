@@ -552,6 +552,10 @@ button:disabled {
   cursor: not-allowed;
 }
 
+.mode-option-indent {
+  padding-left: 1.2em;
+}
+
 @media (max-width: 768px) {
   .layout {
     grid-template-columns: 1fr !important;

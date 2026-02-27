@@ -27,6 +27,7 @@ export type ExamState = {
   hideTimer: boolean;
   perQuestionGrading: boolean;
   perQuestionTimer: boolean;
+  perQuestionTimerAlert: boolean;
   perQuestionRemainingSeconds: Record<string, number>;
   perQuestionTimerPaused: boolean;
   instructorMode: boolean;

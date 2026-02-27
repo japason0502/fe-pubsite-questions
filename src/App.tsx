@@ -34,6 +34,7 @@ const initialState: ExamState = {
   hideTimer: false,
   perQuestionGrading: false,
   perQuestionTimer: false,
+  perQuestionTimerAlert: false,
   perQuestionRemainingSeconds: {},
   perQuestionTimerPaused: false,
   instructorMode: false
@@ -69,6 +70,7 @@ export default function App() {
   const [state, setState] = useState<ExamState>(() => loadState());
   const [showList, setShowList] = useState(false);
   const [showTimeUp, setShowTimeUp] = useState(false);
+  const [showPerQuestionTimeUp, setShowPerQuestionTimeUp] = useState(false);
   const [showReference, setShowReference] = useState(false);
   const [referenceTab, setReferenceTab] = useState<"notes" | "materials">("notes");
   const [paneRatio, setPaneRatio] = useState(0.55); // 左ペイン幅割合
@@ -128,7 +130,7 @@ export default function App() {
     const currentQuestionId = questions[state.currentIndex]?.id;
     if (!currentQuestionId) return;
     const questionTime = state.perQuestionRemainingSeconds[currentQuestionId];
-    if (questionTime === undefined || questionTime <= 0) return;
+    if (questionTime === undefined) return;
     
     const id = window.setInterval(() => {
       setState((prev) => {
@@ -136,16 +138,16 @@ export default function App() {
         const currentQId = questions[prev.currentIndex]?.id;
         if (!currentQId) return prev;
         const currentTime = prev.perQuestionRemainingSeconds[currentQId];
-        if (currentTime === undefined || currentTime <= 0) return prev;
+        if (currentTime === undefined) return prev;
         const next = currentTime - 1;
         const updated = {
           ...prev.perQuestionRemainingSeconds,
           [currentQId]: next
         };
-        if (next <= 0) {
-          // 問題ごとの時間切れの場合は、その問題の時間を0にして続行
-          return { ...prev, perQuestionRemainingSeconds: updated };
+        if (next === 0 && prev.perQuestionTimerAlert) {
+          setShowPerQuestionTimeUp(true);
         }
+        return { ...prev, perQuestionRemainingSeconds: updated };
         return { ...prev, perQuestionRemainingSeconds: updated };
       });
     }, 1000);
@@ -309,7 +311,7 @@ export default function App() {
     gradeExam();
   };
 
-  const startMode = (mode: "practice" | "exam", hideTimer: boolean, perQuestionGrading: boolean, perQuestionTimer: boolean, instructorMode: boolean) => {
+  const startMode = (mode: "practice" | "exam", hideTimer: boolean, perQuestionGrading: boolean, perQuestionTimer: boolean, perQuestionTimerAlert: boolean, instructorMode: boolean) => {
     setState((prev) => {
       const newState = {
         ...initialState,
@@ -320,6 +322,7 @@ export default function App() {
         remainingSeconds: DEFAULT_TIME,
         perQuestionGrading,
         perQuestionTimer,
+        perQuestionTimerAlert,
         perQuestionRemainingSeconds: {},
         perQuestionTimerPaused: false,
         instructorMode
@@ -453,8 +456,8 @@ export default function App() {
                     const currentQuestionId = currentQuestion?.id;
                     const questionTime = currentQuestionId ? state.perQuestionRemainingSeconds[currentQuestionId] : undefined;
                     if (questionTime === undefined) return "未開始";
-                    if (questionTime <= 0) return "時間切れ";
-                    return secondsToClock(questionTime);
+                    if (questionTime >= 0) return secondsToClock(questionTime);
+                    return `+${secondsToClock(Math.abs(questionTime))}`;
                   })()}
                   {state.perQuestionTimerPaused && " (一時停止)"}
                 </span>
@@ -726,6 +729,16 @@ export default function App() {
         </div>
       )}
 
+      {showPerQuestionTimeUp && (
+        <div className="overlay">
+          <div className="overlay-content">
+            <h3>5分経過しました</h3>
+            <p>この問題の制限時間（5分）が経過しました。</p>
+            <button onClick={() => setShowPerQuestionTimeUp(false)}>閉じる</button>
+          </div>
+        </div>
+      )}
+
       {showResult && (
         <div className="overlay">
           <div className="overlay-content">
@@ -796,7 +809,7 @@ export default function App() {
 }
 
 type ModePickerProps = {
-  onStart: (mode: "practice" | "exam", hideTimer: boolean, perQuestionGrading: boolean, perQuestionTimer: boolean, instructorMode: boolean) => void;
+  onStart: (mode: "practice" | "exam", hideTimer: boolean, perQuestionGrading: boolean, perQuestionTimer: boolean, perQuestionTimerAlert: boolean, instructorMode: boolean) => void;
 };
 
 function ModePicker({ onStart }: ModePickerProps) {
@@ -804,6 +817,7 @@ function ModePicker({ onStart }: ModePickerProps) {
   const [hideTimer, setHideTimer] = useState(false);
   const [perQuestionGrading, setPerQuestionGrading] = useState(true);
   const [perQuestionTimer, setPerQuestionTimer] = useState(true);
+  const [perQuestionTimerAlert, setPerQuestionTimerAlert] = useState(false);
   const [instructorMode, setInstructorMode] = useState(false);
 
   const isPractice = mode === "practice";
@@ -847,6 +861,16 @@ function ModePicker({ onStart }: ModePickerProps) {
           />{" "}
           問題ごとに5分計る
         </label>
+        {perQuestionTimer && (
+          <label className="mode-option-indent">
+            <input
+              type="checkbox"
+              checked={perQuestionTimerAlert}
+              onChange={(e) => setPerQuestionTimerAlert(e.target.checked)}
+            />{" "}
+            5分経過をウィンドウで知らせる
+          </label>
+        )}
         <label>
           <input
             type="checkbox"
@@ -856,7 +880,7 @@ function ModePicker({ onStart }: ModePickerProps) {
           講師モード
         </label>
       </div>
-      <button onClick={() => onStart(mode, effectiveHideTimer, effectivePerQuestionGrading, effectivePerQuestionTimer, instructorMode)}>開始</button>
+      <button onClick={() => onStart(mode, effectiveHideTimer, effectivePerQuestionGrading, effectivePerQuestionTimer, perQuestionTimerAlert, instructorMode)}>開始</button>
     </div>
   );
 }

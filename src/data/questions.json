@@ -1,7 +1,8 @@
 [
   {
-    "id": "q1",
+    "id": "q0",
     "number": 0,
+    "videoUrl": "https://www.youtube.com/watch?v=qi-kazNRYjk&t=38s",
     "title": "サンプル問題",
     "questionText": "次の記述中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
     "bodyText": "プログラムを実行すると，【　　　】と出力される。",
@@ -24,12 +25,12 @@
       { "id": "e", "text": "3,1" },
       { "id": "f", "text": "3,2" }
     ],
-    "videoUrl": "",
     "correctChoiceId": "f"
   },
   {
-    "id": "q2",
+    "id": "q1",
     "number": 1,
+    "videoUrl": "https://www.youtube.com/watch?v=qi-kazNRYjk&t=298s",
     "title": "変数同士の代入",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。",
     "bodyText": "プログラムを実行すると，【　】と出力される。",
@@ -50,12 +51,12 @@
       { "id": "e", "text": "1,2" },
       { "id": "f", "text": "3,3" }
     ],
-    "videoUrl": "",
     "correctChoiceId": "c"
   },
   {
-    "id": "q3",
+    "id": "q2",
     "number": 2,
+    "videoUrl": "https://www.youtube.com/watch?v=qi-kazNRYjk&t=358s",
     "title": "変数同士の代入",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。",
     "bodyText": "プログラムを実行すると，【　】と出力される。",
@@ -77,12 +78,12 @@
       { "id": "e", "text": "10,15" },
       { "id": "f", "text": "5,10" }
     ],
-    "videoUrl": "",
     "correctChoiceId": "b"
   },
   {
-    "id": "q4",
+    "id": "q3",
     "number": 3,
+    "videoUrl": "https://www.youtube.com/watch?v=qi-kazNRYjk&t=471s",
     "title": "変数同士の代入",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。",
     "bodyText": "プログラムを実行すると，【　】と出力される。",
@@ -103,12 +104,12 @@
       { "id": "e", "text": "5,10" },
       { "id": "f", "text": "8,5" }
     ],
-    "videoUrl": "",
     "correctChoiceId": "c"
   },
   {
-    "id": "q5",
+    "id": "q4",
     "number": 4,
+    "videoUrl": "https://www.youtube.com/watch?v=qi-kazNRYjk&t=640s",
     "title": "変数に値を追加する",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。",
     "bodyText": "次のプログラムを実行すると，【　】が出力される",
@@ -127,12 +128,12 @@
       { "id": "d", "text": "4" },
       { "id": "e", "text": "5" }
     ],
-    "videoUrl": "",
     "correctChoiceId": "c"
   },
   {
     "id": "q4_5",
     "number": 4.1,
+    "videoUrl": "https://www.youtube.com/watch?v=qi-kazNRYjk&t=832s",
     "title": "(i←i ...の形の練習)",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。",
     "bodyText": "次のプログラムを実行すると，【　】が出力される",
@@ -155,11 +156,10 @@
       { "id": "d", "text": "4" },
       { "id": "e", "text": "5" }
     ],
-    "videoUrl": "",
     "correctChoiceId": "c"
   },
   {
-    "id": "q6",
+    "id": "q5",
     "number": 5,
     "title": "配列の値を利用",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は1から始まる。",
@@ -183,7 +183,7 @@
     "correctChoiceId": "a"
   },
   {
-    "id": "q7",
+    "id": "q6",
     "number": 6,
     "title": "配列の値を利用",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は1から始まる。",
@@ -207,7 +207,7 @@
     "correctChoiceId": "b"
   },
   {
-    "id": "q8",
+    "id": "q7",
     "number": 7,
     "title": "複数の配列",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は1から始まる。",
@@ -232,7 +232,7 @@
     "correctChoiceId": "c"
   },
   {
-    "id": "q9",
+    "id": "q8",
     "number": 8,
     "title": "要素番号が変数",
     "questionText": "次の記述中の【　】に入る正しい答えを，解答群の中から選べ。ここで､配列の要素番号は 1 から始まる。",
@@ -257,7 +257,7 @@
     "correctChoiceId": "b"
   },
   {
-    "id": "q10",
+    "id": "q9",
     "number": 9,
     "title": "計算した値が要素番号",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群から選べ。ここで，配列の要素は1から始まる。",
@@ -281,7 +281,7 @@
     "correctChoiceId": "b"
   },
   {
-    "id": "q11",
+    "id": "q10",
     "number": 10,
     "title": "計算した値が要素番号",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群から選べ。ここで，配列の要素は1から始まる。",
@@ -306,8 +306,53 @@
     "correctChoiceId": "b"
   },
   {
-    "id": "q13",
+    "id": "q11",
     "number": 11,
+    "title": "配列の値を配列の要素番号として指定する",
+    "questionText": "次の記述中の【　】に入る正しい答えを，解答群の中から選べ。ここで，要素番号は 1 から始まる。",
+    "bodyText": "プログラムを実行すると，【　】が出力される。",
+    "pseudoCode": [
+      "整数型の配列: a ← {3, 1, 2}",
+      "整数型: x",
+      "x ← a[ a[2] ]",
+      "xの値を出力"
+    ],
+    "choices": [
+      { "id": "a", "text": "1" },
+      { "id": "b", "text": "2" },
+      { "id": "c", "text": "3" },
+      { "id": "d", "text": "4" },
+      { "id": "e", "text": "5" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "c"
+  },
+  {
+    "id": "q12",
+    "number": 12,
+    "title": "配列の値を配列の要素番号として指定する",
+    "questionText": "次の記述中の【　】に入る正しい答えを，解答群の中から選べ。ここで，要素番号は 1 から始まる。",
+    "bodyText": "プログラムを実行すると，【　】が出力される。",
+    "pseudoCode": [
+      "整数型の配列: a ← {3, 1, 4}",
+      "整数型の配列: b ← {10, 20, 30, 40}",
+      "整数型: x",
+      "x ← b[ a[3] ]",
+      "xの値を出力"
+    ],
+    "choices": [
+      { "id": "a", "text": "10" },
+      { "id": "b", "text": "20" },
+      { "id": "c", "text": "30" },
+      { "id": "d", "text": "40" },
+      { "id": "e", "text": "50" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "d"
+  },
+  {
+    "id": "q13",
+    "number": 13,
     "title": "配列への値の代入",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は1から始まる。",
     "bodyText": "プログラムを実行すると，【　】と出力される。",
@@ -330,7 +375,7 @@
   },
   {
     "id": "q14",
-    "number": 12,
+    "number": 14,
     "title": "配列への値の代入",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyText": "プログラムを実行すると，【　】と出力される。",
@@ -353,7 +398,7 @@
   },
   {
     "id": "q15",
-    "number": 13,
+    "number": 15,
     "title": "別の配列への値の代入",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyText": "プログラムを実行すると，【　】と出力される。",
@@ -389,52 +434,104 @@
   },
   {
     "id": "q16",
-    "number": 14,
-    "title": "配列の値を配列の要素番号として指定する",
-    "questionText": "次の記述中の【　】に入る正しい答えを，解答群の中から選べ。ここで，要素番号は 1 から始まる。",
-    "bodyText": "プログラムを実行すると，【　】が出力される。",
+    "number": 16,
+    "title": "別の配列への値の代入(data×key)",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "プログラムを実行すると，【　】と出力される。",
     "pseudoCode": [
-      "整数型の配列: a ← {3, 1, 2}",
-      "整数型: x",
-      "x ← a[ a[2] ]",
-      "xの値を出力"
+      "整数型の配列: data ← {2, 5, 1, 4}",
+      "整数型の配列: key ← {3, 7, 2, 6}",
+      "整数型: j ← data の要素数",
+      "整数型の配列: result ← {4 個の未定義の値}",
+      "整数型: i ← 1",
+      "",
+      "result[i] ← data[j] × key[i]",
+      "i ← i + 1",
+      "j ← j - 1",
+      "result[i] ← data[j] × key[i]",
+      "i ← i + 1",
+      "j ← j - 1",
+      "result[i] ← data[j] × key[i]",
+      "i ← i + 1",
+      "j ← j - 1",
+      "result[i] ← data[j] × key[i]",
+      "",
+      "result[1],result[2],result[3],result[4]の順にカンマ区切りで出力する"
     ],
     "choices": [
-      { "id": "a", "text": "1" },
-      { "id": "b", "text": "2" },
-      { "id": "c", "text": "3" },
-      { "id": "d", "text": "4" },
-      { "id": "e", "text": "5" }
+      { "id": "a", "text": "12, 7, 10, 12" },
+      { "id": "b", "text": "12, 14, 10, 24" },
+      { "id": "c", "text": "12, 7, 15, 12" },
+      { "id": "d", "text": "8, 7, 10, 24" },
+      { "id": "e", "text": "12, 7, 10, 24" },
+      { "id": "f", "text": "8, 14, 15, 12" }
     ],
     "videoUrl": "",
-    "correctChoiceId": "c"
+    "correctChoiceId": "a"
   },
   {
     "id": "q17",
-    "number": 15,
-    "title": "配列の値を配列の要素番号として指定する",
-    "questionText": "次の記述中の【　】に入る正しい答えを，解答群の中から選べ。ここで，要素番号は 1 から始まる。",
-    "bodyText": "プログラムを実行すると，【　】が出力される。",
+    "number": 17,
+    "title": "配列に要素を追加",
+    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "次のプログラムを実行したとき，【　】が出力される。",
     "pseudoCode": [
-      "整数型の配列: a ← {3, 1, 4}",
-      "整数型の配列: b ← {10, 20, 30, 40}",
-      "整数型: x",
-      "x ← b[ a[3] ]",
-      "xの値を出力"
+      "整数型の配列: data ← {10, 20, 30, 40}",
+      "整数型: i, x, y",
+      "整数型の配列: result ← {}  //要素数0の配列",
+      "",
+      "i ← 3",
+      "resultの末尾に data[i] の値を追加する",
+      "x ← result[resultの要素数]",
+      "i ← i − 1",
+      "resultの末尾に data[i] の値を追加する",
+      "y ← result[resultの要素数]",
+      "xとyの値をカンマ区切りでこの順に出力"
     ],
     "choices": [
-      { "id": "a", "text": "10" },
-      { "id": "b", "text": "20" },
-      { "id": "c", "text": "30" },
-      { "id": "d", "text": "40" },
-      { "id": "e", "text": "50" }
+      { "id": "a", "text": "10, 20" },
+      { "id": "b", "text": "30, 20" },
+      { "id": "c", "text": "30, 10" },
+      { "id": "d", "text": "20, 10" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "b"
+  },
+  {
+    "id": "q18",
+    "number": 18,
+    "title": "配列に要素を追加(n-i+1)",
+    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "次のプログラムを実行したとき，【　】が出力される。",
+    "pseudoCode": [
+      "整数型の配列: data ← {10, 20, 30, 40}",
+      "整数型: i, n, x, y",
+      "整数型の配列: result ← {}  //要素数0の配列",
+      "",
+      "n ← dataの要素数",
+      "i ← 1",
+      "resultの末尾に data[n − i + 1] の値を追加する",
+      "x ← result[resultの要素数]",
+      "",
+      "i ← i + 1",
+      "resultの末尾に data[n − i + 1] の値を追加する",
+      "y ← result[resultの要素数]",
+      "",
+      "xとyの値をカンマ区切りでこの順に出力"
+    ],
+    "choices": [
+      { "id": "a", "text": "10, 20" },
+      { "id": "b", "text": "20, 30" },
+      { "id": "c", "text": "30, 40" },
+      { "id": "d", "text": "40, 30" },
+      { "id": "e", "text": "40, 20" }
     ],
     "videoUrl": "",
     "correctChoiceId": "d"
   },
   {
-    "id": "q18",
-    "number": 16,
+    "id": "q19",
+    "number": 19,
     "title": "関数(1)",
     "questionText": "次の記述中の【　】に入る正しい答えを，解答群の中から選べ。",
     "bodyText": "関数 plusOne を plusOne(3)として呼び出すと，戻り値は【　】である。",
@@ -454,8 +551,8 @@
     "correctChoiceId": "c"
   },
   {
-    "id": "q19",
-    "number": 17,
+    "id": "q21",
+    "number": 20,
     "title": "繰り返し",
     "questionText": "次の記述中の【　】に入る正しい答えを，解答群の中から選べ。",
     "bodyText": "関数 repeatCalc を repeatCalc(3) として呼び出すと，戻り値は【　】である。",
@@ -479,8 +576,8 @@
     "correctChoiceId": "d"
   },
   {
-    "id": "q20",
-    "number": 18,
+    "id": "q22",
+    "number": 21,
     "title": "繰り返し",
     "questionText": "次の記述中の【　】に入る正しい答えを，解答群の中から選べ。",
     "bodyText": "関数 repeatMul を repeatMul(4) として呼び出すと，戻り値は【　】である。",
@@ -504,8 +601,8 @@
     "correctChoiceId": "e"
   },
   {
-    "id": "q21",
-    "number": 19,
+    "id": "q23",
+    "number": 22,
     "title": "繰り返し(for)&配列",
     "questionText": "次の記述中の【　】に入る正しい答えを，解答群の中から選べ。ここで，配列の要素番号は1から始まるものとする。",
     "bodyText": "以下のプログラムを実行すると，【　】と出力される。",
@@ -529,8 +626,8 @@
     "correctChoiceId": "c"
   },
   {
-    "id": "q22",
-    "number": 20,
+    "id": "q24",
+    "number": 23,
     "title": "繰り返し(for)&配列",
     "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyText": "関数 `mystery` を `mystery({3, 1, 4, 2})` として呼び出すと，戻り値の配列は【　】である。",
@@ -555,8 +652,8 @@
     "correctChoiceId": "b"
   },
   {
-    "id": "q23",
-    "number": 21,
+    "id": "q25",
+    "number": 24,
     "title": "繰り返し(for)&配列",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyText": "関数 makeNewArray は，要素数 2 以上の整数型の配列を引数にとり，整数型の配列を返す関数である。関数 makeNewArray を makeNewArray({3, 2, 1, 6, 5, 4}) として呼び出したとき，戻り値の配列の要素番号 5 の値は【　】となる。",
@@ -584,8 +681,8 @@
     "correctChoiceId": "f"
   },
   {
-    "id": "q24",
-    "number": 22,
+    "id": "q26",
+    "number": 25,
     "title": "配列の値を要素番号に利用",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyText": "関数 binSort を binSort({2, 6, 3, 1, 4, 5})として呼び出すと，戻り値は【　】である。",
