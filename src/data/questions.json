@@ -433,8 +433,8 @@
     "correctChoiceId": "a"
   },
   {
-    "id": "q17",
-    "number": 17,
+    "id": "q16",
+    "number": 16,
     "title": "配列に要素を追加",
     "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyText": "次のプログラムを実行したとき，【　】が出力される。",
@@ -459,38 +459,6 @@
     ],
     "videoUrl": "",
     "correctChoiceId": "b"
-  },
-  {
-    "id": "q18",
-    "number": 18,
-    "title": "配列に要素を追加(n-i+1)",
-    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
-    "bodyText": "次のプログラムを実行したとき，【　】が出力される。",
-    "pseudoCode": [
-      "整数型の配列: data ← {10, 20, 30, 40}",
-      "整数型: i, n, x, y",
-      "整数型の配列: result ← {}  //要素数0の配列",
-      "",
-      "n ← dataの要素数",
-      "i ← 1",
-      "resultの末尾に data[n − i + 1] の値を追加する",
-      "x ← result[resultの要素数]",
-      "",
-      "i ← i + 1",
-      "resultの末尾に data[n − i + 1] の値を追加する",
-      "y ← result[resultの要素数]",
-      "",
-      "xとyの値をカンマ区切りでこの順に出力"
-    ],
-    "choices": [
-      { "id": "a", "text": "10, 20" },
-      { "id": "b", "text": "20, 30" },
-      { "id": "c", "text": "30, 40" },
-      { "id": "d", "text": "40, 30" },
-      { "id": "e", "text": "40, 20" }
-    ],
-    "videoUrl": "",
-    "correctChoiceId": "d"
   },
   {
     "id": "q19",
