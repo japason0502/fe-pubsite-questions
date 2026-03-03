@@ -179,7 +179,7 @@
       { "id": "d", "text": "6, 4, 8" },
       { "id": "e", "text": "2, 6, 10" }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=160s",
     "correctChoiceId": "a"
   },
   {
@@ -203,7 +203,7 @@
       { "id": "d", "text": "5, 8, 16" },
       { "id": "e", "text": "8, 13, 21" }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=338s",
     "correctChoiceId": "b"
   },
   {
@@ -228,7 +228,7 @@
       { "id": "d", "text": "3, 9, 12" },
       { "id": "e", "text": "5, 9, 13" }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=400s",
     "correctChoiceId": "c"
   },
   {
@@ -253,7 +253,7 @@
       { "id": "d", "text": "3,8" },
       { "id": "e", "text": "5,3" }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=502s",
     "correctChoiceId": "b"
   },
   {
@@ -277,7 +277,7 @@
       { "id": "d", "text": "6, 12, 15" },
       { "id": "e", "text": "3, 9, 12" }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=546s",
     "correctChoiceId": "b"
   },
   {
@@ -302,7 +302,7 @@
       { "id": "d", "text": "9, 27, 36" },
       { "id": "e", "text": "12, 24, 36" }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=670s",
     "correctChoiceId": "b"
   },
   {
@@ -324,7 +324,7 @@
       { "id": "d", "text": "4" },
       { "id": "e", "text": "5" }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=848s",
     "correctChoiceId": "c"
   },
   {
@@ -347,7 +347,7 @@
       { "id": "d", "text": "40" },
       { "id": "e", "text": "50" }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=885s",
     "correctChoiceId": "d"
   },
   {
@@ -370,7 +370,7 @@
       { "id": "d", "text": "8, 5, 3" },
       { "id": "e", "text": "13, 8, 5" }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=915s",
     "correctChoiceId": "e"
   },
   {
@@ -393,7 +393,7 @@
       { "id": "d", "text": "2, 6, 8" },
       { "id": "e", "text": "6, 2, 6" }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=1039s",
     "correctChoiceId": "a"
   },
   {
@@ -429,44 +429,7 @@
       { "id": "d", "text": "4, 3, 1" },
       { "id": "e", "text": "3, 4, 1" }
     ],
-    "videoUrl": "",
-    "correctChoiceId": "a"
-  },
-  {
-    "id": "q16",
-    "number": 16,
-    "title": "別の配列への値の代入(data×key)",
-    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
-    "bodyText": "プログラムを実行すると，【　】と出力される。",
-    "pseudoCode": [
-      "整数型の配列: data ← {2, 5, 1, 4}",
-      "整数型の配列: key ← {3, 7, 2, 6}",
-      "整数型: j ← data の要素数",
-      "整数型の配列: result ← {4 個の未定義の値}",
-      "整数型: i ← 1",
-      "",
-      "result[i] ← data[j] × key[i]",
-      "i ← i + 1",
-      "j ← j - 1",
-      "result[i] ← data[j] × key[i]",
-      "i ← i + 1",
-      "j ← j - 1",
-      "result[i] ← data[j] × key[i]",
-      "i ← i + 1",
-      "j ← j - 1",
-      "result[i] ← data[j] × key[i]",
-      "",
-      "result[1],result[2],result[3],result[4]の順にカンマ区切りで出力する"
-    ],
-    "choices": [
-      { "id": "a", "text": "12, 7, 10, 12" },
-      { "id": "b", "text": "12, 14, 10, 24" },
-      { "id": "c", "text": "12, 7, 15, 12" },
-      { "id": "d", "text": "8, 7, 10, 24" },
-      { "id": "e", "text": "12, 7, 10, 24" },
-      { "id": "f", "text": "8, 14, 15, 12" }
-    ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=1084s",
     "correctChoiceId": "a"
   },
   {
