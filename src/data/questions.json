@@ -461,16 +461,17 @@
     "correctChoiceId": "b"
   },
   {
-    "id": "q19",
-    "number": 19,
-    "title": "関数(1)",
+    "id": "q16_5",
+    "number": 16.1,
+    "videoUrl": "",
+    "title": "(関数の練習問題)",
     "questionText": "次の記述中の【　】に入る正しい答えを，解答群の中から選べ。",
-    "bodyText": "関数 plusOne を plusOne(3)として呼び出すと，戻り値は【　】である。",
+    "bodyText": "関数calcをcalc(3)として呼び出すと，戻り値は【　】である。",
     "pseudoCode": [
-      "○ 整数型: plusOne(整数型: n)",
-      "    整数型: x← 0",
-      "        x ← n+1",
-      "    return x"
+      "○ 整数型: calc(整数型:n)",
+      "  整数型: x ← 1",
+      "  x ← x + n",
+      "  return x"
     ],
     "choices": [
       { "id": "a", "text": "2" },
@@ -478,12 +479,12 @@
       { "id": "c", "text": "4" },
       { "id": "d", "text": "5" }
     ],
-    "videoUrl": "",
     "correctChoiceId": "c"
   },
+
   {
-    "id": "q21",
-    "number": 20,
+    "id": "q17",
+    "number": 17,
     "title": "繰り返し",
     "questionText": "次の記述中の【　】に入る正しい答えを，解答群の中から選べ。",
     "bodyText": "関数 repeatCalc を repeatCalc(3) として呼び出すと，戻り値は【　】である。",
@@ -507,8 +508,8 @@
     "correctChoiceId": "d"
   },
   {
-    "id": "q22",
-    "number": 21,
+    "id": "q18",
+    "number": 18,
     "title": "繰り返し",
     "questionText": "次の記述中の【　】に入る正しい答えを，解答群の中から選べ。",
     "bodyText": "関数 repeatMul を repeatMul(4) として呼び出すと，戻り値は【　】である。",
@@ -532,8 +533,8 @@
     "correctChoiceId": "e"
   },
   {
-    "id": "q23",
-    "number": 22,
+    "id": "q19",
+    "number": 19,
     "title": "繰り返し(for)&配列",
     "questionText": "次の記述中の【　】に入る正しい答えを，解答群の中から選べ。ここで，配列の要素番号は1から始まるものとする。",
     "bodyText": "以下のプログラムを実行すると，【　】と出力される。",
@@ -557,8 +558,8 @@
     "correctChoiceId": "c"
   },
   {
-    "id": "q24",
-    "number": 23,
+    "id": "q20",
+    "number": 20,
     "title": "繰り返し(for)&配列",
     "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyText": "関数 `mystery` を `mystery({3, 1, 4, 2})` として呼び出すと，戻り値の配列は【　】である。",
@@ -583,8 +584,8 @@
     "correctChoiceId": "b"
   },
   {
-    "id": "q25",
-    "number": 24,
+    "id": "q21",
+    "number": 21,
     "title": "繰り返し(for)&配列",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyText": "関数 makeNewArray は，要素数 2 以上の整数型の配列を引数にとり，整数型の配列を返す関数である。関数 makeNewArray を makeNewArray({3, 2, 1, 6, 5, 4}) として呼び出したとき，戻り値の配列の要素番号 5 の値は【　】となる。",
