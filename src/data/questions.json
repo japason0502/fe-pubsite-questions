@@ -554,7 +554,7 @@
       { "id": "d", "text": "21" },
       { "id": "e", "text": "22" }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=jaN1fmfAwX8&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=10",
     "correctChoiceId": "c"
   },
   {
@@ -579,7 +579,7 @@
       { "id": "c", "text": "{5, 5, 8, 6}" },
       { "id": "d", "text": "{5, 3, 10, 10}" }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=jaN1fmfAwX8&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=10&t=136s",
     "correctChoiceId": "a"
   },
   {
@@ -604,7 +604,66 @@
       { "id": "c", "text": "{6, 3, 16, 8}" },
       { "id": "d", "text": "{6, 2, 16, 10}" }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=jaN1fmfAwX8&t=567s",
     "correctChoiceId": "b"
+  },
+  {
+    "id": "q22",
+    "number": 22,
+    "title": "繰り返し内の処理が二行",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "関数 makeNewArray をmakeNewArray({1, 2, 3, 4, 5, 6, 7, 8, 9, 10})として呼び出したとき，戻り値の配列の要素番号 5 の値は【　】となる。",
+    "pseudoCode": [
+      "○ 整数型の配列: makeNewArray(整数型の配列: in)",
+      "  整数型: n ← in の要素数",
+      "  整数型の配列: out ← {n 個の未定義の値}",
+      "  整数型: i, temp",
+      "",
+      "  out[1] ← in[1]",
+      "",
+      "  for (i を 2 から n まで 1 ずつ増やす)",
+      "      temp ← out[i-1]",
+      "      out[i] ← temp × in[i]",
+      "  endfor",
+      "  return out"
+    ],
+    "choices": [
+      { "id": "a", "text": "24" },
+      { "id": "b", "text": "36" },
+      { "id": "c", "text": "40" },
+      { "id": "d", "text": "48" },
+      { "id": "e", "text": "120" }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=gTT78k3VNtY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=11&t=40s",
+    "correctChoiceId": "e"
+  },
+  {
+    "id": "q23",
+    "number": 23,
+    "title": "繰り返し内の処理が二行(令和4年度12月 サンプル問題問3 )",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "関数 makeNewArray をmakeNewArray({3, 2, 1, 6, 5, 4})として呼び出したとき，戻り値の配列の要素番号 5 の値は【　】となる。",
+    "pseudoCode": [
+      "○ 整数型の配列: makeNewArray(整数型の配列: in)",
+      "  整数型の配列: out ← {}    // 要素数0の配列",
+      "  整数型: i, tail",
+      "  outの末尾に in[1] の値を追加する",
+      "  for (i を 2 から inの要素数 まで 1 ずつ増やす)",
+      "      tail ← out[outの要素数]",
+      "      outの末尾に (tail + in[i]) の結果を追加する",
+      "  endfor",
+      "  return out"
+    ],
+    "choices": [
+      { "id": "a", "text": "5" },
+      { "id": "b", "text": "6" },
+      { "id": "c", "text": "9" },
+      { "id": "d", "text": "11" },
+      { "id": "e", "text": "12" },
+      { "id": "f", "text": "17" },
+      { "id": "g", "text": "21" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "f"
   }
 ]
