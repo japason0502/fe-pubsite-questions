@@ -716,5 +716,197 @@
     ],
     "videoUrl": "https://www.youtube.com/watch?v=IBH_UOYAaqc&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=14&pp=iAQBsAgC",
     "correctChoiceId": "a"
+  },
+  {
+    "id": "q26",
+    "number": 26,
+    "title": "条件分岐のトレース練習(閾値)",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyText": "プログラムを実行すると，【　】が出力される。",
+    "pseudoCode": [
+      "整数型: x ← 8",
+      "if (x ≥ 8) then",
+      "  x ← x + 3",
+      "else",
+      "  x ← x - 2",
+      "endif",
+      "if (x < 11) then",
+      "  x ← x × 2",
+      "else",
+      "  x ← x + 10",
+      "endif",
+      "x を出力する"
+    ],
+    "choices": [
+      { "id": "a", "text": "10" },
+      { "id": "b", "text": "16" },
+      { "id": "c", "text": "13" },
+      { "id": "d", "text": "21" }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=d4v5nO0yjy8&t=180s",
+    "correctChoiceId": "d"
+  },
+  {
+    "id": "q27",
+    "number": 27,
+    "title": "繰り返し&条件分岐",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "関数 makeResult は，要素数が等しい2つの整数型の配列を引数にとり，整数型の配列を返す関数である。関数 makeResult を makeResult({3, 5, 7, 9, 11}, {11, 4, 7, 2, 3}) として呼び出すと，戻り値の配列は【　】である。",
+    "pseudoCode": [
+      "○ 整数型の配列: makeResult(整数型の配列: a, 整数型の配列: b)",
+      "整数型: n ← aの要素数",
+      "整数型の配列: Result ← n個の未定義の値",
+      "整数型: i",
+      "for (i を 1 から n まで 1 ずつ増やす)",
+      "  if (a[i] と b[bの要素数 - i + 1]が等しい) then",
+      "    Result[i] ← 1",
+      "  else",
+      "    Result[i] ← 0",
+      "  endif",
+      "endfor",
+      "return Result"
+    ],
+    "choices": [
+      { "id": "a", "text": "{1, 0, 1, 0, 1}" },
+      { "id": "b", "text": "{1, 0, 0, 0, 1}" },
+      { "id": "c", "text": "{1, 1, 0, 1, 0}" },
+      { "id": "d", "text": "{1, 1, 1, 1, 1}" },
+      { "id": "e", "text": "{0, 1, 1, 0, 1}" }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=3-8Nq9v5sJo&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=16&t=47s",
+    "correctChoiceId": "a"
+  },
+  {
+    "id": "q28",
+    "number": 28,
+    "title": "繰り返し&条件分岐(繰り返し終了パターン)",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "関数 search を search({3, 7, 9, 11, 13, 15, 17, 19, 21}, 7) として呼び出すと，戻り値は【　】である。",
+    "pseudoCode": [
+      "整数型: search(整数型の配列: d, 整数型: key)",
+      "    整数型: i, result ← -1",
+      "    for (i を 1 から d の要素数 まで 1 ずつ増やす)",
+      "        if (d[i] と key が等しい)",
+      "            result ← i",
+      "            繰返し処理を終了する",
+      "        endif",
+      "    endfor",
+      "    return result"
+    ],
+    "choices": [
+      { "id": "a", "text": "-1" },
+      { "id": "b", "text": "1" },
+      { "id": "c", "text": "2" },
+      { "id": "d", "text": "3" },
+      { "id": "e", "text": "4" },
+      { "id": "f", "text": "5" }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=NV5QVh7dGeI&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=17&t=15s",
+    "correctChoiceId": "d"
+  },
+  {
+    "id": "q29",
+    "number": 29,
+    "title": "IF文の中にIF文",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "このプログラムを実行すると，【　　】が出力される。",
+    "pseudoCode": [
+      "文字型の配列: data ← {\"a\",\"b\",\"a\",\"c\",\"a\",\"b\"}",
+      "文字型: key1 ← \"a\"",
+      "文字型: key2 ← \"b\"",
+      "整数型: i",
+      "整数型: count ← 0",
+      "",
+      "for (i を 1 から (data の要素数 − 1) まで 1 ずつ増やす)",
+      "    if (data[i] が key1 と等しい)",
+      "        if (data[i + 1] が key2 と等しい)",
+      "            count ← count + 1",
+      "        endif",
+      "    endif",
+      "endfor",
+      "",
+      "count を出力する"
+    ],
+    "choices": [
+      { "id": "a", "text": "2" },
+      { "id": "b", "text": "3" },
+      { "id": "c", "text": "4" },
+      { "id": "d", "text": "5" },
+      { "id": "e", "text": "6" }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=G6AxXywRA_Y&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=18&t=111s",
+    "correctChoiceId": "a"
+  },
+  {
+    "id": "q30",
+    "number": 30,
+    "title": "forのネストのトレース練習",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "以下のプログラムを実行すると，【　】が出力される。",
+    "pseudoCode": [
+      "整数型の配列: a ← {1,2,3}",
+      "整数型の配列: b ← {1,2}",
+      "整数型: i, j",
+      "整数型の配列: result ← {}",
+      "",
+      "for (i を 1 から a の要素数 まで 1 ずつ増やす)",
+      "    for (j を 1 から b の要素数 まで 1 ずつ増やす)",
+      "        result の末尾に (a[i] × b[j]) を追加する",
+      "    endfor",
+      "endfor",
+      "",
+      "result をスペース区切りで出力する"
+    ],
+    "choices": [
+      { "id": "a", "text": "1　2　2　4　3　6" },
+      { "id": "b", "text": "1　2　2　4　5　6" },
+      { "id": "c", "text": "1　2　2　3　3　6" },
+      { "id": "d", "text": "1　2　2　4　3　3" },
+      { "id": "e", "text": "1　2　3　2　2　3" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "a"
+  },
+  {
+    "id": "q31",
+    "number": 31,
+    "title": "Forのネスト&分岐のネスト令和7年度 サンプル問題R7問4)",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "関数 search は，二つの文字型の配列を引数 data 及び key で受け取り，data から key の並びと同じ並びを全て探し，その先頭の要素番号を格納した配列を返す。関数 search を search({\"a\",\"b\",\"a\",\"b\",\"c\",\"a\",\"b\",\"c\"}, {\"a\",\"b\",\"c\"}) として呼び出すと，β の行の条件式が真となる回数は【　】回である。",
+    "pseudoCode": [
+      "/* key は，要素数 1 以上の配列である */",
+      "○ 整数型の配列: search(文字型の配列: data, 文字型の配列: key)",
+      "    整数型: i, j, lenData, lenKey",
+      "    整数型の配列: result ← {}   // 要素数0の配列",
+      "    lenData ← data の要素数",
+      "    lenKey ← key の要素数",
+      "    /* (lenData − lenKey + 1) が以下のときは繰返し処理を実行しない */",
+      "    for (i を 1 から (lenData − lenKey + 1) まで 1 ずつ増やす)",
+      "        for (j を 1 から lenKey まで 1 ずつ増やす)   // α",
+      "            if (data[i + j − 1] が key[j] と等しい)   /*** β ***/",
+      "                if (j が lenKey と等しい)",
+      "                    result の末尾に i の値を追加する",
+      "                endif",
+      "            else",
+      "                α の行から始まる繰返し処理を終了する",
+      "            endif",
+      "        endfor",
+      "    endfor",
+      "    return result"
+    ],
+    "choices": [
+      { "id": "a", "text": "1" },
+      { "id": "b", "text": "2" },
+      { "id": "c", "text": "3" },
+      { "id": "d", "text": "4" },
+      { "id": "e", "text": "5" },
+      { "id": "f", "text": "6" },
+      { "id": "g", "text": "7" },
+      { "id": "h", "text": "8" },
+      { "id": "i", "text": "9" },
+      { "id": "j", "text": "10" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "h"
   }
 ]
