@@ -773,7 +773,7 @@
       { "id": "d", "text": "{1, 1, 1, 1, 1}" },
       { "id": "e", "text": "{0, 1, 1, 0, 1}" }
     ],
-    "videoUrl": "https://www.youtube.com/watch?v=3-8Nq9v5sJo&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=16&t=47s",
+    "videoUrl": "https://www.youtube.com/watch?v=AnOZ4BleTKo&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=16&t=47s",
     "correctChoiceId": "a"
   },
   {
@@ -801,7 +801,7 @@
       { "id": "e", "text": "4" },
       { "id": "f", "text": "5" }
     ],
-    "videoUrl": "https://www.youtube.com/watch?v=NV5QVh7dGeI&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=17&t=15s",
+    "videoUrl": "https://www.youtube.com/watch?v=aPANzBFytqk&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=17&t=15s",
     "correctChoiceId": "d"
   },
   {
@@ -834,12 +834,51 @@
       { "id": "d", "text": "5" },
       { "id": "e", "text": "6" }
     ],
-    "videoUrl": "https://www.youtube.com/watch?v=G6AxXywRA_Y&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=18&t=111s",
+    "videoUrl": "https://www.youtube.com/watch?v=iLQN9P4O47U&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=18&t=75s",
     "correctChoiceId": "a"
   },
   {
     "id": "q30",
     "number": 30,
+    "title": "IF文の中にIF文(真になる回数)",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "次のプログラムを実行すると，/ *** β *** / の行の条件式が真となる回数は【　】回である。",
+    "pseudoCode": [
+      "文字型の配列: data1 ← {\"a\",\"b\",\"a\",\"c\",\"a\",\"b\"}",
+      "文字型の配列: data2 ← {\"a\",\"b\",\"a\",\"d\",\"a\",\"b\"}",
+      "文字型: key ← \"a\"",
+      "整数型: i, count ← 0",
+      "",
+      "for (i を 1 から data1 の要素数 まで 1 ずつ増やす)",
+      "    if (data1[i] が data2[i] と等しい) / *** β *** /",
+      "        if (data1[i] が key と等しい)",
+      "            count ← count + 1",
+      "        endif",
+      "    else",
+      "        繰返し処理を終了する",
+      "    endif",
+      "endfor",
+      "",
+      "count を出力する"
+    ],
+    "choices": [
+      { "id": "a", "text": "1" },
+      { "id": "b", "text": "2" },
+      { "id": "c", "text": "3" },
+      { "id": "d", "text": "4" },
+      { "id": "e", "text": "5" },
+      { "id": "f", "text": "6" },
+      { "id": "g", "text": "7" },
+      { "id": "h", "text": "8" },
+      { "id": "i", "text": "9" },
+      { "id": "j", "text": "10" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "c"
+  },
+  {
+    "id": "q31",
+    "number": 31,
     "title": "forのネストのトレース練習",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyText": "以下のプログラムを実行すると，【　】が出力される。",
@@ -855,7 +894,7 @@
       "    endfor",
       "endfor",
       "",
-      "result をスペース区切りで出力する"
+      "result の全要素の値を要素番号の順に空白区切りで出力する"
     ],
     "choices": [
       { "id": "a", "text": "1　2　2　4　3　6" },
@@ -868,8 +907,8 @@
     "correctChoiceId": "a"
   },
   {
-    "id": "q31",
-    "number": 31,
+    "id": "q32",
+    "number": 32,
     "title": "Forのネスト&分岐のネスト令和7年度 サンプル問題R7問4)",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyText": "関数 search は，二つの文字型の配列を引数 data 及び key で受け取り，data から key の並びと同じ並びを全て探し，その先頭の要素番号を格納した配列を返す。関数 search を search({\"a\",\"b\",\"a\",\"b\",\"c\",\"a\",\"b\",\"c\"}, {\"a\",\"b\",\"c\"}) として呼び出すと，β の行の条件式が真となる回数は【　】回である。",
@@ -880,7 +919,7 @@
       "    整数型の配列: result ← {}   // 要素数0の配列",
       "    lenData ← data の要素数",
       "    lenKey ← key の要素数",
-      "    /* (lenData − lenKey + 1) が以下のときは繰返し処理を実行しない */",
+      "    /* (lenData − lenKey + 1) が0以下のときは繰返し処理を実行しない */",
       "    for (i を 1 から (lenData − lenKey + 1) まで 1 ずつ増やす)",
       "        for (j を 1 から lenKey まで 1 ずつ増やす)   // α",
       "            if (data[i + j − 1] が key[j] と等しい)   /*** β ***/",
