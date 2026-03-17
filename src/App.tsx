@@ -527,7 +527,12 @@ export default function App() {
             userSelect: state.instructorMode ? "text" : "none"
           }}
         >
-          <h2>{state.instructorMode ? currentQuestion.title : (Number.isInteger(currentQuestion.number) ? `${currentQuestion.number}問: ${currentQuestion.title}` : `${Math.floor(currentQuestion.number)}#問: ${currentQuestion.title}`)}</h2>
+          <div className="question-title-row">
+            <h2>{state.instructorMode ? currentQuestion.title : (Number.isInteger(currentQuestion.number) ? `${currentQuestion.number}問: ${currentQuestion.title}` : `${Math.floor(currentQuestion.number)}#問: ${currentQuestion.title}`)}</h2>
+            {currentQuestion.hitokoto && (
+              <p className="hitokoto">{currentQuestion.hitokoto}</p>
+            )}
+          </div>
           {currentQuestion.questionText && currentQuestion.bodyText ? (
             <>
               <p>{currentQuestion.questionText}</p>
@@ -572,6 +577,15 @@ export default function App() {
           <div className="choices-header">
             {state.perQuestionGrading && (
               <>
+                {currentQuestion.hintVideoUrl && (
+                  <button
+                    type="button"
+                    className="outline"
+                    onClick={() => window.open(currentQuestion.hintVideoUrl, "_blank", "noopener,noreferrer")}
+                  >
+                    ヒント
+                  </button>
+                )}
                 <button className="outline" onClick={handleGradeNow}>
                   今すぐ採点
                 </button>

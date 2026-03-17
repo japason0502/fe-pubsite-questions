@@ -163,6 +163,34 @@ button.small {
   font-weight: 800;
 }
 
+.question-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.question-title-row h2 {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+.question-title-row .hitokoto {
+  flex-shrink: 0;
+  margin: 0;
+  padding: 4px 0 0;
+  font-size: 0.85em;
+  font-weight: 400;
+  color: #475569;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 50%;
+}
+
 .pseudo {
   margin: 12px 0;
   padding-left: 2em;

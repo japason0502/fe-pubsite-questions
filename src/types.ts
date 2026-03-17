@@ -13,7 +13,11 @@ export type Question = {
   pseudoCode?: string[];
   choices: Choice[];
   videoUrl?: string;
+  /** ヒント動画URL（記載がある場合のみボタン表示） */
+  hintVideoUrl?: string;
   correctChoiceId?: string;
+  /** 一言（記載がある場合のみ表示） */
+  hitokoto?: string;
 };
 
 export type ExamState = {
