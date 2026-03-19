@@ -16,7 +16,9 @@ export type Question = {
   /** ヒント動画URL（記載がある場合のみボタン表示） */
   hintVideoUrl?: string;
   /** 値を変えてもう一度ボタン表示フラグ（1:表示, 0:非表示） */
-  another?: 0 | 1;
+  another?: number;
+  /** another再生成時に表示する補助トレース */
+  anotherTraceLines?: string[];
   correctChoiceId?: string;
   /** 一言（記載がある場合のみ表示） */
   hitokoto?: string;

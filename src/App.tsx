@@ -67,7 +67,7 @@ function secondsToClock(sec: number) {
 }
 
 export default function App() {
-  const questions = useMemo<Question[]>(() => questionsData, []);
+  const questions = useMemo<Question[]>(() => questionsData as Question[], []);
   const [questionOverrides, setQuestionOverrides] = useState<Record<string, Partial<Question>>>({});
   const [state, setState] = useState<ExamState>(() => loadState());
   const [showList, setShowList] = useState(false);
@@ -96,6 +96,7 @@ export default function App() {
     selectedText?: string;
     videoUrl?: string;
     imageSrc: string;
+    traceLines?: string[];
   } | null>(null);
   const [gradeNowImageError, setGradeNowImageError] = useState(false);
   const dividerRef = useRef<HTMLDivElement | null>(null);
@@ -392,7 +393,8 @@ export default function App() {
         correctLabel: CHOICE_LABELS[q.choices.findIndex((c) => c.id === correctId)] ?? "",
         correctText: q.choices.find((c) => c.id === correctId)?.text ?? "",
         videoUrl: q.videoUrl,
-        imageSrc: getQuestionImageSrc(q.number)
+        imageSrc: getQuestionImageSrc(q.number),
+        traceLines: q.anotherTraceLines
       });
       return;
     }
@@ -411,7 +413,8 @@ export default function App() {
       selectedLabel,
       selectedText,
       videoUrl: q.videoUrl,
-      imageSrc: getQuestionImageSrc(q.number)
+      imageSrc: getQuestionImageSrc(q.number),
+      traceLines: q.anotherTraceLines
     });
   };
 
@@ -865,6 +868,12 @@ export default function App() {
               正解: {gradeNowResult.correctLabel && `${gradeNowResult.correctLabel}  `}
               {gradeNowResult.correctText}
             </p>
+            {gradeNowResult.traceLines && gradeNowResult.traceLines.length > 0 && (
+              <div className="grade-now-trace">
+                <p>トレース結果</p>
+                <pre>{gradeNowResult.traceLines.join("\n")}</pre>
+              </div>
+            )}
             <button className="outline" onClick={() => setGradeNowResult(null)}>
               閉じる
             </button>

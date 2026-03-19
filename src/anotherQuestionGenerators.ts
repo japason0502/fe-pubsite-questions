@@ -1,6 +1,6 @@
 import { Choice, Question } from "./types";
 
-export type GeneratedQuestionPatch = Pick<Question, "bodyText" | "pseudoCode" | "choices" | "correctChoiceId">;
+export type GeneratedQuestionPatch = Pick<Question, "bodyText" | "pseudoCode" | "choices" | "correctChoiceId" | "anotherTraceLines">;
 type AnotherQuestionGenerator = (baseQuestion: Question) => GeneratedQuestionPatch;
 
 const CHOICE_IDS = ["a", "b", "c", "d", "e", "f", "g"];
@@ -20,7 +20,12 @@ function shuffle<T>(arr: T[]): T[] {
 
 function generateQ23(baseQuestion: Question): GeneratedQuestionPatch {
   const args = Array.from({ length: 6 }, () => randomInt(1, 9));
-  const correctValue = args.slice(0, 5).reduce((sum, value) => sum + value, 0);
+  const out: number[] = [args[0]];
+  for (let i = 1; i < args.length; i += 1) {
+    const tail = out[out.length - 1];
+    out.push(tail + args[i]);
+  }
+  const correctValue = out[4];
 
   const candidates = new Set<number>([correctValue]);
   while (candidates.size < CHOICE_IDS.length) {
@@ -41,7 +46,14 @@ function generateQ23(baseQuestion: Question): GeneratedQuestionPatch {
   return {
     bodyText: `関数 makeNewArray をmakeNewArray({${args.join(", ")}})として呼び出したとき，戻り値の配列の要素番号 5 の値は【　】となる。`,
     choices,
-    correctChoiceId
+    correctChoiceId,
+    anotherTraceLines: [
+      `in = {${args.join(", ")}}`,
+      `out[1] = in[1] = ${out[0]}`,
+      ...out.slice(1).map((value, index) => `out[${index + 2}] = out[${index + 1}] + in[${index + 2}] = ${value}`),
+      `戻り値 out = {${out.join(", ")}}`,
+      `要素番号5の値 = ${correctValue}`
+    ]
   };
 }
 
@@ -94,7 +106,12 @@ function generateQ33(baseQuestion: Question): GeneratedQuestionPatch {
   return {
     bodyText: `関数 search は，二つの文字型の配列を引数 data 及び key で受け取り，data から key の並びと同じ並びを全て探し，その先頭の要素番号を格納した配列を返す。関数 search を search(${formatStringArrayLiteral(data)}, ${formatStringArrayLiteral(key)}) として呼び出すと，β の行の条件式が真となる回数は【　】回である。`,
     choices: baseQuestion.choices,
-    correctChoiceId
+    correctChoiceId,
+    anotherTraceLines: [
+      `data = ${formatStringArrayLiteral(data)}`,
+      `key = ${formatStringArrayLiteral(key)}`,
+      `βが真になった回数 = ${betaTrueCount}`
+    ]
   };
 }
 
@@ -148,7 +165,12 @@ function generateQ36(baseQuestion: Question): GeneratedQuestionPatch {
   return {
     bodyText: `関数 merge は，昇順に整列された整数型の配列 data1 及び data2 を受け取り，これらを併合してできる昇順に整列された整数型の配列を返す。関数 merge を merge(${formatNumberArrayLiteral(data1)}, ${formatNumberArrayLiteral(data2)}) として呼び出すと，αの行は【　】。`,
     choices: baseQuestion.choices,
-    correctChoiceId
+    correctChoiceId,
+    anotherTraceLines: [
+      `data1 = ${formatNumberArrayLiteral(data1)}`,
+      `data2 = ${formatNumberArrayLiteral(data2)}`,
+      `α行の実行回数 = ${alphaCount}`
+    ]
   };
 }
 
@@ -217,7 +239,12 @@ function generateQ37(baseQuestion: Question): GeneratedQuestionPatch {
     bodyText: "次の手続 sort は，大域の整数型の配列 data の，引数 first で与えられた要素番号から引数 last で与えられた要素番号までの要素を昇順に整列する。ここで，first < last とする。手続 sort を sort(1, 5) として呼び出すと，/*** a ***/ の行を最初に実行したときの出力は「【　】」となる。",
     pseudoCode,
     choices: baseQuestion.choices,
-    correctChoiceId
+    correctChoiceId,
+    anotherTraceLines: [
+      `初期data = {${sourceData.join(", ")}}`,
+      `while(true) の反復回数 = ${loopCount}`,
+      `/*** a ***/ 最初の出力 = ${answerText}`
+    ]
   };
 }
 
