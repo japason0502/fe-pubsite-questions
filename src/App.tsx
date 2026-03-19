@@ -432,6 +432,20 @@ export default function App() {
     }));
   };
 
+  const handleAnotherReset = () => {
+    if (!currentQuestion || currentQuestion.another !== 1) return;
+    setQuestionOverrides((prev) => {
+      if (!prev[currentQuestion.id]) return prev;
+      const next = { ...prev };
+      delete next[currentQuestion.id];
+      return next;
+    });
+    setState((prev) => ({
+      ...prev,
+      answers: { ...prev.answers, [currentQuestion.id]: null }
+    }));
+  };
+
   const paneStyle = useMemo(() => {
     if (isMobile) {
       return { gridTemplateRows: "1fr", gridTemplateColumns: "1fr" };
@@ -440,6 +454,8 @@ export default function App() {
       gridTemplateColumns: `${paneRatio * 100}% 6px ${(1 - paneRatio) * 100}%`
     };
   }, [paneRatio, isMobile]);
+
+  const isAnotherOverridden = Boolean(currentQuestion && questionOverrides[currentQuestion.id]);
 
   return (
     <div className="app">
@@ -627,9 +643,14 @@ export default function App() {
               </>
             )}
             {currentQuestion.another === 1 && (
-              <button type="button" className="outline" onClick={handleAnotherRun}>
-                値を変えてもう一度
-              </button>
+              <>
+                <button type="button" className="outline" onClick={handleAnotherRun}>
+                  値を変えてもう一度
+                </button>
+                <button type="button" className="outline" onClick={handleAnotherReset} disabled={!isAnotherOverridden}>
+                  元に戻す
+                </button>
+              </>
             )}
           </div>
           <div className={`choices-list ${state.reviewFlags[currentQuestion.id] ? "review-on" : ""}`}>

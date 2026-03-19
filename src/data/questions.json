@@ -1657,7 +1657,7 @@
     "correctChoiceId": "h",
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=z6ckOGIKntg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=22&t=15s",
-    "another": 0
+    "another": 1
   },
   {
     "id": "q34",
@@ -1812,7 +1812,7 @@
     "correctChoiceId": "d",
     "hitokoto": "自力で解こう!",
     "hintVideoUrl": "https://www.youtube.com/watch?v=cEG7MhMIzLI&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=25",
-    "another": 0
+    "another": 1
   },
   {
     "id": "q37",
@@ -1872,7 +1872,7 @@
     "correctChoiceId": "d",
     "hitokoto": "自力で解こう!(補足:｢大域｣は無視､while(true)は常に○)",
     "hintVideoUrl": "https://www.youtube.com/watch?v=BsBei5dYKw8&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=26",
-    "another": 0
+    "another": 1
   },
   {
     "id": "q38",
