@@ -45,7 +45,8 @@
     ],
     "correctChoiceId": "f",
     "hitokoto": "解説を見てから解こう！",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q1",
@@ -91,7 +92,8 @@
     ],
     "correctChoiceId": "c",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q2",
@@ -138,7 +140,8 @@
     ],
     "correctChoiceId": "b",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q3",
@@ -184,7 +187,8 @@
     ],
     "correctChoiceId": "c",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q4",
@@ -225,7 +229,8 @@
     ],
     "correctChoiceId": "c",
     "hitokoto": "解説を聞いてから解こう!",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q4_5",
@@ -270,7 +275,8 @@
     ],
     "correctChoiceId": "c",
     "hitokoto": "自力で解こう!",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q5",
@@ -311,7 +317,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=160s",
     "correctChoiceId": "a",
     "hitokoto": "解説を聞いてから解こう!",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q6",
@@ -352,7 +359,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=338s",
     "correctChoiceId": "b",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q7",
@@ -394,7 +402,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=400s",
     "correctChoiceId": "c",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q8",
@@ -436,7 +445,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=502s",
     "correctChoiceId": "b",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q9",
@@ -477,7 +487,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=546s",
     "correctChoiceId": "b",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q10",
@@ -519,7 +530,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=670s",
     "correctChoiceId": "b",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q11",
@@ -558,7 +570,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=848s",
     "correctChoiceId": "c",
     "hitokoto": "解説を聞いてから解こう!",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q12",
@@ -598,7 +611,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=885s",
     "correctChoiceId": "d",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q13",
@@ -638,7 +652,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=915s",
     "correctChoiceId": "e",
     "hitokoto": "解説を聞いてから解こう!",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q14",
@@ -678,7 +693,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=1039s",
     "correctChoiceId": "a",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q15",
@@ -731,7 +747,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=1084s",
     "correctChoiceId": "a",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q16",
@@ -773,7 +790,8 @@
     "videoUrl": "https://youtu.be/iMxF6-kfrTU",
     "correctChoiceId": "b",
     "hitokoto": "解説を聞いてから解こう!",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q16_5",
@@ -808,7 +826,8 @@
     ],
     "correctChoiceId": "c",
     "hitokoto": "解説を聞いてから解こう!",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q17",
@@ -850,7 +869,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=YYcAzjqQfiY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=9&t=128s",
     "correctChoiceId": "d",
     "hitokoto": "解説を聞いてから解こう!",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q18",
@@ -892,7 +912,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=YYcAzjqQfiY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=9&t=269s",
     "correctChoiceId": "e",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q19",
@@ -934,7 +955,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=jaN1fmfAwX8&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=10",
     "correctChoiceId": "c",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q20",
@@ -973,7 +995,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=jaN1fmfAwX8&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=10&t=136s",
     "correctChoiceId": "a",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q21",
@@ -1012,7 +1035,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=jaN1fmfAwX8&t=567s",
     "correctChoiceId": "b",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q22",
@@ -1059,7 +1083,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=gTT78k3VNtY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=11&t=40s",
     "correctChoiceId": "e",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q23",
@@ -1111,7 +1136,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=BYmNWKYOvK0&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=12&pp=iAQBsAgC",
     "correctChoiceId": "f",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 1
   },
   {
     "id": "q24",
@@ -1151,7 +1177,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=_WddcjKJxNo&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=13&pp=iAQBsAgC",
     "correctChoiceId": "b",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q25",
@@ -1190,7 +1217,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=IBH_UOYAaqc&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=14&pp=iAQBsAgC",
     "correctChoiceId": "a",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q26",
@@ -1233,7 +1261,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=d4v5nO0yjy8&t=180s",
     "correctChoiceId": "d",
     "hitokoto": "解説を聞いてから解こう!",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q27",
@@ -1280,7 +1309,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=AnOZ4BleTKo&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=16&t=47s",
     "correctChoiceId": "a",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q28",
@@ -1328,7 +1358,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=aPANzBFytqk&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=17&t=15s",
     "correctChoiceId": "d",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q29",
@@ -1378,7 +1409,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=iLQN9P4O47U&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=18&t=75s",
     "correctChoiceId": "a",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q30",
@@ -1449,7 +1481,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=3qft6a809Xc&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=19&pp=iAQBsAgC",
     "correctChoiceId": "c",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q31",
@@ -1496,7 +1529,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=oBb6dT6wpEY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=20&pp=iAQBsAgC",
     "correctChoiceId": "a",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q32",
@@ -1547,7 +1581,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=uVtvyWRLo_A&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=21&t=104s",
     "correctChoiceId": "b",
     "hitokoto": "",
-    "hintVideoUrl": "https://www.youtube.com/watch?v=uVtvyWRLo_A&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=21"
+    "hintVideoUrl": "https://www.youtube.com/watch?v=uVtvyWRLo_A&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=21",
+    "another": 0
   },
   {
     "id": "q33",
@@ -1621,7 +1656,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=z6ckOGIKntg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=22&t=103s",
     "correctChoiceId": "h",
     "hitokoto": "",
-    "hintVideoUrl": "https://www.youtube.com/watch?v=z6ckOGIKntg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=22&t=15s"
+    "hintVideoUrl": "https://www.youtube.com/watch?v=z6ckOGIKntg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=22&t=15s",
+    "another": 0
   },
   {
     "id": "q34",
@@ -1664,7 +1700,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=hG2pWFqg278&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=23&pp=iAQBsAgC",
     "correctChoiceId": "a",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q35",
@@ -1710,7 +1747,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=ryZMTZqireU&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=24&pp=iAQBsAgC",
     "correctChoiceId": "c",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q36",
@@ -1773,7 +1811,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=cEG7MhMIzLI&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=25&t=23s",
     "correctChoiceId": "d",
     "hitokoto": "自力で解こう!",
-    "hintVideoUrl": "https://www.youtube.com/watch?v=cEG7MhMIzLI&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=25"
+    "hintVideoUrl": "https://www.youtube.com/watch?v=cEG7MhMIzLI&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=25",
+    "another": 0
   },
   {
     "id": "q37",
@@ -1832,7 +1871,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=BsBei5dYKw8&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=26&t=26s",
     "correctChoiceId": "d",
     "hitokoto": "自力で解こう!(補足:｢大域｣は無視､while(true)は常に○)",
-    "hintVideoUrl": "https://www.youtube.com/watch?v=BsBei5dYKw8&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=26"
+    "hintVideoUrl": "https://www.youtube.com/watch?v=BsBei5dYKw8&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=26",
+    "another": 0
   },
   {
     "id": "q38",
@@ -1854,19 +1894,44 @@
       "  \"C\" を出力する"
     ],
     "choices": [
-      { "id": "a", "text": "\"A\", \"B\", \"B\", \"C\"" },
-      { "id": "b", "text": "\"A\", \"C\"" },
-      { "id": "c", "text": "\"A\", \"C\", \"B\", \"C\"" },
-      { "id": "d", "text": "\"B\", \"A\", \"B\", \"C\"" },
-      { "id": "e", "text": "\"B\", \"C\", \"B\", \"A\"" },
-      { "id": "f", "text": "\"C\", \"B\"" },
-      { "id": "g", "text": "\"C\", \"B\", \"A\"" },
-      { "id": "h", "text": "\"C\", \"B\", \"A\", \"C\"" }
+      {
+        "id": "a",
+        "text": "\"A\", \"B\", \"B\", \"C\""
+      },
+      {
+        "id": "b",
+        "text": "\"A\", \"C\""
+      },
+      {
+        "id": "c",
+        "text": "\"A\", \"C\", \"B\", \"C\""
+      },
+      {
+        "id": "d",
+        "text": "\"B\", \"A\", \"B\", \"C\""
+      },
+      {
+        "id": "e",
+        "text": "\"B\", \"C\", \"B\", \"A\""
+      },
+      {
+        "id": "f",
+        "text": "\"C\", \"B\""
+      },
+      {
+        "id": "g",
+        "text": "\"C\", \"B\", \"A\""
+      },
+      {
+        "id": "h",
+        "text": "\"C\", \"B\", \"A\", \"C\""
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=Wrq6msFypPg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=27&pp=iAQBsAgC",
     "correctChoiceId": "h",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q39",
@@ -1884,15 +1949,28 @@
       "  x を出力する"
     ],
     "choices": [
-      { "id": "a", "text": "10" },
-      { "id": "b", "text": "12" },
-      { "id": "c", "text": "15" },
-      { "id": "d", "text": "9" }
+      {
+        "id": "a",
+        "text": "10"
+      },
+      {
+        "id": "b",
+        "text": "12"
+      },
+      {
+        "id": "c",
+        "text": "15"
+      },
+      {
+        "id": "d",
+        "text": "9"
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=YNrJRX88FSY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=28&pp=iAQBsAgC",
     "correctChoiceId": "c",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q40",
@@ -1917,15 +1995,28 @@
       "endfunc"
     ],
     "choices": [
-      { "id": "a", "text": "10" },
-      { "id": "b", "text": "15" },
-      { "id": "c", "text": "20" },
-      { "id": "d", "text": "25" }
+      {
+        "id": "a",
+        "text": "10"
+      },
+      {
+        "id": "b",
+        "text": "15"
+      },
+      {
+        "id": "c",
+        "text": "20"
+      },
+      {
+        "id": "d",
+        "text": "25"
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=dRxXFqoQxh4&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=29&t=79s",
     "correctChoiceId": "b",
     "hitokoto": "",
-    "hintVideoUrl": "https://www.youtube.com/watch?v=dRxXFqoQxh4&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=29&t=01s"
+    "hintVideoUrl": "https://www.youtube.com/watch?v=dRxXFqoQxh4&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=29&t=01s",
+    "another": 0
   },
   {
     "id": "q41",
@@ -1949,16 +2040,32 @@
       "  return out"
     ],
     "choices": [
-      { "id": "a", "text": "{10, 30, 50}" },
-      { "id": "b", "text": "{20, 40, 50}" },
-      { "id": "c", "text": "{20, 30, 40}" },
-      { "id": "d", "text": "{10, 40, 50}" },
-      { "id": "e", "text": "{30, 40, 50}" }
+      {
+        "id": "a",
+        "text": "{10, 30, 50}"
+      },
+      {
+        "id": "b",
+        "text": "{20, 40, 50}"
+      },
+      {
+        "id": "c",
+        "text": "{20, 30, 40}"
+      },
+      {
+        "id": "d",
+        "text": "{10, 40, 50}"
+      },
+      {
+        "id": "e",
+        "text": "{30, 40, 50}"
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=0CIi0GXk1h8&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=30&pp=iAQBsAgC",
     "correctChoiceId": "a",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q42",
@@ -1982,19 +2089,44 @@
       "    return rankData"
     ],
     "choices": [
-      { "id": "a", "text": "{0.1, 0.3, 0.5, 0.7, 1}" },
-      { "id": "b", "text": "{0.1, 0.3, 0.5, 0.8, 1}" },
-      { "id": "c", "text": "{0.1, 0.2, 0.3, 0.7, 1}" },
-      { "id": "d", "text": "{0.1, 0.3, 0.4, 0.6, 1}" },
-      { "id": "e", "text": "{0.1, 0.3, 0.4, 0.7, 1}" },
-      { "id": "f", "text": "{0.1, 0.3, 0.4, 0.8, 1}" },
-      { "id": "g", "text": "{0.1, 0.4, 0.6, 0.7, 1}" },
-      { "id": "h", "text": "{0.1, 0.4, 0.6, 0.8, 1}" }
+      {
+        "id": "a",
+        "text": "{0.1, 0.3, 0.5, 0.7, 1}"
+      },
+      {
+        "id": "b",
+        "text": "{0.1, 0.3, 0.5, 0.8, 1}"
+      },
+      {
+        "id": "c",
+        "text": "{0.1, 0.2, 0.3, 0.7, 1}"
+      },
+      {
+        "id": "d",
+        "text": "{0.1, 0.3, 0.4, 0.6, 1}"
+      },
+      {
+        "id": "e",
+        "text": "{0.1, 0.3, 0.4, 0.7, 1}"
+      },
+      {
+        "id": "f",
+        "text": "{0.1, 0.3, 0.4, 0.8, 1}"
+      },
+      {
+        "id": "g",
+        "text": "{0.1, 0.4, 0.6, 0.7, 1}"
+      },
+      {
+        "id": "h",
+        "text": "{0.1, 0.4, 0.6, 0.8, 1}"
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=OBwysY0255Q&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=31&pp=iAQBsAgC",
     "correctChoiceId": "h",
     "hitokoto": "",
-    "hintVideoUrl": ""
+    "hintVideoUrl": "",
+    "another": 0
   },
   {
     "id": "q43",
@@ -2031,15 +2163,31 @@
       "    add(11)"
     ],
     "choices": [
-      { "id": "a", "text": "{−1, 3, −1, 18, 11}" },
-      { "id": "b", "text": "{−1, 11, −1, 3, −1}" },
-      { "id": "c", "text": "{−1, 11, −1, 18, −1}" },
-      { "id": "d", "text": "{−1, 18, −1, 3, 11}" },
-      { "id": "e", "text": "{−1, 18, 11, 3, −1}" }
+      {
+        "id": "a",
+        "text": "{−1, 3, −1, 18, 11}"
+      },
+      {
+        "id": "b",
+        "text": "{−1, 11, −1, 3, −1}"
+      },
+      {
+        "id": "c",
+        "text": "{−1, 11, −1, 18, −1}"
+      },
+      {
+        "id": "d",
+        "text": "{−1, 18, −1, 3, 11}"
+      },
+      {
+        "id": "e",
+        "text": "{−1, 18, 11, 3, −1}"
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=u2Mv24jWhYM&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=32&t=229s",
     "correctChoiceId": "d",
     "hitokoto": "modは余りを求める演算子(例)3 mod 10 = 3､10 mod 3 = 1",
-    "hintVideoUrl": "https://www.youtube.com/watch?v=u2Mv24jWhYM&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=32&t=1s"
+    "hintVideoUrl": "https://www.youtube.com/watch?v=u2Mv24jWhYM&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=32&t=1s",
+    "another": 0
   }
 ]

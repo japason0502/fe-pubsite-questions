@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import questionsData from "./data/questions.json";
 import { ExamState, Question } from "./types";
+import { generateAnotherQuestion } from "./anotherQuestionGenerators";
 
 const STORAGE_KEY = "exam-state";
 const DEFAULT_TIME = 30 * 60; // 30 分
@@ -67,6 +68,7 @@ function secondsToClock(sec: number) {
 
 export default function App() {
   const questions = useMemo<Question[]>(() => questionsData, []);
+  const [questionOverrides, setQuestionOverrides] = useState<Record<string, Partial<Question>>>({});
   const [state, setState] = useState<ExamState>(() => loadState());
   const [showList, setShowList] = useState(false);
   const [showTimeUp, setShowTimeUp] = useState(false);
@@ -212,7 +214,12 @@ export default function App() {
     };
   }, []);
 
-  const currentQuestion = questions[state.currentIndex];
+  const currentQuestion = useMemo(() => {
+    const baseQuestion = questions[state.currentIndex];
+    if (!baseQuestion) return baseQuestion;
+    const override = questionOverrides[baseQuestion.id];
+    return override ? { ...baseQuestion, ...override } : baseQuestion;
+  }, [questions, state.currentIndex, questionOverrides]);
 
   const handleAnswer = (choiceId: string) => {
     setState((prev) => ({
@@ -280,7 +287,9 @@ export default function App() {
     let correct = 0;
     let unanswered = 0;
     const details: { number: number; status: "correct" | "incorrect" | "unanswered" }[] = [];
-    questions.forEach((q) => {
+    questions.forEach((baseQuestion) => {
+      const override = questionOverrides[baseQuestion.id];
+      const q = override ? { ...baseQuestion, ...override } : baseQuestion;
       const ans = state.answers[q.id];
       if (!ans) {
         unanswered += 1;
@@ -312,6 +321,7 @@ export default function App() {
   };
 
   const startMode = (mode: "practice" | "exam", hideTimer: boolean, perQuestionGrading: boolean, perQuestionTimer: boolean, perQuestionTimerAlert: boolean, instructorMode: boolean) => {
+    setQuestionOverrides({});
     setState((prev) => {
       const newState = {
         ...initialState,
@@ -403,6 +413,23 @@ export default function App() {
       videoUrl: q.videoUrl,
       imageSrc: getQuestionImageSrc(q.number)
     });
+  };
+
+  const handleAnotherRun = () => {
+    if (!currentQuestion || currentQuestion.another !== 1) return;
+    const generated = generateAnotherQuestion(currentQuestion);
+    if (!generated) {
+      window.alert("この問題の再生成ロジックは未設定です。");
+      return;
+    }
+    setQuestionOverrides((prev) => ({
+      ...prev,
+      [currentQuestion.id]: { ...prev[currentQuestion.id], ...generated }
+    }));
+    setState((prev) => ({
+      ...prev,
+      answers: { ...prev.answers, [currentQuestion.id]: null }
+    }));
   };
 
   const paneStyle = useMemo(() => {
@@ -598,6 +625,11 @@ export default function App() {
                   解説動画へ
                 </button>
               </>
+            )}
+            {currentQuestion.another === 1 && (
+              <button type="button" className="outline" onClick={handleAnotherRun}>
+                値を変えてもう一度
+              </button>
             )}
           </div>
           <div className={`choices-list ${state.reviewFlags[currentQuestion.id] ? "review-on" : ""}`}>
