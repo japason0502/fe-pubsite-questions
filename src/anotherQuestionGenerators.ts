@@ -248,11 +248,116 @@ function generateQ37(baseQuestion: Question): GeneratedQuestionPatch {
   };
 }
 
+function toFullWidthCommaJoined(values: number[]): string {
+  return values.join("，");
+}
+
+/** 問44: 二次元配列 matrix[i,j]（1始まり）の値 */
+function generateQ44MatrixAccess(_baseQuestion: Question): GeneratedQuestionPatch {
+  const flat = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  const matrix = [
+    [flat[0], flat[1], flat[2]],
+    [flat[3], flat[4], flat[5]],
+    [flat[6], flat[7], flat[8]]
+  ];
+  const row = randomInt(1, 3);
+  const col = randomInt(1, 3);
+  const correctValue = matrix[row - 1][col - 1];
+  const wrongPool = flat.filter((v) => v !== correctValue);
+  const wrongPicked = shuffle(wrongPool).slice(0, 4);
+  const choiceValues = shuffle([correctValue, ...wrongPicked]);
+  const choices: Choice[] = choiceValues.map((value, index) => ({
+    id: CHOICE_IDS[index],
+    text: String(value)
+  }));
+  const correctIndex = choiceValues.findIndex((v) => v === correctValue);
+  const correctChoiceId = CHOICE_IDS[correctIndex] ?? "a";
+  const literal = matrixToQ44Literal(matrix);
+
+  return {
+    bodyText: "次のプログラムを実行したとき出力される値は【　】である。",
+    pseudoCode: [
+      "整数型の二次元配列: matrix",
+      `matrix ← ${literal}`,
+      `matrix[${row},${col}] の値を出力する`
+    ],
+    choices,
+    correctChoiceId,
+    anotherTraceLines: [`matrix = ${literal}`, `matrix[${row}，${col}]（${row}行${col}列目）→ ${correctValue}`]
+  };
+}
+
+function createQ44MatrixFromValues(values: number[]): number[][] {
+  return [
+    [values[0], 0, 0, 0, 0],
+    [0, values[1], values[2], 0, 0],
+    [0, 0, 0, values[3], values[4]],
+    [0, 0, 0, values[5], 0],
+    [0, 0, 0, 0, values[6]]
+  ];
+}
+
+function matrixToQ44Literal(matrix: number[][]): string {
+  const rows = matrix.map((row) => `{${toFullWidthCommaJoined(row)}}`);
+  return `{${rows.join("，")}}`;
+}
+
+function valuesToQ44ChoiceText(values: number[]): string {
+  return `a={1，2，2，3，3，4，5}, b={1，2，3，4，5，4，5}, c={${toFullWidthCommaJoined(values)}}`;
+}
+
+function generateQ45Sparse(_baseQuestion: Question): GeneratedQuestionPatch {
+  // 非0要素数は7個のまま、1/2/3 の出現位置だけ変える
+  const bag = [1, 1, 2, 2, 2, 3, 3];
+  let correctValues: number[] = [...bag];
+
+  const original = [2, 3, 1, 2, 1, 3, 2];
+  do {
+    correctValues = shuffle([...bag]);
+  } while (correctValues.every((v, i) => v === original[i]));
+
+  const matrixLiteral = matrixToQ44Literal(createQ44MatrixFromValues(correctValues));
+
+  const candidates = new Set<string>();
+  candidates.add(correctValues.join(","));
+  while (candidates.size < 4) {
+    const candidate = shuffle([...bag]);
+    const key = candidate.join(",");
+    if (key !== correctValues.join(",")) candidates.add(key);
+  }
+
+  const ordered = shuffle(Array.from(candidates));
+  const choices: Choice[] = CHOICE_IDS.slice(0, 4).map((id, index) => {
+    const values = ordered[index].split(",").map(Number);
+    return {
+      id,
+      text: valuesToQ44ChoiceText(values)
+    };
+  });
+
+  const correctIndex = ordered.findIndex((value) => value === correctValues.join(","));
+  const correctChoiceId = CHOICE_IDS[correctIndex] ?? "a";
+
+  return {
+    bodyText: `要素の多くが 0 の行列を疎行列という。次のプログラムは，二次元配列に格納された行列のデータ量を削減するために，疎行列の格納に適したデータ構造に変換する。関数 transformSparseMatrix は，引数 matrix で二次元配列として与えられた行列を，整数型配列の配列に変換して返す。関数 transformSparseMatrix を transformSparseMatrix(${matrixLiteral}) として呼び出したときの戻り値は，{{【 a 】}，{【 b 】}，{【 c 】}} である。`,
+    choices,
+    correctChoiceId,
+    anotherTraceLines: [
+      `matrix = ${matrixLiteral}`,
+      `a(行番号) = {1，2，2，3，3，4，5}`,
+      `b(列番号) = {1，2，3，4，5，4，5}`,
+      `c(値) = {${toFullWidthCommaJoined(correctValues)}}`
+    ]
+  };
+}
+
 const anotherQuestionGenerators: Record<string, AnotherQuestionGenerator> = {
   q23: generateQ23,
   q33: generateQ33,
   q36: generateQ36,
-  q37: generateQ37
+  q37: generateQ37,
+  q44: generateQ44MatrixAccess,
+  q45: generateQ45Sparse
 };
 
 export function generateAnotherQuestion(baseQuestion: Question): GeneratedQuestionPatch | null {

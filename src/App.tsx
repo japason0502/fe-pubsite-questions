@@ -378,6 +378,7 @@ export default function App() {
   const handleGradeNow = () => {
     setGradeNowImageError(false);
     const q = currentQuestion;
+    const traceLines = q.id === "q23" ? q.anotherTraceLines : undefined;
     const correctId = q.correctChoiceId;
     if (!correctId) {
       window.alert("この問題には正解が設定されていません。");
@@ -394,7 +395,7 @@ export default function App() {
         correctText: q.choices.find((c) => c.id === correctId)?.text ?? "",
         videoUrl: q.videoUrl,
         imageSrc: getQuestionImageSrc(q.number),
-        traceLines: q.anotherTraceLines
+        traceLines
       });
       return;
     }
@@ -414,7 +415,7 @@ export default function App() {
       selectedText,
       videoUrl: q.videoUrl,
       imageSrc: getQuestionImageSrc(q.number),
-      traceLines: q.anotherTraceLines
+      traceLines
     });
   };
 
@@ -602,17 +603,61 @@ export default function App() {
           {currentQuestion.choices?.length > 0 && (
             <div className="answer-group" aria-label="解答群">
               <p className="answer-group-title">[解答群]</p>
-              <ul className="answer-group-list">
-                {currentQuestion.choices.map((c, idx) => {
-                  const head = CHOICE_LABELS[idx] ?? "";
+              {(() => {
+                const ct = currentQuestion.choiceTable;
+                const useTable =
+                  ct &&
+                  ct.headers.length > 0 &&
+                  ct.rows.length === currentQuestion.choices.length &&
+                  ct.rows.every((row) => row.length === ct.headers.length);
+                if (useTable && ct) {
                   return (
-                    <li key={c.id} className="answer-group-item">
-                      <span className="answer-group-label">{head}</span>
-                      <span className="answer-group-text">{c.text}</span>
-                    </li>
+                    <div className="choice-table-wrap">
+                      <table className="choice-table">
+                        <thead>
+                          <tr>
+                            <th scope="col" className="choice-table-corner" aria-hidden />
+                            {ct.headers.map((h, hi) => (
+                              <th key={hi} scope="col">
+                                {h}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {currentQuestion.choices.map((c, idx) => {
+                            const head = CHOICE_LABELS[idx] ?? "";
+                            const row = ct.rows[idx];
+                            return (
+                              <tr key={c.id}>
+                                <th scope="row" className="choice-table-rowhead">
+                                  {head}
+                                </th>
+                                {row.map((cell, ci) => (
+                                  <td key={ci}>{cell}</td>
+                                ))}
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
                   );
-                })}
-              </ul>
+                }
+                return (
+                  <ul className="answer-group-list">
+                    {currentQuestion.choices.map((c, idx) => {
+                      const head = CHOICE_LABELS[idx] ?? "";
+                      return (
+                        <li key={c.id} className="answer-group-item">
+                          <span className="answer-group-label">{head}</span>
+                          <span className="answer-group-text">{c.text}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                );
+              })()}
             </div>
           )}
         </section>

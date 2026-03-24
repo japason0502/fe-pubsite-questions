@@ -163,6 +163,38 @@ button.small {
   font-weight: 800;
 }
 
+.choice-table-wrap {
+  overflow-x: auto;
+  margin: 4px 0 0;
+}
+
+.choice-table {
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.choice-table th,
+.choice-table td {
+  border: 1px solid var(--border, #ccc);
+  padding: 6px 10px;
+  text-align: center;
+}
+
+.choice-table thead th {
+  font-weight: 700;
+}
+
+.choice-table-corner {
+  border: none;
+  background: transparent;
+  width: 2em;
+}
+
+.choice-table-rowhead {
+  font-weight: 800;
+  white-space: nowrap;
+}
+
 .question-title-row {
   display: flex;
   justify-content: space-between;

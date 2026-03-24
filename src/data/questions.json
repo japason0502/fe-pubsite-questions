@@ -2189,5 +2189,369 @@
     "hitokoto": "modは余りを求める演算子(例)3 mod 10 = 3､10 mod 3 = 1",
     "hintVideoUrl": "https://www.youtube.com/watch?v=u2Mv24jWhYM&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=32&t=1s",
     "another": 0
+  },
+  {
+    "id": "q44",
+    "number": 44,
+    "title": "(二次元配列のトレーニング)",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "次のプログラムを実行したとき出力される値は【　】である。",
+    "pseudoCode": [
+      "整数型の二次元配列: matrix",
+      "matrix ← {{5，1，9}，{7，3，4}，{2，8，6}}",
+      "matrix[2,1] の値を出力する"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "5"
+      },
+      {
+        "id": "b",
+        "text": "7"
+      },
+      {
+        "id": "c",
+        "text": "3"
+      },
+      {
+        "id": "d",
+        "text": "9"
+      },
+      {
+        "id": "e",
+        "text": "8"
+      }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=QlQ6CYC_eXs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=33&t=245s",
+    "correctChoiceId": "b",
+    "hitokoto": "matrix[i，j] は i 行目・j 列目の要素。",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=QlQ6CYC_eXs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=33&t=1s",
+    "another": 1
+  },
+  {
+    "id": "q45",
+    "number": 45,
+    "title": "令和4年度4月サンプル問題問4",
+    "questionText": "次の記述中の【 a 】〜【 c 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "要素の多くが 0 の行列を疎行列という。次のプログラムは，二次元配列に格納された行列のデータ量を削減するために，疎行列の格納に適したデータ構造に変換する。関数 transformSparseMatrix は，引数 matrix で二次元配列として与えられた行列を，整数型配列の配列に変換して返す。関数 transformSparseMatrix を transformSparseMatrix({{3，0，0，0，0}，{0，2，2，0，0}，{0，0，0，1，3}，{0，0，0，2，0}，{0，0，0，0，1}}) として呼び出したときの戻り値は，{{【 a 】}，{【 b 】}，{【 c 】}} である。",
+    "pseudoCode": [
+      "○ 整数型配列の配列: transformSparseMatrix(整数型の二次元配列: matrix)",
+      "    整数型: i, j",
+      "    整数型配列の配列: sparseMatrix",
+      "    sparseMatrix ← {{ }, { }, { }}  /* 要素数0の配列を三つ要素にもつ配列 */",
+      "    for (i を 1 から matrix の行数 まで 1 ずつ増やす)",
+      "        for (j を 1 から matrix の列数 まで 1 ずつ増やす)",
+      "            if (matrix[i, j] が 0 でない)",
+      "                sparseMatrix[1]の末尾 に i の値を追加する",
+      "                sparseMatrix[2]の末尾 に j の値を追加する",
+      "                sparseMatrix[3]の末尾 に matrix[i, j]の値を追加する",
+      "            endif",
+      "        endfor",
+      "    endfor",
+      "    return sparseMatrix"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "a={1，2，2，3，3，4，5}, b={1，2，3，4，5，4，5}, c={3，2，2，1，2，3，1}"
+      },
+      {
+        "id": "b",
+        "text": "a={1，2，2，3，3，4，5}, b={1，2，3，4，5，4，5}, c={3，2，2，1，3，2，1}"
+      },
+      {
+        "id": "c",
+        "text": "a={1，2，3，4，5，4，5}, b={1，2，2，3，3，4，5}, c={3，2，2，1，2，3，1}"
+      },
+      {
+        "id": "d",
+        "text": "a={1，2，3，4，5，4，5}, b={1，2，2，3，3，4，5}, c={3，2，2，1，3，2，1}"
+      }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=taayUZu2n9Y&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=34&t=59s",
+    "correctChoiceId": "b",
+    "hitokoto": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=taayUZu2n9Y&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=34&t=16s",
+    "another": 1
+  },
+  {
+    "id": "q46",
+    "number": 46,
+    "title": "2つの分岐",
+    "questionText": "次のプログラムの空欄【　　】に入れる正しい答えを､解答群から選べ。",
+    "bodyText": "関数maximumは異なる2つの整数を引数で受け取り､大きい方の値を返す。",
+    "pseudoCode": [
+      "○ 整数型: maximum(整数型: x, 整数型: y)",
+      "  if (【　　】)",
+      "      return x",
+      "  else",
+      "      return y",
+      "  endif"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "x > y"
+      },
+      {
+        "id": "b",
+        "text": "y > x"
+      },
+      {
+        "id": "c",
+        "text": "x = y"
+      },
+      {
+        "id": "d",
+        "text": "x = 2"
+      }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=l7onBa9Jjjk&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=35&pp=iAQB0gcJCdYKAYcqIYzvsAgC",
+    "correctChoiceId": "a",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q47",
+    "number": 47,
+    "title": "令和6年度サンプル問題問1",
+    "questionText": "次のプログラムの空欄【】に入れる正しい答えを､解答群から選べ。",
+    "bodyText": "関数maximumは異なる3つの整数を引数で受け取り､そのうちの最大値を返す。",
+    "pseudoCode": [
+      "○ 整数型: maximum(整数型: x, 整数型: y, 整数型: z)",
+      "if ( 【　　】 )",
+      "  return y",
+      "elseif (x > z)",
+      "  return x",
+      "else",
+      "  return z",
+      "endif"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "x > y"
+      },
+      {
+        "id": "b",
+        "text": "y > x and y > z"
+      },
+      {
+        "id": "c",
+        "text": "z > y"
+      },
+      {
+        "id": "d",
+        "text": "x > y and x > z"
+      },
+      {
+        "id": "e",
+        "text": "y > x and z > y"
+      },
+      {
+        "id": "f",
+        "text": "z > x and z > y"
+      }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=FioA83WLqMA&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=37&pp=iAQBsAgC",
+    "correctChoiceId": "b",
+    "hitokoto": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=wTkSMohhDNY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=36&pp=iAQBsAgC",
+    "another": 0
+  },
+  {
+    "id": "q48",
+    "number": 48,
+    "title": "令和4年度4月サンプル問題問1-以上/以下",
+    "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyText": "ある施設の入場料は､0歳から3歳までは100円､4歳から9歳までは300円､10歳以上は500円である。関数 fee は､年齢を表す0以上の整数を引数として受け取り､入場料を返す。",
+    "pseudoCode": [
+      "○ 整数型: fee(整数型: age)",
+      "  整数型: ret",
+      "  if (age が 3 以下)",
+      "    ret ← 100",
+      "  elseif (【　　　　】)",
+      "    ret ← 300",
+      "  else",
+      "    ret ← 500",
+      "  endif",
+      "  return ret"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "(age が 4 以上) and (age が 9 より小さい)"
+      },
+      {
+        "id": "b",
+        "text": "(age が 4 と等しい) or (age が 9 と等しい)"
+      },
+      {
+        "id": "c",
+        "text": "(age が 4 より大きい) and (age が 9 以下)"
+      },
+      {
+        "id": "d",
+        "text": "age が 4 以上"
+      },
+      {
+        "id": "e",
+        "text": "age が 4 より大きい"
+      },
+      {
+        "id": "f",
+        "text": "age が 9 以下"
+      },
+      {
+        "id": "g",
+        "text": "age が 9 より小さい"
+      }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=pb1d68uZxgs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=38&pp=iAQBsAgC",
+    "correctChoiceId": "f",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q49",
+    "number": 49,
+    "title": "令和4年度サンプル問題問2-fizzBuzz",
+    "questionText": "次のプログラム中の【a】～【c】に入れる正しい答えの組合せを、解答群の中から選べ。",
+    "bodyText": "関数fizzBuzzは、引数で与えられた値が、3で割り切れて5で割り切れない場合は「3で割り切れる」を、5で割り切れて3で割り切れない場合は「5で割り切れる」を、3と5で割り切れる場合は「3と5で割り切れる」を返す。それ以外の場合は「3でも5でも割り切れない」を返す。",
+    "pseudoCode": [
+      "○ 文字列型: fizzBuzz(整数型: num)",
+      "文字列型: result",
+      "if (numが 【a】 で割り切れる)",
+      "  result ← \"【a】 で割り切れる\"",
+      "elseif (numが 【b】 で割り切れる)",
+      "  result ← \"【b】 で割り切れる\"",
+      "elseif (numが 【c】 で割り切れる)",
+      "  result ← \"【c】 で割り切れる\"",
+      "else",
+      "  result ← \"3でも5でも割り切れない\"",
+      "endif",
+      "return result"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "a=3, b=3と5, c=5"
+      },
+      {
+        "id": "b",
+        "text": "a=3, b=5, c=3と5"
+      },
+      {
+        "id": "c",
+        "text": "a=3と5, b=3, c=5"
+      },
+      {
+        "id": "d",
+        "text": "a=5, b=3, c=3と5"
+      },
+      {
+        "id": "e",
+        "text": "a=5, b=3と5, c=3"
+      }
+    ],
+    "choiceTable": {
+      "headers": ["a", "b", "c"],
+      "rows": [
+        ["3", "3と5", "5"],
+        ["3", "5", "3と5"],
+        ["3と5", "3", "5"],
+        ["5", "3", "3と5"],
+        ["5", "3と5", "3"]
+      ]
+    },
+    "videoUrl": "https://www.youtube.com/watch?v=NfSRhCGtf8k&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=39&t=67s",
+    "correctChoiceId": "c",
+    "hitokoto": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=NfSRhCGtf8k&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=39&t=11s",
+    "another": 0
+  },
+  {
+    "id": "q50",
+    "number": 50,
+    "title": "三角形の面積",
+    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyText": "三角形の面積は「(底辺× 高さ) ÷ 2」で求められる。関数 triArea は，整数型の引数である底辺 b と高さ h を受け取り､三角形の面積を返す。ここで､底辺 b と高さ h いずれも､0が渡されることはないものとする｡",
+    "pseudoCode": [
+      "○ 実数型: triArea(整数型: b, 整数型: h)",
+      "return 【　　　　】  /* 実数として計算する */"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "b × h"
+      },
+      {
+        "id": "b",
+        "text": "(b + h) ÷ 2"
+      },
+      {
+        "id": "c",
+        "text": "(b × h) ÷ 2"
+      },
+      {
+        "id": "d",
+        "text": "b ÷ h"
+      },
+      {
+        "id": "e",
+        "text": "(b × h) ÷ 3"
+      }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "c",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q51",
+    "number": 51,
+    "title": "令和4年度サンプル問題問12-分岐",
+    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。ここで､配列の要素番号は1から始まる。",
+    "bodyText": "関数simRatioは，引数として与えられた要素数1以上の二つの文字型の配列s1とs2を比較し，要素数が等しい場合は，配列の並びがどの程度似ているかを示す指標として，（要素番号が同じ要素の文字同士が一致する要素の組の個数 ÷ s1の要素数）を返す。すべて一致すれば戻り値は1，一致しなければ0，要素数が異なる場合は−1を返す。",
+    "pseudoCode": [
+      "○ 実数型: simRatio(文字型の配列: s1, 文字型の配列: s2)",
+      "整数型: i, cnt ← 0",
+      "if (s1の要素数 ≠ s2の要素数)",
+      "  return −1",
+      "endif",
+      "for (iを1からs1の要素数 まで1ずつ増やす)",
+      "  if (【　　 】)",
+      "    cnt ← cnt + 1",
+      "  endif",
+      "endfor",
+      "return cnt ÷ s1の要素数 /* 実数として計算する*/"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "s1[i] ≠ s2[cnt]"
+      },
+      {
+        "id": "b",
+        "text": "s1[i] ≠ s2[i]"
+      },
+      {
+        "id": "c",
+        "text": "s1[i] = s2[cnt]"
+      },
+      {
+        "id": "d",
+        "text": "s1[i] = s2[i]"
+      }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "d",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "another": 0
   }
 ]
