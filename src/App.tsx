@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import katex from "katex";
+import "katex/dist/katex.min.css";
 import questionsData from "./data/questions.json";
-import { ExamState, Question } from "./types";
+import { BodyBlock, BodyTable, ExamState, Question } from "./types";
 import { generateAnotherQuestion } from "./anotherQuestionGenerators";
 
 const STORAGE_KEY = "exam-state";
@@ -22,6 +24,98 @@ function questionNumberToImageKey(n: number) {
 function getQuestionImageSrc(n: number) {
   // GitHub Pages など base パス配下でも壊れないように BASE_URL を使う
   return `${import.meta.env.BASE_URL}question-images/${questionNumberToImageKey(n)}.png`;
+}
+
+function bodyAssetSrc(src: string) {
+  const path = src.replace(/^\//, "");
+  return `${import.meta.env.BASE_URL}${path}`;
+}
+
+function BodyTableView({ bt }: { bt?: BodyTable }) {
+  if (!bt) return null;
+  const ok =
+    bt.headers.length > 0 &&
+    bt.rows.length > 0 &&
+    bt.rows.every((row) => row.length === bt.headers.length);
+  if (!ok) return null;
+  return (
+    <div className="body-table-block">
+      {bt.caption ? <p className="body-table-caption">{bt.caption}</p> : null}
+      <div className="choice-table-wrap">
+        <table className="choice-table body-table">
+          <thead>
+            <tr>
+              {bt.headers.map((h, hi) => (
+                <th key={hi} scope="col">
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {bt.rows.map((row, ri) => (
+              <tr key={ri}>
+                {row.map((cell, ci) => (
+                  <td key={ci}>{cell}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function renderBodyBlock(block: BodyBlock, idx: number) {
+  switch (block.type) {
+    case "text":
+      return (
+        <p key={idx} className="question-body-text">
+          {block.text}
+        </p>
+      );
+    case "textSub":
+      return (
+        <p key={idx} className="question-body-text">
+          {block.parts.map((p, pi) =>
+            p.kind === "s" ? (
+              <span key={pi}>{p.text}</span>
+            ) : (
+              <span key={pi} className="body-with-sub">
+                {p.base}
+                <sub className="body-sub">{p.script}</sub>
+              </span>
+            )
+          )}
+        </p>
+      );
+    case "table":
+      return <BodyTableView key={idx} bt={block} />;
+    case "formula": {
+      const html = katex.renderToString(block.text, {
+        displayMode: true,
+        throwOnError: false,
+        strict: "ignore",
+      });
+      return (
+        <div
+          key={idx}
+          className="body-formula"
+          role="math"
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+      );
+    }
+    case "image":
+      return (
+        <div key={idx} className="body-image-block">
+          <img src={bodyAssetSrc(block.src)} alt={block.alt ?? ""} className="body-inline-image" loading="lazy" />
+        </div>
+      );
+    default:
+      return null;
+  }
 }
 
 const initialState: ExamState = {
@@ -580,14 +674,16 @@ export default function App() {
               <p className="hitokoto">{currentQuestion.hitokoto}</p>
             )}
           </div>
-          {currentQuestion.questionText && currentQuestion.bodyText ? (
-            <>
-              <p>{currentQuestion.questionText}</p>
-              <p>{currentQuestion.bodyText}</p>
-            </>
+          {currentQuestion.questionText && <p>{currentQuestion.questionText}</p>}
+          {currentQuestion.bodyBlocks && currentQuestion.bodyBlocks.length > 0 ? (
+            currentQuestion.bodyBlocks.map((block, idx) => renderBodyBlock(block, idx))
           ) : (
-            currentQuestion.body && <p>{currentQuestion.body}</p>
+            <>
+              {currentQuestion.bodyText && <p className="question-body-text">{currentQuestion.bodyText}</p>}
+              {!currentQuestion.bodyText && currentQuestion.body && <p>{currentQuestion.body}</p>}
+            </>
           )}
+          {!currentQuestion.bodyBlocks?.length && <BodyTableView bt={currentQuestion.bodyTable} />}
           {currentQuestion.pseudoCode && (
             <div className="pseudo">
               <div className="pseudo-header">

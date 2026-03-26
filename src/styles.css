@@ -163,6 +163,54 @@ button.small {
   font-weight: 800;
 }
 
+.body-table-block {
+  margin: 12px 0;
+  text-align: center;
+}
+
+.body-table-caption {
+  margin: 0 0 8px;
+}
+
+.question-body-text {
+  white-space: pre-line;
+}
+
+.body-formula {
+  margin: 12px 0;
+  text-align: center;
+  font-size: 1.05em;
+}
+
+.body-image-block {
+  margin: 12px 0;
+  text-align: center;
+}
+
+.body-inline-image {
+  width: 40%;
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+
+.body-with-sub {
+  white-space: nowrap;
+}
+
+.body-sub {
+  font-size: 0.8em;
+  line-height: 1;
+}
+
+.body-table-block .choice-table-wrap {
+  display: inline-block;
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 0;
+  vertical-align: top;
+}
+
 .choice-table-wrap {
   overflow-x: auto;
   margin: 4px 0 0;

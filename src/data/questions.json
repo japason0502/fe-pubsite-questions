@@ -2478,7 +2478,15 @@
     "number": 50,
     "title": "三角形の面積",
     "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。",
-    "bodyText": "三角形の面積は「(底辺× 高さ) ÷ 2」で求められる。関数 triArea は，整数型の引数である底辺 b と高さ h を受け取り､三角形の面積を返す。ここで､底辺 b と高さ h いずれも､0が渡されることはないものとする｡",
+    "bodyText": "関数 triArea は，整数型の引数である底辺 b と高さ hを受け取り､三角形の面積を返す。三角形の面積は「(底辺× 高さ) ÷ 2」で求められる。ここで､底辺bと高さhいずれも､0が渡されることはないものとする｡いくつかの入力例と戻り値を下表に示す。",
+    "bodyTable": {
+      "caption": "表　triArea に与える b, h 及び戻り値の例",
+      "headers": ["b", "h", "戻り値"],
+      "rows": [
+        ["3", "4", "6"],
+        ["7", "2", "7"]
+      ]
+    },
     "pseudoCode": [
       "○ 実数型: triArea(整数型: b, 整数型: h)",
       "return 【　　　　】  /* 実数として計算する */"
@@ -2505,9 +2513,9 @@
         "text": "(b × h) ÷ 3"
       }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=nBrhVRgXBw0&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=40&pp=iAQBsAgC",
     "correctChoiceId": "c",
-    "hitokoto": "",
+    "hitokoto": "解説を先に聞こう!",
     "hintVideoUrl": "",
     "another": 0
   },
@@ -2517,6 +2525,16 @@
     "title": "令和4年度サンプル問題問12-分岐",
     "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。ここで､配列の要素番号は1から始まる。",
     "bodyText": "関数simRatioは，引数として与えられた要素数1以上の二つの文字型の配列s1とs2を比較し，要素数が等しい場合は，配列の並びがどの程度似ているかを示す指標として，（要素番号が同じ要素の文字同士が一致する要素の組の個数 ÷ s1の要素数）を返す。すべて一致すれば戻り値は1，一致しなければ0，要素数が異なる場合は−1を返す。",
+    "bodyTable": {
+      "caption": "表 関数 simRatio に与える s1，s2 及び戻り値の例",
+      "headers": ["s1", "s2", "戻り値"],
+      "rows": [
+        ["{ \"a\", \"p\", \"p\", \"l\", \"e\" }", "{ \"a\", \"p\", \"p\", \"l\", \"e\" }", "1"],
+        ["{ \"a\", \"p\", \"p\", \"l\", \"e\" }", "{ \"a\", \"p\", \"r\", \"i\", \"l\" }", "0.4"],
+        ["{ \"a\", \"p\", \"p\", \"l\", \"e\" }", "{ \"m\", \"e\", \"l\", \"o\", \"n\" }", "0"],
+        ["{ \"a\", \"p\", \"p\", \"l\", \"e\" }", "{ \"p\", \"e\", \"n\" }", "−1"]
+      ]
+    },
     "pseudoCode": [
       "○ 実数型: simRatio(文字型の配列: s1, 文字型の配列: s2)",
       "整数型: i, cnt ← 0",
@@ -2548,6 +2566,246 @@
         "text": "s1[i] = s2[i]"
       }
     ],
+    "videoUrl": "https://www.youtube.com/watch?v=JRoLu68Bqb8&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=41&t=52s",
+    "correctChoiceId": "d",
+    "hitokoto": "自力で解こう!",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=JRoLu68Bqb8&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=41&t=1s",
+    "another": 0
+  },
+  {
+    "id": "q52",
+    "number": 52,
+    "title": "令和6年度サンプル問題問5-商品データ",
+    "questionText": "次のプログラム中の【 a 】～【 c 】に入れる正しい答えの組合せを，解答群の中から選べ。\nここで，配列の要素番号は1から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "一度の注文で購入された商品のリストを，注文ごとに記録した注文データがある。\n表に，注文データの例を示す。"
+      },
+      {
+        "type": "table",
+        "caption": "表　注文データの例",
+        "headers": ["注文番号", "購入された商品のリスト"],
+        "rows": [
+          ["1", "A, B, D"],
+          ["2", "A, D"],
+          ["3", "A"],
+          ["4", "A, B, E"],
+          ["5", "B"],
+          ["6", "C, E"]
+        ]
+      },
+      {
+        "type": "textSub",
+        "parts": [
+          { "kind": "s", "text": "注文データから，商品 x と商品 y とが同一の注文で購入されやすい傾向を示す関連度 " },
+          { "kind": "sub", "base": "L", "script": "xy" },
+          { "kind": "s", "text": " を，次の式で計算する。" }
+        ]
+      },
+      {
+        "type": "formula",
+        "text": "\\mathrm{L}_{xy} = \\dfrac{\\mathrm{M}_{xy} \\times \\text{全注文数}}{\\mathrm{K}_x \\times \\mathrm{K}_y}"
+      },
+      {
+        "type": "textSub",
+        "parts": [
+          { "kind": "s", "text": "ここで，" },
+          { "kind": "sub", "base": "M", "script": "xy" },
+          { "kind": "s", "text": " は商品 x と商品 y とが同一の注文で購入された注文数，" },
+          { "kind": "sub", "base": "K", "script": "x" },
+          { "kind": "s", "text": " は商品 x が購入された注文数，" },
+          { "kind": "sub", "base": "K", "script": "y" },
+          { "kind": "s", "text": " は商品 y が購入された注文数を表す。表の例では，" },
+          { "kind": "sub", "base": "M", "script": "AB" },
+          { "kind": "s", "text": " が2，全注文数が6，" },
+          { "kind": "sub", "base": "K", "script": "A" },
+          { "kind": "s", "text": " が4，" },
+          { "kind": "sub", "base": "K", "script": "B" },
+          { "kind": "s", "text": " が3であるので，商品Aと商品Bの関連度 " },
+          { "kind": "sub", "base": "L", "script": "AB" },
+          { "kind": "s", "text": " は，(2 × 6) / (4 × 3) ＝ 1.0 である。\n\n手続 putRelatedItem は，大域変数 orders に格納された注文データを基に，引数で与えられた商品との関連度が最も大きい商品のうちの一つと，その関連度を出力する。\nプログラムでは，商品は文字列で表し，注文は購入された商品の配列，注文データは注文の配列で表している。注文データには2種類以上の商品が含まれるものとする。\nまた，注文データにある商品以外の商品が，引数として与えられることはないものとする。" }
+        ]
+      }
+    ],
+    "pseudoCode": [
+      "// 注文データ（ここでは表の例を与えている）",
+      "大域：文字列型配列の配列：orders ← {{\"A\",\"B\",\"D\"}, {\"A\",\"D\"}, {\"A\"},{\"A\",\"B\",\"E\"}, {\"B\"}, {\"C\",\"E\"}}",
+      "",
+      "○putRelatedItem(文字列型：item)",
+      "",
+      "  文字列型の配列：allItems ← ordersに含まれる文字列を重複なく辞書順に格納した配列",
+      "                            // 表の例では {\"A\",\"B\",\"C\",\"D\",\"E\"}",
+      "",
+      "  文字列型の配列：otherItems ← allItemsの複製から値がitemである要素を除いた配列",
+      "",
+      "  整数型：i，itemCount ← 0",
+      "  整数型の配列：arrayK ← {otherItemsの要素数個の0}",
+      "  整数型の配列：arrayM ← {otherItemsの要素数個の0}",
+      "  実数型：valueL，maxL ← −∞",
+      "  文字列型の配列：order",
+      "  文字列型：relatedItem",
+      "",
+      "  for (orderにordersの要素を順に代入する)",
+      "    if (orderのいずれかの要素の値がitemの値と等しい)",
+      "      itemCountの値を1増やす",
+      "    endif",
+      "    for (iを1からotherItemsの要素数まで1ずつ増やす)",
+      "      if (orderのいずれかの要素の値がotherItems[i]の値と等しい)",
+      "        if (orderのいずれかの要素の値がitemの値と等しい)",
+      "           【 a 】の値を1増やす",
+      "        endif",
+      "       【 b 】の値を1増やす",
+      "      endif",
+      "    endfor",
+      "  endfor",
+      "",
+      "  for (iを1からotherItemsの要素数まで1ずつ増やす)",
+      "    valueL ← (arrayM[i] × 【 c 】) ÷ (itemCount × arrayK[i])",
+      "                                                                   /* 実数として計算する */",
+      "    if (valueLがmaxLより大きい)",
+      "      maxL ← valueL",
+      "      relatedItem ← otherItems[i]",
+      "    endif",
+      "  endfor",
+      "",
+      "  relatedItemの値とmaxLの値をこの順にコンマ区切りで出力する"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "a=arrayK[i], b=arrayM[i], c=allItemsの要素数"
+      },
+      {
+        "id": "b",
+        "text": "a=arrayK[i], b=arrayM[i], c=ordersの要素数"
+      },
+      {
+        "id": "c",
+        "text": "a=arrayK[i], b=arrayM[i], c=otherItemsの要素数"
+      },
+      {
+        "id": "d",
+        "text": "a=arrayM[i], b=arrayK[i], c=allItemsの要素数"
+      },
+      {
+        "id": "e",
+        "text": "a=arrayM[i], b=arrayK[i], c=ordersの要素数"
+      },
+      {
+        "id": "f",
+        "text": "a=arrayM[i], b=arrayK[i], c=otherItemsの要素数"
+      }
+    ],
+    "choiceTable": {
+      "headers": ["a", "b", "c"],
+      "rows": [
+        ["arrayK[i]", "arrayM[i]", "allItemsの要素数"],
+        ["arrayK[i]", "arrayM[i]", "ordersの要素数"],
+        ["arrayK[i]", "arrayM[i]", "otherItemsの要素数"],
+        ["arrayM[i]", "arrayK[i]", "allItemsの要素数"],
+        ["arrayM[i]", "arrayK[i]", "ordersの要素数"],
+        ["arrayM[i]", "arrayK[i]", "otherItemsの要素数"]
+      ]
+    },
+    "videoUrl": "",
+    "correctChoiceId": "e",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q53",
+    "number": 53,
+    "title": "令和5年度サンプル問題問5-コサイン類似度",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は1から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "コサイン類似度は，二つのベクトルの向きの類似性を測る尺度である。\n関数 calcCosineSimilarity は，いずれも要素数が n（n≧1）である実数型の配列 vector1 と vector2 を受け取り，二つの配列のコサイン類似度を返す。\n配列 vector1 が {a₁, a₂, …, aₙ}，配列 vector2 が {b₁, b₂, …, bₙ} のとき，コサイン類似度は次の数式で計算される。\nここで，配列 vector1 と配列 vector2 のいずれも，全ての要素に 0 が格納されていることはないものとする。"
+      },
+      {
+        "type": "formula",
+        "text": "\\frac{\\mathrm{a}_{1}\\mathrm{b}_{1}+\\mathrm{a}_{2}\\mathrm{b}_{2}+\\cdots+\\mathrm{a}_{n}\\mathrm{b}_{n}}{\\sqrt{\\mathrm{a}_{1}^{2}+\\mathrm{a}_{2}^{2}+\\cdots+\\mathrm{a}_{n}^{2}}\\sqrt{\\mathrm{b}_{1}^{2}+\\mathrm{b}_{2}^{2}+\\cdots+\\mathrm{b}_{n}^{2}}}"
+      }
+    ],
+    "pseudoCode": [
+      "○ 実数型: calcCosineSimilarity(実数型の配列: vector1,",
+      "                              実数型の配列: vector2)",
+      "  実数型: similarity, numerator, denominator, temp ← 0",
+      "  整数型: i",
+      "  numerator ← 0",
+      "",
+      "  for (i を 1 から vector1の要素数 まで 1 ずつ増やす)",
+      "    numerator ← numerator + 【 a 】",
+      "  endfor",
+      "",
+      "  for (i を 1 から vector1の要素数 まで 1 ずつ増やす)",
+      "    temp ← temp + vector1[i] の2乗",
+      "  endfor",
+      "  denominator ← temp の正の平方根",
+      "",
+      "  temp ← 0",
+      "  for (i を 1 から vector2の要素数 まで 1 ずつ増やす)",
+      "    temp ← temp + vector2[i] の2乗",
+      "  endfor",
+      "  denominator ← 【 b 】",
+      "",
+      "  similarity ← numerator ÷ denominator",
+      "  return similarity"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "a=(vector1[i]×vector2[i])の正の平方根, b=denominator×(tempの正の平方根)"
+      },
+      {
+        "id": "b",
+        "text": "a=(vector1[i]×vector2[i])の正の平方根, b=denominator+(tempの正の平方根)"
+      },
+      {
+        "id": "c",
+        "text": "a=(vector1[i]×vector2[i])の正の平方根, b=tempの正の平方根"
+      },
+      {
+        "id": "d",
+        "text": "a=vector1[i]×vector2[i], b=denominator×(tempの正の平方根)"
+      },
+      {
+        "id": "e",
+        "text": "a=vector1[i]×vector2[i], b=denominator+(tempの正の平方根)"
+      },
+      {
+        "id": "f",
+        "text": "a=vector1[i]×vector2[i], b=tempの正の平方根"
+      },
+      {
+        "id": "g",
+        "text": "a=vector1[i]の2乗, b=denominator×(tempの正の平方根)"
+      },
+      {
+        "id": "h",
+        "text": "a=vector1[i]の2乗, b=denominator+(tempの正の平方根)"
+      },
+      {
+        "id": "i",
+        "text": "a=vector1[i]の2乗, b=tempの正の平方根"
+      }
+    ],
+    "choiceTable": {
+      "headers": ["a", "b"],
+      "rows": [
+        ["(vector1[i] × vector2[i]) の正の平方根", "denominator × (tempの正の平方根)"],
+        ["(vector1[i] × vector2[i]) の正の平方根", "denominator + (tempの正の平方根)"],
+        ["(vector1[i] × vector2[i]) の正の平方根", "tempの正の平方根"],
+        ["vector1[i] × vector2[i]", "denominator × (tempの正の平方根)"],
+        ["vector1[i] × vector2[i]", "denominator + (tempの正の平方根)"],
+        ["vector1[i] × vector2[i]", "tempの正の平方根"],
+        ["vector1[i] の2乗", "denominator × (tempの正の平方根)"],
+        ["vector1[i] の2乗", "denominator + (tempの正の平方根)"],
+        ["vector1[i] の2乗", "tempの正の平方根"]
+      ]
+    },
     "videoUrl": "",
     "correctChoiceId": "d",
     "hitokoto": "",

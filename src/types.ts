@@ -9,6 +9,27 @@ export type ChoiceTable = {
   rows: string[][];
 };
 
+/** 本文中の補足表（例: 関数の引数と戻り値の例）。choiceTable とは別 */
+export type BodyTable = {
+  caption?: string;
+  headers: string[];
+  rows: string[][];
+};
+
+/** textSub: 通常文字列と下付き（小さな文字）の交互。kind "s"=そのまま、"sub"=base の直後に script を下付きで */
+export type BodyTextPart =
+  | { kind: "s"; text: string }
+  | { kind: "sub"; base: string; script: string };
+
+/** 本文を表・数式・画像で分割表示するとき（bodyText / bodyTable の代わりに使用） */
+export type BodyBlock =
+  | { type: "text"; text: string }
+  | { type: "textSub"; parts: BodyTextPart[] }
+  | { type: "table"; caption?: string; headers: string[]; rows: string[][] }
+  | { type: "formula"; text: string }
+  /** public からの相対パス（例: question-images/52_formula.png） */
+  | { type: "image"; src: string; alt?: string };
+
 export type Question = {
   id: string;
   number: number;
@@ -16,6 +37,10 @@ export type Question = {
   body?: string; // 後方互換性のため残す
   questionText?: string; // ・問題文
   bodyText?: string; // ・本文
+  /** 設定時は bodyText・bodyTable に代わりこの順に表示 */
+  bodyBlocks?: BodyBlock[];
+  /** 本文と疑似コードの間に表示する補足表 */
+  bodyTable?: BodyTable;
   pseudoCode?: string[];
   choices: Choice[];
   /** 設定時は問題文側の解答群を表で表示（choices は採点・ボタン用に同順で維持） */
