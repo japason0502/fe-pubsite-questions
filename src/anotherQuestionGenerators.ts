@@ -4,6 +4,7 @@ export type GeneratedQuestionPatch = Pick<Question, "bodyText" | "pseudoCode" | 
 type AnotherQuestionGenerator = (baseQuestion: Question) => GeneratedQuestionPatch;
 
 const CHOICE_IDS = ["a", "b", "c", "d", "e", "f", "g"];
+let lastQ57Mode: 0 | 1 | null = null;
 
 function randomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -351,13 +352,68 @@ function generateQ45Sparse(_baseQuestion: Question): GeneratedQuestionPatch {
   };
 }
 
+function generateQ57(baseQuestion: Question): GeneratedQuestionPatch {
+  let mode = randomInt(0, 1) as 0 | 1; // 0:イ(前順), 1:エ(後順)
+  if (lastQ57Mode !== null && mode === lastQ57Mode) {
+    mode = (1 - mode) as 0 | 1;
+  }
+  lastQ57Mode = mode;
+  const src = baseQuestion.pseudoCode ?? [];
+  let pseudoCode = [...src];
+
+  if (mode === 0) {
+    // イ: 前順（根→左→右）
+    pseudoCode = src.map((line, index, arr) => {
+      // 2子: left, n, right -> n, left, right
+      if (line === "    order(tree[n][1])" && arr[index + 1] === "    n を出力" && arr[index + 2] === "    order(tree[n][2])") {
+        return "    n を出力";
+      }
+      if (line === "    n を出力" && arr[index - 1] === "    order(tree[n][1])" && arr[index + 1] === "    order(tree[n][2])") {
+        return "    order(tree[n][1])";
+      }
+      // 1子: left, n -> n, left
+      if (line === "    order(tree[n][1])" && arr[index + 1] === "    n を出力" && arr[index - 1]?.includes("要素数 が 1")) {
+        return "    n を出力";
+      }
+      if (line === "    n を出力" && arr[index - 1] === "    order(tree[n][1])" && arr[index - 2]?.includes("要素数 が 1")) {
+        return "    order(tree[n][1])";
+      }
+      return line;
+    });
+    return {
+      pseudoCode,
+      choices: baseQuestion.choices,
+      correctChoiceId: "b",
+      anotherTraceLines: ["走査順を前順（preorder: 根→左→右）に変更", "正解はイ"]
+    };
+  }
+
+  // エ: 後順（左→右→根）
+  pseudoCode = src.map((line, index, arr) => {
+    if (line === "    n を出力" && arr[index - 1] === "    order(tree[n][1])" && arr[index + 1] === "    order(tree[n][2])") {
+      return "    order(tree[n][2])";
+    }
+    if (line === "    order(tree[n][2])" && arr[index - 1] === "    n を出力" && arr[index - 2] === "    order(tree[n][1])") {
+      return "    n を出力";
+    }
+    return line;
+  });
+  return {
+    pseudoCode,
+    choices: baseQuestion.choices,
+    correctChoiceId: "d",
+    anotherTraceLines: ["走査順を後順（postorder: 左→右→根）に変更", "正解はエ"]
+  };
+}
+
 const anotherQuestionGenerators: Record<string, AnotherQuestionGenerator> = {
   q23: generateQ23,
   q33: generateQ33,
   q36: generateQ36,
   q37: generateQ37,
   q44: generateQ44MatrixAccess,
-  q45: generateQ45Sparse
+  q45: generateQ45Sparse,
+  q57: generateQ57
 };
 
 export function generateAnotherQuestion(baseQuestion: Question): GeneratedQuestionPatch | null {

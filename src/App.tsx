@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 import questionsData from "./data/questions.json";
-import { BodyBlock, BodyTable, ExamState, Question } from "./types";
+import { BodyBlock, BodyTable, BodyTableCell, ExamState, Question } from "./types";
 import { generateAnotherQuestion } from "./anotherQuestionGenerators";
 
 const STORAGE_KEY = "exam-state";
@@ -31,6 +31,14 @@ function bodyAssetSrc(src: string) {
   return `${import.meta.env.BASE_URL}${path}`;
 }
 
+function bodyTableCellText(cell: BodyTableCell): string {
+  return typeof cell === "string" ? cell : cell.text;
+}
+
+function bodyTableCellShaded(cell: BodyTableCell): boolean {
+  return typeof cell === "object" && cell.shaded === true;
+}
+
 function BodyTableView({ bt }: { bt?: BodyTable }) {
   if (!bt) return null;
   const ok =
@@ -55,9 +63,14 @@ function BodyTableView({ bt }: { bt?: BodyTable }) {
           <tbody>
             {bt.rows.map((row, ri) => (
               <tr key={ri}>
-                {row.map((cell, ci) => (
-                  <td key={ci}>{cell}</td>
-                ))}
+                {row.map((cell, ci) => {
+                  const shaded = bodyTableCellShaded(cell);
+                  return (
+                    <td key={ci} className={shaded ? "body-table-cell-shaded" : undefined}>
+                      {bodyTableCellText(cell) || (shaded ? "\u00a0" : "")}
+                    </td>
+                  );
+                })}
               </tr>
             ))}
           </tbody>
@@ -72,6 +85,12 @@ function renderBodyBlock(block: BodyBlock, idx: number) {
     case "text":
       return (
         <p key={idx} className="question-body-text">
+          {block.text}
+        </p>
+      );
+    case "textCenter":
+      return (
+        <p key={idx} className="question-body-text-center">
           {block.text}
         </p>
       );
@@ -515,7 +534,9 @@ export default function App() {
 
   const handleAnotherRun = () => {
     if (!currentQuestion || currentQuestion.another !== 1) return;
-    const generated = generateAnotherQuestion(currentQuestion);
+    const baseQuestion = questions[state.currentIndex];
+    if (!baseQuestion) return;
+    const generated = generateAnotherQuestion(baseQuestion);
     if (!generated) {
       window.alert("この問題の再生成ロジックは未設定です。");
       return;

@@ -2708,10 +2708,10 @@
         ["arrayM[i]", "arrayK[i]", "otherItemsの要素数"]
       ]
     },
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=bXm9U08DKbg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=42&t=720s",
     "correctChoiceId": "e",
     "hitokoto": "",
-    "hintVideoUrl": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=bXm9U08DKbg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=42&t=170s",
     "another": 0
   },
   {
@@ -2806,10 +2806,155 @@
         ["vector1[i] の2乗", "tempの正の平方根"]
       ]
     },
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=zf7rqNQ52rc&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=43&t=92s",
     "correctChoiceId": "d",
+    "hitokoto": "",
+    "hintVideoUrl": "https://youtu.be/zf7rqNQ52rc?si=PmwwbqOc0FuA7Adu&t=1",
+    "another": 0
+  },
+  {
+    "id": "q54",
+    "number": 54,
+    "title": "再帰の練習問題",
+    "questionText": "関数 sum を sum(4)として呼び出すと，戻り値は【　】である。",
+    "pseudoCode": [
+      "○ 整数型: sum(整数型: n)",
+      "  if (n = 1)",
+      "    return 1",
+      "  endif",
+      "",
+      "  return n + sum(n − 1)"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "10"
+      },
+      {
+        "id": "b",
+        "text": "11"
+      },
+      {
+        "id": "c",
+        "text": "12"
+      },
+      {
+        "id": "d",
+        "text": "13"
+      }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "a",
     "hitokoto": "",
     "hintVideoUrl": "",
     "another": 0
+  },
+  {
+    "id": "q55",
+    "number": 55,
+    "title": "令和4年度サンプル問題問7",
+    "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyText": "関数 factorial は非負の整数 n を引数にとり，その階乗を返す関数である。非負の整数 n の階乗は n が 0 のときに 1 になり，それ以外の場合は 1 から n までの整数を全て掛け合わせた数となる。",
+    "pseudoCode": [
+      "○整数型: factorial(整数型: n)",
+      "  if (n = 0)",
+      "    return 1",
+      "  endif",
+      "",
+      "  return 【　　　】"
+    ],
+    "choices": [
+      { "id": "a", "text": "(n − 1) × factorial(n)" },
+      { "id": "b", "text": "factorial(n − 1)" },
+      { "id": "c", "text": "n" },
+      { "id": "d", "text": "n × (n − 1)" },
+      { "id": "e", "text": "n × factorial(1)" },
+      { "id": "f", "text": "n × factorial(n − 1)" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "f",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q56",
+    "number": 56,
+    "title": "出力系の問題",
+    "questionText": "次の手続 f を f(2) として呼び出す。出力される順として正しいものを選べ。",
+    "pseudoCode": [
+      "○ 手続き: f(整数型: n)",
+      "  if (n = 0)",
+      "    出力 0",
+      "  else",
+      "    出力 n",
+      "    f(n - 1)",
+      "    出力 n",
+      "  endif"
+    ],
+    "choices": [
+      { "id": "a", "text": "2, 1, 0, 1, 2" },
+      { "id": "b", "text": "2, 1, 0, 2, 1" },
+      { "id": "c", "text": "0, 1, 2, 1, 0" },
+      { "id": "d", "text": "2, 1, 1, 0, 2" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "a",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q57",
+    "number": 57,
+    "title": "R4問9 再帰(2分木)",
+    "questionText": "次の記述中の【　　　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "手続 order は，図の 2 分木の，引数で指定した節を根とする部分木をたどりながら，全ての節番号を出力する。大域の配列 tree が図の 2 分木を表している。配列 tree の要素は，対応する節の子の節番号を，左の子，右の子の順に格納した配列である。例えば，配列 tree の要素番号 1 の要素は，節番号 1 の子の節番号から成る配列であり，左の子の節番号 2，右の子の節番号 3 を配列 {2，3} として格納する。\n\n手続 order を order(1) として呼び出すと，【　　　】の順に出力される。"
+      },
+      {
+        "type": "image",
+        "src": "assets/image-20260109105105295.png",
+        "alt": "プログラムが扱う2分木"
+      },
+      {
+        "type": "text",
+        "text": "注記1　○の中の値は節番号である。\n注記2　子の節が一つの場合は，左の子の節とする。"
+      },
+      {
+        "type": "textCenter",
+        "text": "図　プログラムが扱う 2 分木"
+      }
+    ],
+    "pseudoCode": [
+      "大域: 整数型配列の配列: tree ← {{2, 3}, {4, 5}, {6, 7}, {8, 9},",
+      "                                                    {10, 11}, {12, 13}, {14}, {}, {}, {},",
+      "                                                    {}, {}, {}, {}}   // {} は要素数 0 の配列",
+      "",
+      "○order(整数型: n)",
+      "  if (tree[n] の要素数 が 2 と等しい)",
+      "    order(tree[n][1])",
+      "    n を出力",
+      "    order(tree[n][2])",
+      "  elseif (tree[n] の要素数 が 1 と等しい)",
+      "    order(tree[n][1])",
+      "    n を出力",
+      "  else",
+      "    n を出力",
+      "  endif"
+    ],
+    "choices": [
+      { "id": "a", "text": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14" },
+      { "id": "b", "text": "1, 2, 4, 8, 9, 5, 10, 11, 3, 6, 12, 13, 7, 14" },
+      { "id": "c", "text": "8, 4, 9, 2, 10, 5, 11, 1, 12, 6, 13, 3, 14, 7" },
+      { "id": "d", "text": "8, 9, 4, 10, 11, 5, 2, 12, 13, 6, 14, 7, 3, 1" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "c",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "another": 1
   }
 ]

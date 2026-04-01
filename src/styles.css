@@ -176,6 +176,11 @@ button.small {
   white-space: pre-line;
 }
 
+.question-body-text-center {
+  white-space: pre-line;
+  text-align: center;
+}
+
 .body-formula {
   margin: 12px 0;
   text-align: center;
@@ -188,7 +193,7 @@ button.small {
 }
 
 .body-inline-image {
-  width: 40%;
+  width: 60%;
   max-width: 100%;
   height: auto;
   vertical-align: middle;
@@ -241,6 +246,19 @@ button.small {
 .choice-table-rowhead {
   font-weight: 800;
   white-space: nowrap;
+}
+
+/* 本文表の網掛け（理論度数など数値省略セル） */
+.choice-table td.body-table-cell-shaded {
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(0, 0, 0, 0.06),
+    rgba(0, 0, 0, 0.06) 3px,
+    rgba(0, 0, 0, 0.14) 3px,
+    rgba(0, 0, 0, 0.14) 4px
+  );
+  min-width: 2.5em;
+  min-height: 2em;
 }
 
 .question-title-row {
