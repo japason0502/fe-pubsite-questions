@@ -2843,15 +2843,43 @@
         "text": "13"
       }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=TMv6UPTtLHY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=44&pp=iAQBsAgC",
     "correctChoiceId": "a",
-    "hitokoto": "",
+    "hitokoto": "解説を見ながら解こう!",
     "hintVideoUrl": "",
     "another": 0
   },
   {
     "id": "q55",
     "number": 55,
+    "title": "再帰を理解する",
+    "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyText": "関数 sum は1以上の整数 n を引数にとり，1~nまでの合計を返す関数である。",
+    "pseudoCode": [
+      "○整数型: sum(整数型: n)",
+      "  if (n = 1)",
+      "    return 1",
+      "  endif",
+      "",
+      "  return 【　　　】"
+    ],
+    "choices": [
+      { "id": "a", "text": "(n − 1) + sum(n)" },
+      { "id": "b", "text": "sum(n − 1)" },
+      { "id": "c", "text": "n" },
+      { "id": "d", "text": "n + (n − 1)" },
+      { "id": "e", "text": "n + sum(1)" },
+      { "id": "f", "text": "n + sum(n − 1)" }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=g3ofy8R50JI&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=45&pp=iAQBsAgC",
+    "correctChoiceId": "f",
+    "hitokoto": "解説を見ながら解こう!",
+    "hintVideoUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q56",
+    "number": 56,
     "title": "令和4年度サンプル問題問7",
     "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
     "bodyText": "関数 factorial は非負の整数 n を引数にとり，その階乗を返す関数である。非負の整数 n の階乗は n が 0 のときに 1 になり，それ以外の場合は 1 から n までの整数を全て掛け合わせた数となる。",
@@ -2871,16 +2899,16 @@
       { "id": "e", "text": "n × factorial(1)" },
       { "id": "f", "text": "n × factorial(n − 1)" }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=n60hez89vic&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=46&pp=iAQBsAgC",
     "correctChoiceId": "f",
-    "hitokoto": "",
+    "hitokoto": "自力で解こう!",
     "hintVideoUrl": "",
     "another": 0
   },
   {
-    "id": "q56",
-    "number": 56,
-    "title": "出力系の問題",
+    "id": "q57",
+    "number": 57,
+    "title": "途中で再帰",
     "questionText": "次の手続 f を f(2) として呼び出す。出力される順として正しいものを選べ。",
     "pseudoCode": [
       "○ 手続き: f(整数型: n)",
@@ -2898,16 +2926,16 @@
       { "id": "c", "text": "0, 1, 2, 1, 0" },
       { "id": "d", "text": "2, 1, 1, 0, 2" }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=QhCL7UOPF0Y&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=47&pp=iAQBsAgC",
     "correctChoiceId": "a",
-    "hitokoto": "",
+    "hitokoto": "解説を見ながら解こう!",
     "hintVideoUrl": "",
     "another": 0
   },
   {
-    "id": "q57",
-    "number": 57,
-    "title": "R4問9 再帰(2分木)",
+    "id": "q58",
+    "number": 58,
+    "title": "再帰(2分木)-令和4年度サンプル問題問9",
     "questionText": "次の記述中の【　　　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyBlocks": [
       {
@@ -2951,10 +2979,10 @@
       { "id": "c", "text": "8, 4, 9, 2, 10, 5, 11, 1, 12, 6, 13, 3, 14, 7" },
       { "id": "d", "text": "8, 9, 4, 10, 11, 5, 2, 12, 13, 6, 14, 7, 3, 1" }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=mgUfmoP0bk0&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=48&t=107s",
     "correctChoiceId": "c",
-    "hitokoto": "",
-    "hintVideoUrl": "",
+    "hitokoto": "自力で解こう!",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=mgUfmoP0bk0&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=48&t=1s",
     "another": 1
   }
 ]

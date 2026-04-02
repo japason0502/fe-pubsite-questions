@@ -4,7 +4,7 @@ export type GeneratedQuestionPatch = Pick<Question, "bodyText" | "pseudoCode" | 
 type AnotherQuestionGenerator = (baseQuestion: Question) => GeneratedQuestionPatch;
 
 const CHOICE_IDS = ["a", "b", "c", "d", "e", "f", "g"];
-let lastQ57Mode: 0 | 1 | null = null;
+let lastQ58Mode: 0 | 1 | null = null;
 
 function randomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -352,12 +352,12 @@ function generateQ45Sparse(_baseQuestion: Question): GeneratedQuestionPatch {
   };
 }
 
-function generateQ57(baseQuestion: Question): GeneratedQuestionPatch {
+function generateQ58(baseQuestion: Question): GeneratedQuestionPatch {
   let mode = randomInt(0, 1) as 0 | 1; // 0:イ(前順), 1:エ(後順)
-  if (lastQ57Mode !== null && mode === lastQ57Mode) {
+  if (lastQ58Mode !== null && mode === lastQ58Mode) {
     mode = (1 - mode) as 0 | 1;
   }
-  lastQ57Mode = mode;
+  lastQ58Mode = mode;
   const src = baseQuestion.pseudoCode ?? [];
   let pseudoCode = [...src];
 
@@ -413,7 +413,7 @@ const anotherQuestionGenerators: Record<string, AnotherQuestionGenerator> = {
   q37: generateQ37,
   q44: generateQ44MatrixAccess,
   q45: generateQ45Sparse,
-  q57: generateQ57
+  q58: generateQ58
 };
 
 export function generateAnotherQuestion(baseQuestion: Question): GeneratedQuestionPatch | null {

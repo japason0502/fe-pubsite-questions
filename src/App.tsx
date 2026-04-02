@@ -335,6 +335,8 @@ export default function App() {
     return override ? { ...baseQuestion, ...override } : baseQuestion;
   }, [questions, state.currentIndex, questionOverrides]);
 
+  const hitokotoDisplay = currentQuestion?.hitokoto?.trim() ?? "";
+
   const handleAnswer = (choiceId: string) => {
     setState((prev) => ({
       ...prev,
@@ -691,9 +693,7 @@ export default function App() {
         >
           <div className="question-title-row">
             <h2>{state.instructorMode ? currentQuestion.title : (Number.isInteger(currentQuestion.number) ? `${currentQuestion.number}問: ${currentQuestion.title}` : `${Math.floor(currentQuestion.number)}#問: ${currentQuestion.title}`)}</h2>
-            {currentQuestion.hitokoto && (
-              <p className="hitokoto">{currentQuestion.hitokoto}</p>
-            )}
+            {hitokotoDisplay ? <p className="hitokoto">{hitokotoDisplay}</p> : null}
           </div>
           {currentQuestion.questionText && <p>{currentQuestion.questionText}</p>}
           {currentQuestion.bodyBlocks && currentQuestion.bodyBlocks.length > 0 ? (
