@@ -2983,6 +2983,7 @@
     "correctChoiceId": "c",
     "hitokoto": "自力で解こう!",
     "hintVideoUrl": "https://www.youtube.com/watch?v=mgUfmoP0bk0&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=48&t=1s",
+    "lessonUrl": "",
     "another": 1
   },
   {
@@ -3008,8 +3009,9 @@
     ],
     "videoUrl": "",
     "correctChoiceId": "d",
-    "hitokoto": "自力で解こう!",
+    "hitokoto": "講義のあとに､自力で解こう!",
     "hintVideoUrl": "",
+    "lessonUrl": "https://www.youtube.com/watch?v=_V_W6s7EVm0&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=49&pp=iAQBsAgC",
     "another": 0
   },
   {
@@ -3031,6 +3033,7 @@
     "correctChoiceId": "a",
     "hitokoto": "",
     "hintVideoUrl": "",
+    "lessonUrl": "",
     "another": 0
   }
 ]

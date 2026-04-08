@@ -50,6 +50,8 @@ export type Question = {
   /** 設定時は問題文側の解答群を表で表示（choices は採点・ボタン用に同順で維持） */
   choiceTable?: ChoiceTable;
   videoUrl?: string;
+  /** 講義URL（記載がある場合のみボタン表示） */
+  lessonUrl?: string;
   /** ヒント動画URL（記載がある場合のみボタン表示） */
   hintVideoUrl?: string;
   /** 値を変えてもう一度ボタン表示フラグ（1:表示, 0:非表示） */

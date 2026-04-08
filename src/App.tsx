@@ -336,6 +336,8 @@ export default function App() {
   }, [questions, state.currentIndex, questionOverrides]);
 
   const hitokotoDisplay = currentQuestion?.hitokoto?.trim() ?? "";
+  const lessonUrlDisplay = currentQuestion?.lessonUrl?.trim() ?? "";
+  const hintVideoUrlDisplay = currentQuestion?.hintVideoUrl?.trim() ?? "";
 
   const handleAnswer = (choiceId: string) => {
     setState((prev) => ({
@@ -785,11 +787,20 @@ export default function App() {
           <div className="choices-header">
             {state.perQuestionGrading && (
               <>
-                {currentQuestion.hintVideoUrl && (
+                {lessonUrlDisplay && (
+                  <button
+                    type="button"
+                    className="outline lesson-link-btn"
+                    onClick={() => window.open(lessonUrlDisplay, "_blank", "noopener,noreferrer")}
+                  >
+                    講義
+                  </button>
+                )}
+                {hintVideoUrlDisplay && (
                   <button
                     type="button"
                     className="outline"
-                    onClick={() => window.open(currentQuestion.hintVideoUrl, "_blank", "noopener,noreferrer")}
+                    onClick={() => window.open(hintVideoUrlDisplay, "_blank", "noopener,noreferrer")}
                   >
                     ヒント
                   </button>
