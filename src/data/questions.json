@@ -2984,5 +2984,53 @@
     "hitokoto": "自力で解こう!",
     "hintVideoUrl": "https://www.youtube.com/watch?v=mgUfmoP0bk0&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=48&t=1s",
     "another": 1
+  },
+  {
+    "id": "q59",
+    "number": 59,
+    "title": "令和6年度サンプル問題問2-convDecimal",
+    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyText": "関数 convDecimal は，引数として与えられた，“0” と “1” だけから成る，1文字以上の文字列を，符号なしの2進数と解釈したときの整数値を返す。例えば，引数として “10010” を与えると 18 が返る。関数 convDecimal が利用する関数 int は，引数で与えられた文字が “0” なら整数値 0 を返し，“1” なら整数値 1 を返す。",
+    "pseudoCode": [
+      "○ 整数型: convDecimal(文字列型: binary)",
+      "    整数型: i, length, result ← 0",
+      "    length ← binary の文字数",
+      "    for (i を 1 から length まで 1 ずつ増やす)",
+      "        result ← 【　】",
+      "    endfor",
+      "    return result"
+    ],
+    "choices": [
+      { "id": "a", "text": "result + int(binary の (length − i + 1)文字目の文字)" },
+      { "id": "b", "text": "result + int(binary の i文字目の文字)" },
+      { "id": "c", "text": "result × 2 + int(binary の (length − i + 1)文字目の文字)" },
+      { "id": "d", "text": "result × 2 + int(binary の i文字目の文字)" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "d",
+    "hitokoto": "自力で解こう!",
+    "hintVideoUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q60",
+    "number": 60,
+    "title": "（ダミー）",
+    "questionText": "（プレースホルダ）",
+    "bodyText": "この問題はダミーです。",
+    "pseudoCode": [
+      "○ ダミー"
+    ],
+    "choices": [
+      { "id": "a", "text": "選択肢A" },
+      { "id": "b", "text": "選択肢B" },
+      { "id": "c", "text": "選択肢C" },
+      { "id": "d", "text": "選択肢D" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "a",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "another": 0
   }
 ]

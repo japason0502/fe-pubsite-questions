@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>10進 ↔ 2進ラボ（0〜255）</title>
+  <style>
+    :root {
+      --bg: #eef1f6;
+      --surface: #ffffff;
+      --surface-2: #f4f6fa;
+      --border: #d8dde8;
+      --text: #141826;
+      --muted: #5c6478;
+      --accent: #3d5a80;
+      --accent-2: #5b7aa1;
+      --accent-soft: rgba(61, 90, 128, 0.12);
+      --ok: #2d6a4f;
+      --row-h: 36px;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 2px 8px rgba(20, 24, 38, 0.06);
+      --font: system-ui, -apple-system, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+      --mono: ui-monospace, "Cascadia Code", "Consolas", monospace;
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+    .page {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: clamp(1rem, 4vw, 1.75rem);
+      padding-bottom: clamp(5rem, 14vw, 6.5rem);
+    }
+
+    /* 表示モード: 10進まわりを隠す */
+    body.view-hide-dec .view-part-dec,
+    body.view-hide-dec .scroll-col--dec {
+      display: none !important;
+    }
+    body.view-hide-dec .scroll-head,
+    body.view-hide-dec .row {
+      grid-template-columns: 1fr !important;
+    }
+    /* 表示モード: 2進まわりを隠す */
+    body.view-hide-bin .view-part-bin,
+    body.view-hide-bin .scroll-col--bin {
+      display: none !important;
+    }
+    body.view-hide-bin .scroll-head,
+    body.view-hide-bin .row {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* 2進/10進どちらかを隠すモードでは対応一覧は常に非表示 */
+    body.view-hide-dec .view-part-list,
+    body.view-hide-bin .view-part-list {
+      display: none !important;
+    }
+    /* すべて表示モードで「対応一覧を表示」オフのとき */
+    body.view-all.list-hidden .view-part-list {
+      display: none !important;
+    }
+
+    body.hide-weights .bit-cell .w,
+    body.hide-weights .bit-cell .bit-pow {
+      display: none !important;
+    }
+
+    body.view-hide-dec .step-btns--dec {
+      display: none !important;
+    }
+    body:not(.view-hide-dec) .step-btns--bin {
+      display: none !important;
+    }
+
+    .view-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 0.55rem clamp(0.75rem, 3vw, 1.25rem);
+      padding-bottom: calc(0.55rem + env(safe-area-inset-bottom, 0));
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      box-shadow: 0 -4px 20px rgba(20, 24, 38, 0.08);
+    }
+    .view-bar__row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem 0.75rem;
+      width: 100%;
+    }
+    .view-bar__list-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.82rem;
+      cursor: pointer;
+      padding: 0.3rem 0.5rem;
+      border-radius: 8px;
+    }
+    .view-bar__list--locked .view-bar__list-label--list {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .view-bar__list--locked .view-bar__list-label--list input {
+      cursor: not-allowed;
+    }
+    .view-bar__row.view-bar__list {
+      justify-content: space-between;
+      gap: 0.75rem 1rem;
+    }
+    .view-bar__title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-right: 0.25rem;
+    }
+    .view-bar__opts {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem 0.5rem;
+    }
+    .view-bar label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.82rem;
+      cursor: pointer;
+      padding: 0.35rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .view-bar label:hover {
+      background: var(--surface-2);
+    }
+    .view-bar input {
+      accent-color: var(--accent);
+      width: 1rem;
+      height: 1rem;
+    }
+    .view-bar label.view-bar__active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .page-header {
+      margin-bottom: 1.5rem;
+    }
+    .page-header h1 {
+      font-size: clamp(1.15rem, 2.8vw, 1.45rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.5rem;
+      color: var(--text);
+    }
+
+    .wrap {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: clamp(1rem, 3vw, 1.35rem);
+      align-items: start;
+    }
+    @media (min-width: 880px) {
+      .wrap {
+        grid-template-columns: minmax(280px, 1fr) minmax(260px, 380px);
+      }
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: clamp(0.85rem, 2.5vw, 1.15rem);
+      box-shadow: var(--shadow);
+    }
+    .panel--list {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 0.65rem;
+    }
+    .section-title:not(:first-child) {
+      margin-top: 1.35rem;
+    }
+
+    .readout-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.65rem;
+    }
+    .readout-head .section-title {
+      margin-bottom: 0;
+    }
+    .readout-head__btns {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.35rem;
+    }
+    .btn-tool,
+    .btn-reset {
+      flex: 0 0 auto;
+      font-family: inherit;
+      font-size: 0.74rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 0.38rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
+      white-space: nowrap;
+    }
+    .btn-tool:hover:not(:disabled) {
+      border-color: var(--accent-2);
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+    .btn-tool:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+    }
+    .btn-reset:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+    .btn-reset:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+    }
+    .answer-reveal {
+      margin: 0 0 0.65rem;
+      padding: 0.45rem 0.65rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-sm);
+      text-align: center;
+    }
+    .answer-reveal[hidden] {
+      display: none !important;
+    }
+    body.view-hide-bin .answer-reveal {
+      font-family: var(--mono);
+    }
+
+    .readout {
+      text-align: right;
+    }
+    @media (max-width: 600px) {
+      .readout {
+        text-align: center;
+      }
+      .num-row {
+        justify-content: center !important;
+      }
+      .num-main {
+        text-align: center !important;
+      }
+      .controls {
+        justify-content: center !important;
+      }
+      .controls label {
+        justify-content: center !important;
+        flex-wrap: wrap;
+      }
+      .bin-jump-block {
+        align-items: center !important;
+      }
+      .bin-jump-row {
+        justify-content: center !important;
+      }
+      .bit-cells {
+        justify-content: center !important;
+      }
+      .dec-jump-wrap {
+        align-items: center !important;
+      }
+      .digit-cells {
+        justify-content: center !important;
+      }
+      .readout-head {
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+    }
+
+    .readout .big {
+      font-variant-numeric: tabular-nums;
+    }
+    .num-label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 0.2rem;
+      letter-spacing: 0.08em;
+    }
+    .num-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      margin-bottom: 0.65rem;
+    }
+    .num-main {
+      flex: 1 1 auto;
+      min-width: 0;
+      text-align: right;
+    }
+    .num-side {
+      flex: 0 0 2.25rem;
+      width: 2.25rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .readout .dec {
+      font-size: clamp(1.85rem, 7vw, 2.6rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin: 0;
+      color: var(--text);
+    }
+    .readout .bin {
+      font-family: var(--mono);
+      font-size: clamp(1.5rem, 5.5vw, 2.45rem);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      word-break: break-all;
+      line-height: 1.15;
+      color: var(--accent);
+    }
+    .step-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .step-btns button {
+      width: 2.25rem;
+      height: 1.4rem;
+      min-height: 36px;
+      padding: 0;
+      font-size: 0.68rem;
+      line-height: 1;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface-2);
+      color: var(--text);
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .step-btns button:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+    .step-btns button:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      justify-content: flex-end;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .controls label {
+      font-size: 0.86rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.4rem;
+      color: var(--text);
+    }
+    .controls input[type="number"] {
+      width: 4.75rem;
+      max-width: 100%;
+      padding: 0.4rem 0.45rem;
+      font-size: 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+    }
+    .controls input[type="number"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .controls--first {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+
+    .bin-jump-block {
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.65rem;
+      width: 100%;
+      border-top: none;
+      margin-top: 0;
+      padding-top: 0;
+    }
+    .bin-jump-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: flex-end;
+      width: 100%;
+    }
+    .bit-cells {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: flex-end;
+      gap: 0.4rem;
+      width: 100%;
+    }
+    @media (max-width: 520px) {
+      .bit-cells {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.55rem 0.35rem;
+        justify-items: center;
+      }
+    }
+    .bit-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.15rem;
+    }
+    .bit-step {
+      width: 2rem;
+      min-height: 32px;
+      height: 1.25rem;
+      padding: 0;
+      font-size: 0.6rem;
+      line-height: 1;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface-2);
+      color: var(--text);
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .bit-step:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+    .bit-step:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+    .bit-pow {
+      font-size: 0.62rem;
+      line-height: 1.35;
+      color: var(--muted);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      text-align: center;
+      max-width: 3.8rem;
+      letter-spacing: -0.02em;
+    }
+    .bit-pow sup {
+      font-size: 0.65em;
+      font-weight: 600;
+      line-height: 0;
+      position: relative;
+      top: -0.4em;
+      color: inherit;
+    }
+    .bit-cell .w {
+      font-size: 0.62rem;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+    }
+    .bit-in {
+      width: 2rem;
+      min-width: 44px;
+      min-height: 44px;
+      height: 2rem;
+      padding: 0;
+      text-align: center;
+      font-size: 1.05rem;
+      font-family: var(--mono);
+      font-weight: 700;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+    }
+    /* 2進ジャンプ: 0=OFF 暗く / 1=ON 黄み */
+    .bit-cell--off .bit-in {
+      background: #dfe2ea;
+      color: #5c6478;
+      border-color: #b8becd;
+    }
+    .bit-cell--off .bit-in:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .bit-cell--on .bit-in {
+      background: linear-gradient(180deg, #fff8e1 0%, #ffecb3 100%);
+      color: #6d4c00;
+      border-color: #d4a832;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+    }
+    .bit-cell--on .bit-in:focus {
+      outline: none;
+      border-color: #b8860b;
+      box-shadow: 0 0 0 3px rgba(212, 168, 50, 0.28);
+    }
+    .controls.dec-jump-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.65rem;
+      width: 100%;
+    }
+    .digit-cells {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      width: 100%;
+    }
+    @media (max-width: 400px) {
+      .digit-cells {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        justify-items: center;
+      }
+    }
+    .list-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.5rem;
+    }
+    .list-heading h2 {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .list-heading span {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .scroll-panel {
+      width: 100%;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .scroll-head {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 0.5rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      padding: 0.4rem 0.6rem;
+      background: var(--surface-2);
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      border: 1px solid var(--border);
+      border-bottom: none;
+    }
+    .scroll-head span:last-child {
+      text-align: right;
+      font-family: var(--mono);
+    }
+    #scroller {
+      height: min(52vh, 400px);
+      min-height: 200px;
+      overflow: auto;
+      scroll-snap-type: y mandatory;
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      -webkit-overflow-scrolling: touch;
+    }
+    @media (min-width: 880px) {
+      #scroller {
+        height: min(60vh, 440px);
+      }
+    }
+    .row {
+      height: var(--row-h);
+      scroll-snap-align: center;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 0.5rem;
+      align-items: center;
+      padding: 0 0.6rem;
+      font-size: 0.88rem;
+      font-variant-numeric: tabular-nums;
+      border-bottom: 1px solid #e8ebf2;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .row:hover {
+      background: var(--surface-2);
+    }
+    .row .d { text-align: right; font-weight: 500; }
+    .row .b {
+      font-family: var(--mono);
+      text-align: right;
+      font-size: 0.74rem;
+      letter-spacing: -0.02em;
+      color: var(--muted);
+    }
+    .row.active {
+      background: var(--accent-soft);
+      font-weight: 600;
+    }
+    .row.active .b {
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="page-header">
+      <h1>10進 ↔ 2進ラボ</h1>
+    </header>
+
+    <div class="wrap">
+      <div class="panel readout">
+        <div class="readout-head">
+          <p class="section-title"></p>
+          <div class="readout-head__btns">
+            <button type="button" class="btn-tool" id="btnRandom" aria-label="0〜255のランダムな値にする">ランダム</button>
+            <button type="button" class="btn-tool" id="btnAnswer" aria-label="隠している方の基数を表示" title="2進のみ／10進のみの表示のとき使えます">答え</button>
+            <button type="button" class="btn-reset" id="btnResetValue" aria-label="値を0にリセット">値リセット</button>
+          </div>
+        </div>
+        <p class="answer-reveal" id="answerReveal" hidden aria-live="polite"></p>
+        <div class="num-row view-part-dec">
+          <div class="num-main">
+            <span class="num-label">10進</span>
+            <div class="big dec" id="outDec">0</div>
+          </div>
+          <div class="num-side">
+            <div class="step-btns step-btns--dec">
+              <button type="button" id="stepUp" aria-label="1増やす">▲</button>
+              <button type="button" id="stepDown" aria-label="1減らす">▼</button>
+            </div>
+          </div>
+        </div>
+        <div class="num-row view-part-bin">
+          <div class="num-main">
+            <span class="num-label">2進（省略形）</span>
+            <div class="big bin" id="outBin">0</div>
+          </div>
+          <div class="num-side">
+            <div class="step-btns step-btns--bin">
+              <button type="button" id="stepUpBin" aria-label="1増やす">▲</button>
+              <button type="button" id="stepDownBin" aria-label="1減らす">▼</button>
+            </div>
+          </div>
+        </div>
+        <p class="section-title view-part-dec">ジャンプ（10進）</p>
+        <div class="controls controls--first dec-jump-wrap view-part-dec">
+          <div class="bin-jump-row">
+            <div class="digit-cells" id="decCells" aria-label="10進3桁"></div>
+          </div>
+        </div>
+
+        <p class="section-title view-part-bin">ジャンプ（2進・8 ビット）</p>
+        <div class="controls bin-jump-block view-part-bin">
+          <div class="bin-jump-row">
+            <div class="bit-cells" id="bitCells" aria-label="2進8桁"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel--list view-part-list">
+        <div class="list-heading">
+          <h2>対応一覧</h2>
+          <span>タップ／クリックでもジャンプ</span>
+        </div>
+        <div class="scroll-panel">
+          <div class="scroll-head"><span class="scroll-col scroll-col--dec">10進</span><span class="scroll-col scroll-col--bin">2進</span></div>
+          <div id="scroller"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="view-bar" role="toolbar" aria-label="表示の切り替え">
+    <div class="view-bar__row">
+      <span class="view-bar__title">表示</span>
+      <div class="view-bar__opts">
+        <label>
+          <input type="radio" name="viewMode" value="all" checked>
+          すべて表示
+        </label>
+        <label>
+          <input type="radio" name="viewMode" value="hide-bin">
+          10進数のみ
+        </label>
+        <label>
+          <input type="radio" name="viewMode" value="hide-dec">
+          2進数のみ
+        </label>
+      </div>
+    </div>
+    <div class="view-bar__row view-bar__list" id="listToggleWrap">
+      <label class="view-bar__list-label view-bar__list-label--list">
+        <input type="checkbox" id="toggleList" checked>
+        <span>対応一覧を表示</span>
+      </label>
+      <label class="view-bar__list-label">
+        <input type="checkbox" id="toggleWeights" checked>
+        <span>重みを表示</span>
+      </label>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const ROW_H = 36;
+      const MIN = 0;
+      const MAX = 255;
+      const DEC_WEIGHTS = [100, 10, 1];
+      const WEIGHTS = [128, 64, 32, 16, 8, 4, 2, 1];
+      const scroller = document.getElementById("scroller");
+      const decCells = document.getElementById("decCells");
+      const bitCells = document.getElementById("bitCells");
+      const outDec = document.getElementById("outDec");
+      const stepUp = document.getElementById("stepUp");
+      const stepDown = document.getElementById("stepDown");
+      const stepUpBin = document.getElementById("stepUpBin");
+      const stepDownBin = document.getElementById("stepDownBin");
+      const btnResetValue = document.getElementById("btnResetValue");
+      const btnRandom = document.getElementById("btnRandom");
+      const btnAnswer = document.getElementById("btnAnswer");
+      const answerReveal = document.getElementById("answerReveal");
+      const outBin = document.getElementById("outBin");
+      const rows = [];
+      const decInputs = [];
+      const decUpBtns = [];
+      const decDownBtns = [];
+      const bitInputs = [];
+      const bitUpBtns = [];
+      const bitDownBtns = [];
+      let padY = 0;
+
+      function syncDecJumpFromN(n) {
+        n = Math.max(MIN, Math.min(MAX, Math.round(Number(n))));
+        decInputs[0].value = String(Math.floor(n / 100));
+        decInputs[1].value = String(Math.floor((n % 100) / 10));
+        decInputs[2].value = String(n % 10);
+      }
+
+      function readDecJumpAsNum() {
+        let h = parseInt(decInputs[0].value, 10);
+        let t = parseInt(decInputs[1].value, 10);
+        let o = parseInt(decInputs[2].value, 10);
+        if (!Number.isFinite(h)) h = 0;
+        if (!Number.isFinite(t)) t = 0;
+        if (!Number.isFinite(o)) o = 0;
+        h = Math.max(0, Math.min(9, h));
+        t = Math.max(0, Math.min(9, t));
+        o = Math.max(0, Math.min(9, o));
+        return Math.max(MIN, Math.min(MAX, h * 100 + t * 10 + o));
+      }
+
+      function updateDecJumpButtons() {
+        const n = readDecJumpAsNum();
+        decUpBtns[0].disabled = n + 100 > MAX;
+        decUpBtns[1].disabled = n + 10 > MAX;
+        decUpBtns[2].disabled = n + 1 > MAX;
+        decDownBtns[0].disabled = n - 100 < MIN;
+        decDownBtns[1].disabled = n - 10 < MIN;
+        decDownBtns[2].disabled = n - 1 < MIN;
+      }
+
+      for (let i = 0; i < 3; i++) {
+        const wrap = document.createElement("div");
+        wrap.className = "bit-cell";
+
+        const btnUp = document.createElement("button");
+        btnUp.type = "button";
+        btnUp.className = "bit-step";
+        btnUp.textContent = "▲";
+
+        const pow = document.createElement("span");
+        pow.className = "bit-pow";
+        const exp10 = 2 - i;
+        pow.innerHTML = "10<sup>" + exp10 + "</sup>";
+        pow.setAttribute("aria-label", "10の" + exp10 + "乗");
+
+        const w = document.createElement("span");
+        w.className = "w";
+        w.textContent = String(DEC_WEIGHTS[i]);
+
+        const inp = document.createElement("input");
+        inp.type = "text";
+        inp.className = "bit-in";
+        inp.maxLength = 1;
+        inp.value = "0";
+        inp.setAttribute("inputmode", "numeric");
+        inp.setAttribute("aria-label", "10進の桁 " + DEC_WEIGHTS[i]);
+
+        const btnDown = document.createElement("button");
+        btnDown.type = "button";
+        btnDown.className = "bit-step";
+        btnDown.textContent = "▼";
+
+        btnUp.setAttribute("aria-label", "+" + DEC_WEIGHTS[i]);
+        btnDown.setAttribute("aria-label", "−" + DEC_WEIGHTS[i]);
+
+        (function (idx) {
+          btnUp.addEventListener("click", function () {
+            const cur = readDecJumpAsNum();
+            setN(Math.min(MAX, cur + DEC_WEIGHTS[idx]));
+          });
+          btnDown.addEventListener("click", function () {
+            const cur = readDecJumpAsNum();
+            setN(Math.max(MIN, cur - DEC_WEIGHTS[idx]));
+          });
+        })(i);
+
+        inp.addEventListener("input", function () {
+          const c = this.value.replace(/[^0-9]/g, "").slice(-1);
+          this.value = c === "" ? "0" : c;
+          updateDecJumpButtons();
+        });
+        inp.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            setN(readDecJumpAsNum());
+          }
+        });
+
+        wrap.appendChild(btnUp);
+        wrap.appendChild(w);
+        wrap.appendChild(inp);
+        wrap.appendChild(pow);
+        wrap.appendChild(btnDown);
+        decCells.appendChild(wrap);
+        decInputs.push(inp);
+        decUpBtns.push(btnUp);
+        decDownBtns.push(btnDown);
+      }
+
+      function updateBinBitButtons() {
+        for (let i = 0; i < 8; i++) {
+          const is1 = bitInputs[i].value === "1";
+          bitUpBtns[i].disabled = is1;
+          bitDownBtns[i].disabled = !is1;
+          const cell = bitInputs[i].closest(".bit-cell");
+          if (cell) {
+            cell.classList.toggle("bit-cell--on", is1);
+            cell.classList.toggle("bit-cell--off", !is1);
+          }
+        }
+      }
+
+      for (let i = 0; i < 8; i++) {
+        const wrap = document.createElement("div");
+        wrap.className = "bit-cell";
+
+        const btnUp = document.createElement("button");
+        btnUp.type = "button";
+        btnUp.className = "bit-step";
+        btnUp.textContent = "▲";
+
+        const pow = document.createElement("span");
+        pow.className = "bit-pow";
+        const exp2 = 7 - i;
+        pow.innerHTML = "2<sup>" + exp2 + "</sup>";
+        pow.setAttribute("aria-label", "2の" + exp2 + "乗");
+
+        const w = document.createElement("span");
+        w.className = "w";
+        w.textContent = String(WEIGHTS[i]);
+
+        const inp = document.createElement("input");
+        inp.type = "text";
+        inp.className = "bit-in";
+        inp.maxLength = 1;
+        inp.value = "0";
+        inp.setAttribute("inputmode", "numeric");
+        inp.setAttribute("aria-label", "ビット値 " + WEIGHTS[i]);
+
+        const btnDown = document.createElement("button");
+        btnDown.type = "button";
+        btnDown.className = "bit-step";
+        btnDown.textContent = "▼";
+
+        btnUp.setAttribute("aria-label", WEIGHTS[i] + "の位を1に");
+        btnDown.setAttribute("aria-label", WEIGHTS[i] + "の位を0に");
+
+        btnUp.addEventListener("click", function () {
+          inp.value = "1";
+          updateBinBitButtons();
+          setN(readBitsAsNum());
+        });
+        btnDown.addEventListener("click", function () {
+          inp.value = "0";
+          updateBinBitButtons();
+          setN(readBitsAsNum());
+        });
+
+        inp.addEventListener("input", function () {
+          const c = this.value.replace(/[^01]/g, "").slice(-1);
+          this.value = c === "" ? "0" : c;
+          updateBinBitButtons();
+        });
+        inp.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            setN(readBitsAsNum());
+          }
+        });
+
+        wrap.appendChild(btnUp);
+        wrap.appendChild(w);
+        wrap.appendChild(inp);
+        wrap.appendChild(pow);
+        wrap.appendChild(btnDown);
+        bitCells.appendChild(wrap);
+        bitInputs.push(inp);
+        bitUpBtns.push(btnUp);
+        bitDownBtns.push(btnDown);
+      }
+      updateBinBitButtons();
+
+      function syncBitsFromN(n) {
+        const s = toBin8(n);
+        for (let i = 0; i < 8; i++) {
+          bitInputs[i].value = s.charAt(i);
+        }
+      }
+
+      function readBitsAsNum() {
+        let s = "";
+        for (let i = 0; i < 8; i++) {
+          const v = bitInputs[i].value.trim();
+          s += v === "1" ? "1" : "0";
+        }
+        return parseInt(s, 2);
+      }
+
+      function syncPadding() {
+        const ch = scroller.clientHeight;
+        padY = Math.max(0, ch / 2 - ROW_H / 2);
+        scroller.style.paddingTop = padY + "px";
+        scroller.style.paddingBottom = padY + "px";
+      }
+
+      function toBin8(n) {
+        return n.toString(2).padStart(8, "0");
+      }
+
+      function toBinNatural(n) {
+        return n.toString(2);
+      }
+
+      function renderRow(n) {
+        const el = document.createElement("div");
+        el.className = "row";
+        el.dataset.n = String(n);
+        el.innerHTML =
+          '<span class="d scroll-col scroll-col--dec">' +
+          n +
+          '</span><span class="b scroll-col scroll-col--bin">' +
+          toBinNatural(n) +
+          "</span>";
+        el.addEventListener("click", function () {
+          setN(n);
+        });
+        return el;
+      }
+
+      for (let n = MIN; n <= MAX; n++) {
+        const r = renderRow(n);
+        scroller.appendChild(r);
+        rows.push(r);
+      }
+
+      function setHighlight(n) {
+        rows.forEach(function (el, i) {
+          el.classList.toggle("active", i === n);
+        });
+      }
+
+      let programScroll = false;
+
+      function clearAnswerReveal() {
+        if (!answerReveal) return;
+        answerReveal.textContent = "";
+        answerReveal.hidden = true;
+      }
+
+      function syncAnswerButton() {
+        if (!btnAnswer) return;
+        const binOnly = document.body.classList.contains("view-hide-dec");
+        const decOnly = document.body.classList.contains("view-hide-bin");
+        btnAnswer.disabled = !(binOnly || decOnly);
+        btnAnswer.title = btnAnswer.disabled
+          ? "2進のみ／10進のみの表示のとき使えます"
+          : binOnly
+            ? "現在の値の10進を表示"
+            : "現在の値の2進を表示";
+      }
+
+      function applyN(n) {
+        clearAnswerReveal();
+        n = Math.max(MIN, Math.min(MAX, Math.round(Number(n))));
+        outDec.textContent = String(n);
+        outBin.textContent = toBinNatural(n);
+        syncDecJumpFromN(n);
+        syncBitsFromN(n);
+        const upDis = n >= MAX;
+        const downDis = n <= MIN;
+        [stepUp, stepUpBin].forEach(function (b) {
+          if (b) b.disabled = upDis;
+        });
+        [stepDown, stepDownBin].forEach(function (b) {
+          if (b) b.disabled = downDis;
+        });
+        updateDecJumpButtons();
+        updateBinBitButtons();
+        if (btnResetValue) btnResetValue.disabled = n <= MIN;
+        setHighlight(n);
+        return n;
+      }
+
+      function currentN() {
+        const x = Number(outDec.textContent);
+        return Number.isFinite(x) ? x : 0;
+      }
+
+      function setN(n) {
+        const v = applyN(n);
+        programScroll = true;
+        scroller.scrollTop = v * ROW_H;
+        requestAnimationFrame(function () {
+          programScroll = false;
+        });
+        return v;
+      }
+
+      let scrollTimer;
+      scroller.addEventListener("scroll", function () {
+        if (programScroll) {
+          clearTimeout(scrollTimer);
+          return;
+        }
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(function () {
+          if (programScroll) return;
+          const cy = scroller.scrollTop + scroller.clientHeight / 2;
+          const idx = Math.min(MAX, Math.max(0, Math.floor((cy - padY) / ROW_H)));
+          const nFinal = idx;
+          applyN(nFinal);
+        }, 40);
+      });
+
+      function bindStepPair(upBtn, downBtn) {
+        if (upBtn) upBtn.addEventListener("click", function () { setN(currentN() + 1); });
+        if (downBtn) downBtn.addEventListener("click", function () { setN(currentN() - 1); });
+      }
+      bindStepPair(stepUp, stepDown);
+      bindStepPair(stepUpBin, stepDownBin);
+      if (btnResetValue) {
+        btnResetValue.addEventListener("click", function () {
+          setN(MIN);
+        });
+      }
+      if (btnRandom) {
+        btnRandom.addEventListener("click", function () {
+          setN(MIN + Math.floor(Math.random() * (MAX - MIN + 1)));
+        });
+      }
+      if (btnAnswer && answerReveal) {
+        btnAnswer.addEventListener("click", function () {
+          if (btnAnswer.disabled) return;
+          const n = currentN();
+          if (document.body.classList.contains("view-hide-dec")) {
+            answerReveal.textContent = String(n);
+          } else if (document.body.classList.contains("view-hide-bin")) {
+            answerReveal.textContent = toBinNatural(n);
+          } else {
+            return;
+          }
+          answerReveal.hidden = false;
+        });
+      }
+
+      function isArrowNavIgnoredTarget(el) {
+        if (!el || !el.tagName) return true;
+        const tag = el.tagName;
+        if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return true;
+        if (el.isContentEditable) return true;
+        return false;
+      }
+
+      document.addEventListener("keydown", function (e) {
+        if (isArrowNavIgnoredTarget(e.target)) return;
+        const cur = currentN();
+        if (e.key === "ArrowUp") {
+          e.preventDefault();
+          setN(cur + 1);
+        } else if (e.key === "ArrowDown") {
+          e.preventDefault();
+          setN(cur - 1);
+        } else if (e.key === "PageUp") {
+          e.preventDefault();
+          setN(cur - 10);
+        } else if (e.key === "PageDown") {
+          e.preventDefault();
+          setN(cur + 10);
+        }
+      });
+
+      scroller.setAttribute("tabindex", "0");
+
+      window.addEventListener("resize", function () {
+        const prev = currentN();
+        syncPadding();
+        setN(prev);
+      });
+
+      function syncListPanelFromToggle() {
+        const el = document.getElementById("toggleList");
+        const wrap = document.getElementById("listToggleWrap");
+        if (!el || !wrap) return;
+        const isAll = document.body.classList.contains("view-all");
+        el.disabled = !isAll;
+        wrap.classList.toggle("view-bar__list--locked", !isAll);
+        if (isAll) {
+          document.body.classList.toggle("list-hidden", !el.checked);
+        } else {
+          document.body.classList.remove("list-hidden");
+        }
+      }
+
+      function syncWeightsFromToggle() {
+        const el = document.getElementById("toggleWeights");
+        if (!el) return;
+        document.body.classList.toggle("hide-weights", !el.checked);
+      }
+
+      function applyViewMode(value, persist) {
+        document.body.classList.remove("view-hide-dec", "view-hide-bin", "view-all");
+        if (value === "hide-dec") document.body.classList.add("view-hide-dec");
+        else if (value === "hide-bin") document.body.classList.add("view-hide-bin");
+        else document.body.classList.add("view-all");
+
+        document.querySelectorAll('.view-bar__opts input[name="viewMode"]').forEach(function (radio) {
+          const lab = radio.closest("label");
+          if (lab) lab.classList.toggle("view-bar__active", radio.checked);
+        });
+        syncListPanelFromToggle();
+        syncAnswerButton();
+        clearAnswerReveal();
+        if (persist !== false) {
+          try {
+            localStorage.setItem("decimalBinaryLabView", value);
+          } catch (e) {}
+        }
+        window.dispatchEvent(new Event("resize"));
+      }
+
+      document.querySelectorAll('input[name="viewMode"]').forEach(function (radio) {
+        radio.addEventListener("change", function () {
+          if (this.checked) applyViewMode(this.value, true);
+        });
+      });
+
+      (function initViewAndList() {
+        try {
+          const listVis = localStorage.getItem("decimalBinaryLabListVisible");
+          const tl = document.getElementById("toggleList");
+          if (tl) {
+            if (listVis === "0") tl.checked = false;
+            else tl.checked = true;
+          }
+        } catch (e) {}
+
+        try {
+          const wVis = localStorage.getItem("decimalBinaryLabWeightsVisible");
+          const tw = document.getElementById("toggleWeights");
+          if (tw) {
+            if (wVis === "0") tw.checked = false;
+            else tw.checked = true;
+          }
+        } catch (e) {}
+        syncWeightsFromToggle();
+
+        try {
+          const saved = localStorage.getItem("decimalBinaryLabView");
+          if (saved === "hide-dec" || saved === "hide-bin") {
+            const r = document.querySelector('input[name="viewMode"][value="' + saved + '"]');
+            if (r) {
+              r.checked = true;
+              applyViewMode(saved, false);
+            } else {
+              applyViewMode("all", false);
+            }
+          } else {
+            applyViewMode("all", false);
+          }
+        } catch (e) {
+          applyViewMode("all", false);
+        }
+
+        const tl = document.getElementById("toggleList");
+        if (tl) {
+          tl.addEventListener("change", function () {
+            if (this.disabled) return;
+            try {
+              localStorage.setItem("decimalBinaryLabListVisible", this.checked ? "1" : "0");
+            } catch (e) {}
+            syncListPanelFromToggle();
+            window.dispatchEvent(new Event("resize"));
+          });
+        }
+
+        const tw = document.getElementById("toggleWeights");
+        if (tw) {
+          tw.addEventListener("change", function () {
+            try {
+              localStorage.setItem("decimalBinaryLabWeightsVisible", this.checked ? "1" : "0");
+            } catch (e) {}
+            syncWeightsFromToggle();
+            window.dispatchEvent(new Event("resize"));
+          });
+        }
+      })();
+
+      requestAnimationFrame(function () {
+        syncPadding();
+        syncAnswerButton();
+        setN(0);
+      });
+    })();
+  </script>
+</body>
+</html>
