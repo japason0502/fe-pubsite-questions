@@ -81,6 +81,12 @@
     body:not(.view-hide-dec) .step-btns--bin {
       display: none !important;
     }
+    .num-side--dec-mul {
+      display: none !important;
+    }
+    body.view-hide-bin .num-side--dec-mul {
+      display: flex !important;
+    }
 
     .view-bar {
       position: fixed;
@@ -126,6 +132,14 @@
     .view-bar__row.view-bar__list {
       justify-content: space-between;
       gap: 0.75rem 1rem;
+    }
+    .view-bar__list-trailing {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.35rem 0.75rem;
+      margin-left: auto;
     }
     .view-bar__title {
       font-size: 0.72rem;
@@ -326,6 +340,25 @@
         align-items: center;
         text-align: center;
       }
+      .divmod-equation {
+        text-align: center;
+      }
+      .divmod-divisor-row {
+        justify-content: center;
+      }
+      .divmod-shift-hint {
+        margin-left: 0;
+        flex: 1 1 100%;
+        text-align: left;
+      }
+      .divmod-val {
+        justify-content: center;
+        text-align: center;
+      }
+      .divmod-grid-label {
+        text-align: center;
+        padding-right: 0;
+      }
     }
 
     .readout .big {
@@ -357,6 +390,16 @@
       display: flex;
       justify-content: center;
       align-items: center;
+    }
+    .num-side--readout-spacer {
+      display: none;
+    }
+    body.view-all .num-row.view-part-dec .num-side--readout-spacer {
+      display: flex;
+      flex: 0 0 2.25rem;
+      width: 2.25rem;
+      visibility: hidden;
+      pointer-events: none;
     }
     .readout .dec {
       font-size: clamp(1.85rem, 7vw, 2.6rem);
@@ -401,6 +444,12 @@
     .step-btns button:disabled {
       opacity: 0.35;
       cursor: not-allowed;
+    }
+    .step-btns--bin-mul button,
+    .step-btns--dec-mul button {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
     }
 
     .controls {
@@ -674,9 +723,151 @@
     .row.active .b {
       color: var(--text);
     }
+
+    /* 割り算（商・余り） */
+    .divmod-panel {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .divmod-panel[hidden] {
+      display: none !important;
+    }
+    .divmod-divisor-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 1rem;
+      margin-bottom: 0.65rem;
+      font-size: 0.82rem;
+    }
+    .divmod-shift-hint {
+      flex: 1 1 auto;
+      min-width: 0;
+      margin-left: 0.5rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      line-height: 1.35;
+      text-align: left;
+    }
+    .divmod-shift-hint-num {
+      display: inline-block;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 0.12em 0.4em 0.15em;
+      border-radius: 6px;
+      line-height: 1.2;
+      vertical-align: baseline;
+    }
+    .divmod-divisor {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .divmod-divisor-op {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .divmod-divisor select {
+      min-width: 4.25rem;
+      padding: 0.35rem 1.75rem 0.35rem 0.4rem;
+      font-size: 0.95rem;
+      font-family: inherit;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      font-variant-numeric: tabular-nums;
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+    .divmod-divisor select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .divmod-equation {
+      margin: 0 0 0.65rem;
+      font-size: 0.92rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .divmod-align-row {
+      margin-bottom: 0;
+      align-items: stretch;
+    }
+    .divmod-align-side {
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .divmod-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      font-size: 0.88rem;
+      width: 100%;
+    }
+    .divmod-grid-row {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr);
+      gap: 0.35rem 0.5rem;
+      align-items: stretch;
+    }
+    .divmod-head-cell {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      padding-bottom: 0.05rem;
+      text-align: center;
+    }
+    .divmod-grid-corner,
+    .divmod-grid-label {
+      min-width: 2.75rem;
+      box-sizing: border-box;
+    }
+    .divmod-grid-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--text);
+      text-align: right;
+      padding-right: 0.25rem;
+    }
+    .divmod-val {
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(1.05rem, 3.6vw, 1.35rem);
+      text-align: right;
+      padding: 0.4rem 0.55rem;
+      min-height: 2.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      box-sizing: border-box;
+      border-radius: var(--radius-sm);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      line-height: 1.2;
+      word-break: break-all;
+    }
+    .divmod-val.dec { font-family: inherit; color: var(--text); }
+    .divmod-val.bin { font-family: var(--mono); color: var(--accent); }
+    body.view-hide-dec .divmod-row--dec { display: none !important; }
+    body.view-hide-bin .divmod-row--bin { display: none !important; }
   </style>
 </head>
-<body>
+<body class="view-all">
   <div class="page">
     <header class="page-header">
       <h1>10進 ↔ 2進ラボ</h1>
@@ -689,7 +880,7 @@
           <div class="readout-head__btns">
             <button type="button" class="btn-tool" id="btnRandom" aria-label="0〜255のランダムな値にする">ランダム</button>
             <button type="button" class="btn-tool" id="btnAnswer" aria-label="隠している方の基数を表示" title="2進のみ／10進のみの表示のとき使えます">答え</button>
-            <button type="button" class="btn-reset" id="btnResetValue" aria-label="値を0にリセット">値リセット</button>
+            <button type="button" class="btn-reset" id="btnResetValue" aria-label="値を0にリセット">値をリセット</button>
           </div>
         </div>
         <p class="answer-reveal" id="answerReveal" hidden aria-live="polite"></p>
@@ -697,6 +888,13 @@
           <div class="num-main">
             <span class="num-label">10進</span>
             <div class="big dec" id="outDec">0</div>
+          </div>
+          <div class="num-side num-side--readout-spacer" aria-hidden="true"></div>
+          <div class="num-side num-side--dec-mul">
+            <div class="step-btns step-btns--dec-mul">
+              <button type="button" id="decMul10" aria-label="10倍">×10</button>
+              <button type="button" id="decDiv10" aria-label="10で割る（切り捨て）">÷10</button>
+            </div>
           </div>
           <div class="num-side">
             <div class="step-btns step-btns--dec">
@@ -711,9 +909,51 @@
             <div class="big bin" id="outBin">0</div>
           </div>
           <div class="num-side">
+            <div class="step-btns step-btns--bin-mul">
+              <button type="button" id="binMul2" aria-label="2倍（左シフト）">×2</button>
+              <button type="button" id="binDiv2" aria-label="半分（右シフト・切り捨て）">÷2</button>
+            </div>
+          </div>
+          <div class="num-side">
             <div class="step-btns step-btns--bin">
               <button type="button" id="stepUpBin" aria-label="1増やす">▲</button>
               <button type="button" id="stepDownBin" aria-label="1減らす">▼</button>
+            </div>
+          </div>
+        </div>
+        <div class="divmod-panel" id="divmodSection" hidden>
+          <p class="section-title">割り算（被除数＝上の数）</p>
+          <div class="divmod-divisor-row">
+            <label class="divmod-divisor">
+              <span class="divmod-divisor-op" aria-hidden="true">÷</span>
+              <select id="divisorInput" aria-label="除数"></select>
+            </label>
+            <span class="divmod-shift-hint" id="divmodShiftHint"></span>
+          </div>
+          <div class="divmod-results" id="divmodResults">
+            <div class="num-row divmod-align-row">
+              <div class="num-main">
+                <p class="divmod-equation" id="divmodEquation"></p>
+                <div class="divmod-grid" id="divmodGrid" aria-label="商と余り">
+                  <div class="divmod-grid-row divmod-grid-row--head">
+                    <span class="divmod-grid-corner" aria-hidden="true"></span>
+                    <span class="divmod-head-cell">商</span>
+                    <span class="divmod-head-cell">余り</span>
+                  </div>
+                  <div class="divmod-grid-row divmod-row--bin view-part-bin">
+                    <span class="divmod-grid-label">2進</span>
+                    <span class="divmod-val bin" id="outQuotBin">0</span>
+                    <span class="divmod-val bin" id="outRemBin">0</span>
+                  </div>
+                  <div class="divmod-grid-row divmod-row--dec view-part-dec">
+                    <span class="divmod-grid-label">10進</span>
+                    <span class="divmod-val dec" id="outQuotDec">0</span>
+                    <span class="divmod-val dec" id="outRemDec">0</span>
+                  </div>
+                </div>
+              </div>
+              <div class="num-side divmod-align-side" aria-hidden="true"></div>
+              <div class="num-side divmod-align-side" aria-hidden="true"></div>
             </div>
           </div>
         </div>
@@ -768,10 +1008,16 @@
         <input type="checkbox" id="toggleList" checked>
         <span>対応一覧を表示</span>
       </label>
-      <label class="view-bar__list-label">
-        <input type="checkbox" id="toggleWeights" checked>
-        <span>重みを表示</span>
-      </label>
+      <div class="view-bar__list-trailing">
+        <label class="view-bar__list-label">
+          <input type="checkbox" id="toggleWeights" checked>
+          <span>重みを表示</span>
+        </label>
+        <label class="view-bar__list-label">
+          <input type="checkbox" id="toggleDivmod" autocomplete="off">
+          <span>商と余りを表示</span>
+        </label>
+      </div>
     </div>
   </footer>
 
@@ -790,11 +1036,24 @@
       const stepDown = document.getElementById("stepDown");
       const stepUpBin = document.getElementById("stepUpBin");
       const stepDownBin = document.getElementById("stepDownBin");
+      const binMul2 = document.getElementById("binMul2");
+      const binDiv2 = document.getElementById("binDiv2");
+      const decMul10 = document.getElementById("decMul10");
+      const decDiv10 = document.getElementById("decDiv10");
       const btnResetValue = document.getElementById("btnResetValue");
       const btnRandom = document.getElementById("btnRandom");
       const btnAnswer = document.getElementById("btnAnswer");
       const answerReveal = document.getElementById("answerReveal");
       const outBin = document.getElementById("outBin");
+      const divmodSection = document.getElementById("divmodSection");
+      const divmodEquation = document.getElementById("divmodEquation");
+      const outQuotDec = document.getElementById("outQuotDec");
+      const outQuotBin = document.getElementById("outQuotBin");
+      const outRemDec = document.getElementById("outRemDec");
+      const outRemBin = document.getElementById("outRemBin");
+      const toggleDivmod = document.getElementById("toggleDivmod");
+      const divisorInput = document.getElementById("divisorInput");
+      const divmodShiftHint = document.getElementById("divmodShiftHint");
       const rows = [];
       const decInputs = [];
       const decUpBtns = [];
@@ -1017,6 +1276,116 @@
         return n.toString(2);
       }
 
+      function remainderBinWidth(d) {
+        if (d <= 1) return 1;
+        return Math.max(1, (d - 1).toString(2).length);
+      }
+
+      function toBinRemainderLowerBits(r, d) {
+        const w = remainderBinWidth(d);
+        return r.toString(2).padStart(w, "0");
+      }
+
+      function allowedDivisors() {
+        return document.body.classList.contains("view-hide-bin")
+          ? [10, 100]
+          : [2, 4, 8, 16, 32, 64, 128];
+      }
+
+      function syncDivisorSelect() {
+        if (!divisorInput) return;
+        const allow = allowedDivisors();
+        const prev = parseInt(divisorInput.value, 10);
+        divisorInput.innerHTML = "";
+        for (let i = 0; i < allow.length; i++) {
+          const opt = document.createElement("option");
+          opt.value = String(allow[i]);
+          opt.textContent = String(allow[i]);
+          divisorInput.appendChild(opt);
+        }
+        let pick = allow.indexOf(prev) >= 0 ? prev : allow[0];
+        try {
+          const dv = localStorage.getItem("decimalBinaryLabDivisor");
+          if (dv !== null && dv !== "") {
+            const x = parseInt(dv, 10);
+            if (Number.isFinite(x) && allow.indexOf(x) >= 0) pick = x;
+          }
+        } catch (e) {}
+        divisorInput.value = String(pick);
+        divisorInput.setAttribute(
+          "aria-label",
+          document.body.classList.contains("view-hide-bin")
+            ? "除数（10の累乗）"
+            : "除数（2の累乗・2〜128）"
+        );
+      }
+
+      function readDivisor() {
+        const allow = allowedDivisors();
+        if (!divisorInput) return allow[0];
+        let d = parseInt(divisorInput.value, 10);
+        if (!Number.isFinite(d) || allow.indexOf(d) < 0) {
+          d = allow[0];
+          divisorInput.value = String(d);
+        }
+        return d;
+      }
+
+      function powerOfTwoBitLength(d) {
+        if (d < 2) return null;
+        const k = Math.log2(d);
+        return Number.isInteger(k) ? k : null;
+      }
+
+      function powerOfTenExponent(d) {
+        if (d < 10) return null;
+        const k = Math.log10(d);
+        return Number.isInteger(k) && k >= 1 ? k : null;
+      }
+
+      function updateShiftHint(d) {
+        if (!divmodShiftHint) return;
+        if (document.body.classList.contains("view-hide-bin")) {
+          const k = powerOfTenExponent(d);
+          if (k !== null) {
+            divmodShiftHint.innerHTML =
+              "（右に<span class=\"divmod-shift-hint-num\">" + k + "</span>桁・10進）";
+          } else {
+            divmodShiftHint.textContent = "";
+          }
+        } else {
+          const k = powerOfTwoBitLength(d);
+          if (k !== null) {
+            divmodShiftHint.innerHTML =
+              "（右に<span class=\"divmod-shift-hint-num\">" + k + "</span>ビット論理演算）";
+          } else {
+            divmodShiftHint.textContent = "";
+          }
+        }
+      }
+
+      function updateDivmod() {
+        const on = toggleDivmod && toggleDivmod.checked;
+        if (divmodSection) divmodSection.hidden = !on;
+        if (!on) {
+          if (divmodEquation) divmodEquation.textContent = "";
+          if (divmodShiftHint) divmodShiftHint.textContent = "";
+          return;
+        }
+        const n = currentN();
+        const d = readDivisor();
+        updateShiftHint(d);
+        const q = Math.floor(n / d);
+        const r = n % d;
+        if (outQuotDec) outQuotDec.textContent = String(q);
+        if (outQuotBin) outQuotBin.textContent = toBinNatural(q);
+        if (outRemDec) outRemDec.textContent = String(r);
+        if (outRemBin) outRemBin.textContent = toBinRemainderLowerBits(r, d);
+        if (divmodEquation) {
+          divmodEquation.textContent = n + " ÷ " + d + " = " + q + " … " + r;
+        }
+      }
+
       function renderRow(n) {
         const el = document.createElement("div");
         el.className = "row";
@@ -1080,10 +1449,15 @@
         [stepDown, stepDownBin].forEach(function (b) {
           if (b) b.disabled = downDis;
         });
+        if (binMul2) binMul2.disabled = n * 2 > MAX;
+        if (binDiv2) binDiv2.disabled = n <= MIN;
+        if (decMul10) decMul10.disabled = n * 10 > MAX;
+        if (decDiv10) decDiv10.disabled = n <= MIN;
         updateDecJumpButtons();
         updateBinBitButtons();
         if (btnResetValue) btnResetValue.disabled = n <= MIN;
         setHighlight(n);
+        updateDivmod();
         return n;
       }
 
@@ -1124,6 +1498,28 @@
       }
       bindStepPair(stepUp, stepDown);
       bindStepPair(stepUpBin, stepDownBin);
+      if (binMul2) {
+        binMul2.addEventListener("click", function () {
+          const cur = currentN();
+          if (cur * 2 <= MAX) setN(cur * 2);
+        });
+      }
+      if (binDiv2) {
+        binDiv2.addEventListener("click", function () {
+          setN(Math.floor(currentN() / 2));
+        });
+      }
+      if (decMul10) {
+        decMul10.addEventListener("click", function () {
+          const cur = currentN();
+          if (cur * 10 <= MAX) setN(cur * 10);
+        });
+      }
+      if (decDiv10) {
+        decDiv10.addEventListener("click", function () {
+          setN(Math.floor(currentN() / 10));
+        });
+      }
       if (btnResetValue) {
         btnResetValue.addEventListener("click", function () {
           setN(MIN);
@@ -1132,6 +1528,23 @@
       if (btnRandom) {
         btnRandom.addEventListener("click", function () {
           setN(MIN + Math.floor(Math.random() * (MAX - MIN + 1)));
+        });
+      }
+      if (toggleDivmod) {
+        toggleDivmod.addEventListener("change", function () {
+          try {
+            localStorage.setItem("decimalBinaryLabDivmod", this.checked ? "1" : "0");
+          } catch (e) {}
+          updateDivmod();
+        });
+      }
+      if (divisorInput) {
+        divisorInput.addEventListener("change", function () {
+          readDivisor();
+          updateDivmod();
+          try {
+            localStorage.setItem("decimalBinaryLabDivisor", divisorInput.value);
+          } catch (e) {}
         });
       }
       if (btnAnswer && answerReveal) {
@@ -1222,6 +1635,8 @@
           } catch (e) {}
         }
         window.dispatchEvent(new Event("resize"));
+        syncDivisorSelect();
+        updateDivmod();
       }
 
       document.querySelectorAll('input[name="viewMode"]').forEach(function (radio) {
@@ -1249,6 +1664,15 @@
           }
         } catch (e) {}
         syncWeightsFromToggle();
+        try {
+          let dm = localStorage.getItem("decimalBinaryLabDivmod");
+          if (dm === null) {
+            const dq = localStorage.getItem("decimalBinaryLabDivmodQuot");
+            const dr = localStorage.getItem("decimalBinaryLabDivmodRem");
+            if (dq === "1" || dr === "1") dm = "1";
+          }
+          if (toggleDivmod) toggleDivmod.checked = dm === "1";
+        } catch (e) {}
 
         try {
           const saved = localStorage.getItem("decimalBinaryLabView");
@@ -1294,7 +1718,9 @@
       requestAnimationFrame(function () {
         syncPadding();
         syncAnswerButton();
+        syncDivisorSelect();
         setN(0);
+        updateDivmod();
       });
     })();
   </script>
