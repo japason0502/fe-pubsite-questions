@@ -3017,23 +3017,44 @@
   {
     "id": "q60",
     "number": 60,
-    "title": "（ダミー）",
-    "questionText": "（プレースホルダ）",
-    "bodyText": "この問題はダミーです。",
+    "title": "論理シフト（ビット取出）",
+    "questionText": "次の文中の【　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyText": "演算子 >> は論理右シフト，演算子 << は論理左シフトを表す。例えば，value >> n は value の値を n ビットだけ右に論理シフトし，value << n は value の値を n ビットだけ左に論理シフトする。\n\n01001011 から上位4ビット(0100)を取り出すには【　】を行う。",
+    "choices": [
+      { "id": "a", "text": ">> 4" },
+      { "id": "b", "text": "<< 4" },
+      { "id": "c", "text": "÷16の余りを取得" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "a",
+    "hitokoto": "値を変えながら何度も解こう!",
+    "hintVideoUrl": "",
+    "lessonUrl": "",
+    "another": 1
+  },
+  {
+    "id": "q61",
+    "number": 61,
+    "title": "論理積・シフト（ビット取出）",
+    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyText": "関数 getLower4Bits は 8 ビット型の引数 byte を受け取り，下位4ビットを返す。例えば，getLower4Bits(01001011) を呼び出すと，戻り値は 00001011 となる。\n\nなお，演算子 ∧ はビット単位の論理積，演算子 ∨ はビット単位の論理和，演算子 >> は論理右シフト，演算子 << は論理左シフトを表す。例えば，value >> n は value の値を n ビットだけ右に論理シフトし，value << n は value の値を n ビットだけ左に論理シフトする。",
     "pseudoCode": [
-      "○ ダミー"
+      "○ 8ビット型: getLower4Bits(8ビット型: byte)",
+      "    8ビット型: r ← 00000000",
+      "        【　】",
+      "    return r"
     ],
     "choices": [
-      { "id": "a", "text": "選択肢A" },
-      { "id": "b", "text": "選択肢B" },
-      { "id": "c", "text": "選択肢C" },
-      { "id": "d", "text": "選択肢D" }
+      { "id": "a", "text": "r ← (rbyte ∧ 00001111)" },
+      { "id": "b", "text": "r ← (rbyte ∨ 00001111)" },
+      { "id": "c", "text": "r ← (rbyte >> 4)" },
+      { "id": "d", "text": "r ← (rbyte << 4)" }
     ],
     "videoUrl": "",
     "correctChoiceId": "a",
     "hitokoto": "",
     "hintVideoUrl": "",
     "lessonUrl": "",
-    "another": 0
+    "another": 1
   }
 ]

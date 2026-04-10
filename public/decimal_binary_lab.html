@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>10進 ↔ 2進ラボ（0〜255）</title>
+  <title>10進 ↁE2進ラボ！E、E55�E�E/title>
   <style>
     :root {
       --bg: #eef1f6;
@@ -41,7 +41,7 @@
       padding-bottom: clamp(5rem, 14vw, 6.5rem);
     }
 
-    /* 表示モード: 10進まわりを隠す */
+    /* 表示モーチE 10進まわりを隠ぁE*/
     body.view-hide-dec .view-part-dec,
     body.view-hide-dec .scroll-col--dec {
       display: none !important;
@@ -50,7 +50,7 @@
     body.view-hide-dec .row {
       grid-template-columns: 1fr !important;
     }
-    /* 表示モード: 2進まわりを隠す */
+    /* 表示モーチE 2進まわりを隠ぁE*/
     body.view-hide-bin .view-part-bin,
     body.view-hide-bin .scroll-col--bin {
       display: none !important;
@@ -60,12 +60,15 @@
       grid-template-columns: 1fr !important;
     }
 
-    /* 2進/10進どちらかを隠すモードでは対応一覧は常に非表示 */
-    body.view-hide-dec .view-part-list,
+    /* 10進のみ: 対応一覧は非表示 */
     body.view-hide-bin .view-part-list {
       display: none !important;
     }
-    /* すべて表示モードで「対応一覧を表示」オフのとき */
+    /* 2進のみ: 論理演算オフ�Eとき�E対応一覧パネルごと非表示 */
+    body.view-hide-dec:not(.bitwise-side-visible) .view-part-list {
+      display: none !important;
+    }
+    /* すべて表示モードで「対応一覧を表示」オフ�EとぁE*/
     body.view-all.list-hidden .view-part-list {
       display: none !important;
     }
@@ -80,6 +83,12 @@
     }
     body:not(.view-hide-dec) .step-btns--bin {
       display: none !important;
+    }
+    .num-side--dec-mul {
+      display: none !important;
+    }
+    body.view-hide-bin .num-side--dec-mul {
+      display: flex !important;
     }
 
     .view-bar {
@@ -126,6 +135,14 @@
     .view-bar__row.view-bar__list {
       justify-content: space-between;
       gap: 0.75rem 1rem;
+    }
+    .view-bar__list-trailing {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.35rem 0.75rem;
+      margin-left: auto;
     }
     .view-bar__title {
       font-size: 0.72rem;
@@ -358,6 +375,17 @@
       justify-content: center;
       align-items: center;
     }
+    /* すべて表示: 2進行�E ÁE÷2 列�Eん、E0進行に空きを取り数値の右端を揃える */
+    .num-side--readout-spacer {
+      display: none;
+    }
+    body.view-all .num-row.view-part-dec .num-side--readout-spacer {
+      display: flex;
+      flex: 0 0 2.25rem;
+      width: 2.25rem;
+      visibility: hidden;
+      pointer-events: none;
+    }
     .readout .dec {
       font-size: clamp(1.85rem, 7vw, 2.6rem);
       font-weight: 700;
@@ -401,6 +429,12 @@
     .step-btns button:disabled {
       opacity: 0.35;
       cursor: not-allowed;
+    }
+    .step-btns--bin-mul button,
+    .step-btns--dec-mul button {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
     }
 
     .controls {
@@ -541,7 +575,7 @@
       background: var(--surface);
       transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
     }
-    /* 2進ジャンプ: 0=OFF 暗く / 1=ON 黄み */
+    /* 2進ジャンチE 0=OFF 暗く / 1=ON 黁E�� */
     .bit-cell--off .bit-in {
       background: #dfe2ea;
       color: #5c6478;
@@ -674,12 +708,375 @@
     .row.active .b {
       color: var(--text);
     }
+
+    /* 割り算（商・余り�E�E*/
+    .divmod-panel {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .divmod-panel[hidden] {
+      display: none !important;
+    }
+    .divmod-divisor-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 1rem;
+      margin-bottom: 0.65rem;
+      font-size: 0.82rem;
+    }
+    .divmod-shift-hint {
+      flex: 1 1 auto;
+      min-width: 0;
+      margin-left: 0.5rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      line-height: 1.35;
+      text-align: left;
+    }
+    .divmod-shift-hint-num {
+      display: inline-block;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 0.12em 0.4em 0.15em;
+      border-radius: 6px;
+      line-height: 1.2;
+      vertical-align: baseline;
+    }
+    .divmod-divisor {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .divmod-divisor-op {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .divmod-divisor select {
+      min-width: 4.25rem;
+      padding: 0.35rem 1.75rem 0.35rem 0.4rem;
+      font-size: 0.95rem;
+      font-family: inherit;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      font-variant-numeric: tabular-nums;
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+    .divmod-divisor select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .divmod-equation {
+      margin: 0 0 0.65rem;
+      font-size: 0.92rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    /* メインの数値行と同じ右端・列幁E��▲▼2列�Eん�E空き！E*/
+    .divmod-align-row {
+      margin-bottom: 0;
+      align-items: stretch;
+    }
+    .divmod-align-row .num-main {
+      min-width: 0;
+    }
+    .divmod-align-side {
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .divmod-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      font-size: 0.88rem;
+      width: 100%;
+    }
+    .divmod-grid-row {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr);
+      gap: 0.35rem 0.5rem;
+      align-items: stretch;
+    }
+    .divmod-head-cell {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      padding-bottom: 0.05rem;
+      text-align: center;
+    }
+    .divmod-grid-corner {
+      min-width: 2.75rem;
+    }
+    .divmod-grid-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--text);
+      text-align: right;
+      padding-right: 0.25rem;
+      min-width: 2.75rem;
+      box-sizing: border-box;
+    }
+    .divmod-val {
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(1.05rem, 3.6vw, 1.35rem);
+      text-align: right;
+      padding: 0.4rem 0.55rem;
+      min-height: 2.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      box-sizing: border-box;
+      border-radius: var(--radius-sm);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      line-height: 1.2;
+      word-break: break-all;
+    }
+    .divmod-val.dec {
+      font-family: inherit;
+      color: var(--text);
+    }
+    .divmod-val.bin {
+      font-family: var(--mono);
+      color: var(--accent);
+    }
+    body.view-hide-dec .divmod-row--dec {
+      display: none !important;
+    }
+    body.view-hide-bin .divmod-row--bin {
+      display: none !important;
+    }
+    /* 2進のみ�E�論理演算表示: 2カラムを確俁E*/
+    @media (min-width: 880px) {
+      body.view-hide-dec.bitwise-side-visible .wrap {
+        grid-template-columns: minmax(280px, 1fr) minmax(260px, 380px);
+      }
+    }
+    /* 論理演算パネルが固定フチE��ーに被らなぁE��ぁE��白を増やぁE*/
+    body.view-hide-dec.bitwise-side-visible .page {
+      padding-bottom: clamp(7.5rem, 22vw, 10rem);
+    }
+    body.view-hide-dec.bitwise-side-visible .view-part-list {
+      position: relative;
+      z-index: 20;
+    }
+    body.view-hide-dec.bitwise-side-visible .view-part-list .list-heading--correspond,
+    body.view-hide-dec.bitwise-side-visible .view-part-list .scroll-panel {
+      display: none !important;
+      pointer-events: none !important;
+    }
+    .bitwise-panel {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      gap: 0.65rem;
+    }
+    body.view-hide-dec.bitwise-side-visible .bitwise-panel {
+      display: flex !important;
+    }
+    .bitwise-panel .list-heading {
+      margin-bottom: 0;
+    }
+    .bitwise-op-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem 0.65rem;
+      margin: 0 0 0.5rem;
+      padding: 0.4rem 0 0.55rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .bitwise-op-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      flex: 0 0 auto;
+    }
+    .bitwise-op-select {
+      flex: 1 1 10rem;
+      min-width: 0;
+      max-width: 100%;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 0.4rem 2rem 0.4rem 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+    .bitwise-op-select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .bitwise-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      font-size: 0.82rem;
+    }
+    .bitwise-row {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: flex-start;
+      gap: 0.45rem 0.65rem;
+      width: 100%;
+      min-width: 0;
+    }
+    .bitwise-label {
+      flex: 0 0 3.25rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      padding-top: 0.35rem;
+    }
+    /* A/B/結果とも「左�E�MSB�E�E^7�E�…右�E�LSB�E�E^0�E�」を1段で揁E��る（折り返し禁止�E�狭ぁE��き�E横スクロール�E�E*/
+    .bitwise-bits,
+    .bitwise-bit-cells {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(1.55rem, 1fr));
+      gap: 0.2rem 0.15rem;
+      flex: 1 1 auto;
+      min-width: 0;
+      width: 100%;
+      max-width: 100%;
+      justify-items: center;
+      align-items: start;
+      direction: ltr;
+      position: relative;
+      z-index: 2;
+      overflow-x: auto;
+      overflow-y: visible;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-gutter: stable;
+    }
+    .bitwise-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.15rem;
+      width: 100%;
+      min-width: 0;
+    }
+    .bitwise-cell .bit-step {
+      touch-action: manipulation;
+    }
+    .bitwise-bit {
+      width: 100%;
+      max-width: 2rem;
+      min-width: 0;
+      min-height: 36px;
+      height: 1.85rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 0.95rem;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      box-sizing: border-box;
+      user-select: none;
+    }
+    .bitwise-bit--0 {
+      background: #dfe2ea;
+      color: #5c6478;
+      border-color: #b8becd;
+    }
+    .bitwise-bit--1 {
+      background: linear-gradient(180deg, #fff8e1 0%, #ffecb3 100%);
+      color: #6d4c00;
+      border-color: #d4a832;
+    }
+    .bitwise-bits--res .bitwise-bit--1 {
+      background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 100%);
+      color: #1b5e20;
+      border-color: #66bb6a;
+    }
+    .bitwise-bit-in {
+      width: 100%;
+      max-width: 2.1rem;
+      min-width: 0;
+      min-height: 40px;
+      height: 1.85rem;
+      padding: 0;
+      text-align: center;
+      font-size: 0.95rem;
+      font-family: var(--mono);
+      font-weight: 700;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+    }
+    .bitwise-cell--off .bitwise-bit-in {
+      background: #dfe2ea;
+      color: #5c6478;
+      border-color: #b8becd;
+    }
+    .bitwise-cell--on .bitwise-bit-in {
+      background: linear-gradient(180deg, #fff8e1 0%, #ffecb3 100%);
+      color: #6d4c00;
+      border-color: #d4a832;
+    }
+    .view-bar__bitwise--locked .view-bar__list-label--bitwise {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .view-bar__bitwise--locked .view-bar__list-label--bitwise input {
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 600px) {
+      .divmod-equation {
+        text-align: center;
+      }
+      .divmod-divisor-row {
+        justify-content: center;
+      }
+      .divmod-shift-hint {
+        margin-left: 0;
+        flex: 1 1 100%;
+        text-align: left;
+      }
+      .divmod-val {
+        justify-content: center;
+        text-align: center;
+      }
+      .divmod-grid-label {
+        text-align: center;
+        padding-right: 0;
+      }
+    }
   </style>
 </head>
-<body>
+<body class="view-all">
   <div class="page">
     <header class="page-header">
-      <h1>10進 ↔ 2進ラボ</h1>
+      <h1>10進 ↁE2進ラチE/h1>
     </header>
 
     <div class="wrap">
@@ -687,9 +1084,9 @@
         <div class="readout-head">
           <p class="section-title"></p>
           <div class="readout-head__btns">
-            <button type="button" class="btn-tool" id="btnRandom" aria-label="0〜255のランダムな値にする">ランダム</button>
-            <button type="button" class="btn-tool" id="btnAnswer" aria-label="隠している方の基数を表示" title="2進のみ／10進のみの表示のとき使えます">答え</button>
-            <button type="button" class="btn-reset" id="btnResetValue" aria-label="値を0にリセット">値リセット</button>
+            <button type="button" class="btn-tool" id="btnRandom" aria-label="0、E55のランダムな値にする">ランダム</button>
+            <button type="button" class="btn-tool" id="btnAnswer" aria-label="隠してぁE��方の基数を表示" title="2進のみ�E�E0進のみの表示のとき使えまぁE>答え</button>
+            <button type="button" class="btn-reset" id="btnResetValue" aria-label="値めEにリセチE��">値リセチE��</button>
           </div>
         </div>
         <p class="answer-reveal" id="answerReveal" hidden aria-live="polite"></p>
@@ -698,54 +1095,132 @@
             <span class="num-label">10進</span>
             <div class="big dec" id="outDec">0</div>
           </div>
+          <div class="num-side num-side--readout-spacer" aria-hidden="true"></div>
+          <div class="num-side num-side--dec-mul">
+            <div class="step-btns step-btns--dec-mul">
+              <button type="button" id="decMul10" aria-label="10倁E>ÁE0</button>
+              <button type="button" id="decDiv10" aria-label="10で割る（�Eり捨て�E�E>÷10</button>
+            </div>
+          </div>
           <div class="num-side">
             <div class="step-btns step-btns--dec">
-              <button type="button" id="stepUp" aria-label="1増やす">▲</button>
-              <button type="button" id="stepDown" aria-label="1減らす">▼</button>
+              <button type="button" id="stepUp" aria-label="1増やぁE>▲</button>
+              <button type="button" id="stepDown" aria-label="1減らぁE>▼</button>
             </div>
           </div>
         </div>
         <div class="num-row view-part-bin">
           <div class="num-main">
-            <span class="num-label">2進（省略形）</span>
+            <span class="num-label">2進�E�省略形�E�E/span>
             <div class="big bin" id="outBin">0</div>
           </div>
           <div class="num-side">
+            <div class="step-btns step-btns--bin-mul">
+              <button type="button" id="binMul2" aria-label="2倍（左シフト�E�E>ÁE</button>
+              <button type="button" id="binDiv2" aria-label="半�E�E�右シフト・刁E��捨て�E�E>÷2</button>
+            </div>
+          </div>
+          <div class="num-side">
             <div class="step-btns step-btns--bin">
-              <button type="button" id="stepUpBin" aria-label="1増やす">▲</button>
-              <button type="button" id="stepDownBin" aria-label="1減らす">▼</button>
+              <button type="button" id="stepUpBin" aria-label="1増やぁE>▲</button>
+              <button type="button" id="stepDownBin" aria-label="1減らぁE>▼</button>
             </div>
           </div>
         </div>
-        <p class="section-title view-part-dec">ジャンプ（10進）</p>
-        <div class="controls controls--first dec-jump-wrap view-part-dec">
-          <div class="bin-jump-row">
-            <div class="digit-cells" id="decCells" aria-label="10進3桁"></div>
+
+        <div class="divmod-panel" id="divmodSection" hidden>
+          <p class="section-title">割り算（被除数�E�上�E数�E�E/p>
+          <div class="divmod-divisor-row">
+            <label class="divmod-divisor">
+              <span class="divmod-divisor-op" aria-hidden="true">÷</span>
+              <select id="divisorInput" aria-label="除数"></select>
+            </label>
+            <span class="divmod-shift-hint" id="divmodShiftHint"></span>
+          </div>
+          <div class="divmod-results" id="divmodResults">
+            <div class="num-row divmod-align-row">
+              <div class="num-main">
+                <p class="divmod-equation" id="divmodEquation"></p>
+                <div class="divmod-grid" id="divmodGrid" aria-label="啁E��余り">
+                  <div class="divmod-grid-row divmod-grid-row--head">
+                    <span class="divmod-grid-corner" aria-hidden="true"></span>
+                    <span class="divmod-head-cell">啁E/span>
+                    <span class="divmod-head-cell">余り</span>
+                  </div>
+                  <div class="divmod-grid-row divmod-row--bin view-part-bin">
+                    <span class="divmod-grid-label">2進</span>
+                    <span class="divmod-val bin" id="outQuotBin">0</span>
+                    <span class="divmod-val bin" id="outRemBin">0</span>
+                  </div>
+                  <div class="divmod-grid-row divmod-row--dec view-part-dec">
+                    <span class="divmod-grid-label">10進</span>
+                    <span class="divmod-val dec" id="outQuotDec">0</span>
+                    <span class="divmod-val dec" id="outRemDec">0</span>
+                  </div>
+                </div>
+              </div>
+              <div class="num-side divmod-align-side" aria-hidden="true"></div>
+              <div class="num-side divmod-align-side" aria-hidden="true"></div>
+            </div>
           </div>
         </div>
 
-        <p class="section-title view-part-bin">ジャンプ（2進・8 ビット）</p>
+        <p class="section-title view-part-dec">ジャンプ！E0進�E�E/p>
+        <div class="controls controls--first dec-jump-wrap view-part-dec">
+          <div class="bin-jump-row">
+            <div class="digit-cells" id="decCells" aria-label="10進3桁E></div>
+          </div>
+        </div>
+
+        <p class="section-title view-part-bin">ジャンプ！E進・8 ビット！E/p>
         <div class="controls bin-jump-block view-part-bin">
           <div class="bin-jump-row">
-            <div class="bit-cells" id="bitCells" aria-label="2進8桁"></div>
+            <div class="bit-cells" id="bitCells" aria-label="2進8桁E></div>
           </div>
         </div>
       </div>
 
       <div class="panel panel--list view-part-list">
-        <div class="list-heading">
+        <div class="list-heading list-heading--correspond">
           <h2>対応一覧</h2>
-          <span>タップ／クリックでもジャンプ</span>
+          <span>タチE�E�E�クリチE��でもジャンチE/span>
         </div>
         <div class="scroll-panel">
           <div class="scroll-head"><span class="scroll-col scroll-col--dec">10進</span><span class="scroll-col scroll-col--bin">2進</span></div>
           <div id="scroller"></div>
         </div>
+        <div class="bitwise-panel" id="bitwisePanel" aria-label="論理演箁E>
+          <div class="list-heading">
+            <h2>論理演箁E/h2>
+            <span>A は左の値�E�Eビット！E/span>
+          </div>
+          <div class="bitwise-op-row">
+            <label class="bitwise-op-label" for="bitwiseOpSelect">結果</label>
+            <select id="bitwiseOpSelect" class="bitwise-op-select" aria-label="表示する論理演箁E>
+              <option value="or">論理和！ER・∧�E�E/option>
+              <option value="and">論理積！END・∨�E�E/option>
+            </select>
+          </div>
+          <div class="bitwise-rows">
+            <div class="bitwise-row">
+              <span class="bitwise-label">A</span>
+              <div class="bitwise-bits" id="bitwiseBitsA" aria-label="A のビッチE></div>
+            </div>
+            <div class="bitwise-row">
+              <span class="bitwise-label">B</span>
+              <div class="bitwise-bit-cells" id="bitwiseCellsB" aria-label="B のビット（編雁E��E></div>
+            </div>
+            <div class="bitwise-row">
+              <span class="bitwise-label" id="bitwiseResLabel">論理和！ER・∧�E�E/span>
+              <div class="bitwise-bits bitwise-bits--res" id="bitwiseBitsRes" aria-label="論理咁EOR ・ ∧ の結果ビッチE></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <footer class="view-bar" role="toolbar" aria-label="表示の切り替え">
+  <footer class="view-bar" role="toolbar" aria-label="表示の刁E��替ぁE>
     <div class="view-bar__row">
       <span class="view-bar__title">表示</span>
       <div class="view-bar__opts">
@@ -768,10 +1243,20 @@
         <input type="checkbox" id="toggleList" checked>
         <span>対応一覧を表示</span>
       </label>
-      <label class="view-bar__list-label">
-        <input type="checkbox" id="toggleWeights" checked>
-        <span>重みを表示</span>
-      </label>
+      <div class="view-bar__list-trailing">
+        <label class="view-bar__list-label">
+          <input type="checkbox" id="toggleWeights" checked>
+          <span>重みを表示</span>
+        </label>
+        <label class="view-bar__list-label">
+          <input type="checkbox" id="toggleDivmod" autocomplete="off">
+          <span>啁E��余りを表示</span>
+        </label>
+        <label class="view-bar__list-label view-bar__list-label--bitwise" id="toggleBitwiseLabel">
+          <input type="checkbox" id="toggleBitwise" autocomplete="off">
+          <span>論理演算を表示</span>
+        </label>
+      </div>
     </div>
   </footer>
 
@@ -790,11 +1275,30 @@
       const stepDown = document.getElementById("stepDown");
       const stepUpBin = document.getElementById("stepUpBin");
       const stepDownBin = document.getElementById("stepDownBin");
+      const binMul2 = document.getElementById("binMul2");
+      const binDiv2 = document.getElementById("binDiv2");
+      const decMul10 = document.getElementById("decMul10");
+      const decDiv10 = document.getElementById("decDiv10");
       const btnResetValue = document.getElementById("btnResetValue");
       const btnRandom = document.getElementById("btnRandom");
       const btnAnswer = document.getElementById("btnAnswer");
       const answerReveal = document.getElementById("answerReveal");
       const outBin = document.getElementById("outBin");
+      const divmodSection = document.getElementById("divmodSection");
+      const divmodEquation = document.getElementById("divmodEquation");
+      const outQuotDec = document.getElementById("outQuotDec");
+      const outQuotBin = document.getElementById("outQuotBin");
+      const outRemDec = document.getElementById("outRemDec");
+      const outRemBin = document.getElementById("outRemBin");
+      const toggleDivmod = document.getElementById("toggleDivmod");
+      const toggleBitwise = document.getElementById("toggleBitwise");
+      const bitwiseBitsA = document.getElementById("bitwiseBitsA");
+      const bitwiseCellsB = document.getElementById("bitwiseCellsB");
+      const bitwiseOpSelect = document.getElementById("bitwiseOpSelect");
+      const bitwiseBitsRes = document.getElementById("bitwiseBitsRes");
+      const bitwiseResLabel = document.getElementById("bitwiseResLabel");
+      const divisorInput = document.getElementById("divisorInput");
+      const divmodShiftHint = document.getElementById("divmodShiftHint");
       const rows = [];
       const decInputs = [];
       const decUpBtns = [];
@@ -802,7 +1306,94 @@
       const bitInputs = [];
       const bitUpBtns = [];
       const bitDownBtns = [];
+      const bitwiseInputsB = [];
+      const bitwiseBUpBtns = [];
+      const bitwiseBDownBtns = [];
       let padY = 0;
+
+      function renderBitwiseBitRow(container, bin8) {
+        if (!container) return;
+        container.innerHTML = "";
+        for (let i = 0; i < 8; i++) {
+          const ch = bin8.charAt(i) === "1" ? "1" : "0";
+          const span = document.createElement("span");
+          span.className = "bitwise-bit bitwise-bit--" + ch;
+          span.textContent = ch;
+          span.setAttribute("aria-label", (i + 1) + "ビット目");
+          container.appendChild(span);
+        }
+      }
+
+      function readBitwiseBNum() {
+        let s = "";
+        for (let i = 0; i < bitwiseInputsB.length; i++) {
+          s += bitwiseInputsB[i].value === "1" ? "1" : "0";
+        }
+        return parseInt(s, 2);
+      }
+
+      function updateBitwiseBBitButtons() {
+        for (let i = 0; i < bitwiseInputsB.length; i++) {
+          const inp = bitwiseInputsB[i];
+          const is1 = inp.value === "1";
+          if (bitwiseBUpBtns[i]) bitwiseBUpBtns[i].disabled = is1;
+          if (bitwiseBDownBtns[i]) bitwiseBDownBtns[i].disabled = !is1;
+          const cell = inp.closest(".bitwise-cell");
+          if (cell) {
+            cell.classList.toggle("bitwise-cell--on", is1);
+            cell.classList.toggle("bitwise-cell--off", !is1);
+          }
+        }
+      }
+
+      function readBitwiseOpMode() {
+        if (!bitwiseOpSelect) return "or";
+        return bitwiseOpSelect.value === "and" ? "and" : "or";
+      }
+
+      function updateBitwisePanel() {
+        if (!document.body.classList.contains("view-hide-dec")) return;
+        if (!document.body.classList.contains("bitwise-side-visible")) return;
+        const a = currentN();
+        const b = readBitwiseBNum();
+        renderBitwiseBitRow(bitwiseBitsA, toBin8(a));
+        const mode = readBitwiseOpMode();
+        const res = mode === "and" ? (a & b) & 0xff : (a | b) & 0xff;
+        renderBitwiseBitRow(bitwiseBitsRes, toBin8(res));
+        if (bitwiseResLabel) {
+          bitwiseResLabel.textContent =
+            mode === "and" ? "論理積！END・∨�E�E : "論理和！ER・∧�E�E;
+        }
+        if (bitwiseBitsRes) {
+          bitwiseBitsRes.setAttribute(
+            "aria-label",
+            mode === "and" ? "論理穁EAND ・ ∨ の結果ビッチE : "論理咁EOR ・ ∧ の結果ビッチE
+          );
+        }
+      }
+
+      function syncBitwiseFromToggle() {
+        const binOnly = document.body.classList.contains("view-hide-dec");
+        const wrap = document.getElementById("listToggleWrap");
+        if (toggleBitwise) {
+          toggleBitwise.disabled = !binOnly;
+        }
+        if (wrap) {
+          wrap.classList.toggle("view-bar__bitwise--locked", !binOnly);
+        }
+        if (!binOnly) {
+          document.body.classList.remove("bitwise-side-visible");
+          window.dispatchEvent(new Event("resize"));
+          return;
+        }
+        if (toggleBitwise && toggleBitwise.checked) {
+          document.body.classList.add("bitwise-side-visible");
+          updateBitwisePanel();
+        } else {
+          document.body.classList.remove("bitwise-side-visible");
+        }
+        window.dispatchEvent(new Event("resize"));
+      }
 
       function syncDecJumpFromN(n) {
         n = Math.max(MIN, Math.min(MAX, Math.round(Number(n))));
@@ -847,7 +1438,7 @@
         pow.className = "bit-pow";
         const exp10 = 2 - i;
         pow.innerHTML = "10<sup>" + exp10 + "</sup>";
-        pow.setAttribute("aria-label", "10の" + exp10 + "乗");
+        pow.setAttribute("aria-label", "10の" + exp10 + "乁E);
 
         const w = document.createElement("span");
         w.className = "w";
@@ -859,7 +1450,7 @@
         inp.maxLength = 1;
         inp.value = "0";
         inp.setAttribute("inputmode", "numeric");
-        inp.setAttribute("aria-label", "10進の桁 " + DEC_WEIGHTS[i]);
+        inp.setAttribute("aria-label", "10進の桁E" + DEC_WEIGHTS[i]);
 
         const btnDown = document.createElement("button");
         btnDown.type = "button";
@@ -867,7 +1458,7 @@
         btnDown.textContent = "▼";
 
         btnUp.setAttribute("aria-label", "+" + DEC_WEIGHTS[i]);
-        btnDown.setAttribute("aria-label", "−" + DEC_WEIGHTS[i]);
+        btnDown.setAttribute("aria-label", "∁E + DEC_WEIGHTS[i]);
 
         (function (idx) {
           btnUp.addEventListener("click", function () {
@@ -929,7 +1520,7 @@
         pow.className = "bit-pow";
         const exp2 = 7 - i;
         pow.innerHTML = "2<sup>" + exp2 + "</sup>";
-        pow.setAttribute("aria-label", "2の" + exp2 + "乗");
+        pow.setAttribute("aria-label", "2の" + exp2 + "乁E);
 
         const w = document.createElement("span");
         w.className = "w";
@@ -986,6 +1577,69 @@
       }
       updateBinBitButtons();
 
+      (function initBitwiseBCells() {
+        if (!bitwiseCellsB) return;
+        for (let i = 0; i < 8; i++) {
+          const cell = document.createElement("div");
+          cell.className = "bitwise-cell bitwise-cell--off";
+
+          const btnUp = document.createElement("button");
+          btnUp.type = "button";
+          btnUp.className = "bit-step";
+          btnUp.textContent = "▲";
+          btnUp.setAttribute("aria-label", "B の佁E" + WEIGHTS[i] + " めEに");
+
+          const inp = document.createElement("input");
+          inp.type = "text";
+          inp.className = "bitwise-bit-in";
+          inp.maxLength = 1;
+          inp.value = "0";
+          inp.setAttribute("inputmode", "text");
+          inp.setAttribute("enterkeyhint", "done");
+          inp.setAttribute("aria-label", "B のビッチE" + WEIGHTS[i]);
+          inp.addEventListener("input", function () {
+            const c = this.value.replace(/[^01]/g, "").slice(-1);
+            this.value = c === "" ? "0" : c;
+            updateBitwiseBBitButtons();
+            updateBitwisePanel();
+          });
+          inp.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              updateBitwisePanel();
+            }
+          });
+
+          const btnDown = document.createElement("button");
+          btnDown.type = "button";
+          btnDown.className = "bit-step";
+          btnDown.textContent = "▼";
+          btnDown.setAttribute("aria-label", "B の佁E" + WEIGHTS[i] + " めEに");
+
+          (function (bitInp) {
+            btnUp.addEventListener("click", function () {
+              bitInp.value = "1";
+              updateBitwiseBBitButtons();
+              updateBitwisePanel();
+            });
+            btnDown.addEventListener("click", function () {
+              bitInp.value = "0";
+              updateBitwiseBBitButtons();
+              updateBitwisePanel();
+            });
+          })(inp);
+
+          cell.appendChild(btnUp);
+          cell.appendChild(inp);
+          cell.appendChild(btnDown);
+          bitwiseCellsB.appendChild(cell);
+          bitwiseInputsB.push(inp);
+          bitwiseBUpBtns.push(btnUp);
+          bitwiseBDownBtns.push(btnDown);
+        }
+        updateBitwiseBBitButtons();
+      })();
+
       function syncBitsFromN(n) {
         const s = toBin8(n);
         for (let i = 0; i < 8; i++) {
@@ -1015,6 +1669,117 @@
 
       function toBinNatural(n) {
         return n.toString(2);
+      }
+
+      /** 余り [0, d-1] を表す�Eに忁E��なビット数�E�下佁En ビットと揁E��る！E*/
+      function remainderBinWidth(d) {
+        if (d <= 1) return 1;
+        return Math.max(1, (d - 1).toString(2).length);
+      }
+
+      function toBinRemainderLowerBits(r, d) {
+        const w = remainderBinWidth(d);
+        return r.toString(2).padStart(w, "0");
+      }
+
+      function allowedDivisors() {
+        return document.body.classList.contains("view-hide-bin")
+          ? [10, 100]
+          : [2, 4, 8, 16, 32, 64, 128];
+      }
+
+      function syncDivisorSelect() {
+        if (!divisorInput) return;
+        const allow = allowedDivisors();
+        const prev = parseInt(divisorInput.value, 10);
+        divisorInput.innerHTML = "";
+        for (let i = 0; i < allow.length; i++) {
+          const opt = document.createElement("option");
+          opt.value = String(allow[i]);
+          opt.textContent = String(allow[i]);
+          divisorInput.appendChild(opt);
+        }
+        let pick = allow.indexOf(prev) >= 0 ? prev : allow[0];
+        try {
+          const dv = localStorage.getItem("decimalBinaryLabDivisor");
+          if (dv !== null && dv !== "") {
+            const x = parseInt(dv, 10);
+            if (Number.isFinite(x) && allow.indexOf(x) >= 0) pick = x;
+          }
+        } catch (e) {}
+        divisorInput.value = String(pick);
+        divisorInput.setAttribute(
+          "aria-label",
+          document.body.classList.contains("view-hide-bin")
+            ? "除数�E�E0の累乗！E
+            : "除数�E�Eの累乗�E2、E28�E�E
+        );
+      }
+
+      function readDivisor() {
+        const allow = allowedDivisors();
+        if (!divisorInput) return allow[0];
+        let d = parseInt(divisorInput.value, 10);
+        if (!Number.isFinite(d) || allow.indexOf(d) < 0) {
+          d = allow[0];
+          divisorInput.value = String(d);
+        }
+        return d;
+      }
+
+      function powerOfTwoBitLength(d) {
+        if (d < 2) return null;
+        const k = Math.log2(d);
+        return Number.isInteger(k) ? k : null;
+      }
+
+      function powerOfTenExponent(d) {
+        if (d < 10) return null;
+        const k = Math.log10(d);
+        return Number.isInteger(k) && k >= 1 ? k : null;
+      }
+
+      function updateShiftHint(d) {
+        if (!divmodShiftHint) return;
+        if (document.body.classList.contains("view-hide-bin")) {
+          const k = powerOfTenExponent(d);
+          if (k !== null) {
+            divmodShiftHint.innerHTML =
+              "�E�右に<span class=\"divmod-shift-hint-num\">" + k + "</span>桁�E10進�E�E;
+          } else {
+            divmodShiftHint.textContent = "";
+          }
+        } else {
+          const k = powerOfTwoBitLength(d);
+          if (k !== null) {
+            divmodShiftHint.innerHTML =
+              "�E�右に<span class=\"divmod-shift-hint-num\">" + k + "</span>ビット論理演算！E;
+          } else {
+            divmodShiftHint.textContent = "";
+          }
+        }
+      }
+
+      function updateDivmod() {
+        const on = toggleDivmod && toggleDivmod.checked;
+        if (divmodSection) divmodSection.hidden = !on;
+        if (!on) {
+          if (divmodEquation) divmodEquation.textContent = "";
+          if (divmodShiftHint) divmodShiftHint.textContent = "";
+          return;
+        }
+        const n = currentN();
+        const d = readDivisor();
+        updateShiftHint(d);
+        const q = Math.floor(n / d);
+        const r = n % d;
+        if (outQuotDec) outQuotDec.textContent = String(q);
+        if (outQuotBin) outQuotBin.textContent = toBinNatural(q);
+        if (outRemDec) outRemDec.textContent = String(r);
+        if (outRemBin) outRemBin.textContent = toBinRemainderLowerBits(r, d);
+        if (divmodEquation) {
+          divmodEquation.textContent = n + " ÷ " + d + " = " + q + " … " + r;
+        }
       }
 
       function renderRow(n) {
@@ -1059,7 +1824,7 @@
         const decOnly = document.body.classList.contains("view-hide-bin");
         btnAnswer.disabled = !(binOnly || decOnly);
         btnAnswer.title = btnAnswer.disabled
-          ? "2進のみ／10進のみの表示のとき使えます"
+          ? "2進のみ�E�E0進のみの表示のとき使えまぁE
           : binOnly
             ? "現在の値の10進を表示"
             : "現在の値の2進を表示";
@@ -1080,10 +1845,16 @@
         [stepDown, stepDownBin].forEach(function (b) {
           if (b) b.disabled = downDis;
         });
+        if (binMul2) binMul2.disabled = n * 2 > MAX;
+        if (binDiv2) binDiv2.disabled = n <= MIN;
+        if (decMul10) decMul10.disabled = n * 10 > MAX;
+        if (decDiv10) decDiv10.disabled = n <= MIN;
         updateDecJumpButtons();
         updateBinBitButtons();
         if (btnResetValue) btnResetValue.disabled = n <= MIN;
         setHighlight(n);
+        updateDivmod();
+        updateBitwisePanel();
         return n;
       }
 
@@ -1124,6 +1895,28 @@
       }
       bindStepPair(stepUp, stepDown);
       bindStepPair(stepUpBin, stepDownBin);
+      if (binMul2) {
+        binMul2.addEventListener("click", function () {
+          const cur = currentN();
+          if (cur * 2 <= MAX) setN(cur * 2);
+        });
+      }
+      if (binDiv2) {
+        binDiv2.addEventListener("click", function () {
+          setN(Math.floor(currentN() / 2));
+        });
+      }
+      if (decMul10) {
+        decMul10.addEventListener("click", function () {
+          const cur = currentN();
+          if (cur * 10 <= MAX) setN(cur * 10);
+        });
+      }
+      if (decDiv10) {
+        decDiv10.addEventListener("click", function () {
+          setN(Math.floor(currentN() / 10));
+        });
+      }
       if (btnResetValue) {
         btnResetValue.addEventListener("click", function () {
           setN(MIN);
@@ -1132,6 +1925,23 @@
       if (btnRandom) {
         btnRandom.addEventListener("click", function () {
           setN(MIN + Math.floor(Math.random() * (MAX - MIN + 1)));
+        });
+      }
+      if (toggleDivmod) {
+        toggleDivmod.addEventListener("change", function () {
+          try {
+            localStorage.setItem("decimalBinaryLabDivmod", this.checked ? "1" : "0");
+          } catch (e) {}
+          updateDivmod();
+        });
+      }
+      if (divisorInput) {
+        divisorInput.addEventListener("change", function () {
+          readDivisor();
+          updateDivmod();
+          try {
+            localStorage.setItem("decimalBinaryLabDivisor", divisorInput.value);
+          } catch (e) {}
         });
       }
       if (btnAnswer && answerReveal) {
@@ -1222,6 +2032,9 @@
           } catch (e) {}
         }
         window.dispatchEvent(new Event("resize"));
+        syncDivisorSelect();
+        updateDivmod();
+        syncBitwiseFromToggle();
       }
 
       document.querySelectorAll('input[name="viewMode"]').forEach(function (radio) {
@@ -1249,6 +2062,30 @@
           }
         } catch (e) {}
         syncWeightsFromToggle();
+
+        try {
+          let dm = localStorage.getItem("decimalBinaryLabDivmod");
+          if (dm === null) {
+            const dq = localStorage.getItem("decimalBinaryLabDivmodQuot");
+            const dr = localStorage.getItem("decimalBinaryLabDivmodRem");
+            if (dq === "1" || dr === "1") dm = "1";
+          }
+          if (toggleDivmod) {
+            toggleDivmod.checked = dm === "1";
+          }
+        } catch (e) {}
+
+        try {
+          const bw = localStorage.getItem("decimalBinaryLabBitwise");
+          if (toggleBitwise && bw === "1") toggleBitwise.checked = true;
+        } catch (e) {}
+
+        try {
+          const op = localStorage.getItem("decimalBinaryLabBitwiseOp");
+          if (bitwiseOpSelect && (op === "or" || op === "and")) {
+            bitwiseOpSelect.value = op;
+          }
+        } catch (e) {}
 
         try {
           const saved = localStorage.getItem("decimalBinaryLabView");
@@ -1289,14 +2126,36 @@
             window.dispatchEvent(new Event("resize"));
           });
         }
+
+        if (toggleBitwise) {
+          toggleBitwise.addEventListener("change", function () {
+            if (this.disabled) return;
+            try {
+              localStorage.setItem("decimalBinaryLabBitwise", this.checked ? "1" : "0");
+            } catch (e) {}
+            syncBitwiseFromToggle();
+          });
+        }
+
+        if (bitwiseOpSelect) {
+          bitwiseOpSelect.addEventListener("change", function () {
+            try {
+              localStorage.setItem("decimalBinaryLabBitwiseOp", this.value);
+            } catch (e) {}
+            updateBitwisePanel();
+          });
+        }
       })();
 
       requestAnimationFrame(function () {
         syncPadding();
         syncAnswerButton();
         setN(0);
+        updateDivmod();
+        syncBitwiseFromToggle();
       });
     })();
   </script>
 </body>
 </html>
+
