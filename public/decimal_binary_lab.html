@@ -865,6 +865,105 @@
     .divmod-val.bin { font-family: var(--mono); color: var(--accent); }
     body.view-hide-dec .divmod-row--dec { display: none !important; }
     body.view-hide-bin .divmod-row--bin { display: none !important; }
+
+    /* 論理演算モード（2進数のみ） */
+    .logic-op-panel {
+      display: none;
+      margin-top: 0.8rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid var(--border);
+    }
+    body.view-hide-dec.logic-mode-on .logic-op-panel {
+      display: block;
+    }
+    body.view-hide-dec.logic-mode-on .readout-head,
+    body.view-hide-dec.logic-mode-on .answer-reveal,
+    body.view-hide-dec.logic-mode-on .num-row,
+    body.view-hide-dec.logic-mode-on .divmod-panel,
+    body.view-hide-dec.logic-mode-on .section-title.view-part-bin,
+body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
+      display: none !important;
+    }
+    .logic-op-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.45rem 0.8rem;
+      margin-bottom: 0.6rem;
+    }
+    .logic-op-types {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.35rem 0.6rem;
+    }
+    .logic-op-types label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      padding: 0.2rem 0.35rem;
+      border-radius: 999px;
+    }
+    .logic-op-types input {
+      accent-color: var(--accent);
+      width: 1rem;
+      height: 1rem;
+    }
+    .logic-row {
+      margin: 0.65rem 0 0;
+      display: grid;
+      grid-template-columns: 3.2rem minmax(0, 1fr);
+      align-items: start;
+      gap: 0.35rem 0.65rem;
+    }
+    .logic-row .num-label {
+      margin: 0.5rem 0 0;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .logic-row .bit-cells {
+      justify-content: flex-end;
+    }
+    .logic-row .bit-cell {
+      gap: 0.1rem;
+    }
+    .logic-op-panel .logic-bit-step {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 36px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .logic-op-panel .logic-bit-spacer {
+      width: 2rem;
+      min-height: 36px;
+      height: 1.4rem;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    @media (max-width: 600px) {
+      .logic-op-head {
+        justify-content: center;
+      }
+      .logic-row {
+        grid-template-columns: 1fr;
+        gap: 0.25rem;
+      }
+      .logic-row .num-label {
+        text-align: center;
+        margin-top: 0;
+      }
+      .logic-row .bit-cells {
+        justify-content: center;
+      }
+    }
   </style>
 </head>
 <body class="view-all">
@@ -884,6 +983,45 @@
           </div>
         </div>
         <p class="answer-reveal" id="answerReveal" hidden aria-live="polite"></p>
+        <div class="logic-op-panel" id="logicOpPanel">
+          <div class="logic-op-head">
+            <p class="section-title">論理演算モード（2進数のみ）</p>
+            <div class="logic-op-types" role="radiogroup" aria-label="論理演算の種類">
+              <label>
+                <input type="radio" name="logicOpType" id="logicOpOr" value="or" checked>
+                論理和（OR）
+              </label>
+              <label>
+                <input type="radio" name="logicOpType" id="logicOpAnd" value="and">
+                論理積（AND）
+              </label>
+            </div>
+          </div>
+          <div class="logic-row">
+            <span class="num-label">A</span>
+            <div class="controls bin-jump-block">
+              <div class="bin-jump-row">
+                <div class="bit-cells" id="logicACells" aria-label="Aの8ビット"></div>
+              </div>
+            </div>
+          </div>
+          <div class="logic-row">
+            <span class="num-label">B</span>
+            <div class="controls bin-jump-block">
+              <div class="bin-jump-row">
+                <div class="bit-cells" id="logicBCells" aria-label="Bの8ビット"></div>
+              </div>
+            </div>
+          </div>
+          <div class="logic-row">
+            <span class="num-label">結果</span>
+            <div class="controls bin-jump-block">
+              <div class="bin-jump-row">
+                <div class="bit-cells" id="logicRCells" aria-label="結果の8ビット"></div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="num-row view-part-dec">
           <div class="num-main">
             <span class="num-label">10進</span>
@@ -1017,6 +1155,10 @@
           <input type="checkbox" id="toggleDivmod" autocomplete="off">
           <span>商と余りを表示</span>
         </label>
+        <label class="view-bar__list-label">
+          <input type="checkbox" id="toggleLogicMode" autocomplete="off">
+          <span>論理演算モード</span>
+        </label>
       </div>
     </div>
   </footer>
@@ -1054,6 +1196,13 @@
       const toggleDivmod = document.getElementById("toggleDivmod");
       const divisorInput = document.getElementById("divisorInput");
       const divmodShiftHint = document.getElementById("divmodShiftHint");
+      const logicOpPanel = document.getElementById("logicOpPanel");
+      const toggleLogicMode = document.getElementById("toggleLogicMode");
+      const logicOpOr = document.getElementById("logicOpOr");
+      const logicOpAnd = document.getElementById("logicOpAnd");
+      const logicACells = document.getElementById("logicACells");
+      const logicBCells = document.getElementById("logicBCells");
+      const logicRCells = document.getElementById("logicRCells");
       const rows = [];
       const decInputs = [];
       const decUpBtns = [];
@@ -1061,6 +1210,13 @@
       const bitInputs = [];
       const bitUpBtns = [];
       const bitDownBtns = [];
+      const logicAInputs = [];
+      const logicBInputs = [];
+      const logicRInputs = [];
+      const logicAUpBtns = [];
+      const logicADownBtns = [];
+      const logicBUpBtns = [];
+      const logicBDownBtns = [];
       let padY = 0;
 
       function syncDecJumpFromN(n) {
@@ -1274,6 +1430,169 @@
 
       function toBinNatural(n) {
         return n.toString(2);
+      }
+
+      function readLogicBits(inputs) {
+        let s = "";
+        for (let i = 0; i < 8; i++) {
+          const v = inputs[i] && inputs[i].value === "1" ? "1" : "0";
+          s += v;
+        }
+        return parseInt(s, 2);
+      }
+
+      function syncLogicBitsFromN(inputs, n) {
+        const s = toBin8(n);
+        for (let i = 0; i < 8; i++) {
+          if (inputs[i]) inputs[i].value = s.charAt(i);
+        }
+      }
+
+      function updateLogicBitButtons() {
+        for (let i = 0; i < 8; i++) {
+          const aIs1 = logicAInputs[i] && logicAInputs[i].value === "1";
+          const bIs1 = logicBInputs[i] && logicBInputs[i].value === "1";
+          if (logicAUpBtns[i]) logicAUpBtns[i].disabled = !!aIs1;
+          if (logicADownBtns[i]) logicADownBtns[i].disabled = !aIs1;
+          if (logicBUpBtns[i]) logicBUpBtns[i].disabled = !!bIs1;
+          if (logicBDownBtns[i]) logicBDownBtns[i].disabled = !bIs1;
+          const aCell = logicAInputs[i] && logicAInputs[i].closest(".bit-cell");
+          const bCell = logicBInputs[i] && logicBInputs[i].closest(".bit-cell");
+          if (aCell) {
+            aCell.classList.toggle("bit-cell--on", !!aIs1);
+            aCell.classList.toggle("bit-cell--off", !aIs1);
+          }
+          if (bCell) {
+            bCell.classList.toggle("bit-cell--on", !!bIs1);
+            bCell.classList.toggle("bit-cell--off", !bIs1);
+          }
+        }
+      }
+
+      function updateLogicResult() {
+        const a = readLogicBits(logicAInputs);
+        const b = readLogicBits(logicBInputs);
+        const useAnd = logicOpAnd && logicOpAnd.checked;
+        const r = useAnd ? (a & b) : (a | b);
+        syncLogicBitsFromN(logicRInputs, r);
+        updateLogicBitButtons();
+      }
+
+      function syncLogicModeState() {
+        const binOnly = document.body.classList.contains("view-hide-dec");
+        if (toggleLogicMode) toggleLogicMode.disabled = !binOnly;
+        const on = !!(toggleLogicMode && toggleLogicMode.checked && binOnly);
+        document.body.classList.toggle("logic-mode-on", on);
+        if (logicOpPanel) logicOpPanel.hidden = !on;
+      }
+
+      function buildLogicCells() {
+        if (!logicACells || !logicBCells || !logicRCells) return;
+        function buildOne(target, inputs, upBtns, downBtns, labelPrefix) {
+          target.innerHTML = "";
+          for (let i = 0; i < 8; i++) {
+            const wrap = document.createElement("div");
+            wrap.className = "bit-cell";
+
+            const btnUp = document.createElement("button");
+            btnUp.type = "button";
+            btnUp.className = "bit-step logic-bit-step";
+            btnUp.textContent = "▲";
+
+            const pow = document.createElement("span");
+            pow.className = "bit-pow";
+            const exp2 = 7 - i;
+            pow.innerHTML = "2<sup>" + exp2 + "</sup>";
+
+            const w = document.createElement("span");
+            w.className = "w";
+            w.textContent = String(WEIGHTS[i]);
+
+            const inp = document.createElement("input");
+            inp.type = "text";
+            inp.className = "bit-in";
+            inp.maxLength = 1;
+            inp.value = "0";
+            inp.setAttribute("inputmode", "numeric");
+            inp.setAttribute("aria-label", labelPrefix + " " + WEIGHTS[i]);
+
+            const btnDown = document.createElement("button");
+            btnDown.type = "button";
+            btnDown.className = "bit-step logic-bit-step";
+            btnDown.textContent = "▼";
+            btnUp.setAttribute("aria-label", labelPrefix + " " + WEIGHTS[i] + "の位を1に");
+            btnDown.setAttribute("aria-label", labelPrefix + " " + WEIGHTS[i] + "の位を0に");
+
+            btnUp.addEventListener("click", function () {
+              inp.value = "1";
+              updateLogicResult();
+            });
+            btnDown.addEventListener("click", function () {
+              inp.value = "0";
+              updateLogicResult();
+            });
+            inp.addEventListener("input", function () {
+              const c = this.value.replace(/[^01]/g, "").slice(-1);
+              this.value = c === "" ? "0" : c;
+              updateLogicResult();
+            });
+
+            wrap.appendChild(btnUp);
+            wrap.appendChild(w);
+            wrap.appendChild(inp);
+            wrap.appendChild(pow);
+            wrap.appendChild(btnDown);
+            target.appendChild(wrap);
+
+            inputs.push(inp);
+            upBtns.push(btnUp);
+            downBtns.push(btnDown);
+          }
+        }
+
+        function buildResultRow(target, inputs) {
+          target.innerHTML = "";
+          for (let i = 0; i < 8; i++) {
+            const wrap = document.createElement("div");
+            wrap.className = "bit-cell bit-cell--off";
+
+            const topSpacer = document.createElement("span");
+            topSpacer.className = "logic-bit-spacer";
+
+            const pow = document.createElement("span");
+            pow.className = "bit-pow";
+            const exp2 = 7 - i;
+            pow.innerHTML = "2<sup>" + exp2 + "</sup>";
+
+            const w = document.createElement("span");
+            w.className = "w";
+            w.textContent = String(WEIGHTS[i]);
+
+            const inp = document.createElement("input");
+            inp.type = "text";
+            inp.className = "bit-in";
+            inp.maxLength = 1;
+            inp.value = "0";
+            inp.readOnly = true;
+            inp.tabIndex = -1;
+            inp.setAttribute("aria-label", "結果ビット " + WEIGHTS[i]);
+
+            const bottomSpacer = document.createElement("span");
+            bottomSpacer.className = "logic-bit-spacer";
+
+            wrap.appendChild(topSpacer);
+            wrap.appendChild(w);
+            wrap.appendChild(inp);
+            wrap.appendChild(pow);
+            wrap.appendChild(bottomSpacer);
+            target.appendChild(wrap);
+            inputs.push(inp);
+          }
+        }
+
+        buildOne(logicACells, logicAInputs, logicAUpBtns, logicADownBtns, "Aビット");
+        buildOne(logicBCells, logicBInputs, logicBUpBtns, logicBDownBtns, "Bビット");
+        buildResultRow(logicRCells, logicRInputs);
       }
 
       function remainderBinWidth(d) {
@@ -1547,6 +1866,28 @@
           } catch (e) {}
         });
       }
+      if (toggleLogicMode) {
+        toggleLogicMode.addEventListener("change", function () {
+          try {
+            localStorage.setItem("decimalBinaryLabLogicMode", this.checked ? "1" : "0");
+          } catch (e) {}
+          syncLogicModeState();
+        });
+      }
+      if (logicOpOr) {
+        logicOpOr.addEventListener("change", function () {
+          if (!this.checked) return;
+          try { localStorage.setItem("decimalBinaryLabLogicOp", "or"); } catch (e) {}
+          updateLogicResult();
+        });
+      }
+      if (logicOpAnd) {
+        logicOpAnd.addEventListener("change", function () {
+          if (!this.checked) return;
+          try { localStorage.setItem("decimalBinaryLabLogicOp", "and"); } catch (e) {}
+          updateLogicResult();
+        });
+      }
       if (btnAnswer && answerReveal) {
         btnAnswer.addEventListener("click", function () {
           if (btnAnswer.disabled) return;
@@ -1637,6 +1978,7 @@
         window.dispatchEvent(new Event("resize"));
         syncDivisorSelect();
         updateDivmod();
+        syncLogicModeState();
       }
 
       document.querySelectorAll('input[name="viewMode"]').forEach(function (radio) {
@@ -1672,6 +2014,15 @@
             if (dq === "1" || dr === "1") dm = "1";
           }
           if (toggleDivmod) toggleDivmod.checked = dm === "1";
+        } catch (e) {}
+        try {
+          const lm = localStorage.getItem("decimalBinaryLabLogicMode");
+          if (toggleLogicMode) toggleLogicMode.checked = lm === "1";
+        } catch (e) {}
+        try {
+          const lop = localStorage.getItem("decimalBinaryLabLogicOp");
+          if (lop === "and" && logicOpAnd) logicOpAnd.checked = true;
+          else if (logicOpOr) logicOpOr.checked = true;
         } catch (e) {}
 
         try {
@@ -1716,11 +2067,16 @@
       })();
 
       requestAnimationFrame(function () {
+        buildLogicCells();
+        syncLogicBitsFromN(logicAInputs, 0);
+        syncLogicBitsFromN(logicBInputs, 0);
+        updateLogicResult();
         syncPadding();
         syncAnswerButton();
         syncDivisorSelect();
         setN(0);
         updateDivmod();
+        syncLogicModeState();
       });
     })();
   </script>
