@@ -920,11 +920,24 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
       grid-template-columns: 3.2rem minmax(0, 1fr);
       align-items: start;
       gap: 0.35rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.45rem 0.55rem 0.55rem;
+      background: var(--surface-2);
     }
     .logic-row .num-label {
-      margin: 0.5rem 0 0;
-      text-align: right;
+      margin: 0;
+      text-align: center;
       white-space: nowrap;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.08rem 0.55rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      align-self: center;
+      justify-self: center;
     }
     .logic-row .bit-cells {
       justify-content: flex-end;
@@ -937,9 +950,17 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
       align-items: center;
       justify-content: center;
       min-height: 36px;
-      font-size: 0.68rem;
-      font-weight: 700;
+      font-size: 0.62rem;
+      font-weight: 600;
       line-height: 1;
+      background: #f0f3f8;
+      color: #6e7688;
+      border-color: #cdd4e2;
+    }
+    .logic-op-panel .logic-bit-step:hover:not(:disabled) {
+      background: #e9edf5;
+      color: #5c6478;
+      border-color: #bcc5d6;
     }
     .logic-op-panel .logic-bit-spacer {
       width: 2rem;
@@ -947,6 +968,15 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
       height: 1.4rem;
       visibility: hidden;
       pointer-events: none;
+    }
+    .logic-row--result {
+      border-color: #d4a832;
+      background: linear-gradient(180deg, #fffdf5 0%, #fff8e6 100%);
+    }
+    .logic-row--result .num-label {
+      border-color: #d4a832;
+      background: rgba(212, 168, 50, 0.14);
+      color: #7a5a00;
     }
     @media (max-width: 600px) {
       .logic-op-head {
@@ -959,6 +989,7 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
       .logic-row .num-label {
         text-align: center;
         margin-top: 0;
+        justify-self: center;
       }
       .logic-row .bit-cells {
         justify-content: center;
@@ -997,7 +1028,7 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
               </label>
             </div>
           </div>
-          <div class="logic-row">
+          <div class="logic-row logic-row--a">
             <span class="num-label">A</span>
             <div class="controls bin-jump-block">
               <div class="bin-jump-row">
@@ -1005,7 +1036,7 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
               </div>
             </div>
           </div>
-          <div class="logic-row">
+          <div class="logic-row logic-row--b">
             <span class="num-label">B</span>
             <div class="controls bin-jump-block">
               <div class="bin-jump-row">
@@ -1013,7 +1044,7 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
               </div>
             </div>
           </div>
-          <div class="logic-row">
+          <div class="logic-row logic-row--result">
             <span class="num-label">結果</span>
             <div class="controls bin-jump-block">
               <div class="bin-jump-row">
@@ -1139,6 +1170,10 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
           <input type="radio" name="viewMode" value="hide-dec">
           2進数のみ
         </label>
+        <label>
+          <input type="radio" name="viewMode" value="logic">
+          論理演算モード
+        </label>
       </div>
     </div>
     <div class="view-bar__row view-bar__list" id="listToggleWrap">
@@ -1154,10 +1189,6 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
         <label class="view-bar__list-label">
           <input type="checkbox" id="toggleDivmod" autocomplete="off">
           <span>商と余りを表示</span>
-        </label>
-        <label class="view-bar__list-label">
-          <input type="checkbox" id="toggleLogicMode" autocomplete="off">
-          <span>論理演算モード</span>
         </label>
       </div>
     </div>
@@ -1197,7 +1228,6 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
       const divisorInput = document.getElementById("divisorInput");
       const divmodShiftHint = document.getElementById("divmodShiftHint");
       const logicOpPanel = document.getElementById("logicOpPanel");
-      const toggleLogicMode = document.getElementById("toggleLogicMode");
       const logicOpOr = document.getElementById("logicOpOr");
       const logicOpAnd = document.getElementById("logicOpAnd");
       const logicACells = document.getElementById("logicACells");
@@ -1452,12 +1482,14 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
         for (let i = 0; i < 8; i++) {
           const aIs1 = logicAInputs[i] && logicAInputs[i].value === "1";
           const bIs1 = logicBInputs[i] && logicBInputs[i].value === "1";
+          const rIs1 = logicRInputs[i] && logicRInputs[i].value === "1";
           if (logicAUpBtns[i]) logicAUpBtns[i].disabled = !!aIs1;
           if (logicADownBtns[i]) logicADownBtns[i].disabled = !aIs1;
           if (logicBUpBtns[i]) logicBUpBtns[i].disabled = !!bIs1;
           if (logicBDownBtns[i]) logicBDownBtns[i].disabled = !bIs1;
           const aCell = logicAInputs[i] && logicAInputs[i].closest(".bit-cell");
           const bCell = logicBInputs[i] && logicBInputs[i].closest(".bit-cell");
+          const rCell = logicRInputs[i] && logicRInputs[i].closest(".bit-cell");
           if (aCell) {
             aCell.classList.toggle("bit-cell--on", !!aIs1);
             aCell.classList.toggle("bit-cell--off", !aIs1);
@@ -1465,6 +1497,10 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
           if (bCell) {
             bCell.classList.toggle("bit-cell--on", !!bIs1);
             bCell.classList.toggle("bit-cell--off", !bIs1);
+          }
+          if (rCell) {
+            rCell.classList.toggle("bit-cell--on", !!rIs1);
+            rCell.classList.toggle("bit-cell--off", !rIs1);
           }
         }
       }
@@ -1478,12 +1514,47 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
         updateLogicBitButtons();
       }
 
+      function applyTabOrderForBits(upBtns, inputs, downBtns, startTab) {
+        let tab = startTab;
+        for (let i = 0; i < upBtns.length; i++) {
+          if (upBtns[i]) upBtns[i].tabIndex = tab++;
+        }
+        for (let i = 0; i < inputs.length; i++) {
+          if (inputs[i]) inputs[i].tabIndex = tab++;
+        }
+        for (let i = 0; i < downBtns.length; i++) {
+          if (downBtns[i]) downBtns[i].tabIndex = tab++;
+        }
+        return tab;
+      }
+
+      function applyLogicTabOrder(enabled) {
+        if (!enabled) {
+          const all = []
+            .concat(logicAUpBtns, logicADownBtns, logicBUpBtns, logicBDownBtns, logicAInputs, logicBInputs);
+          all.forEach(function (el) {
+            if (el) el.tabIndex = -1;
+          });
+          logicRInputs.forEach(function (el) {
+            if (el) el.tabIndex = -1;
+          });
+          return;
+        }
+        let tab = 1;
+        tab = applyTabOrderForBits(logicAUpBtns, logicAInputs, logicADownBtns, tab);
+        tab = applyTabOrderForBits(logicBUpBtns, logicBInputs, logicBDownBtns, tab);
+        logicRInputs.forEach(function (el) {
+          if (el) el.tabIndex = -1;
+        });
+      }
+
       function syncLogicModeState() {
-        const binOnly = document.body.classList.contains("view-hide-dec");
-        if (toggleLogicMode) toggleLogicMode.disabled = !binOnly;
-        const on = !!(toggleLogicMode && toggleLogicMode.checked && binOnly);
+        const on =
+          document.body.classList.contains("view-hide-dec") &&
+          document.body.classList.contains("logic-mode-on");
         document.body.classList.toggle("logic-mode-on", on);
         if (logicOpPanel) logicOpPanel.hidden = !on;
+        applyLogicTabOrder(on);
       }
 
       function buildLogicCells() {
@@ -1866,14 +1937,6 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
           } catch (e) {}
         });
       }
-      if (toggleLogicMode) {
-        toggleLogicMode.addEventListener("change", function () {
-          try {
-            localStorage.setItem("decimalBinaryLabLogicMode", this.checked ? "1" : "0");
-          } catch (e) {}
-          syncLogicModeState();
-        });
-      }
       if (logicOpOr) {
         logicOpOr.addEventListener("change", function () {
           if (!this.checked) return;
@@ -1958,10 +2021,16 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
       }
 
       function applyViewMode(value, persist) {
-        document.body.classList.remove("view-hide-dec", "view-hide-bin", "view-all");
-        if (value === "hide-dec") document.body.classList.add("view-hide-dec");
-        else if (value === "hide-bin") document.body.classList.add("view-hide-bin");
-        else document.body.classList.add("view-all");
+        document.body.classList.remove("view-hide-dec", "view-hide-bin", "view-all", "logic-mode-on");
+        if (value === "hide-dec") {
+          document.body.classList.add("view-hide-dec");
+        } else if (value === "hide-bin") {
+          document.body.classList.add("view-hide-bin");
+        } else if (value === "logic") {
+          document.body.classList.add("view-hide-dec", "logic-mode-on");
+        } else {
+          document.body.classList.add("view-all");
+        }
 
         document.querySelectorAll('.view-bar__opts input[name="viewMode"]').forEach(function (radio) {
           const lab = radio.closest("label");
@@ -2016,10 +2085,6 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
           if (toggleDivmod) toggleDivmod.checked = dm === "1";
         } catch (e) {}
         try {
-          const lm = localStorage.getItem("decimalBinaryLabLogicMode");
-          if (toggleLogicMode) toggleLogicMode.checked = lm === "1";
-        } catch (e) {}
-        try {
           const lop = localStorage.getItem("decimalBinaryLabLogicOp");
           if (lop === "and" && logicOpAnd) logicOpAnd.checked = true;
           else if (logicOpOr) logicOpOr.checked = true;
@@ -2027,7 +2092,7 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
 
         try {
           const saved = localStorage.getItem("decimalBinaryLabView");
-          if (saved === "hide-dec" || saved === "hide-bin") {
+          if (saved === "hide-dec" || saved === "hide-bin" || saved === "logic") {
             const r = document.querySelector('input[name="viewMode"][value="' + saved + '"]');
             if (r) {
               r.checked = true;
