@@ -898,6 +898,9 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
       align-items: center;
       gap: 0.35rem 0.6rem;
     }
+    .logic-op-types[hidden] {
+      display: none !important;
+    }
     .logic-op-types label {
       display: inline-flex;
       align-items: center;
@@ -986,6 +989,11 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
       display: flex;
       justify-content: center;
     }
+    .logic-answer-wrap--inline {
+      margin-top: 0;
+      justify-content: flex-end;
+      width: 100%;
+    }
     .logic-answer-wrap[hidden] {
       display: none !important;
     }
@@ -1028,7 +1036,7 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
         <div class="logic-op-panel" id="logicOpPanel">
           <div class="logic-op-head">
             <p class="section-title">論理演算モード（2進数のみ）</p>
-            <div class="logic-op-types" role="radiogroup" aria-label="論理演算の種類">
+            <div class="logic-op-types" id="logicOpTypes" role="radiogroup" aria-label="論理演算の種類">
               <label>
                 <input type="radio" name="logicOpType" id="logicOpOr" value="or" checked>
                 論理和（OR）
@@ -1038,6 +1046,9 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
                 論理積（AND）
               </label>
               <button type="button" class="btn-tool" id="btnLogicRandom" aria-label="論理演算用の条件付きランダム">ランダム</button>
+            </div>
+            <div class="logic-answer-wrap logic-answer-wrap--inline" id="logicAnswerWrapTop" hidden>
+              <button type="button" class="btn-tool" id="btnLogicRevealTop" aria-label="隠れている内容を表示">答えを見る</button>
             </div>
           </div>
           <div class="logic-row logic-row--a">
@@ -1245,9 +1256,12 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
       const logicOpPanel = document.getElementById("logicOpPanel");
       const logicOpOr = document.getElementById("logicOpOr");
       const logicOpAnd = document.getElementById("logicOpAnd");
+      const logicOpTypes = document.getElementById("logicOpTypes");
       const btnLogicRandom = document.getElementById("btnLogicRandom");
       const btnLogicReveal = document.getElementById("btnLogicReveal");
+      const btnLogicRevealTop = document.getElementById("btnLogicRevealTop");
       const logicAnswerWrap = document.getElementById("logicAnswerWrap");
+      const logicAnswerWrapTop = document.getElementById("logicAnswerWrapTop");
       const logicACells = document.getElementById("logicACells");
       const logicBCells = document.getElementById("logicBCells");
       const logicRCells = document.getElementById("logicRCells");
@@ -1266,6 +1280,7 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
       const logicBUpBtns = [];
       const logicBDownBtns = [];
       let logicAnswerHidden = false;
+      let logicModeHidden = false;
       let padY = 0;
 
       function syncDecJumpFromN(n) {
@@ -1566,9 +1581,15 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
           const row = logicRCells.closest(".logic-row--result");
           if (row) row.hidden = logicAnswerHidden;
         }
-        if (logicAnswerWrap) {
-          logicAnswerWrap.hidden = !logicAnswerHidden;
-        }
+        if (logicAnswerWrap) logicAnswerWrap.hidden = !logicAnswerHidden;
+        if (logicAnswerWrapTop) logicAnswerWrapTop.hidden = !logicModeHidden;
+      }
+
+      function setLogicModeHidden(hidden) {
+        logicModeHidden = !!hidden;
+        if (logicOpTypes) logicOpTypes.hidden = logicModeHidden;
+        if (logicAnswerWrapTop) logicAnswerWrapTop.hidden = !logicModeHidden;
+        if (logicAnswerWrap) logicAnswerWrap.hidden = !logicAnswerHidden;
       }
 
       function applyTabOrderForBits(upBtns, inputs, downBtns, startTab) {
@@ -2017,12 +2038,25 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
             try { localStorage.setItem("decimalBinaryLabLogicOp", pickAnd ? "and" : "or"); } catch (e) {}
           }
           randomizeLogicInputs();
-          setLogicAnswerHidden(true);
+          if (Math.random() < 0.5) {
+            setLogicAnswerHidden(true);
+            setLogicModeHidden(false);
+          } else {
+            setLogicModeHidden(true);
+            setLogicAnswerHidden(false);
+          }
         });
       }
       if (btnLogicReveal) {
         btnLogicReveal.addEventListener("click", function () {
           setLogicAnswerHidden(false);
+          setLogicModeHidden(false);
+        });
+      }
+      if (btnLogicRevealTop) {
+        btnLogicRevealTop.addEventListener("click", function () {
+          setLogicAnswerHidden(false);
+          setLogicModeHidden(false);
         });
       }
       if (btnAnswer && answerReveal) {
@@ -2211,6 +2245,7 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
         syncLogicBitsFromN(logicBInputs, 0);
         updateLogicResult();
         setLogicAnswerHidden(false);
+        setLogicModeHidden(false);
         syncPadding();
         syncAnswerButton();
         syncDivisorSelect();
