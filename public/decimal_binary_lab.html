@@ -1517,21 +1517,27 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
       }
 
       function randomizeLogicInputs() {
-        const n = randomInt(1, 8);
+        const useAnd = logicOpAnd && logicOpAnd.checked;
+        const n = useAnd ? randomInt(1, 4) : randomInt(1, 7);
         const lowMask = n >= 8 ? 0xff : (1 << n) - 1;
         const highMask = 0xff ^ lowMask;
-        const useAnd = logicOpAnd && logicOpAnd.checked;
 
         let a = 0;
         let b = 0;
         if (useAnd) {
           // 論理積: B は下位 n ビットだけ 1（それ以外は 0）、A は任意
-          a = randomInt(0, 255);
+          do {
+            a = randomInt(0, 255);
+          } while (a === 0 || a === 255);
           b = lowMask;
         } else {
           // 論理和: A の右 n ビットは 0、B は右 n ビットのみ 0/1 ランダム（それ以外は 0）
-          a = randomInt(0, 255) & highMask;
-          b = randomInt(0, lowMask);
+          do {
+            a = randomInt(0, 255) & highMask;
+          } while (a === 0 || a === 255);
+          do {
+            b = randomInt(0, lowMask);
+          } while (b === 0 || b === 255);
         }
 
         syncLogicBitsFromN(logicAInputs, a);
