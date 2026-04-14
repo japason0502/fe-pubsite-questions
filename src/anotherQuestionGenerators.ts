@@ -6,7 +6,6 @@ type AnotherQuestionGenerator = (baseQuestion: Question) => GeneratedQuestionPat
 const CHOICE_IDS = ["a", "b", "c", "d", "e", "f", "g"];
 let lastQ58Mode: 0 | 1 | null = null;
 let lastQ60Mode: 0 | 1 | 2 | null = null;
-let lastQ61Mode: 0 | 1 | null = null;
 
 function randomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -543,14 +542,8 @@ function generateQ60(_baseQuestion: Question): GeneratedQuestionPatch {
   };
 }
 
-/** A: 下位 n ビット（正解 byte ∧ 下位マスク）、B: 上位 n ビット（正解 byte ∧ 上位マスク または byte >> (8−n) をランダム） */
+/** 下位 n ビット取出し（正解 byte ∧ 下位マスク）のみ */
 function generateQ61(_baseQuestion: Question): GeneratedQuestionPatch {
-  let mode = randomInt(0, 1) as 0 | 1;
-  if (lastQ61Mode !== null && mode === lastQ61Mode) {
-    mode = (1 - mode) as 0 | 1;
-  }
-  lastQ61Mode = mode;
-
   const n = randomInt(2, 6);
   const k = 8 - n;
   const maskLower = (1 << n) - 1;
@@ -567,108 +560,34 @@ function generateQ61(_baseQuestion: Question): GeneratedQuestionPatch {
     "        【　】",
     "    return r"
   ];
-  const pseudoUpper = [
-    "○ 8ビット型: getUpperBits(8ビット型: byte)",
-    "    8ビット型: r ← 00000000",
-    "        【　】",
-    "    return r"
-  ];
 
-  if (mode === 0) {
-    let byteVal = 0;
-    let resultVal = 0;
-    do {
-      byteVal = randomInt(1, 254);
-      resultVal = byteVal & maskLower;
-    } while (resultVal === 0 || resultVal === byteVal);
-    const byteBin = toBin8Byte(byteVal);
-    const resultBin = toBin8Byte(resultVal);
-    const bodyText = `関数 getLowerBits は 8 ビット型の引数 byte を受け取り，下位${n}ビットを返す。例えば，getLowerBits(${byteBin}) の戻り値は ${resultBin} となる。\n\n${intro}`;
-
-    const correct = `r ← (byte ∧ ${maskLowerBin})`;
-    // 誤答に >> は入れない（下位取出しと上位の右シフトが並ぶと正解二重に見えるのを防ぐ）
-    const four = shuffleFourChoices(
-      correct,
-      `r ← (byte ∨ ${maskLowerBin})`,
-      `r ← (byte ∧ ${maskUpperBin})`,
-      `r ← (byte << ${k})`
-    );
-    return {
-      bodyText,
-      pseudoCode: pseudoLower,
-      choices: four.choices,
-      correctChoiceId: four.correctChoiceId,
-      anotherTraceLines: [
-        `パターンA: 下位${n}ビット`,
-        `マスク（下位n桁が1）= ${maskLowerBin}`,
-        `例: ${byteBin} → ${resultBin}`,
-        `正解: ${correct}`
-      ]
-    };
-  }
-
-  const useUpperAnd = randomInt(0, 1) === 1;
-  let byteVal = 255;
-  let resultBin = "";
-  for (let t = 0; t < 50; t += 1) {
-    const v = randomInt(1, 254);
-    const rAnd = v & maskUpper;
-    const rShift = (v >> k) & 0xff;
-    if (useUpperAnd) {
-      if (rAnd !== 0 && rAnd !== v) {
-        byteVal = v;
-        resultBin = toBin8Byte(rAnd);
-        break;
-      }
-    } else if (rShift !== 0 && rShift !== v) {
-      byteVal = v;
-      resultBin = toBin8Byte(rShift);
-      break;
-    }
-  }
-  if (resultBin === "") {
-    byteVal = 255;
-    resultBin = useUpperAnd ? toBin8Byte(byteVal & maskUpper) : toBin8Byte((byteVal >> k) & 0xff);
-  }
+  let byteVal = 0;
+  let resultVal = 0;
+  do {
+    byteVal = randomInt(1, 254);
+    resultVal = byteVal & maskLower;
+  } while (resultVal === 0 || resultVal === byteVal);
   const byteBin = toBin8Byte(byteVal);
-  const bodyText = `関数 getUpperBits は 8 ビット型の引数 byte を受け取り，上位${n}ビットを返す。例えば，getUpperBits(${byteBin}) の戻り値は ${resultBin} となる（8ビット表現）。\n\n${intro}`;
+  const resultBin = toBin8Byte(resultVal);
+  const bodyText = `関数 getLowerBits は 8 ビット型の引数 byte を受け取り，下位${n}ビットを返す。例えば，getLowerBits(${byteBin}) の戻り値は ${resultBin} となる。\n\n${intro}`;
 
-  if (useUpperAnd) {
-    const correct = `r ← (byte ∧ ${maskUpperBin})`;
-    const four = shuffleFourChoices(
-      correct,
-      `r ← (byte ∨ ${maskUpperBin})`,
-      `r ← (byte ∧ ${maskLowerBin})`,
-      `r ← (byte << ${k})`
-    );
-    return {
-      bodyText,
-      pseudoCode: pseudoUpper,
-      choices: four.choices,
-      correctChoiceId: four.correctChoiceId,
-      anotherTraceLines: [
-        "パターンB: 上位n（正解 ∧ のみ、誤答に >> なし）",
-        `マスク（上位n桁が1）= ${maskUpperBin}`,
-        `正解: ${correct}`
-      ]
-    };
-  }
-
-  const correct = `r ← (byte >> ${k})`;
+  const correct = `r ← (byte ∧ ${maskLowerBin})`;
+  // 誤答に >> は入れない（誤答が別解に見えるのを防ぐ）
   const four = shuffleFourChoices(
     correct,
-    `r ← (byte ∨ ${maskUpperBin})`,
-    `r ← (byte ∧ ${maskLowerBin})`,
+    `r ← (byte ∨ ${maskLowerBin})`,
+    `r ← (byte ∧ ${maskUpperBin})`,
     `r ← (byte << ${k})`
   );
   return {
     bodyText,
-    pseudoCode: pseudoUpper,
+    pseudoCode: pseudoLower,
     choices: four.choices,
     correctChoiceId: four.correctChoiceId,
     anotherTraceLines: [
-      "パターンB: 上位n（正解 >> のみ、誤答に ∧ 上位マスクなし）",
-      `シフト量 8−${n} = ${k}`,
+      `下位${n}ビット`,
+      `マスク（下位n桁が1）= ${maskLowerBin}`,
+      `例: ${byteBin} → ${resultBin}`,
       `正解: ${correct}`
     ]
   };
