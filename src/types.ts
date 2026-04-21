@@ -9,14 +9,16 @@ export type ChoiceTable = {
   rows: string[][];
 };
 
-/** 本文表の1セル。文字列のほか { text, shaded } で網掛け表示可 */
-export type BodyTableCell = string | { text: string; shaded?: boolean };
+/** 本文表の1セル。文字列のほか { text, shaded } で網掛け表示可。align は矢印行などで中央寄せに使う */
+export type BodyTableCell = string | { text: string; shaded?: boolean; align?: "center" };
 
 /** 本文中の補足表（例: 関数の引数と戻り値の例）。choiceTable とは別 */
 export type BodyTable = {
   caption?: string;
   headers: string[];
   rows: BodyTableCell[][];
+  /** 先頭列は内容幅・2列目以降を均等幅（スタック図など） */
+  equalDataColumnWidths?: boolean;
 };
 
 /** textSub: 通常文字列と下付き（小さな文字）の交互。kind "s"=そのまま、"sub"=base の直後に script を下付きで */
@@ -29,7 +31,7 @@ export type BodyBlock =
   | { type: "text"; text: string }
   | { type: "textCenter"; text: string }
   | { type: "textSub"; parts: BodyTextPart[] }
-  | { type: "table"; caption?: string; headers: string[]; rows: BodyTableCell[][] }
+  | ({ type: "table" } & BodyTable)
   | { type: "formula"; text: string }
   /** public からの相対パス（例: question-images/52_formula.png） */
   | { type: "image"; src: string; alt?: string }

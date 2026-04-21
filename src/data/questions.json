@@ -3187,5 +3187,172 @@
     "hintVideoUrl": "https://www.youtube.com/watch?v=HBJcpbO0KUw&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=57&t=26s",
     "lessonUrl": "",
     "another": 0
+  },
+  {
+    "id": "q66",
+    "number": 66,
+    "title": "（準備中）",
+    "questionText": "この番号の問題は準備中です。",
+    "pseudoCode": [
+      "/* ダミー — 後日差し替え予定 */"
+    ],
+    "choices": [
+      { "id": "a", "text": "—" },
+      { "id": "b", "text": "—" },
+      { "id": "c", "text": "—" },
+      { "id": "d", "text": "—" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "a",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q67",
+    "number": 67,
+    "title": "（準備中）",
+    "questionText": "この番号の問題は準備中です。",
+    "pseudoCode": [
+      "/* ダミー — 後日差し替え予定 */"
+    ],
+    "choices": [
+      { "id": "a", "text": "—" },
+      { "id": "b", "text": "—" },
+      { "id": "c", "text": "—" },
+      { "id": "d", "text": "—" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "a",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q68",
+    "number": 68,
+    "title": "（準備中）",
+    "questionText": "この番号の問題は準備中です。",
+    "pseudoCode": [
+      "/* ダミー — 後日差し替え予定 */"
+    ],
+    "choices": [
+      { "id": "a", "text": "—" },
+      { "id": "b", "text": "—" },
+      { "id": "c", "text": "—" },
+      { "id": "d", "text": "—" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "a",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q69",
+    "number": 69,
+    "title": "（準備中）",
+    "questionText": "この番号の問題は準備中です。",
+    "pseudoCode": [
+      "/* ダミー — 後日差し替え予定 */"
+    ],
+    "choices": [
+      { "id": "a", "text": "—" },
+      { "id": "b", "text": "—" },
+      { "id": "c", "text": "—" },
+      { "id": "d", "text": "—" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "a",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q70",
+    "number": 70,
+    "title": "問題70(R7問3)スタック(非オブジェクト指向)",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "関数 push は，引数で与えられた整数をスタックに格納する。格納できる場合は true を返し，格納できなかった場合は false を返す。"
+      },
+      {
+        "type": "text",
+        "text": "関数 pop は，スタックから値を取り出して返す。スタックが空のときは未定義の値を返す。"
+      },
+      {
+        "type": "text",
+        "text": "スタックを，要素数が 4 である大域の整数型の配列 stack，及び次に値を格納する位置を示す大域の変数 stackPos で表現する。スタックの初期状態を図に示す。プログラムでは，配列の領域外を参照してはならないものとする。"
+      },
+      {
+        "type": "table",
+        "equalDataColumnWidths": true,
+        "caption": "図　スタックの初期状態",
+        "headers": ["要素番号", "1", "2", "3", "4"],
+        "rows": [
+          [
+            "stack",
+            "4",
+            "3",
+            { "text": "", "shaded": true },
+            { "text": "", "shaded": true }
+          ],
+          ["", "", "", { "text": "↑\nstackPos", "align": "center" }, ""]
+        ]
+      },
+      {
+        "type": "text",
+        "text": "注記　網掛けはその要素が未定義であることを示す。"
+      }
+    ],
+    "pseudoCode": [
+      "大域：整数型：stackPos ← 3",
+      "大域：整数型の配列：stack ← {4, 3, 未定義の値, 未定義の値}",
+      "",
+      "○ 論理型：push(整数型：inputData)",
+      "    if (stackPos ≤ stack の要素数)",
+      "        stack【 a 】 ← inputData",
+      "        stackPos ← stackPos + 1",
+      "        return true",
+      "    else",
+      "        return false",
+      "    endif",
+      "",
+      "○ 整数型：pop()",
+      "    整数型：popData ← 未定義の値",
+      "    if (stackPos > 1)",
+      "        stackPos ← 【 b 】",
+      "        popData ← stack[stackPos]",
+      "        stack[stackPos] ← 未定義の値",
+      "    endif",
+      "    return popData"
+    ],
+    "choices": [
+      { "id": "a", "text": "a=stackPos, b=stackPos + 1" },
+      { "id": "b", "text": "a=stackPos, b=stackPos − 1" },
+      { "id": "c", "text": "a=stackPos − 1, b=stackPos + 1" },
+      { "id": "d", "text": "a=stackPos − 1, b=stackPos − 1" }
+    ],
+    "choiceTable": {
+      "headers": ["a", "b"],
+      "rows": [
+        ["stackPos", "stackPos + 1"],
+        ["stackPos", "stackPos − 1"],
+        ["stackPos − 1", "stackPos + 1"],
+        ["stackPos − 1", "stackPos − 1"]
+      ]
+    },
+    "videoUrl": "",
+    "correctChoiceId": "b",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "lessonUrl": "",
+    "another": 1
   }
 ]

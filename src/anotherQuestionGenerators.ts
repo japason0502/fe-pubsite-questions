@@ -1,6 +1,15 @@
-import { Choice, Question } from "./types";
+import { BodyBlock, BodyTableCell, Choice, Question } from "./types";
 
-export type GeneratedQuestionPatch = Pick<Question, "bodyText" | "pseudoCode" | "choices" | "correctChoiceId" | "anotherTraceLines">;
+export type GeneratedQuestionPatch = Pick<
+  Question,
+  | "bodyText"
+  | "pseudoCode"
+  | "choices"
+  | "correctChoiceId"
+  | "anotherTraceLines"
+  | "bodyBlocks"
+  | "choiceTable"
+>;
 type AnotherQuestionGenerator = (baseQuestion: Question) => GeneratedQuestionPatch;
 
 const CHOICE_IDS = ["a", "b", "c", "d", "e", "f", "g"];
@@ -657,6 +666,155 @@ function generateQ61(_baseQuestion: Question): GeneratedQuestionPatch {
   };
 }
 
+/** 値を変えてもう一度: 初期 stack / stackPos をランダム化。正解は a=stackPos+1, b=未定義の値(後ろの方) */
+function generateQ70(_baseQuestion: Question): GeneratedQuestionPatch {
+  const stackPos = randomInt(1, 5);
+  const vals = Array.from({ length: Math.max(0, stackPos - 1) }, () => randomInt(1, 9));
+  const stackLiteralParts: string[] = [];
+  for (let j = 1; j <= 4; j += 1) {
+    if (j < stackPos) stackLiteralParts.push(String(vals[j - 1] ?? ""));
+    else stackLiteralParts.push("未定義の値");
+  }
+
+  const stackRow: BodyTableCell[] = ["stack"];
+  for (let j = 1; j <= 4; j += 1) {
+    if (j < stackPos) {
+      stackRow.push(String(vals[j - 1] ?? ""));
+    } else {
+      stackRow.push({ text: "", shaded: true });
+    }
+  }
+
+  const arrowColIndex = Math.min(stackPos, 4);
+  const arrowRow: BodyTableCell[] = ["", "", "", "", ""].map((_, i) => {
+    if (i === arrowColIndex) {
+      return { text: "↑\nstackPos", align: "center" as const };
+    }
+    return "";
+  });
+
+  const bodyBlocks: BodyBlock[] = [
+    {
+      type: "text",
+      text: "関数 push は，引数で与えられた整数をスタックに格納する。格納できる場合は true を返し，格納できなかった場合は false を返す。"
+    },
+    {
+      type: "text",
+      text: "関数 pop は，スタックから値を取り出して返す。スタックが空のときは未定義の値を返す。"
+    },
+    {
+      type: "text",
+      text: "スタックを，要素数が 4 である大域の整数型の配列 stack，及び次に値を格納する位置を示す大域の変数 stackPos で表現する。スタックの初期状態を図に示す。プログラムでは，配列の領域外を参照してはならないものとする。"
+    },
+    {
+      type: "table",
+      equalDataColumnWidths: true,
+      caption: "図　スタックの初期状態",
+      headers: ["要素番号", "1", "2", "3", "4"],
+      rows: [stackRow, arrowRow]
+    },
+    {
+      type: "text",
+      text: "注記　網掛けはその要素が未定義であることを示す。"
+    }
+  ];
+
+  /** 常に push→pop の順。
+   * pushPattern 0:【a】は添字 stack【 a 】 / pushPattern 1:【a】は stackPos ← 【 a 】（正解 a=stackPos + 1）
+   * holeLayout 0:【b】は stackPos 行 / 1:【b】は stack[stackPos] 代入行 */
+  const pushPattern = randomInt(0, 1);
+  const holeLayout = randomInt(0, 1);
+
+  const globals: string[] = [
+    `大域：整数型：stackPos ← ${stackPos}`,
+    `大域：整数型の配列：stack ← {${stackLiteralParts.join(", ")}}`
+  ];
+
+  const pushBlockIndexA = [
+    "○ 論理型：push(整数型：inputData)",
+    "    if (stackPos ≤ stack の要素数)",
+    "        stack【 a 】 ← inputData",
+    "        stackPos ← stackPos + 1",
+    "        return true",
+    "    else",
+    "        return false",
+    "    endif"
+  ];
+
+  const pushBlockStackPosA = [
+    "○ 論理型：push(整数型：inputData)",
+    "    if (stackPos ≤ stack の要素数)",
+    "        stack[stackPos] ← inputData",
+    "        stackPos ← 【 a 】",
+    "        return true",
+    "    else",
+    "        return false",
+    "    endif"
+  ];
+
+  const popBlockStandard = [
+    "○ 整数型：pop()",
+    "    整数型：popData ← 未定義の値",
+    "    if (stackPos > 1)",
+    "        stackPos ← 【 b 】",
+    "        popData ← stack[stackPos]",
+    "        stack[stackPos] ← 未定義の値",
+    "    endif",
+    "    return popData"
+  ];
+
+  const popBlockBLast = [
+    "○ 整数型：pop()",
+    "    整数型：popData ← 未定義の値",
+    "    if (stackPos > 1)",
+    "        stackPos ← stackPos − 1",
+    "        popData ← stack[stackPos]",
+    "        stack[stackPos] ← 【 b 】",
+    "    endif",
+    "    return popData"
+  ];
+
+  const pushBlock = pushPattern === 0 ? pushBlockIndexA : pushBlockStackPosA;
+  const pseudoCode =
+    holeLayout === 0
+      ? [...globals, "", ...pushBlock, "", ...popBlockStandard]
+      : [...globals, "", ...pushBlock, "", ...popBlockBLast];
+
+  const combos = shuffle([
+    { a: "stackPos + 1", b: "未定義の値", correct: true as boolean },
+    { a: "stackPos", b: "stackPos − 1", correct: false },
+    { a: "stackPos", b: "stackPos + 1", correct: false },
+    { a: "stackPos − 1", b: "stackPos − 1", correct: false }
+  ]);
+  const choices: Choice[] = combos.map((c, index) => ({
+    id: CHOICE_IDS[index] ?? "a",
+    text: `a=${c.a}, b=${c.b}`
+  }));
+  const correctChoiceId = CHOICE_IDS[combos.findIndex((c) => c.correct)] ?? "a";
+  const choiceTable = {
+    headers: ["a", "b"],
+    rows: combos.map((c) => [c.a, c.b])
+  };
+
+  const layoutLabelA =
+    pushPattern === 0 ? "【a】は stack【 a 】（添字）" : "【a】は stackPos ← 【 a 】（右辺＝stackPos + 1）";
+  const layoutLabelB = holeLayout === 0 ? "【b】は stackPos 行" : "【b】は stack[stackPos] 代入行";
+
+  return {
+    bodyBlocks,
+    pseudoCode,
+    choices,
+    correctChoiceId,
+    choiceTable,
+    anotherTraceLines: [
+      `初期: stackPos ← ${stackPos}`,
+      `stack ← {${stackLiteralParts.join(", ")}}`,
+      `穴の配置: ${layoutLabelA} / ${layoutLabelB}`,
+      "正解: a は stackPos + 1, b は 未定義の値(後ろの方)"
+    ]
+  };
+}
+
 const anotherQuestionGenerators: Record<string, AnotherQuestionGenerator> = {
   q23: generateQ23,
   q33: generateQ33,
@@ -666,7 +824,8 @@ const anotherQuestionGenerators: Record<string, AnotherQuestionGenerator> = {
   q45: generateQ45Sparse,
   q58: generateQ58,
   q60: generateQ60,
-  q61: generateQ61
+  q61: generateQ61,
+  q70: generateQ70
 };
 
 export function generateAnotherQuestion(baseQuestion: Question): GeneratedQuestionPatch | null {

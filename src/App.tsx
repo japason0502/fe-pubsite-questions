@@ -39,6 +39,10 @@ function bodyTableCellShaded(cell: BodyTableCell): boolean {
   return typeof cell === "object" && cell.shaded === true;
 }
 
+function bodyTableCellAlign(cell: BodyTableCell): "center" | undefined {
+  return typeof cell === "object" && cell.align === "center" ? "center" : undefined;
+}
+
 function BodyTableView({ bt }: { bt?: BodyTable }) {
   if (!bt) return null;
   const ok =
@@ -50,7 +54,12 @@ function BodyTableView({ bt }: { bt?: BodyTable }) {
     <div className="body-table-block">
       {bt.caption ? <p className="body-table-caption">{bt.caption}</p> : null}
       <div className="choice-table-wrap">
-        <table className="choice-table body-table">
+        <table
+          className={
+            "choice-table body-table" +
+            (bt.equalDataColumnWidths ? " body-table--equal-data-cols" : "")
+          }
+        >
           <thead>
             <tr>
               {bt.headers.map((h, hi) => (
@@ -65,9 +74,22 @@ function BodyTableView({ bt }: { bt?: BodyTable }) {
               <tr key={ri}>
                 {row.map((cell, ci) => {
                   const shaded = bodyTableCellShaded(cell);
+                  const align = bodyTableCellAlign(cell);
+                  const textContent = bodyTableCellText(cell) || (shaded ? "\u00a0" : "");
+                  const cellStyle =
+                    align || textContent.includes("\n")
+                      ? {
+                          ...(align ? { textAlign: align as const } : {}),
+                          ...(textContent.includes("\n") ? { whiteSpace: "pre-line" as const } : {})
+                        }
+                      : undefined;
                   return (
-                    <td key={ci} className={shaded ? "body-table-cell-shaded" : undefined}>
-                      {bodyTableCellText(cell) || (shaded ? "\u00a0" : "")}
+                    <td
+                      key={ci}
+                      className={shaded ? "body-table-cell-shaded" : undefined}
+                      style={cellStyle}
+                    >
+                      {textContent}
                     </td>
                   );
                 })}
@@ -109,8 +131,10 @@ function renderBodyBlock(block: BodyBlock, idx: number) {
           )}
         </p>
       );
-    case "table":
-      return <BodyTableView key={idx} bt={block} />;
+    case "table": {
+      const { type: _table, ...tableRest } = block;
+      return <BodyTableView key={idx} bt={tableRest} />;
+    }
     case "formula": {
       const html = katex.renderToString(block.text, {
         displayMode: true,
@@ -716,7 +740,7 @@ export default function App() {
           )}
           {!currentQuestion.bodyBlocks?.length && <BodyTableView bt={currentQuestion.bodyTable} />}
           {currentQuestion.pseudoCode && (
-            <div className="pseudo">
+            <div className="pseudo" key={currentQuestion.pseudoCode.join("\n")}>
               <div className="pseudo-header">
                 <p className="pseudo-label">[プログラム]</p>
               </div>

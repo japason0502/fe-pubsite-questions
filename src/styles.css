@@ -169,7 +169,7 @@ button.small {
 
 .body-table-block {
   margin: 12px 0;
-  text-align: center;
+  text-align: left;
 }
 
 .body-table-caption {
@@ -266,6 +266,12 @@ button.small {
 }
 
 /* 本文表の網掛け（理論度数など数値省略セル） */
+/* 本文の補足表（bodyTable）は左詰め。解答群の表は .choice-table のみで中央のまま */
+.choice-table.body-table th,
+.choice-table.body-table td {
+  text-align: left;
+}
+
 .choice-table td.body-table-cell-shaded {
   background: repeating-linear-gradient(
     -45deg,
@@ -276,6 +282,43 @@ button.small {
   );
   min-width: 2.5em;
   min-height: 2em;
+}
+
+/* 先頭列＋均等データ列（スタック初期状態など） */
+.body-table-block:has(.body-table--equal-data-cols) {
+  width: 100%;
+  max-width: 30rem;
+}
+.body-table-block:has(.body-table--equal-data-cols) .choice-table-wrap {
+  display: block;
+  width: 100%;
+}
+.choice-table.body-table.body-table--equal-data-cols {
+  table-layout: fixed;
+  width: 100%;
+}
+.choice-table.body-table.body-table--equal-data-cols :is(th, td):first-child {
+  width: 6em;
+  box-sizing: border-box;
+}
+.choice-table.body-table.body-table--equal-data-cols thead th:not(:first-child),
+.choice-table.body-table.body-table--equal-data-cols tbody td:not(:first-child) {
+  width: calc((100% - 6em) / 4);
+  box-sizing: border-box;
+}
+
+/* スタック図: タイトル列（要素番号・stack）は右揃え、要素番号行の 1〜4 は中央、データ列も中央 */
+.choice-table.body-table.body-table--equal-data-cols thead th:first-child {
+  text-align: right;
+}
+.choice-table.body-table.body-table--equal-data-cols thead th:not(:first-child) {
+  text-align: center;
+}
+.choice-table.body-table.body-table--equal-data-cols tbody td:first-child {
+  text-align: right;
+}
+.choice-table.body-table.body-table--equal-data-cols tbody td:not(:first-child) {
+  text-align: center;
 }
 
 .question-title-row {
