@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>データ構造ラボ（スタック / 単方向リスト）</title>
+  <title>データ構造ラボ（スタック / キュー / 単方向リスト）</title>
   <style>
     :root {
       --bg: #eef1f6;
@@ -358,10 +358,11 @@
 <body>
   <div class="page">
     <h1>データ構造ラボ</h1>
-    <p class="lead" style="margin-bottom: 0.85rem;">スタック（push / pop）と、単方向リストの <code>delNode</code> を図で確認できます。</p>
+    <p class="lead" style="margin-bottom: 0.85rem;">スタック（push / pop）・キュー（enqueue / dequeue）・単方向リストの <code>delNode</code> を図で確認できます。</p>
 
     <div class="tabs" role="tablist" aria-label="モード切替">
       <button type="button" role="tab" id="tabStack" aria-selected="true" aria-controls="panel-stack">スタック（push / pop）</button>
+      <button type="button" role="tab" id="tabQueue" aria-selected="false" aria-controls="panel-queue">キュー（enqueue / dequeue）</button>
       <button type="button" role="tab" id="tabList" aria-selected="false" aria-controls="panel-list">単方向リスト（delNode）</button>
     </div>
 
@@ -389,7 +390,7 @@
       </div>
 
       <div class="panel">
-        <h2>現在の状態（教材と同じ 1 始まりの添字）</h2>
+        <h2>現在の状態</h2>
         <div class="stack-wrap">
           <table class="stack" aria-describedby="stack-desc">
             <thead>
@@ -410,15 +411,95 @@
           網掛けはその要素が未定義であることを示します。
         </p>
         <div class="state-row">
-          <span>stackPos（1 始まり）= <code id="dispStackPos">3</code></span>
-          <span>push 成否（直近）= <code id="dispPushOk">—</code></span>
-          <span>pop 戻り値（直近）= <code id="dispPopVal">—</code></span>
+          <span>stackPos= <code id="dispStackPos">3</code></span>
+          <span>push 成否= <code id="dispPushOk">—</code></span>
+          <span>pop 戻り値= <code id="dispPopVal">—</code></span>
         </div>
       </div>
 
       <div class="panel">
         <h2>ログ</h2>
         <pre class="log" id="logStack"></pre>
+      </div>
+    </section>
+
+    <!-- キュー（問題71 普通のキュー・教材と同じ初期状態） -->
+    <section id="panel-queue" role="tabpanel" aria-labelledby="tabQueue" hidden>
+      <p class="lead">
+        大域の配列 <code>queue</code>（要素数 4）と <code>enPos</code>（<strong>1 始まり</strong>：次に格納する位置）、<code>dePos</code>（<strong>1 始まり</strong>：次に取り出す位置）で表現します。
+        初期状態は <code>enPos ← 3</code>、<code>dePos ← 1</code>、<code>queue ← {4, 3, 未定義, 未定義}</code> です（<code>genko_kihon.md</code> 問題71 と同じ）。
+      </p>
+
+      <div class="panel">
+        <h2>図　キューの初期状態</h2>
+        <div class="stack-wrap">
+          <table class="stack">
+            <thead>
+              <tr>
+                <th scope="col">1</th>
+                <th scope="col">2</th>
+                <th scope="col">3</th>
+                <th scope="col">4</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="queueValues"></tr>
+              <tr class="pos-row" id="queuePosRow"></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="state-row">
+          <span>dePos= <code id="dispDePos">1</code></span>
+          <span>enPos= <code id="dispEnPos">3</code></span>
+          <span>enqueue 成否= <code id="dispEnqOk">—</code></span>
+          <span>dequeue 戻り値= <code id="dispDeqVal">—</code></span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>操作</h2>
+        <div class="controls">
+          <label>
+            enqueue する整数
+            <input type="number" id="enqueueInput" value="1" step="1">
+          </label>
+          <div class="btns">
+            <button type="button" class="primary" id="btnEnqueue">enqueue</button>
+            <button type="button" class="danger" id="btnDequeue">dequeue</button>
+            <button type="button" id="btnQueueReset">初期状態に戻す</button>
+          </div>
+        </div>
+        <p class="msg" id="queueMsg" aria-live="polite"></p>
+      </div>
+
+      <div class="panel">
+        <h2>教材の疑似プログラム（参照）</h2>
+        <pre class="pseudo">大域：整数型：enPos ← 3
+大域：整数型：dePos ← 1
+大域：整数型の配列：queue ← {4, 3, 未定義の値, 未定義の値}
+
+○ 論理型：enqueue(整数型：inputData)
+    if (enPos ≤ queue の要素数)
+        queue[enPos] ← inputData
+        enPos ← enPos + 1
+        return true
+    else
+        return false
+    endif
+
+○ 整数型：dequeue()
+    整数型：deqData ← 未定義の値
+    if (dePos &lt; enPos)
+        deqData ← queue[dePos]
+        queue[dePos] ← 未定義の値
+        dePos ← dePos + 1
+    endif
+    return deqData</pre>
+      </div>
+
+      <div class="panel">
+        <h2>ログ</h2>
+        <pre class="log" id="logQueue"></pre>
       </div>
     </section>
 
@@ -490,19 +571,23 @@
 
   /* ---------- タブ ---------- */
   var tabStack = document.getElementById("tabStack");
+  var tabQueue = document.getElementById("tabQueue");
   var tabList = document.getElementById("tabList");
   var panelStack = document.getElementById("panel-stack");
+  var panelQueue = document.getElementById("panel-queue");
   var panelList = document.getElementById("panel-list");
 
   function activateTab(which) {
-    var isStack = which === "stack";
-    tabStack.setAttribute("aria-selected", isStack ? "true" : "false");
-    tabList.setAttribute("aria-selected", isStack ? "false" : "true");
-    panelStack.hidden = !isStack;
-    panelList.hidden = isStack;
+    tabStack.setAttribute("aria-selected", which === "stack" ? "true" : "false");
+    tabQueue.setAttribute("aria-selected", which === "queue" ? "true" : "false");
+    tabList.setAttribute("aria-selected", which === "list" ? "true" : "false");
+    panelStack.hidden = which !== "stack";
+    panelQueue.hidden = which !== "queue";
+    panelList.hidden = which !== "list";
   }
 
   tabStack.addEventListener("click", function () { activateTab("stack"); });
+  tabQueue.addEventListener("click", function () { activateTab("queue"); });
   tabList.addEventListener("click", function () { activateTab("list"); });
 
   /* ---------- スタック ---------- */
@@ -633,6 +718,142 @@
 
   renderStack();
   logStack("起動：初期 stackPos=3、stack=[4,3,（未定義）,（未定義）]");
+
+  /* ---------- キュー（教材・問題71 と同じ初期状態） ---------- */
+  var QUEUE_LEN = 4;
+  var enPos = 3;
+  var dePos = 1;
+  var queue = [4, 3, undefined, undefined];
+
+  var enqueueInput = document.getElementById("enqueueInput");
+  var btnEnqueue = document.getElementById("btnEnqueue");
+  var btnDequeue = document.getElementById("btnDequeue");
+  var btnQueueReset = document.getElementById("btnQueueReset");
+  var queueValues = document.getElementById("queueValues");
+  var queuePosRow = document.getElementById("queuePosRow");
+  var dispDePos = document.getElementById("dispDePos");
+  var dispEnPos = document.getElementById("dispEnPos");
+  var dispEnqOk = document.getElementById("dispEnqOk");
+  var dispDeqVal = document.getElementById("dispDeqVal");
+  var queueMsg = document.getElementById("queueMsg");
+  var logQueueEl = document.getElementById("logQueue");
+  var queueLines = [];
+
+  function logQueue(text) {
+    var t = new Date().toLocaleTimeString("ja-JP", { hour12: false });
+    queueLines.push("[" + t + "] " + text);
+    if (queueLines.length > 80) queueLines.shift();
+    logQueueEl.textContent = queueLines.join("\n");
+  }
+
+  function renderQueue() {
+    queueValues.innerHTML = "";
+    queuePosRow.innerHTML = "";
+    var i;
+    for (i = 0; i < QUEUE_LEN; i++) {
+      var td = document.createElement("td");
+      td.className = "cell";
+      var v = queue[i];
+      if (v === undefined) {
+        td.classList.add("undefined");
+        td.textContent = "—";
+        td.title = "未定義";
+      } else {
+        td.textContent = String(v);
+      }
+      queueValues.appendChild(td);
+    }
+    for (i = 0; i < QUEUE_LEN; i++) {
+      var tdP = document.createElement("td");
+      var pos1 = i + 1;
+      var parts = [];
+      if (dePos >= 1 && dePos <= QUEUE_LEN && pos1 === dePos) {
+        parts.push("<strong>↑ dePos</strong>");
+      }
+      if (enPos >= 1 && enPos <= QUEUE_LEN && pos1 === enPos) {
+        parts.push("<strong>↑ enPos</strong>");
+      }
+      tdP.innerHTML = parts.join("<br>") || "";
+      queuePosRow.appendChild(tdP);
+    }
+    dispDePos.textContent = String(dePos);
+    dispEnPos.textContent = String(enPos);
+  }
+
+  function enqueue(inputData) {
+    if (enPos <= QUEUE_LEN) {
+      queue[enPos - 1] = inputData;
+      enPos = enPos + 1;
+      return true;
+    }
+    return false;
+  }
+
+  function dequeue() {
+    var deqData = undefined;
+    if (dePos < enPos) {
+      deqData = queue[dePos - 1];
+      queue[dePos - 1] = undefined;
+      dePos = dePos + 1;
+    }
+    return deqData;
+  }
+
+  function setQueueMsg(text, kind) {
+    queueMsg.textContent = text;
+    queueMsg.className = "msg" + (kind ? " " + kind : "");
+  }
+
+  function doEnqueue() {
+    var raw = enqueueInput.value;
+    var n = parseInt(raw, 10);
+    if (raw === "" || Number.isNaN(n)) {
+      setQueueMsg("整数を入力してください。", "warn");
+      return;
+    }
+    var ok = enqueue(n);
+    dispEnqOk.textContent = ok ? "true" : "false";
+    if (ok) {
+      setQueueMsg("enqueue(" + n + ") → true（格納しました）", "ok");
+      logQueue("enqueue(" + n + ") → true  dePos=" + dePos + " enPos=" + enPos);
+    } else {
+      setQueueMsg("enqueue(" + n + ") → false（これ以上格納できません）", "warn");
+      logQueue("enqueue(" + n + ") → false");
+    }
+    dispDeqVal.textContent = "—";
+    renderQueue();
+  }
+
+  function doDequeue() {
+    var v = dequeue();
+    var shown = v === undefined ? "未定義" : String(v);
+    dispDeqVal.textContent = shown;
+    dispEnqOk.textContent = "—";
+    setQueueMsg("dequeue() → " + shown, v === undefined ? "warn" : "ok");
+    logQueue("dequeue() → " + shown + "  dePos=" + dePos + " enPos=" + enPos);
+    renderQueue();
+  }
+
+  function resetQueue() {
+    enPos = 3;
+    dePos = 1;
+    queue = [4, 3, undefined, undefined];
+    dispEnqOk.textContent = "—";
+    dispDeqVal.textContent = "—";
+    setQueueMsg("初期状態に戻しました。", "ok");
+    logQueue("--- リセット ---");
+    renderQueue();
+  }
+
+  btnEnqueue.addEventListener("click", doEnqueue);
+  btnDequeue.addEventListener("click", doDequeue);
+  btnQueueReset.addEventListener("click", resetQueue);
+  enqueueInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") doEnqueue();
+  });
+
+  renderQueue();
+  logQueue("起動：初期 dePos=1、enPos=3、queue=[4,3,（未定義）,（未定義）]");
 
   /* ---------- 単方向リスト ---------- */
   var DEFAULT_LIST_STR = "A,B,C,D";
