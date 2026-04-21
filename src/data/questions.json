@@ -3181,10 +3181,10 @@
       { "id": "h", "text": "64" },
       { "id": "i", "text": "256" }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=HBJcpbO0KUw&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=57&t=107s",
     "correctChoiceId": "h",
     "hitokoto": "自力で解こう!",
-    "hintVideoUrl": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=HBJcpbO0KUw&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=57&t=26s",
     "lessonUrl": "",
     "another": 0
   }
