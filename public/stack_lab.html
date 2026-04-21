@@ -91,6 +91,29 @@
       margin: 0 0 0.75rem;
       font-weight: 600;
     }
+    /* 操作ブロック：スタック／キュー共通・縦幅を抑える */
+    .panel--ops {
+      padding: 0.65rem 1rem 0.7rem;
+    }
+    .panel--ops h2 {
+      margin: 0 0 0.4rem;
+      font-size: 0.88rem;
+    }
+    .panel--ops .controls {
+      align-items: center;
+      gap: 0.5rem 0.75rem;
+    }
+    .panel--ops label {
+      flex-direction: row;
+      align-items: center;
+      gap: 0.45rem;
+      margin: 0;
+    }
+    .panel--ops .msg {
+      margin: 0.4rem 0 0;
+      font-size: 0.82rem;
+      min-height: 1.2em;
+    }
     .controls {
       display: flex;
       flex-wrap: wrap;
@@ -111,6 +134,15 @@
       padding: 0.45rem 0.55rem;
       border: 1px solid var(--border);
       border-radius: 8px;
+    }
+    .panel--ops input[type="number"] {
+      width: 5.5rem;
+      font-size: 0.92rem;
+      padding: 0.32rem 0.45rem;
+    }
+    .panel--ops button {
+      padding: 0.38rem 0.75rem;
+      font-size: 0.88rem;
     }
     input[type="text"] {
       width: min(100%, 28rem);
@@ -373,7 +405,7 @@
         初期状態は <code>stackPos ← 3</code>、<code>stack ← {4, 3, 未定義, 未定義}</code> です。
       </p>
 
-      <div class="panel">
+      <div class="panel panel--ops">
         <h2>操作</h2>
         <div class="controls">
           <label>
@@ -418,6 +450,30 @@
       </div>
 
       <div class="panel">
+        <h2>教材の疑似プログラム（参照）</h2>
+        <pre class="pseudo">大域：整数型：stackPos ← 3
+大域：整数型の配列：stack ← {4, 3, 未定義の値, 未定義の値}
+
+○ 論理型：push(整数型：inputData)
+    if (stackPos ≤ stack の要素数)
+        stack[stackPos] ← inputData
+        stackPos ← stackPos + 1
+        return true
+    else
+        return false
+    endif
+
+○ 整数型：pop()
+    整数型：popData ← 未定義の値
+    if (stackPos &gt; 1)
+        stackPos ← stackPos − 1
+        popData ← stack[stackPos]
+        stack[stackPos] ← 未定義の値
+    endif
+    return popData</pre>
+      </div>
+
+      <div class="panel">
         <h2>ログ</h2>
         <pre class="log" id="logStack"></pre>
       </div>
@@ -430,8 +486,24 @@
         初期状態は <code>enPos ← 3</code>、<code>dePos ← 1</code>、<code>queue ← {4, 3, 未定義, 未定義}</code> です（<code>genko_kihon.md</code> 問題71 と同じ）。
       </p>
 
+      <div class="panel panel--ops">
+        <h2>操作</h2>
+        <div class="controls">
+          <label>
+            enqueue する整数
+            <input type="number" id="enqueueInput" value="1" step="1">
+          </label>
+          <div class="btns">
+            <button type="button" class="primary" id="btnEnqueue">enqueue</button>
+            <button type="button" class="danger" id="btnDequeue">dequeue</button>
+            <button type="button" id="btnQueueReset">初期状態に戻す</button>
+          </div>
+        </div>
+        <p class="msg" id="queueMsg" aria-live="polite"></p>
+      </div>
+
       <div class="panel">
-        <h2>図　キューの初期状態</h2>
+        <h2>現在の状態</h2>
         <div class="stack-wrap">
           <table class="stack">
             <thead>
@@ -454,22 +526,6 @@
           <span>enqueue 成否= <code id="dispEnqOk">—</code></span>
           <span>dequeue 戻り値= <code id="dispDeqVal">—</code></span>
         </div>
-      </div>
-
-      <div class="panel">
-        <h2>操作</h2>
-        <div class="controls">
-          <label>
-            enqueue する整数
-            <input type="number" id="enqueueInput" value="1" step="1">
-          </label>
-          <div class="btns">
-            <button type="button" class="primary" id="btnEnqueue">enqueue</button>
-            <button type="button" class="danger" id="btnDequeue">dequeue</button>
-            <button type="button" id="btnQueueReset">初期状態に戻す</button>
-          </div>
-        </div>
-        <p class="msg" id="queueMsg" aria-live="polite"></p>
       </div>
 
       <div class="panel">
