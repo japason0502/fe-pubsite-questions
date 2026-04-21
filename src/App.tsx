@@ -126,6 +126,14 @@ function renderBodyBlock(block: BodyBlock, idx: number) {
         />
       );
     }
+    case "html":
+      return (
+        <div
+          key={idx}
+          className="question-body-html"
+          dangerouslySetInnerHTML={{ __html: block.html }}
+        />
+      );
     case "image":
       return (
         <div key={idx} className="body-image-block">

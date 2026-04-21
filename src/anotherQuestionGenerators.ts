@@ -6,6 +6,7 @@ type AnotherQuestionGenerator = (baseQuestion: Question) => GeneratedQuestionPat
 const CHOICE_IDS = ["a", "b", "c", "d", "e", "f", "g"];
 let lastQ58Mode: 0 | 1 | null = null;
 let lastQ60Mode: 0 | 1 | 2 | null = null;
+let lastQ61Mode: 0 | 1 | null = null;
 
 function randomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -453,7 +454,7 @@ function randomBits8(): string {
   return Array.from({ length: 8 }, () => (randomInt(0, 1) ? "1" : "0")).join("");
 }
 
-/** 0: 上位 n ビット、1: 下位 n ビット、2: 固定例（00001101→11010000）正解は << 4 か ×16 をランダム（同値のため同時出題しない） */
+/** 0: 上位 n ビットを右詰め、1: 下位 n ビットを右詰め、2: 固定例（00001101→11010000）正解は << 4 か ×16 をランダム（同値のため同時出題しない） */
 function generateQ60(_baseQuestion: Question): GeneratedQuestionPatch {
   let mode = randomInt(0, 2) as 0 | 1 | 2;
   if (lastQ60Mode !== null && mode === lastQ60Mode) {
@@ -462,16 +463,25 @@ function generateQ60(_baseQuestion: Question): GeneratedQuestionPatch {
   }
   lastQ60Mode = mode;
 
-  const intro =
-    "演算子 >> は論理右シフト，演算子 << は論理左シフトを表す。例えば，value >> n は value の値を n ビットだけ右に論理シフトし，value << n は value の値を n ビットだけ左に論理シフトする。";
+  const operatorNote =
+    "なお､演算子 >> は論理右シフト，演算子 << は論理左シフトを表す。例えば，value >> n は value の値を n ビットだけ右に論理シフトし，value << n は value の値を n ビットだけ左に論理シフトする。";
+  const divisionNote =
+    "ここで､除算の余り､商を取得する際は､ビットを2進数とみなして整数に変換した上で計算を行い､2進数変換して再度ビットに戻すものとする｡";
+
+  function buildQ60Body(questionLine: string): string {
+    return `${questionLine}\n\n${operatorNote}\n\n${divisionNote}`;
+  }
 
   if (mode === 0) {
     const bits = randomBits8();
     const n = randomInt(2, 6);
     const k = 8 - n;
+    const byteVal = parseInt(bits, 2);
+    const upperPacked = toBin8Byte(byteVal >> k);
     const upperBitsStr = bits.slice(0, n);
     const pow2k = 1 << k;
-    const bodyText = `${intro}\n\n${bits} から上位${n}ビット(${upperBitsStr})を取り出すには【　】を行う。`;
+    const questionLine = `${bits} から上位${n}ビットを取得して ${upperPacked} とするには【　】を行う。`;
+    const bodyText = buildQ60Body(questionLine);
     const wrongShift = `<< ${k}`;
     const wrongMod = `÷${pow2k}の余りを取得`;
     const useShiftAsCorrect = randomInt(0, 1) === 1;
@@ -493,9 +503,9 @@ function generateQ60(_baseQuestion: Question): GeneratedQuestionPatch {
       choices,
       correctChoiceId,
       anotherTraceLines: [
-        `モード: 上位${n}ビット（<<・余り・>> か ÷商 のいずれか1つ）`,
+        `モード: 上位${n}ビットを右詰め（<<・余り・>> か ÷商 のいずれか1つ）`,
         `ビット列 = ${bits}`,
-        `対象 = ${upperBitsStr}`,
+        `上位${n}ビット = ${upperBitsStr} → 右詰め8bit = ${upperPacked}`,
         ...traceSuffix
       ]
     };
@@ -505,24 +515,28 @@ function generateQ60(_baseQuestion: Question): GeneratedQuestionPatch {
     const bits = randomBits8();
     const n = randomInt(2, 6);
     const k = 8 - n;
+    const byteVal = parseInt(bits, 2);
     const lowerBitsStr = bits.slice(8 - n);
+    const lowerPacked = toBin8Byte(byteVal & ((1 << n) - 1));
     const pow2n = 1 << n;
-    const bodyText = `${intro}\n\n${bits} から下位${n}ビット(${lowerBitsStr})を取り出すには【　】を行う。`;
+    const questionLine = `${bits} から下位${n}ビットを取得して ${lowerPacked} とするには【　】を行う。`;
+    const bodyText = buildQ60Body(questionLine);
     const lower = shuffleThreeChoices(`÷${pow2n}の余りを取得`, `>> ${k}`, `<< ${k}`);
     return {
       bodyText,
       choices: lower.choices,
       correctChoiceId: lower.correctChoiceId,
       anotherTraceLines: [
-        `モード: 下位${n}ビット`,
+        `モード: 下位${n}ビットを右詰め`,
         `ビット列 = ${bits}`,
-        `対象 = ${lowerBitsStr}`,
+        `下位${n}ビット = ${lowerBitsStr} → 右詰め8bit = ${lowerPacked}`,
         `正解: ÷${pow2n}の余り（mod ${pow2n}）`
       ]
     };
   }
 
-  const bodyTextShift = `${intro}\n\n00001101 を 11010000 にするには【　】を行う。`;
+  const questionLineShift = `00001101 を 11010000 にするには【　】を行う。`;
+  const bodyTextShift = buildQ60Body(questionLineShift);
   const useMultiplyAsCorrect = randomInt(0, 1) === 1;
   if (useMultiplyAsCorrect) {
     const mulPat = shuffleThreeChoices(`×16`, `>> 4`, `÷16の余りを取得`);
@@ -542,8 +556,14 @@ function generateQ60(_baseQuestion: Question): GeneratedQuestionPatch {
   };
 }
 
-/** 下位 n ビット取出し（正解 byte ∧ 下位マスク）のみ */
+/** A: 下位 n ビット（正解 byte ∧ 下位マスク）、B: 上位 n ビットを右詰め（正解 byte >> (8−n)） */
 function generateQ61(_baseQuestion: Question): GeneratedQuestionPatch {
+  let mode = randomInt(0, 1) as 0 | 1;
+  if (lastQ61Mode !== null && mode === lastQ61Mode) {
+    mode = (1 - mode) as 0 | 1;
+  }
+  lastQ61Mode = mode;
+
   const n = randomInt(2, 6);
   const k = 8 - n;
   const maskLower = (1 << n) - 1;
@@ -560,33 +580,77 @@ function generateQ61(_baseQuestion: Question): GeneratedQuestionPatch {
     "        【　】",
     "    return r"
   ];
+  const pseudoUpperPacked = [
+    "○ 8ビット型: getUpperBitsPacked(8ビット型: byte)",
+    "    8ビット型: r ← 00000000",
+    "        【　】",
+    "    return r"
+  ];
+
+  if (mode === 0) {
+    let byteVal = 0;
+    let resultVal = 0;
+    do {
+      byteVal = randomInt(1, 254);
+      resultVal = byteVal & maskLower;
+    } while (resultVal === 0 || resultVal === byteVal);
+    const byteBin = toBin8Byte(byteVal);
+    const resultBin = toBin8Byte(resultVal);
+    const bodyText = `関数 getLowerBits は 8 ビット型の引数 byte を受け取り，下位${n}ビットを返す。例えば，getLowerBits(${byteBin}) の戻り値は ${resultBin} となる。\n\n${intro}`;
+
+    const correct = `r ← (byte ∧ ${maskLowerBin})`;
+    // 誤答に >> は入れない（誤答が別解に見えるのを防ぐ）
+    const four = shuffleFourChoices(
+      correct,
+      `r ← (byte ∨ ${maskLowerBin})`,
+      `r ← (byte ∧ ${maskUpperBin})`,
+      `r ← (byte << ${k})`
+    );
+    return {
+      bodyText,
+      pseudoCode: pseudoLower,
+      choices: four.choices,
+      correctChoiceId: four.correctChoiceId,
+      anotherTraceLines: [
+        `パターンA: 下位${n}ビット`,
+        `マスク（下位n桁が1）= ${maskLowerBin}`,
+        `例: ${byteBin} → ${resultBin}`,
+        `正解: ${correct}`
+      ]
+    };
+  }
 
   let byteVal = 0;
   let resultVal = 0;
   do {
     byteVal = randomInt(1, 254);
-    resultVal = byteVal & maskLower;
-  } while (resultVal === 0 || resultVal === byteVal);
+    resultVal = (byteVal >> k) & maskLower;
+  } while (
+    resultVal === 0 ||
+    resultVal === (byteVal & maskLower) ||
+    resultVal === (byteVal & maskUpper) ||
+    resultVal === ((byteVal << k) & 0xff)
+  );
   const byteBin = toBin8Byte(byteVal);
   const resultBin = toBin8Byte(resultVal);
-  const bodyText = `関数 getLowerBits は 8 ビット型の引数 byte を受け取り，下位${n}ビットを返す。例えば，getLowerBits(${byteBin}) の戻り値は ${resultBin} となる。\n\n${intro}`;
+  const bodyText = `関数 getUpperBitsPacked は 8 ビット型の引数 byte を受け取り，上位${n}ビットを取得して返す。例えば，getUpperBitsPacked(${byteBin}) の戻り値は ${resultBin} となる。\n\n${intro}`;
 
-  const correct = `r ← (byte ∧ ${maskLowerBin})`;
-  // 誤答に >> は入れない（誤答が別解に見えるのを防ぐ）
+  const correct = `r ← (byte >> ${k})`;
   const four = shuffleFourChoices(
     correct,
-    `r ← (byte ∨ ${maskLowerBin})`,
     `r ← (byte ∧ ${maskUpperBin})`,
+    `r ← (byte ∧ ${maskLowerBin})`,
+    `r ← (byte ∨ ${maskUpperBin})`,
     `r ← (byte << ${k})`
   );
   return {
     bodyText,
-    pseudoCode: pseudoLower,
+    pseudoCode: pseudoUpperPacked,
     choices: four.choices,
     correctChoiceId: four.correctChoiceId,
     anotherTraceLines: [
-      `下位${n}ビット`,
-      `マスク（下位n桁が1）= ${maskLowerBin}`,
+      `パターンB: 上位${n}ビットを右詰め`,
+      `シフト量 8−${n} = ${k}`,
       `例: ${byteBin} → ${resultBin}`,
       `正解: ${correct}`
     ]

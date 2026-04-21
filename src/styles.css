@@ -163,6 +163,10 @@ button.small {
   font-weight: 800;
 }
 
+.answer-group-text {
+  white-space: pre-line;
+}
+
 .body-table-block {
   margin: 12px 0;
   text-align: center;
@@ -170,6 +174,19 @@ button.small {
 
 .body-table-caption {
   margin: 0 0 8px;
+}
+
+.question-body-html {
+  margin: 0;
+}
+
+.question-body-html .question-body-text {
+  margin: 0 0 0.65em;
+  white-space: pre-line;
+}
+
+.question-body-html .question-body-text:last-child {
+  margin-bottom: 0;
 }
 
 .question-body-text {

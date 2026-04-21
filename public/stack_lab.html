@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>データ構造ラボ（スタック / 単方向リスト）</title>
+  <style>
+    :root {
+      --bg: #eef1f6;
+      --surface: #ffffff;
+      --border: #d8dde8;
+      --text: #141826;
+      --muted: #5c6478;
+      --accent: #3d5a80;
+      --accent-soft: rgba(61, 90, 128, 0.12);
+      --ok: #2d6a4f;
+      --warn: #b45309;
+      --del: #9d174d;
+      --radius: 12px;
+      --shadow: 0 2px 8px rgba(20, 24, 38, 0.06);
+      --font: system-ui, -apple-system, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+      --mono: ui-monospace, "Cascadia Code", "Consolas", monospace;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: clamp(1rem, 4vw, 1.75rem);
+    }
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem;
+    }
+    .lead {
+      font-size: 0.92rem;
+      color: var(--muted);
+      margin: 0 0 1rem;
+    }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      margin-bottom: 1.1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .tabs button {
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 0.65rem 1.1rem;
+      margin-bottom: -1px;
+      border: none;
+      border-bottom: 3px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: var(--radius) var(--radius) 0 0;
+      transition: color 0.15s, background 0.15s, border-color 0.15s;
+    }
+    .tabs button:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.6);
+    }
+    .tabs button[aria-selected="true"] {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      background: var(--surface);
+    }
+    .tab-panel[hidden] {
+      display: none !important;
+    }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.1rem 1.15rem 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .panel h2 {
+      font-size: 0.95rem;
+      margin: 0 0 0.75rem;
+      font-weight: 600;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 0.75rem 1rem;
+    }
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    input[type="number"] {
+      width: 8rem;
+      font-family: var(--mono);
+      font-size: 1rem;
+      padding: 0.45rem 0.55rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    input[type="text"] {
+      width: min(100%, 28rem);
+      font-family: var(--mono);
+      font-size: 0.95rem;
+      padding: 0.45rem 0.55rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    button {
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    button:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+    }
+    button.primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    button.primary:hover {
+      filter: brightness(1.06);
+    }
+    button.danger {
+      color: #7f1d1d;
+      border-color: #fecaca;
+      background: #fff5f5;
+    }
+    button.danger:hover {
+      background: #fee2e2;
+    }
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .stack-wrap {
+      overflow-x: auto;
+      padding-bottom: 0.25rem;
+    }
+    table.stack {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      table-layout: fixed;
+    }
+    table.stack th,
+    table.stack td {
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.35rem;
+      text-align: center;
+    }
+    table.stack th {
+      background: var(--accent-soft);
+      font-weight: 600;
+      font-size: 0.82rem;
+    }
+    table.stack td.cell {
+      font-family: var(--mono);
+      min-width: 4rem;
+    }
+    table.stack td.cell.undefined {
+      background: repeating-linear-gradient(
+        -45deg,
+        #f0f2f7,
+        #f0f2f7 6px,
+        #e4e8f0 6px,
+        #e4e8f0 12px
+      );
+      color: var(--muted);
+    }
+    table.stack tr.pos-row td {
+      font-size: 0.78rem;
+      color: var(--muted);
+      vertical-align: top;
+      padding-top: 0.35rem;
+      padding-bottom: 0.35rem;
+      min-height: 2.5rem;
+    }
+    table.stack tr.pos-row td strong {
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .state-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      font-family: var(--mono);
+      font-size: 0.88rem;
+      margin-top: 0.85rem;
+      padding-top: 0.85rem;
+      border-top: 1px dashed var(--border);
+    }
+    .state-row span {
+      color: var(--muted);
+    }
+    .state-row code {
+      background: #f4f6fa;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      color: var(--text);
+    }
+    .log {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      max-height: 12rem;
+      overflow: auto;
+      background: #f8f9fc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.6rem 0.65rem;
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .msg {
+      margin-top: 0.65rem;
+      font-size: 0.88rem;
+    }
+    .msg.ok { color: var(--ok); }
+    .msg.warn { color: var(--warn); }
+
+    /* 単方向リスト */
+    .ll-box {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 0.85rem;
+      background: linear-gradient(180deg, #fafbfd 0%, #fff 100%);
+      margin-bottom: 0.65rem;
+    }
+    .ll-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.35rem 0.2rem;
+    }
+    .ll-head-label {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .ll-node {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: stretch;
+      min-width: 3.5rem;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .ll-node--prev {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .ll-node--cut {
+      border-color: var(--del);
+      border-style: dashed;
+      opacity: 0.92;
+    }
+    .ll-node-pos {
+      font-size: 0.65rem;
+      text-align: center;
+      padding: 0.15rem 0.25rem;
+      background: var(--accent-soft);
+      color: var(--muted);
+    }
+    .ll-node-val {
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 1.05rem;
+      text-align: center;
+      padding: 0.35rem 0.5rem 0.2rem;
+    }
+    .ll-node-next {
+      font-size: 0.68rem;
+      text-align: center;
+      color: var(--muted);
+      padding: 0.15rem 0.25rem;
+      border-top: 1px solid var(--border);
+      background: #f8f9fc;
+    }
+    .ll-arrow {
+      font-size: 1.35rem;
+      color: #8892a8;
+      line-height: 1;
+      user-select: none;
+      padding: 0 0.1rem;
+    }
+    .ll-null {
+      font-family: var(--mono);
+      font-size: 0.95rem;
+      color: var(--muted);
+      padding: 0.35rem 0.55rem;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      background: #f4f6fa;
+    }
+    .ll-caption {
+      font-size: 0.88rem;
+      color: var(--text);
+      margin: 0.5rem 0 0;
+      padding: 0.55rem 0.65rem;
+      background: #f0f4fa;
+      border-radius: 8px;
+      border-left: 4px solid var(--accent);
+      min-height: 2.75rem;
+    }
+    .ll-caption code {
+      font-family: var(--mono);
+      font-size: 0.86em;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 0.1rem 0.3rem;
+      border-radius: 4px;
+    }
+    .pseudo {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      line-height: 1.45;
+      background: #f4f6fa;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.65rem 0.75rem;
+      margin: 0.5rem 0 0;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>データ構造ラボ</h1>
+    <p class="lead" style="margin-bottom: 0.85rem;">スタック（push / pop）と、単方向リストの <code>delNode</code> を図で確認できます。</p>
+
+    <div class="tabs" role="tablist" aria-label="モード切替">
+      <button type="button" role="tab" id="tabStack" aria-selected="true" aria-controls="panel-stack">スタック（push / pop）</button>
+      <button type="button" role="tab" id="tabList" aria-selected="false" aria-controls="panel-list">単方向リスト（delNode）</button>
+    </div>
+
+    <!-- スタック -->
+    <section id="panel-stack" role="tabpanel" aria-labelledby="tabStack">
+      <p class="lead">
+        大域の配列 <code>stack</code>（要素数 4）と <code>stackPos</code>（<strong>1 始まり</strong>：次に格納する位置）で表現します。
+        初期状態は <code>stackPos ← 3</code>、<code>stack ← {4, 3, 未定義, 未定義}</code> です。
+      </p>
+
+      <div class="panel">
+        <h2>操作</h2>
+        <div class="controls">
+          <label>
+            push する整数
+            <input type="number" id="pushInput" value="1" step="1">
+          </label>
+          <div class="btns">
+            <button type="button" class="primary" id="btnPush">push</button>
+            <button type="button" class="danger" id="btnPop">pop</button>
+            <button type="button" id="btnReset">初期状態に戻す</button>
+          </div>
+        </div>
+        <p class="msg" id="msg" aria-live="polite"></p>
+      </div>
+
+      <div class="panel">
+        <h2>現在の状態（教材と同じ 1 始まりの添字）</h2>
+        <div class="stack-wrap">
+          <table class="stack" aria-describedby="stack-desc">
+            <thead>
+              <tr>
+                <th scope="col">1</th>
+                <th scope="col">2</th>
+                <th scope="col">3</th>
+                <th scope="col">4</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="stackValues"></tr>
+              <tr class="pos-row" id="stackPosRow"></tr>
+            </tbody>
+          </table>
+        </div>
+        <p id="stack-desc" class="lead" style="margin: 0.65rem 0 0; font-size: 0.82rem;">
+          網掛けはその要素が未定義であることを示します。
+        </p>
+        <div class="state-row">
+          <span>stackPos（1 始まり）= <code id="dispStackPos">3</code></span>
+          <span>push 成否（直近）= <code id="dispPushOk">—</code></span>
+          <span>pop 戻り値（直近）= <code id="dispPopVal">—</code></span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>ログ</h2>
+        <pre class="log" id="logStack"></pre>
+      </div>
+    </section>
+
+    <!-- 単方向リスト -->
+    <section id="panel-list" role="tabpanel" aria-labelledby="tabList" hidden>
+      <p class="lead">
+        FE 試験 <strong>R4 問 10</strong> 型の単方向リスト。<code>ListElement</code> は <code>val</code>（文字）と <code>next</code>（次への参照）を持ち、大域の <code>listHead</code> が先頭です。位置は<strong>先頭を 1</strong> とします。
+      </p>
+
+      <div class="panel">
+        <h2>リストのデータ</h2>
+        <label>
+          ノードの値（先頭からカンマ区切り）
+          <input type="text" id="listValues" value="A,B,C,D" autocomplete="off" spellcheck="false">
+        </label>
+        <div class="btns" style="margin-top: 0.65rem;">
+          <button type="button" class="primary" id="btnListApply">リストを反映</button>
+          <button type="button" id="btnListReset">例の初期（A,B,C,D）に戻す</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>図（listHead とリンク）</h2>
+        <div class="ll-box" aria-live="polite">
+          <div id="llDiagram" class="ll-row"></div>
+          <p id="llCaption" class="ll-caption">リストを反映するとここに説明が出ます。</p>
+        </div>
+        <p class="lead" style="margin: 0.75rem 0 0; font-size: 0.82rem;">
+          正解の空欄 <code>prev.next ← 【　　　】</code> は <strong><code>prev.next.next</code></strong>（解答カ）。<code>prev</code> の次の次へつなぎ替えて、間のノードを参照から外します。
+        </p>
+        <pre class="pseudo">○ delNode(整数型: pos)
+  if (pos が 1 と等しい)
+    listHead ← listHead.next
+  else
+    prev ← listHead
+    for (i を 2 から pos − 1 まで 1 ずつ増やす)
+      prev ← prev.next
+    prev.next ← prev.next.next   ← ここ
+  endif</pre>
+      </div>
+
+      <div class="panel">
+        <h2>delNode(pos) を試す</h2>
+        <div class="controls">
+          <label>
+            削除する位置 pos（1 始まり）
+            <input type="number" id="delPos" value="3" min="1" step="1">
+          </label>
+          <div class="btns">
+            <button type="button" class="danger" id="btnDelNow">削除を実行</button>
+            <button type="button" class="primary" id="btnDelTrace">トレース（途中経過を表示）</button>
+          </div>
+        </div>
+        <p class="msg" id="listMsg" aria-live="polite"></p>
+      </div>
+
+      <div class="panel">
+        <h2>ログ</h2>
+        <pre class="log" id="logList"></pre>
+      </div>
+    </section>
+  </div>
+
+  <script>
+(function () {
+  function sleep(ms) {
+    return new Promise(function (resolve) { setTimeout(resolve, ms); });
+  }
+
+  /* ---------- タブ ---------- */
+  var tabStack = document.getElementById("tabStack");
+  var tabList = document.getElementById("tabList");
+  var panelStack = document.getElementById("panel-stack");
+  var panelList = document.getElementById("panel-list");
+
+  function activateTab(which) {
+    var isStack = which === "stack";
+    tabStack.setAttribute("aria-selected", isStack ? "true" : "false");
+    tabList.setAttribute("aria-selected", isStack ? "false" : "true");
+    panelStack.hidden = !isStack;
+    panelList.hidden = isStack;
+  }
+
+  tabStack.addEventListener("click", function () { activateTab("stack"); });
+  tabList.addEventListener("click", function () { activateTab("list"); });
+
+  /* ---------- スタック ---------- */
+  var STACK_LEN = 4;
+  var stackPos = 3;
+  var stack = [4, 3, undefined, undefined];
+
+  var pushInput = document.getElementById("pushInput");
+  var btnPush = document.getElementById("btnPush");
+  var btnPop = document.getElementById("btnPop");
+  var btnReset = document.getElementById("btnReset");
+  var stackValues = document.getElementById("stackValues");
+  var stackPosRow = document.getElementById("stackPosRow");
+  var dispStackPos = document.getElementById("dispStackPos");
+  var dispPushOk = document.getElementById("dispPushOk");
+  var dispPopVal = document.getElementById("dispPopVal");
+  var msg = document.getElementById("msg");
+  var logStackEl = document.getElementById("logStack");
+  var stackLines = [];
+
+  function logStack(text) {
+    var t = new Date().toLocaleTimeString("ja-JP", { hour12: false });
+    stackLines.push("[" + t + "] " + text);
+    if (stackLines.length > 80) stackLines.shift();
+    logStackEl.textContent = stackLines.join("\n");
+  }
+
+  function renderStack() {
+    stackValues.innerHTML = "";
+    stackPosRow.innerHTML = "";
+    var i;
+    for (i = 0; i < STACK_LEN; i++) {
+      var td = document.createElement("td");
+      td.className = "cell";
+      var v = stack[i];
+      if (v === undefined) {
+        td.classList.add("undefined");
+        td.textContent = "—";
+        td.title = "未定義";
+      } else {
+        td.textContent = String(v);
+      }
+      stackValues.appendChild(td);
+    }
+    for (i = 0; i < STACK_LEN; i++) {
+      var tdP = document.createElement("td");
+      var pos1 = i + 1;
+      if (pos1 === stackPos) {
+        tdP.innerHTML = "<strong>↑ stackPos</strong>";
+      } else {
+        tdP.textContent = "";
+      }
+      stackPosRow.appendChild(tdP);
+    }
+    dispStackPos.textContent = String(stackPos);
+  }
+
+  function push(inputData) {
+    if (stackPos <= STACK_LEN) {
+      stack[stackPos - 1] = inputData;
+      stackPos = stackPos + 1;
+      return true;
+    }
+    return false;
+  }
+
+  function pop() {
+    var popData = undefined;
+    if (stackPos > 1) {
+      stackPos = stackPos - 1;
+      popData = stack[stackPos - 1];
+      stack[stackPos - 1] = undefined;
+    }
+    return popData;
+  }
+
+  function setStackMsg(text, kind) {
+    msg.textContent = text;
+    msg.className = "msg" + (kind ? " " + kind : "");
+  }
+
+  function doPush() {
+    var raw = pushInput.value;
+    var n = parseInt(raw, 10);
+    if (raw === "" || Number.isNaN(n)) {
+      setStackMsg("整数を入力してください。", "warn");
+      return;
+    }
+    var ok = push(n);
+    dispPushOk.textContent = ok ? "true" : "false";
+    if (ok) {
+      setStackMsg("push(" + n + ") → true（格納しました）", "ok");
+      logStack("push(" + n + ") → true  stackPos=" + stackPos);
+    } else {
+      setStackMsg("push(" + n + ") → false（これ以上格納できません）", "warn");
+      logStack("push(" + n + ") → false");
+    }
+    dispPopVal.textContent = "—";
+    renderStack();
+  }
+
+  function doPop() {
+    var v = pop();
+    var shown = v === undefined ? "未定義" : String(v);
+    dispPopVal.textContent = shown;
+    dispPushOk.textContent = "—";
+    setStackMsg("pop() → " + shown, v === undefined ? "warn" : "ok");
+    logStack("pop() → " + shown + "  stackPos=" + stackPos);
+    renderStack();
+  }
+
+  function resetStack() {
+    stackPos = 3;
+    stack = [4, 3, undefined, undefined];
+    dispPushOk.textContent = "—";
+    dispPopVal.textContent = "—";
+    setStackMsg("初期状態に戻しました。", "ok");
+    logStack("--- リセット ---");
+    renderStack();
+  }
+
+  btnPush.addEventListener("click", doPush);
+  btnPop.addEventListener("click", doPop);
+  btnReset.addEventListener("click", resetStack);
+  pushInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") doPush();
+  });
+
+  renderStack();
+  logStack("起動：初期 stackPos=3、stack=[4,3,（未定義）,（未定義）]");
+
+  /* ---------- 単方向リスト ---------- */
+  var DEFAULT_LIST_STR = "A,B,C,D";
+  var listValuesInput = document.getElementById("listValues");
+  var btnListApply = document.getElementById("btnListApply");
+  var btnListReset = document.getElementById("btnListReset");
+  var llDiagram = document.getElementById("llDiagram");
+  var llCaption = document.getElementById("llCaption");
+  var delPosInput = document.getElementById("delPos");
+  var btnDelNow = document.getElementById("btnDelNow");
+  var btnDelTrace = document.getElementById("btnDelTrace");
+  var listMsg = document.getElementById("listMsg");
+  var logListEl = document.getElementById("logList");
+  var listLines = [];
+  var listHead = null;
+  var traceBusy = false;
+
+  function logList(text) {
+    var t = new Date().toLocaleTimeString("ja-JP", { hour12: false });
+    listLines.push("[" + t + "] " + text);
+    if (listLines.length > 80) listLines.shift();
+    logListEl.textContent = listLines.join("\n");
+  }
+
+  function setListMsg(text, kind) {
+    listMsg.textContent = text;
+    listMsg.className = "msg" + (kind ? " " + kind : "");
+  }
+
+  function parseListString(s) {
+    return s.split(/[,，]/).map(function (x) { return x.trim(); }).filter(Boolean);
+  }
+
+  function buildLinkedList(arr) {
+    if (arr.length === 0) return null;
+    var head = { val: arr[0], next: null };
+    var cur = head;
+    var i;
+    for (i = 1; i < arr.length; i++) {
+      cur.next = { val: arr[i], next: null };
+      cur = cur.next;
+    }
+    return head;
+  }
+
+  function countNodes(head) {
+    var n = 0;
+    var p = head;
+    while (p) {
+      n++;
+      p = p.next;
+    }
+    return n;
+  }
+
+  function nodeAtPosition(head, pos1) {
+    var p = head;
+    var i = 1;
+    while (p && i < pos1) {
+      p = p.next;
+      i++;
+    }
+    return p;
+  }
+
+  function renderDiagram(highlight) {
+    highlight = highlight || {};
+    llDiagram.innerHTML = "";
+    var prevRef = highlight.prevRef;
+    var cutRef = highlight.cutRef;
+
+    var headLbl = document.createElement("span");
+    headLbl.className = "ll-head-label";
+    headLbl.textContent = listHead ? "listHead →" : "listHead →";
+    llDiagram.appendChild(headLbl);
+
+    if (!listHead) {
+      var empty = document.createElement("span");
+      empty.className = "ll-null";
+      empty.textContent = "（空）";
+      llDiagram.appendChild(empty);
+      return;
+    }
+
+    var idx = 1;
+    var node = listHead;
+    while (node) {
+      var wrap = document.createElement("div");
+      wrap.className = "ll-node";
+      if (prevRef && node === prevRef) wrap.classList.add("ll-node--prev");
+      if (cutRef && node === cutRef) wrap.classList.add("ll-node--cut");
+
+      var posEl = document.createElement("div");
+      posEl.className = "ll-node-pos";
+      posEl.textContent = "位置 " + idx;
+      wrap.appendChild(posEl);
+
+      var valEl = document.createElement("div");
+      valEl.className = "ll-node-val";
+      valEl.textContent = node.val;
+      wrap.appendChild(valEl);
+
+      var nextEl = document.createElement("div");
+      nextEl.className = "ll-node-next";
+      nextEl.textContent = node.next ? "next →" : "next → ∅";
+      wrap.appendChild(nextEl);
+
+      llDiagram.appendChild(wrap);
+
+      if (node.next) {
+        var ar = document.createElement("span");
+        ar.className = "ll-arrow";
+        ar.textContent = "→";
+        llDiagram.appendChild(ar);
+      }
+
+      node = node.next;
+      idx++;
+    }
+
+    var nullEl = document.createElement("span");
+    nullEl.className = "ll-null";
+    nullEl.textContent = "∅";
+    llDiagram.appendChild(nullEl);
+  }
+
+  function applyListFromInput() {
+    var parts = parseListString(listValuesInput.value);
+    if (parts.length === 0) {
+      listHead = null;
+      setListMsg("ノードが空です。カンマ区切りで値を入れてください。", "warn");
+      llCaption.textContent = "リストが空です。";
+      renderDiagram({});
+      logList("リスト反映：空");
+      return;
+    }
+    listHead = buildLinkedList(parts);
+    setListMsg("リストを反映しました（" + parts.length + " 個）。", "ok");
+    llCaption.textContent = "先頭から「" + parts.join("」→「") + "」の順でつながっています。";
+    renderDiagram({});
+    logList("リスト反映：" + parts.join(","));
+  }
+
+  function resetListInput() {
+    listValuesInput.value = DEFAULT_LIST_STR;
+    applyListFromInput();
+  }
+
+  function delNode(pos) {
+    if (!listHead) return;
+    if (pos === 1) {
+      listHead = listHead.next;
+      return;
+    }
+    var prev = listHead;
+    var i;
+    for (i = 2; i <= pos - 1; i++) {
+      prev = prev.next;
+    }
+    prev.next = prev.next.next;
+  }
+
+  function doDeleteNow() {
+    if (traceBusy) return;
+    var pos = parseInt(delPosInput.value, 10);
+    var n = countNodes(listHead);
+    if (!listHead || Number.isNaN(pos) || pos < 1 || pos > n) {
+      setListMsg("pos は 1 〜 " + (n || "（要素数）") + " の整数にしてください。", "warn");
+      return;
+    }
+    if (pos === 1) {
+      listHead = listHead.next;
+      setListMsg("pos=1：listHead ← listHead.next を実行しました。", "ok");
+      logList("delNode(" + pos + ")：先頭削除");
+    } else {
+      delNode(pos);
+      setListMsg("delNode(" + pos + ")：prev.next ← prev.next.next を実行しました。", "ok");
+      logList("delNode(" + pos + ")：中間/末尾削除");
+    }
+    var serial = [];
+    var p = listHead;
+    while (p) {
+      serial.push(p.val);
+      p = p.next;
+    }
+    listValuesInput.value = serial.join(",");
+    llCaption.textContent = "削除後：残りは「" + (serial.length ? serial.join("」→「") : "（なし）") + "」です。";
+    renderDiagram({});
+  }
+
+  async function doTrace() {
+    if (traceBusy) return;
+    var pos = parseInt(delPosInput.value, 10);
+    var n = countNodes(listHead);
+    if (!listHead) {
+      setListMsg("先にリストを反映してください。", "warn");
+      return;
+    }
+    if (Number.isNaN(pos) || pos < 1 || pos > n) {
+      setListMsg("pos は 1 〜 " + n + " にしてください。", "warn");
+      return;
+    }
+
+    traceBusy = true;
+    btnDelNow.disabled = true;
+    btnDelTrace.disabled = true;
+    btnListApply.disabled = true;
+    setListMsg("トレース中…（完了までお待ちください）", "ok");
+
+    if (pos === 1) {
+      llCaption.innerHTML = "<code>pos</code> が 1 なので、<code>listHead ← listHead.next</code> だけで先頭を外します。";
+      renderDiagram({});
+      await sleep(900);
+      listHead = listHead.next;
+      var serial0 = [];
+      var q0 = listHead;
+      while (q0) {
+        serial0.push(q0.val);
+        q0 = q0.next;
+      }
+      listValuesInput.value = serial0.join(",");
+      llCaption.textContent = "削除後：残りは「" + (serial0.length ? serial0.join("」→「") : "（なし）") + "」です。";
+      renderDiagram({});
+      logList("トレース delNode(" + pos + ")：先頭削除");
+      setListMsg("トレース完了（先頭削除）。", "ok");
+      traceBusy = false;
+      btnDelNow.disabled = false;
+      btnDelTrace.disabled = false;
+      btnListApply.disabled = false;
+      return;
+    }
+
+    var prev = listHead;
+    var victim = nodeAtPosition(listHead, pos);
+
+    llCaption.innerHTML = "まず <code>prev ← listHead</code>。いま <code>prev</code> は位置 1（値「" + prev.val + "」）を指します。";
+    renderDiagram({ prevRef: prev });
+    await sleep(1000);
+
+    var i;
+    for (i = 2; i <= pos - 1; i++) {
+      prev = prev.next;
+      llCaption.innerHTML = "for ループ：<code>i = " + i + "</code> のとき <code>prev ← prev.next</code>。いま <code>prev</code> は位置 " + i + "（値「" + prev.val + "」）。";
+      renderDiagram({ prevRef: prev });
+      await sleep(1100);
+    }
+
+    llCaption.innerHTML = "削除したいノードは <code>prev.next</code>（位置 " + pos + "、値「" + victim.val + "」）。空欄は <strong><code>prev.next.next</code></strong> —— つまり「<code>prev</code> の次の次」へつなぎます（間を飛ばす）。";
+    renderDiagram({ prevRef: prev, cutRef: victim });
+    await sleep(1400);
+
+    prev.next = prev.next.next;
+    var serial = [];
+    var q = listHead;
+    while (q) {
+      serial.push(q.val);
+      q = q.next;
+    }
+    listValuesInput.value = serial.join(",");
+    llCaption.textContent = "実行後：prev.next ← prev.next.next により、位置 " + pos + " のノードはリストから外れました。残りは「" + (serial.length ? serial.join("」→「") : "（なし）") + "」です。";
+    renderDiagram({});
+    logList("トレース delNode(" + pos + ")：prev.next ← prev.next.next");
+    setListMsg("トレース完了。", "ok");
+
+    traceBusy = false;
+    btnDelNow.disabled = false;
+    btnDelTrace.disabled = false;
+    btnListApply.disabled = false;
+  }
+
+  btnListApply.addEventListener("click", applyListFromInput);
+  btnListReset.addEventListener("click", resetListInput);
+  btnDelNow.addEventListener("click", doDeleteNow);
+  btnDelTrace.addEventListener("click", function () { doTrace(); });
+
+  listValuesInput.value = DEFAULT_LIST_STR;
+  applyListFromInput();
+  logList("単方向リスト：起動（初期 A,B,C,D）");
+})();
+  </script>
+</body>
+</html>

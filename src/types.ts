@@ -32,7 +32,9 @@ export type BodyBlock =
   | { type: "table"; caption?: string; headers: string[]; rows: BodyTableCell[][] }
   | { type: "formula"; text: string }
   /** public からの相対パス（例: question-images/52_formula.png） */
-  | { type: "image"; src: string; alt?: string };
+  | { type: "image"; src: string; alt?: string }
+  /** 教材の下線などを含む本文（問題データ用・信頼済みコンテンツのみ） */
+  | { type: "html"; html: string };
 
 export type Question = {
   id: string;

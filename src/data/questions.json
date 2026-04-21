@@ -3019,7 +3019,7 @@
     "number": 60,
     "title": "ビット操作の練習(論理シフト･÷2の商と余り",
     "questionText": "次の文中の【　】に入れる正しい答えを，解答群の中から選べ。",
-    "bodyText": "演算子 >> は論理右シフト，演算子 << は論理左シフトを表す。例えば，value >> n は value の値を n ビットだけ右に論理シフトし，value << n は value の値を n ビットだけ左に論理シフトする。\n\n01001011 から上位4ビット(0100)を取り出すには【　】を行う。",
+    "bodyText": "01001011 から上位4ビットを右詰めで取り出す(00000100)には【　】を行う。\n\nなお､演算子 >> は論理右シフト，演算子 << は論理左シフトを表す。例えば，value >> n は value の値を n ビットだけ右に論理シフトし，value << n は value の値を n ビットだけ左に論理シフトする。\n\nここで､除算の余り､商を取得する際は､ビットを2進数とみなして整数に変換した上で計算を行い､2進数変換して再度ビットに戻すものとする｡",
     "choices": [
       { "id": "a", "text": ">> 4" },
       { "id": "b", "text": "<< 4" },
@@ -3035,7 +3035,7 @@
   {
     "id": "q61",
     "number": 61,
-    "title": "論理演算の練習",
+    "title": "論理積と論理和-練習問題",
     "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。",
     "bodyText": "関数 getLower4Bits は 8 ビット型の引数 byte を受け取り，下位4ビットを返す。例えば，getLower4Bits(01001011) を呼び出すと，戻り値は 00001011 となる。\n\nなお，演算子 ∧ はビット単位の論理積，演算子 ∨ はビット単位の論理和，演算子 >> は論理右シフト，演算子 << は論理左シフトを表す。例えば，value >> n は value の値を n ビットだけ右に論理シフトし，value << n は value の値を n ビットだけ左に論理シフトする。",
     "pseudoCode": [
@@ -3050,11 +3050,142 @@
       { "id": "c", "text": "r ← (rbyte >> 4)" },
       { "id": "d", "text": "r ← (rbyte << 4)" }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=p294AvRiLmY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=53&pp=iAQBsAQBsAgC",
     "correctChoiceId": "a",
-    "hitokoto": "",
+    "hitokoto": "講義の後に､自力で解こう!",
+    "hintVideoUrl": "",
+    "lessonUrl": "https://www.youtube.com/watch?v=SYfUvcNigrQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=52&pp=iAQBsAQBsAgC",
+    "another": 1
+  },
+  {
+    "id": "q62",
+    "number": 62,
+    "title": "ビット操作",
+    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyText": "関数 countBits は，8ビット型の引数 byte を受け取り，ビットが1になっている数を返す。例えば，関数 countBits を countBits(01001001) として呼び出すと，戻り値は 3 となる。\n\nなお，演算子 ∧ はビット単位の論理積，演算子 ∨ はビット単位の論理和，演算子 >> は論理右シフト，演算子 << は論理左シフトを表す。例えば，value >> n は value の値を n ビットだけ右に論理シフトし，value << n は value の値を n ビットだけ左に論理シフトする。",
+    "pseudoCode": [
+      "○ 整数型: countBits(8ビット型: byte)",
+      "    8ビット型: rbyte ← byte",
+      "    整数型: i, count ← 0",
+      "    for (i を 1 から 8 まで 1 ずつ増やす)",
+      "        if ((rbyte ∧ 00000001) が 00000001 と等しい)",
+      "            count ← count + 1",
+      "        endif",
+      "        【　】",
+      "    endfor",
+      "    return count"
+    ],
+    "choices": [
+      { "id": "a", "text": "rbyte ← rbyte << 1" },
+      { "id": "b", "text": "rbyte ← rbyte << 7" },
+      { "id": "c", "text": "rbyte ← rbyte >> 1" },
+      { "id": "d", "text": "rbyte ← rbyte >> 7" },
+      { "id": "e", "text": "rbyte ← rbyte ∧ 00000001" },
+      { "id": "f", "text": "rbyte ← rbyte ∨ 00000001" }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=pVlL-Fv6K5g&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=54&t=57s",
+    "correctChoiceId": "c",
+    "hitokoto": "自力で解こう!",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=pVlL-Fv6K5g&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=54&t=11s",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q63",
+    "number": 63,
+    "title": "令和4サンプル問題問6",
+    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyText": "関数 rev は 8 ビット型の引数 byte を受け取り，ビットの並びを逆にした値を返す。例えば，関数 rev を rev(01001011) として呼び出すと，戻り値は 11010010 となる。\n\nなお，演算子 ∧ はビット単位の論理積，演算子 ∨ はビット単位の論理和，演算子 >> は論理右シフト，演算子 << は論理左シフトを表す。例えば，value >> n は value の値を n ビットだけ右に論理シフトし，value << n は value の値を n ビットだけ左に論理シフトする。",
+    "pseudoCode": [
+      "○ 8ビット型: rev(8ビット型: byte)",
+      "    8ビット型: rbyte ← byte",
+      "    8ビット型: r ← 00000000",
+      "    整数型: i",
+      "    for (i を 1 から 8 まで 1 ずつ増やす)",
+      "        【　】",
+      "    endfor",
+      "    return r"
+    ],
+    "choices": [
+      { "id": "a", "text": "r ← (r << 1) ∨ (rbyte ∧ 00000001)\nrbyte ← rbyte >> 1" },
+      { "id": "b", "text": "r ← (r << 7) ∨ (rbyte ∧ 00000001)\nrbyte ← rbyte >> 7" },
+      { "id": "c", "text": "r ← (rbyte << 1) ∨ (rbyte >> 7)\nrbyte ← r" },
+      { "id": "d", "text": "r ← (rbyte >> 1) ∨ (rbyte << 7)\nrbyte ← r" }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=srXR_nf2ZQo&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=55",
+    "correctChoiceId": "a",
+    "hitokoto": "自力で解こう!",
     "hintVideoUrl": "",
     "lessonUrl": "",
-    "another": 1
+    "another": 0
+  },
+  {
+    "id": "q64",
+    "number": 64,
+    "title": "整数でのビット演算",
+    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。複数の【　】には同じ答えが入る。",
+    "bodyText": "関数 swapNibbles は，引数として与えられた整数値を，符号なし 8 ビットの 2 進数として表現したときの上位 4 ビットと下位 4 ビットとを入れ替え，その結果得られる 8 ビットの列を，再び符号なし 8 ビットの 2 進数とみなして整数値として返す。本問で数値の後ろに “(10)” と記載した場合は，その数値が 10 進数であることを表す。\n\n例えば，18(10) を符号なし 8 ビットの 2 進数で表すと，00010010となる。ここで，上位 4 ビット 0001 と下位 4 ビット 0010 とを入れ替えると，00100001となる。この値を符号なし 8 ビットの 2 進数とみなして整数値に変換すると，33(10) となる。したがって，swapNibbles(18) を呼び出したとき，戻り値は 33 である。\n\n関数 swapNibbles には，引数 byteValue に 0(10)以上 255(10)以下の整数値だけが与えられるものとする。",
+    "pseudoCode": [
+      "○ 整数型: swapNibbles(整数型: byteValue)",
+      "    整数型: low4, high4, swapped",
+      "    low4 ← (byteValue ÷ 【　】 の余り × 【　】)",
+      "    high4 ← byteValue ÷ 【　】 の商",
+      "    swapped ← low4 + high4  // ビットが重ならないので足し算で論理和が取れる",
+      "    return swapped"
+    ],
+    "choices": [
+      { "id": "a", "text": "2" },
+      { "id": "b", "text": "6" },
+      { "id": "c", "text": "16" },
+      { "id": "d", "text": "64" },
+      { "id": "e", "text": "256" }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=K14m5rc0UqU&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=56&t=57s",
+    "correctChoiceId": "c",
+    "hitokoto": "自力で解こう!",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=K14m5rc0UqU&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=56&t=23s",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q65",
+    "number": 65,
+    "title": "令和4サンプル問題問16（UTF-8）",
+    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。二つの【　】には，同じ答えが入る。ここで，配列の要素番号は 1 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "html",
+        "html": "<p class=\"question-body-text\">　Unicode の符号位置を，UTF-8 の符号に変換するプログラムである。本問で数値の後ろに“(16)”と記載した場合は，その数値が 16 進数であることを表す。</p><p class=\"question-body-text\">　Unicode の各文字には，符号位置と呼ばれる整数値が与えられている。UTF-8 は，Unicode の文字を符号化する方式の一つであり，符号位置が 800(16) 以上 FFFF(16) 以下の文字は，次のように 3 バイトの値に符号化する。</p><p class=\"question-body-text\">　3 バイトの長さのビットパターンを 1110<u>xxxx</u> 10<u>xxxxxx</u> 10<u>xxxxxx</u> とする。ビットパターンの下線の付いた “<u>x</u>” の箇所に，符号位置を 2 進数で表した値を右詰めで格納し，余った “<u>x</u>” の箇所に，0 を格納する。この 3 バイトの値が UTF-8 の符号である。</p><p class=\"question-body-text\">　例えば，ひらがなの “あ” の符号位置である 3042(16) を 2 進数で表すと 11000001000010 である。これを，上に示したビットパターンの “<u>x</u>” の箇所に右詰めで格納すると，1110<u>xx</u>11 10<u>000001</u> 10<u>000010</u> となる。余った二つの “<u>x</u>” の箇所に 0 を格納すると，“あ” の UTF-8 の符号 11100011 10000001 10000010 が得られる。</p><p class=\"question-body-text\">　関数 encode は，引数で渡された Unicode の符号位置を UTF-8 の符号に変換し，先頭から順に 1 バイトずつ要素に格納した整数型の配列を返す。encode には，引数として，800(16) 以上 FFFF(16) 以下の整数値だけが渡されるものとする。</p>"
+      }
+    ],
+    "pseudoCode": [
+      "○ 整数型の配列: encode(整数型: codePoint)",
+      "    /* utf8Bytes の初期値は，ビットパターンの “x” を全て 0 に置き換え，8桁ごとに区切って，それぞれを 2進数とみなしたときの値 */",
+      "    整数型の配列: utf8Bytes ← {224, 128, 128}",
+      "    整数型: cp ← codePoint",
+      "    整数型: i",
+      "    for (i を utf8Bytes の要素数 から 1 まで 1 ずつ減らす)",
+      "        utf8Bytes[i] ← utf8Bytes[i] + (cp ÷ 【　】 の余り)",
+      "        cp ← cp ÷ 【　】 の商",
+      "    endfor",
+      "    return utf8Bytes"
+    ],
+    "choices": [
+      { "id": "a", "text": "((4 − i) × 2)" },
+      { "id": "b", "text": "(2 の (4 − i) 乗)" },
+      { "id": "c", "text": "(2 の i 乗)" },
+      { "id": "d", "text": "(i × 2)" },
+      { "id": "e", "text": "2" },
+      { "id": "f", "text": "6" },
+      { "id": "g", "text": "16" },
+      { "id": "h", "text": "64" },
+      { "id": "i", "text": "256" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "h",
+    "hitokoto": "自力で解こう!",
+    "hintVideoUrl": "",
+    "lessonUrl": "",
+    "another": 0
   }
 ]

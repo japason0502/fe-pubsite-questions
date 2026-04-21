@@ -884,6 +884,21 @@
 body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
       display: none !important;
     }
+    .logic-op-expr {
+      margin: 0 0 0.65rem;
+      padding: 0.45rem 0.55rem;
+      font-family: var(--mono);
+      font-size: clamp(0.78rem, 2.2vw, 0.95rem);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-align: center;
+      color: var(--text);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      line-height: 1.35;
+      word-break: break-all;
+    }
     .logic-op-head {
       display: flex;
       flex-wrap: wrap;
@@ -950,6 +965,27 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
     }
     .logic-row .bit-cell {
       gap: 0.1rem;
+    }
+    .logic-controls-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      width: 100%;
+      min-width: 0;
+    }
+    .logic-shift-row {
+      display: flex;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-bottom: 0.35rem;
+    }
+    .logic-shift-btn {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      min-width: 2.75rem;
+      padding: 0.28rem 0.5rem;
     }
     .logic-op-panel .logic-bit-step {
       display: inline-flex;
@@ -1034,6 +1070,7 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
         </div>
         <p class="answer-reveal" id="answerReveal" hidden aria-live="polite"></p>
         <div class="logic-op-panel" id="logicOpPanel">
+          <p class="logic-op-expr" id="logicOpExpr" aria-live="polite"></p>
           <div class="logic-op-head">
             <p class="section-title">論理演算モード（2進数のみ）</p>
             <div class="logic-op-types" id="logicOpTypes" role="radiogroup" aria-label="論理演算の種類">
@@ -1053,7 +1090,11 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
           </div>
           <div class="logic-row logic-row--a">
             <span class="num-label">A</span>
-            <div class="controls bin-jump-block">
+            <div class="controls bin-jump-block logic-controls-wrap">
+              <div class="logic-shift-row" role="group" aria-label="Aの論理シフト">
+                <button type="button" class="btn-tool logic-shift-btn" id="logicAShl" aria-label="Aを1ビット左に論理シフト">&lt;&lt;</button>
+                <button type="button" class="btn-tool logic-shift-btn" id="logicAShr" aria-label="Aを1ビット右に論理シフト">&gt;&gt;</button>
+              </div>
               <div class="bin-jump-row">
                 <div class="bit-cells" id="logicACells" aria-label="Aの8ビット"></div>
               </div>
@@ -1061,7 +1102,11 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
           </div>
           <div class="logic-row logic-row--b">
             <span class="num-label">B</span>
-            <div class="controls bin-jump-block">
+            <div class="controls bin-jump-block logic-controls-wrap">
+              <div class="logic-shift-row" role="group" aria-label="Bの論理シフト">
+                <button type="button" class="btn-tool logic-shift-btn" id="logicBShl" aria-label="Bを1ビット左に論理シフト">&lt;&lt;</button>
+                <button type="button" class="btn-tool logic-shift-btn" id="logicBShr" aria-label="Bを1ビット右に論理シフト">&gt;&gt;</button>
+              </div>
               <div class="bin-jump-row">
                 <div class="bit-cells" id="logicBCells" aria-label="Bの8ビット"></div>
               </div>
@@ -1265,6 +1310,11 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
       const logicACells = document.getElementById("logicACells");
       const logicBCells = document.getElementById("logicBCells");
       const logicRCells = document.getElementById("logicRCells");
+      const logicOpExpr = document.getElementById("logicOpExpr");
+      const logicAShl = document.getElementById("logicAShl");
+      const logicAShr = document.getElementById("logicAShr");
+      const logicBShl = document.getElementById("logicBShl");
+      const logicBShr = document.getElementById("logicBShr");
       const rows = [];
       const decInputs = [];
       const decUpBtns = [];
@@ -1505,6 +1555,27 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
         return parseInt(s, 2);
       }
 
+      /** 8ビットとして論理シフト（左: 下位へ0、右: 上位へ0） */
+      function logicShiftReg8(n, dir) {
+        var x = n & 0xff;
+        if (dir === "left") return (x << 1) & 0xff;
+        return (x >>> 1) & 0xff;
+      }
+
+      function wireLogicShiftButtons() {
+        function bind(btn, inputs, dir) {
+          if (!btn) return;
+          btn.addEventListener("click", function () {
+            syncLogicBitsFromN(inputs, logicShiftReg8(readLogicBits(inputs), dir));
+            updateLogicResult();
+          });
+        }
+        bind(logicAShl, logicAInputs, "left");
+        bind(logicAShr, logicAInputs, "right");
+        bind(logicBShl, logicBInputs, "left");
+        bind(logicBShr, logicBInputs, "right");
+      }
+
       function syncLogicBitsFromN(inputs, n) {
         const s = toBin8(n);
         for (let i = 0; i < 8; i++) {
@@ -1579,6 +1650,10 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
         const r = useAnd ? (a & b) : (a | b);
         syncLogicBitsFromN(logicRInputs, r);
         updateLogicBitButtons();
+        if (logicOpExpr) {
+          var opSym = useAnd ? "∧" : "∨";
+          logicOpExpr.textContent = toBin8(a) + " " + opSym + " " + toBin8(b);
+        }
       }
 
       function setLogicAnswerHidden(hidden) {
@@ -1613,9 +1688,10 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
       }
 
       function applyLogicTabOrder(enabled) {
+        const logicShiftBtns = [logicAShl, logicAShr, logicBShl, logicBShr];
         if (!enabled) {
           const all = []
-            .concat(logicAUpBtns, logicADownBtns, logicBUpBtns, logicBDownBtns, logicAInputs, logicBInputs);
+            .concat(logicShiftBtns, logicAUpBtns, logicADownBtns, logicBUpBtns, logicBDownBtns, logicAInputs, logicBInputs);
           all.forEach(function (el) {
             if (el) el.tabIndex = -1;
           });
@@ -1625,7 +1701,11 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
           return;
         }
         let tab = 1;
+        if (logicAShl) logicAShl.tabIndex = tab++;
+        if (logicAShr) logicAShr.tabIndex = tab++;
         tab = applyTabOrderForBits(logicAUpBtns, logicAInputs, logicADownBtns, tab);
+        if (logicBShl) logicBShl.tabIndex = tab++;
+        if (logicBShr) logicBShr.tabIndex = tab++;
         tab = applyTabOrderForBits(logicBUpBtns, logicBInputs, logicBDownBtns, tab);
         logicRInputs.forEach(function (el) {
           if (el) el.tabIndex = -1;
@@ -2247,6 +2327,7 @@ body.view-hide-dec.logic-mode-on .controls.bin-jump-block.view-part-bin {
 
       requestAnimationFrame(function () {
         buildLogicCells();
+        wireLogicShiftButtons();
         syncLogicBitsFromN(logicAInputs, 0);
         syncLogicBitsFromN(logicBInputs, 0);
         updateLogicResult();
