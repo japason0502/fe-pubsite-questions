@@ -3191,16 +3191,42 @@
   {
     "id": "q66",
     "number": 66,
-    "title": "（準備中）",
-    "questionText": "この番号の問題は準備中です。",
+    "title": "問題66（メソッドの基本）",
+    "questionText": "次のプログラムを実行すると，【　　　】が出力される。",
+    "bodyBlocks": [
+      {
+        "type": "table",
+        "caption": "表　クラス OperationString のメソッドの説明",
+        "headers": ["メソッド", "戻り値", "説明"],
+        "rows": [
+          [
+            "concat（文字列型：str1, 文字列型：str2）",
+            "文字列型",
+            "文字列 str1 と str2 を結合した文字列を返す。"
+          ],
+          [
+            "substr（文字列型：str, 整数型：pos, 整数型：len）",
+            "文字列型",
+            "文字列 str の pos 文字目から len 文字分の部分文字列を返す。"
+          ]
+        ]
+      }
+    ],
     "pseudoCode": [
-      "/* ダミー — 後日差し替え予定 */"
+      "OperationString:os ← OperationString()",
+      "",
+      "文字列型：s1 ← \"こんにちは\"",
+      "文字列型：s2 ← \"ばんは\"",
+      "文字列型：rs",
+      "s1 ← os.substr(s1, 1, 2)",
+      "rs ← os.concat(s1, s2)",
+      "rs を出力する"
     ],
     "choices": [
-      { "id": "a", "text": "—" },
-      { "id": "b", "text": "—" },
-      { "id": "c", "text": "—" },
-      { "id": "d", "text": "—" }
+      { "id": "a", "text": "こんばんは" },
+      { "id": "b", "text": "こんにちは" },
+      { "id": "c", "text": "ばんは" },
+      { "id": "d", "text": "ばんにちは" }
     ],
     "videoUrl": "",
     "correctChoiceId": "a",
@@ -3212,19 +3238,58 @@
   {
     "id": "q67",
     "number": 67,
-    "title": "（準備中）",
-    "questionText": "この番号の問題は準備中です。",
+    "title": "問題67（メンバ変数の基本）",
+    "questionText": "次のプログラムを実行すると，【　　　】が出力される。",
+    "bodyBlocks": [
+      {
+        "type": "table",
+        "caption": "表　クラス Item のメンバ変数の説明",
+        "headers": ["メンバ名", "型", "説明"],
+        "rows": [
+          ["name", "文字列型", "商品名を表す文字列"],
+          ["price", "整数型", "価格を表す整数"],
+          ["qty", "整数型", "個数を表す整数"]
+        ]
+      },
+      {
+        "type": "table",
+        "caption": "表　クラス Item のメソッドの説明",
+        "headers": ["メソッド名", "戻り値の型", "説明"],
+        "rows": [
+          ["total()", "整数型", "メンバ変数price × メンバ変数qty の結果を返す"],
+          ["addQty(整数型: n)", "なし", "メンバ変数qty に 引数nを加算する"]
+        ]
+      }
+    ],
     "pseudoCode": [
-      "/* ダミー — 後日差し替え予定 */"
+      "Item:itemPen ← Item()",
+      "Item:itemNote ← Item()",
+      "整数型: penTotal, noteTotal",
+      "",
+      "itemPen.name ← \"ペン\"",
+      "itemPen.price ← 120",
+      "itemPen.qty ← 2",
+      "",
+      "itemNote.name ← \"ノート\"",
+      "itemNote.price ← 200",
+      "itemNote.qty ← 1",
+      "",
+      "itemPen.addQty(1)",
+      "itemNote.addQty(itemPen.qty)",
+      "",
+      "penTotal ← itemPen.total()",
+      "noteTotal ← itemNote.total()",
+      "",
+      "penTotalとnoteTotalの値をこの順位にカンマ区切りで出力する"
     ],
     "choices": [
-      { "id": "a", "text": "—" },
-      { "id": "b", "text": "—" },
-      { "id": "c", "text": "—" },
-      { "id": "d", "text": "—" }
+      { "id": "a", "text": "240,400" },
+      { "id": "b", "text": "360,600" },
+      { "id": "c", "text": "360,800" },
+      { "id": "d", "text": "240,800" }
     ],
     "videoUrl": "",
-    "correctChoiceId": "a",
+    "correctChoiceId": "c",
     "hitokoto": "",
     "hintVideoUrl": "",
     "lessonUrl": "",
@@ -3233,16 +3298,50 @@
   {
     "id": "q68",
     "number": 68,
-    "title": "（準備中）",
-    "questionText": "この番号の問題は準備中です。",
+    "title": "問題68（コンストラクタの基本）",
+    "questionText": "次のプログラムを実行すると，【　　　】が出力される。",
+    "bodyBlocks": [
+      {
+        "type": "table",
+        "caption": "表　クラス Item のメンバ変数の説明",
+        "headers": ["メンバ名", "型", "説明"],
+        "rows": [
+          ["name", "文字列型", "商品名を表す文字列"],
+          ["price", "整数型", "価格を表す整数"],
+          ["qty", "整数型", "個数を表す整数"]
+        ]
+      },
+      {
+        "type": "table",
+        "caption": "表　クラス Item のコンストラクタの説明",
+        "headers": ["コンストラクタ名", "説明"],
+        "rows": [
+          [
+            "Item(文字列型:n, 整数型:p, 整数型:q)",
+            "nameにn、priceにp、qtyにqを設定する"
+          ]
+        ]
+      },
+      {
+        "type": "table",
+        "caption": "表　クラス Item のメソッドの説明",
+        "headers": ["メソッド名", "戻り値の型", "説明"],
+        "rows": [["total()", "整数型", "price × qty を返す"]]
+      }
+    ],
     "pseudoCode": [
-      "/* ダミー — 後日差し替え予定 */"
+      "Item:itemPen ← Item(\"ペン\", 120, 2)",
+      "整数型: penTotal",
+      "",
+      "penTotal ← itemPen.total()",
+      "",
+      "penTotalの値を出力する"
     ],
     "choices": [
-      { "id": "a", "text": "—" },
-      { "id": "b", "text": "—" },
-      { "id": "c", "text": "—" },
-      { "id": "d", "text": "—" }
+      { "id": "a", "text": "240" },
+      { "id": "b", "text": "120" },
+      { "id": "c", "text": "160" },
+      { "id": "d", "text": "400" }
     ],
     "videoUrl": "",
     "correctChoiceId": "a",
@@ -3254,19 +3353,30 @@
   {
     "id": "q69",
     "number": 69,
-    "title": "（準備中）",
-    "questionText": "この番号の問題は準備中です。",
+    "title": "問題69 R4問5（オブジェクト指向・読解）",
+    "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyText": "任意の異なる 2 文字を c1，c2 とするとき，英単語群に含まれる英単語において，c1 の次に c2 が出現する割合を求めるプログラムである。英単語は英小文字だけから成る。英単語の末尾の文字が c1 である場合，その箇所は割合の計算に含めない。\n\nc1 と c2 の並びが一度も出現しない場合，c1 の出現回数によらず割合を 0 と定義する。\n\n英単語群は Words 型の大域変数 words に格納されている。文字列に対する演算子 \"＋\" は連結。整数に対する演算子 \"÷\" は実数として計算する。\n\n表　クラス Words のメソッド\n・freq（文字列型：str）… 英単語群中の文字列 str の出現回数を返す。\n・freqE（文字列型：str）… 英単語群の中で，文字列 str で終わる英単語の数を返す。",
     "pseudoCode": [
-      "/* ダミー — 後日差し替え予定 */"
+      "大域：Words：words  /* 英単語群 */",
+      "",
+      "/* c1 の次に c2 が出現する割合を返す */",
+      "○ 実数型：prob（文字型：c1，文字型：c2）",
+      "    文字列型：s1 ← c1 の 1 文字だけから成る文字列",
+      "    文字列型：s2 ← c2 の 1 文字だけから成る文字列",
+      "    if（words.freq(s1 + s2) が 0 より大きい）",
+      "        return 【　　　】",
+      "    else",
+      "        return 0",
+      "    endif"
     ],
     "choices": [
-      { "id": "a", "text": "—" },
-      { "id": "b", "text": "—" },
-      { "id": "c", "text": "—" },
-      { "id": "d", "text": "—" }
+      { "id": "a", "text": "(words.freq(s1) − words.freqE(s1)) ÷ words.freq(s1 + s2)" },
+      { "id": "b", "text": "(words.freq(s2) − words.freqE(s2)) ÷ words.freq(s1 + s2)" },
+      { "id": "c", "text": "words.freq(s1 + s2) ÷ (words.freq(s1) − words.freqE(s1))" },
+      { "id": "d", "text": "words.freq(s1 + s2) ÷ (words.freq(s2) − words.freqE(s2))" }
     ],
     "videoUrl": "",
-    "correctChoiceId": "a",
+    "correctChoiceId": "c",
     "hitokoto": "",
     "hintVideoUrl": "",
     "lessonUrl": "",

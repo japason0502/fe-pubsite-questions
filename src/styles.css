@@ -570,6 +570,35 @@ button:disabled {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
+/* 問題一覧：グリッドが画面からはみ出すときだけ中身をスクロール */
+.overlay-content--question-list {
+  display: flex;
+  flex-direction: column;
+  max-height: min(88vh, calc(100dvh - 32px));
+  min-height: 0;
+}
+
+.overlay-content--question-list .overlay-header {
+  flex-shrink: 0;
+}
+
+.overlay-content--question-list .question-list-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -4px;
+  padding: 0 4px 4px 0;
+}
+
+.overlay-content--question-list .legend {
+  flex-shrink: 0;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e5e7eb;
+}
+
 .overlay-content--mode-select {
   position: relative;
   padding-bottom: 40px;

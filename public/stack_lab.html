@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>データ構造ラボ（スタック / キュー / 単方向リスト）</title>
+  <title>データ構造ラボ（スタック / キュー / 単方向リスト append・delNode / 配列 val・next）</title>
   <style>
     :root {
       --bg: #eef1f6;
@@ -385,17 +385,158 @@
       margin: 0.5rem 0 0;
       white-space: pre-wrap;
     }
+    /* 配列による単方向リスト */
+    table.arr-ll th.row-label {
+      background: var(--accent-soft);
+      font-weight: 600;
+      font-size: 0.82rem;
+      text-align: left;
+      padding-left: 0.5rem;
+      width: 4.5rem;
+    }
+    table.arr-ll input[type="text"].arr-val-in {
+      width: 100%;
+      max-width: 5rem;
+      font-size: 0.9rem;
+      padding: 0.32rem 0.4rem;
+    }
+    table.arr-ll input[type="number"].arr-next-in {
+      width: 100%;
+      max-width: 5rem;
+      font-size: 0.9rem;
+      padding: 0.32rem 0.4rem;
+    }
+    .arr-seq {
+      font-family: var(--mono);
+      font-size: 0.95rem;
+      padding: 0.55rem 0.65rem;
+      background: #f0f4fa;
+      border-radius: 8px;
+      border-left: 4px solid var(--accent);
+      margin: 0.5rem 0 0;
+      min-height: 2.5rem;
+    }
+    .arr-seq--warn {
+      border-left-color: var(--warn);
+      background: #fffbeb;
+    }
+    .arr-head-control {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 1rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.88rem;
+    }
+    .arr-head-control label {
+      flex-direction: row;
+      align-items: center;
+      gap: 0.45rem;
+      margin: 0;
+    }
+    .arr-head-control input[type="number"] {
+      width: 4.5rem;
+    }
+    .arr-head-readout {
+      margin-top: 0.55rem;
+      font-size: 0.84rem;
+      color: var(--text);
+      padding: 0.5rem 0.65rem;
+      background: #f4f6fa;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      line-height: 1.45;
+    }
+    .arr-head-readout code {
+      font-family: var(--mono);
+      font-size: 0.88em;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 0.08rem 0.28rem;
+      border-radius: 4px;
+    }
+    .arr-head-readout .arr-hd-muted {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+    .arr-ll-ribbon-row th.row-label {
+      vertical-align: top;
+      padding-top: 0.65rem;
+    }
+    .arr-ll-ribbon-cell {
+      padding: 0.35rem 0.4rem 0.5rem !important;
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2f8 100%);
+      border-top: 1px dashed var(--border);
+    }
+    .arr-ll-ribbon-hint {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin: 0 0 0.25rem;
+      line-height: 1.35;
+    }
+    .arr-ll-ribbon-inner {
+      position: relative;
+      width: 100%;
+      min-height: 0;
+    }
+    .arr-ll-tracks {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+    /* ラベルは重ね置きにして、SVG を val 列と同じ幅いっぱいにする（列位置と一致させるため） */
+    .arr-ll-track {
+      position: relative;
+      min-height: 34px;
+    }
+    .arr-ll-track-label {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4.5rem;
+      font-size: 0.74rem;
+      color: var(--muted);
+      font-family: var(--mono);
+      text-align: right;
+      padding-right: 0.35rem;
+      line-height: 1.25;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .arr-ll-track-svg-wrap {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    .arr-ll-track-svg-wrap svg {
+      display: block;
+      width: 100%;
+      height: 34px;
+    }
+    table.arr-ll td.arr-ll-cell--path {
+      box-shadow: inset 0 0 0 2px rgba(61, 90, 128, 0.45);
+      background: rgba(61, 90, 128, 0.08) !important;
+    }
+    table.arr-ll td.arr-ll-cell--start {
+      box-shadow: inset 0 0 0 2px var(--accent);
+      background: rgba(61, 90, 128, 0.14) !important;
+    }
+    table.arr-ll td.arr-ll-cell--read-next {
+      background: rgba(45, 106, 79, 0.1) !important;
+      box-shadow: inset 0 0 0 2px rgba(45, 106, 79, 0.35);
+    }
   </style>
 </head>
 <body>
   <div class="page">
     <h1>データ構造ラボ</h1>
-    <p class="lead" style="margin-bottom: 0.85rem;">スタック（push / pop）・キュー（enqueue / dequeue）・単方向リストの <code>delNode</code> を図で確認できます。</p>
+    <p class="lead" style="margin-bottom: 0.85rem;">スタック（push / pop）・キュー（enqueue / dequeue）・単方向リスト（<code>append</code> / <code>delNode</code>）・<strong>配列</strong>（<code>val</code> / <code>next</code>）を図で確認できます。</p>
 
     <div class="tabs" role="tablist" aria-label="モード切替">
       <button type="button" role="tab" id="tabStack" aria-selected="true" aria-controls="panel-stack">スタック（push / pop）</button>
       <button type="button" role="tab" id="tabQueue" aria-selected="false" aria-controls="panel-queue">キュー（enqueue / dequeue）</button>
-      <button type="button" role="tab" id="tabList" aria-selected="false" aria-controls="panel-list">単方向リスト（delNode）</button>
+        <button type="button" role="tab" id="tabList" aria-selected="false" aria-controls="panel-list">単方向リスト（append / delNode）</button>
+      <button type="button" role="tab" id="tabArrayLl" aria-selected="false" aria-controls="panel-array-ll">配列（val / next）</button>
     </div>
 
     <!-- スタック -->
@@ -559,10 +700,10 @@
       </div>
     </section>
 
-    <!-- 単方向リスト -->
+    <!-- 単方向リスト（append + delNode） -->
     <section id="panel-list" role="tabpanel" aria-labelledby="tabList" hidden>
       <p class="lead">
-        FE 試験 <strong>R4 問 10</strong> 型の単方向リスト。<code>ListElement</code> は <code>val</code>（文字）と <code>next</code>（次への参照）を持ち、大域の <code>listHead</code> が先頭です。位置は<strong>先頭を 1</strong> とします。
+        <code>ListElement</code>（<code>val</code> / <code>next</code>）と <code>listHead</code>。<strong>append</strong>（<code>genko_kihon.md</code> 付近の記述）で末尾に追加、<strong>delNode</strong>（FE <strong>R4 問 10</strong> 型）で位置指定削除。位置は<strong>先頭を 1</strong> とします。
       </p>
 
       <div class="panel">
@@ -577,15 +718,68 @@
         </div>
       </div>
 
+      <div class="panel panel--ops">
+        <h2>操作</h2>
+        <div class="controls" style="margin-bottom: 0.65rem;">
+          <label>
+            append する文字（1 文字）
+            <input type="text" id="appendVal" value="X" maxlength="8" autocomplete="off" style="width: 6rem;">
+          </label>
+          <div class="btns">
+            <button type="button" class="primary" id="btnAppend">append</button>
+          </div>
+        </div>
+        <div class="controls">
+          <label>
+            delNode：削除する位置 pos（1 始まり）
+            <input type="number" id="delPos" value="3" min="1" step="1">
+          </label>
+          <div class="btns">
+            <button type="button" class="danger" id="btnDelNow">削除を実行</button>
+            <button type="button" class="primary" id="btnDelTrace">トレース（途中経過）</button>
+          </div>
+        </div>
+        <p class="msg" id="listMsg" aria-live="polite"></p>
+      </div>
+
       <div class="panel">
-        <h2>図（listHead とリンク）</h2>
+        <h2>現在の状態（listHead とリンク）</h2>
         <div class="ll-box" aria-live="polite">
           <div id="llDiagram" class="ll-row"></div>
           <p id="llCaption" class="ll-caption">リストを反映するとここに説明が出ます。</p>
         </div>
-        <p class="lead" style="margin: 0.75rem 0 0; font-size: 0.82rem;">
-          正解の空欄 <code>prev.next ← 【　　　】</code> は <strong><code>prev.next.next</code></strong>（解答カ）。<code>prev</code> の次の次へつなぎ替えて、間のノードを参照から外します。
-        </p>
+      </div>
+
+      <div class="panel">
+        <h2>教材の疑似プログラム（参照）</h2>
+        <p style="font-size: 0.88rem; margin: 0 0 0.5rem; color: var(--muted);">append（穴埋めの正解は解答ア：<code>a</code>＝listHead が 未定義、<code>b</code>＝curr）</p>
+        <table style="width:100%; border-collapse:collapse; font-size:0.85rem; margin-bottom:0.65rem;">
+          <thead>
+            <tr style="background:var(--accent-soft);">
+              <th style="border:1px solid var(--border); padding:0.35rem;">メンバ変数</th>
+              <th style="border:1px solid var(--border); padding:0.35rem;">型</th>
+              <th style="border:1px solid var(--border); padding:0.35rem;">説明</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="border:1px solid var(--border); padding:0.35rem;">val</td><td style="border:1px solid var(--border); padding:0.35rem;">文字型</td><td style="border:1px solid var(--border); padding:0.35rem;">リストに格納する文字。</td></tr>
+            <tr><td style="border:1px solid var(--border); padding:0.35rem;">next</td><td style="border:1px solid var(--border); padding:0.35rem;">ListElement</td><td style="border:1px solid var(--border); padding:0.35rem;">リストの次の文字を保持するインスタンスの参照。初期状態は未定義である。</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size: 0.82rem; margin: 0 0 0.5rem; color: var(--muted);">コンストラクタ <code>ListElement（文字型：qVal）</code> — 引数 qVal で val を初期化。</p>
+        <pre class="pseudo" style="margin-bottom:0.85rem;">○ append（文字型：qVal）
+  ListElement：prev，curr
+  curr ← ListElement（qVal）
+  if（listHead が 未定義）
+    listHead ← curr
+  else
+    prev ← listHead
+    while（prev.next が 未定義でない）
+      prev ← prev.next
+    endwhile
+    prev.next ← curr
+  endif</pre>
+        <p style="font-size: 0.88rem; margin: 0 0 0.5rem; color: var(--muted);">delNode（R4 問 10 型）— 空欄の正解は <code>prev.next.next</code>（解答カ）</p>
         <pre class="pseudo">○ delNode(整数型: pos)
   if (pos が 1 と等しい)
     listHead ← listHead.next
@@ -593,28 +787,101 @@
     prev ← listHead
     for (i を 2 から pos − 1 まで 1 ずつ増やす)
       prev ← prev.next
-    prev.next ← prev.next.next   ← ここ
+    prev.next ← prev.next.next
   endif</pre>
-      </div>
-
-      <div class="panel">
-        <h2>delNode(pos) を試す</h2>
-        <div class="controls">
-          <label>
-            削除する位置 pos（1 始まり）
-            <input type="number" id="delPos" value="3" min="1" step="1">
-          </label>
-          <div class="btns">
-            <button type="button" class="danger" id="btnDelNow">削除を実行</button>
-            <button type="button" class="primary" id="btnDelTrace">トレース（途中経過を表示）</button>
-          </div>
-        </div>
-        <p class="msg" id="listMsg" aria-live="polite"></p>
       </div>
 
       <div class="panel">
         <h2>ログ</h2>
         <pre class="log" id="logList"></pre>
+      </div>
+    </section>
+
+    <!-- 配列で表す単方向リスト（append 等とは別モデル） -->
+    <section id="panel-array-ll" role="tabpanel" aria-labelledby="tabArrayLl" hidden>
+      <p class="lead">
+        固定長の配列 <code>val</code>（値）と <code>next</code>（次の<strong>添字</strong>。空欄は未定義＝リスト終端）と、先頭を指す添字 <code>listHead</code>（<strong>1 始まり</strong>。<code>0</code> は「先頭なし」）で単方向リストを表します。
+        <code>listHead</code> 自体も <code>val</code> / <code>next</code> の<strong>どの添字を先頭にするか</strong>という変数で、その添字のセルと同じく <code>val[listHead]</code> と <code>next[listHead]</code> を読みます。
+        <code>next</code> を書き換えると<strong>論理上のつながり</strong>だけが変わります（セルに値が残る「削除」とは別の見方です）。
+      </p>
+
+      <div class="panel panel--ops">
+        <h2>listHead（val / next への入り口）</h2>
+        <div class="arr-head-control">
+          <label>
+            listHead（先頭の添字、0＝空）
+            <input type="number" id="arrLlHead" value="1" min="0" max="4" step="1">
+          </label>
+          <button type="button" id="btnArrLlReset">例（A→B→C→D）に戻す</button>
+        </div>
+        <div class="arr-head-readout" id="arrLlHeadReadout" aria-live="polite"></div>
+        <p class="msg" id="arrLlMsg" aria-live="polite"></p>
+      </div>
+
+      <div class="panel">
+        <h2>配列（インデックス 1〜4）</h2>
+        <p class="lead" style="margin: 0 0 0.65rem; font-size: 0.82rem;">下の <code>next</code> は 1〜4 の整数か、空（未定義）です。</p>
+        <div class="stack-wrap">
+          <table class="stack arr-ll" aria-describedby="arr-ll-desc">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">1</th>
+                <th scope="col">2</th>
+                <th scope="col">3</th>
+                <th scope="col">4</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row" class="row-label">val</th>
+                <td class="cell"><input type="text" class="arr-val-in" id="arrLlVal1" value="A" maxlength="8" autocomplete="off"></td>
+                <td class="cell"><input type="text" class="arr-val-in" id="arrLlVal2" value="C" maxlength="8" autocomplete="off"></td>
+                <td class="cell"><input type="text" class="arr-val-in" id="arrLlVal3" value="D" maxlength="8" autocomplete="off"></td>
+                <td class="cell"><input type="text" class="arr-val-in" id="arrLlVal4" value="B" maxlength="8" autocomplete="off"></td>
+              </tr>
+              <tr class="arr-ll-ribbon-row">
+                <th scope="row" class="row-label">辿り</th>
+                <td class="arr-ll-ribbon-cell" colspan="4" id="arrLlRibbonCell">
+                  <p class="arr-ll-ribbon-hint" id="arrLlRibbonHint">listHead から <code>val</code> → <code>next</code> で次の添字へ、と読み進める流れを矢印で示します。</p>
+                  <div class="arr-ll-ribbon-inner" id="arrLlRibbonInner" aria-hidden="true">
+                    <div id="arrLlRibbonTracks" class="arr-ll-tracks"></div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row" class="row-label">next</th>
+                <td class="cell"><input type="number" class="arr-next-in" id="arrLlNext1" min="1" max="4" step="1" value="4" placeholder="空" aria-label="添字1のnext"></td>
+                <td class="cell"><input type="number" class="arr-next-in" id="arrLlNext2" min="1" max="4" step="1" value="3" placeholder="空" aria-label="添字2のnext"></td>
+                <td class="cell"><input type="number" class="arr-next-in" id="arrLlNext3" min="1" max="4" step="1" placeholder="空" aria-label="添字3のnext"></td>
+                <td class="cell"><input type="number" class="arr-next-in" id="arrLlNext4" min="1" max="4" step="1" value="2" placeholder="空" aria-label="添字4のnext"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p id="arr-ll-desc" class="lead" style="margin: 0.65rem 0 0; font-size: 0.82rem;">
+          行の順は <strong>val → 辿り（矢印）→ next</strong> です。例の初期状態：<code>listHead←1</code>、<code>val</code> は 1:A, 2:C, 3:D, 4:B、<code>next</code> は 1→4, 2→3, 3→∅, 4→2。辿ると <strong>A → B → C → D</strong> になります。
+        </p>
+      </div>
+
+      <div class="panel">
+        <h2>リストの状態（listHead から辿った順）</h2>
+        <div id="arrLlSeq" class="arr-seq" aria-live="polite">—</div>
+      </div>
+
+      <div class="panel">
+        <h2>考え方メモ</h2>
+        <pre class="pseudo">大域：整数型：listHead        ※ 先頭セルの添字（1 始まり）。0 なら空
+大域：文字型の配列：val[1..4]
+大域：整数型の配列：next[1..4]  ※ 各セルが「次の添字」。未定義ならリスト終端
+
+※ 先頭から読むときは val[listHead] と next[listHead] を見る（他の添字と同じ配列の要素）。
+※ 実装では next[k] が「空」＝終端。動的な new は使わない。</pre>
+      </div>
+
+      <div class="panel">
+        <h2>ログ</h2>
+        <pre class="log" id="logArrayLl"></pre>
       </div>
     </section>
   </div>
@@ -629,22 +896,32 @@
   var tabStack = document.getElementById("tabStack");
   var tabQueue = document.getElementById("tabQueue");
   var tabList = document.getElementById("tabList");
+  var tabArrayLl = document.getElementById("tabArrayLl");
   var panelStack = document.getElementById("panel-stack");
   var panelQueue = document.getElementById("panel-queue");
   var panelList = document.getElementById("panel-list");
+  var panelArrayLl = document.getElementById("panel-array-ll");
 
   function activateTab(which) {
     tabStack.setAttribute("aria-selected", which === "stack" ? "true" : "false");
     tabQueue.setAttribute("aria-selected", which === "queue" ? "true" : "false");
     tabList.setAttribute("aria-selected", which === "list" ? "true" : "false");
+    tabArrayLl.setAttribute("aria-selected", which === "arrayLl" ? "true" : "false");
     panelStack.hidden = which !== "stack";
     panelQueue.hidden = which !== "queue";
     panelList.hidden = which !== "list";
+    panelArrayLl.hidden = which !== "arrayLl";
   }
 
   tabStack.addEventListener("click", function () { activateTab("stack"); });
   tabQueue.addEventListener("click", function () { activateTab("queue"); });
   tabList.addEventListener("click", function () { activateTab("list"); });
+  tabArrayLl.addEventListener("click", function () {
+    activateTab("arrayLl");
+    requestAnimationFrame(function () {
+      renderArrLl();
+    });
+  });
 
   /* ---------- スタック ---------- */
   var STACK_LEN = 4;
@@ -916,6 +1193,8 @@
   var listValuesInput = document.getElementById("listValues");
   var btnListApply = document.getElementById("btnListApply");
   var btnListReset = document.getElementById("btnListReset");
+  var appendValInput = document.getElementById("appendVal");
+  var btnAppend = document.getElementById("btnAppend");
   var llDiagram = document.getElementById("llDiagram");
   var llCaption = document.getElementById("llCaption");
   var delPosInput = document.getElementById("delPos");
@@ -1072,6 +1351,45 @@
     prev.next = prev.next.next;
   }
 
+  /** append（教材どおり：末尾に ListElement を追加） */
+  function appendList(qVal) {
+    var curr = { val: qVal, next: null };
+    if (!listHead) {
+      listHead = curr;
+      return;
+    }
+    var prev = listHead;
+    while (prev.next) {
+      prev = prev.next;
+    }
+    prev.next = curr;
+  }
+
+  function syncListInputFromHead() {
+    var serial = [];
+    var p = listHead;
+    while (p) {
+      serial.push(p.val);
+      p = p.next;
+    }
+    listValuesInput.value = serial.join(",");
+  }
+
+  function doAppend() {
+    if (traceBusy) return;
+    var raw = (appendValInput.value || "").trim();
+    if (!raw) {
+      setListMsg("append する文字を入力してください。", "warn");
+      return;
+    }
+    appendList(raw);
+    syncListInputFromHead();
+    llCaption.textContent = "append(\"" + raw + "\") を末尾に反映しました。";
+    renderDiagram({});
+    logList("append(\"" + raw + "\")：末尾追加");
+    setListMsg("append(\"" + raw + "\") を実行しました。", "ok");
+  }
+
   function doDeleteNow() {
     if (traceBusy) return;
     var pos = parseInt(delPosInput.value, 10);
@@ -1089,13 +1407,8 @@
       setListMsg("delNode(" + pos + ")：prev.next ← prev.next.next を実行しました。", "ok");
       logList("delNode(" + pos + ")：中間/末尾削除");
     }
-    var serial = [];
-    var p = listHead;
-    while (p) {
-      serial.push(p.val);
-      p = p.next;
-    }
-    listValuesInput.value = serial.join(",");
+    syncListInputFromHead();
+    var serial = parseListString(listValuesInput.value);
     llCaption.textContent = "削除後：残りは「" + (serial.length ? serial.join("」→「") : "（なし）") + "」です。";
     renderDiagram({});
   }
@@ -1117,6 +1430,7 @@
     btnDelNow.disabled = true;
     btnDelTrace.disabled = true;
     btnListApply.disabled = true;
+    btnAppend.disabled = true;
     setListMsg("トレース中…（完了までお待ちください）", "ok");
 
     if (pos === 1) {
@@ -1139,6 +1453,7 @@
       btnDelNow.disabled = false;
       btnDelTrace.disabled = false;
       btnListApply.disabled = false;
+      btnAppend.disabled = false;
       return;
     }
 
@@ -1178,16 +1493,526 @@
     btnDelNow.disabled = false;
     btnDelTrace.disabled = false;
     btnListApply.disabled = false;
+    btnAppend.disabled = false;
   }
 
   btnListApply.addEventListener("click", applyListFromInput);
   btnListReset.addEventListener("click", resetListInput);
+  btnAppend.addEventListener("click", doAppend);
+  appendValInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") doAppend();
+  });
   btnDelNow.addEventListener("click", doDeleteNow);
   btnDelTrace.addEventListener("click", function () { doTrace(); });
 
   listValuesInput.value = DEFAULT_LIST_STR;
   applyListFromInput();
-  logList("単方向リスト：起動（初期 A,B,C,D）");
+  logList("単方向リスト：起動（初期 A,B,C,D）— append / delNode 利用可");
+
+  /* ---------- 配列による単方向リスト（val / next / listHead） ---------- */
+  var arrLlHeadInput = document.getElementById("arrLlHead");
+  var btnArrLlReset = document.getElementById("btnArrLlReset");
+  var arrLlMsg = document.getElementById("arrLlMsg");
+  var arrLlSeq = document.getElementById("arrLlSeq");
+  var logArrayLlEl = document.getElementById("logArrayLl");
+  var arrLlLines = [];
+
+  var arrLlValInputs = [
+    document.getElementById("arrLlVal1"),
+    document.getElementById("arrLlVal2"),
+    document.getElementById("arrLlVal3"),
+    document.getElementById("arrLlVal4")
+  ];
+  var arrLlNextInputs = [
+    document.getElementById("arrLlNext1"),
+    document.getElementById("arrLlNext2"),
+    document.getElementById("arrLlNext3"),
+    document.getElementById("arrLlNext4")
+  ];
+  var arrLlRibbonTracks = document.getElementById("arrLlRibbonTracks");
+  var arrLlRibbonInner = document.getElementById("arrLlRibbonInner");
+  var arrLlRibbonHint = document.getElementById("arrLlRibbonHint");
+  var arrLlHeadReadout = document.getElementById("arrLlHeadReadout");
+
+  function logArrayLl(text) {
+    var t = new Date().toLocaleTimeString("ja-JP", { hour12: false });
+    arrLlLines.push("[" + t + "] " + text);
+    if (arrLlLines.length > 80) arrLlLines.shift();
+    logArrayLlEl.textContent = arrLlLines.join("\n");
+  }
+
+  function setArrLlMsg(text, kind) {
+    arrLlMsg.textContent = text;
+    arrLlMsg.className = "msg" + (kind ? " " + kind : "");
+  }
+
+  function arrLlEscapeHtml(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  /** listHead は添字なので、val[listHead] / next[listHead] を明示する */
+  function syncArrLlHeadReadout() {
+    if (!arrLlHeadReadout) return;
+    var hRaw = arrLlHeadInput.value;
+    var h = parseInt(hRaw, 10);
+    if (hRaw === "" || Number.isNaN(h) || h < 0 || h > 4) {
+      arrLlHeadReadout.innerHTML = "<span class=\"arr-hd-muted\">listHead は 0〜4 の整数にしてください。</span>";
+      return;
+    }
+    if (h === 0) {
+      arrLlHeadReadout.innerHTML =
+        "<code>listHead</code> が <code>0</code> のときは空リスト。先頭として使う添字はなく、<code>val</code> / <code>next</code> のどのセルも「入り口」ではありません。";
+      return;
+    }
+    var vRaw = (arrLlValInputs[h - 1].value || "").trim();
+    var vShow = vRaw === "" ? "（空）" : '"' + arrLlEscapeHtml(vRaw) + '"';
+    var nRaw = (arrLlNextInputs[h - 1].value || "").trim();
+    var nParsed = parseInt(nRaw, 10);
+    var nPart;
+    if (nRaw === "") {
+      nPart = "<code>∅</code> <span class=\"arr-hd-muted\">（未定義）</span>";
+    } else if (!Number.isNaN(nParsed) && nParsed >= 1 && nParsed <= 4) {
+      nPart = "添字 <code>" + nParsed + "</code>";
+    } else {
+      nPart = "<span class=\"arr-hd-muted\">1〜4 か空にしてください</span>";
+    }
+    arrLlHeadReadout.innerHTML =
+      "いま <code>listHead</code> = <code>" +
+      h +
+      "</code> なので、入り口は添字 <code>" +
+      h +
+      "</code> のセルと同じく <code>val[" +
+      h +
+      "]</code> と <code>next[" +
+      h +
+      "]</code> を読みます → <code>val[" +
+      h +
+      "] = " +
+      vShow +
+      "</code>、<code>next[" +
+      h +
+      "] = </code> " +
+      nPart +
+      "。";
+  }
+
+  function parseNextField(el) {
+    var raw = (el.value || "").trim();
+    if (raw === "") return null;
+    var n = parseInt(raw, 10);
+    if (Number.isNaN(n)) return NaN;
+    return n;
+  }
+
+  function readArrLlState() {
+    var vals = arrLlValInputs.map(function (el) { return (el.value || "").trim() || "（空）"; });
+    var nexts = arrLlNextInputs.map(parseNextField);
+    var headRaw = parseInt(arrLlHeadInput.value, 10);
+    var head = Number.isNaN(headRaw) ? NaN : headRaw;
+    return { vals: vals, nexts: nexts, head: head };
+  }
+
+  function traverseArrLl() {
+    var st = readArrLlState();
+    var vals = st.vals;
+    var nexts = st.nexts;
+    var head = st.head;
+
+    if (Number.isNaN(head)) {
+      return { ok: false, kind: "warn", text: "listHead は 0〜4 の整数にしてください。", detail: "" };
+    }
+    if (head === 0) {
+      return { ok: true, kind: "empty", text: "listHead が 0 のため、リストは空です。", seq: [] };
+    }
+    if (head < 1 || head > 4) {
+      return { ok: false, kind: "warn", text: "listHead は 0（空）または 1〜4 にしてください。", detail: "" };
+    }
+
+    var i;
+    for (i = 0; i < 4; i++) {
+      if (nexts[i] !== null && (Number.isNaN(nexts[i]) || nexts[i] < 1 || nexts[i] > 4)) {
+        return { ok: false, kind: "warn", text: "next[" + (i + 1) + "] は 1〜4 の整数か、空（未定義）にしてください。", detail: "" };
+      }
+    }
+
+    var seen = {};
+    var order = [];
+    var cur = head;
+    var step = 0;
+    while (true) {
+      if (cur < 1 || cur > 4) {
+        return { ok: false, kind: "warn", text: "辿り中に無効な添字 " + cur + " が現れました。", detail: "" };
+      }
+      if (seen[cur]) {
+        var loop = order.map(function (idx) { return vals[idx - 1]; }).join(" → ");
+        return {
+          ok: false,
+          kind: "cycle",
+          text: "ループを検出しました（無限に辿れます）。",
+          detail: "経路の先頭付近：「" + loop + "」…"
+        };
+      }
+      seen[cur] = true;
+      order.push(cur);
+      step++;
+      if (step > 8) {
+        return { ok: false, kind: "cycle", text: "ステップ上限：ループの可能性があります。", detail: "" };
+      }
+      var nxt = nexts[cur - 1];
+      if (nxt === null || nxt === undefined) break;
+      cur = nxt;
+    }
+
+    var labels = order.map(function (idx) { return vals[idx - 1]; });
+    return {
+      ok: true,
+      kind: "ok",
+      text: "",
+      seq: order,
+      labels: labels
+    };
+  }
+
+  /** val 行の各列中心を arrLlRibbonInner 左端からの px で返す（SVG viewBox と一致） */
+  function measureArrLlGeom() {
+    var inner = arrLlRibbonInner;
+    if (!inner) return null;
+    var ir = inner.getBoundingClientRect();
+    var w = ir.width;
+    if (w < 4) return null;
+    var cx = [];
+    var i;
+    for (i = 0; i < 4; i++) {
+      var td = arrLlValInputs[i].closest("td");
+      if (!td) return null;
+      var tr = td.getBoundingClientRect();
+      cx.push(tr.left + tr.width / 2 - ir.left);
+    }
+    return { w: w, cx: cx, midY: 17 };
+  }
+
+  function arrLlGeomFallback() {
+    return { w: 400, cx: [50, 150, 250, 350], midY: 17 };
+  }
+
+  function arrLlXAt(geom, idx1) {
+    if (!geom || !geom.cx || idx1 < 1 || idx1 > 4) return 0;
+    return geom.cx[idx1 - 1];
+  }
+
+  function clearArrLlHighlights() {
+    var i;
+    for (i = 0; i < 4; i++) {
+      var tv = arrLlValInputs[i].closest("td");
+      var tn = arrLlNextInputs[i].closest("td");
+      if (tv) {
+        tv.classList.remove("arr-ll-cell--path", "arr-ll-cell--start", "arr-ll-cell--read-next");
+      }
+      if (tn) {
+        tn.classList.remove("arr-ll-cell--path", "arr-ll-cell--start", "arr-ll-cell--read-next");
+      }
+    }
+  }
+
+  function applyArrLlHighlights(seq) {
+    clearArrLlHighlights();
+    if (!seq || !seq.length) return;
+    var j;
+    for (j = 0; j < seq.length; j++) {
+      var idx = seq[j];
+      var vTd = arrLlValInputs[idx - 1].closest("td");
+      var nTd = arrLlNextInputs[idx - 1].closest("td");
+      if (vTd) {
+        vTd.classList.add("arr-ll-cell--path");
+        if (j === 0) vTd.classList.add("arr-ll-cell--start");
+      }
+      if (nTd) nTd.classList.add("arr-ll-cell--read-next");
+    }
+  }
+
+  function createSvgEl(name) {
+    return document.createElementNS("http://www.w3.org/2000/svg", name);
+  }
+
+  function clearArrLlRibbon() {
+    arrLlRibbonTracks.innerHTML = "";
+    arrLlRibbonHint.innerHTML =
+      "listHead から <code>val</code> → <code>next</code> で次の添字へ、と読み進める流れを矢印で示します。";
+  }
+
+  function arrLlAppendArrowDefs(svg, markerId) {
+    var defs = createSvgEl("defs");
+    var mk = createSvgEl("marker");
+    mk.setAttribute("id", markerId);
+    mk.setAttribute("markerWidth", "9");
+    mk.setAttribute("markerHeight", "9");
+    mk.setAttribute("refX", "8");
+    mk.setAttribute("refY", "3");
+    mk.setAttribute("orient", "auto");
+    var poly = createSvgEl("polygon");
+    poly.setAttribute("points", "0 0, 9 3, 0 6");
+    poly.setAttribute("fill", "#3d5a80");
+    mk.appendChild(poly);
+    defs.appendChild(mk);
+    svg.appendChild(defs);
+  }
+
+  function arrLlAddTrackRow(labelText, buildSvg, geom) {
+    var row = document.createElement("div");
+    row.className = "arr-ll-track";
+    var lab = document.createElement("div");
+    lab.className = "arr-ll-track-label";
+    lab.textContent = labelText;
+    var wrap = document.createElement("div");
+    wrap.className = "arr-ll-track-svg-wrap";
+    var svg = createSvgEl("svg");
+    svg.setAttribute("viewBox", "0 0 " + geom.w + " 34");
+    svg.setAttribute("preserveAspectRatio", "none");
+    buildSvg(svg, geom);
+    wrap.appendChild(svg);
+    row.appendChild(lab);
+    row.appendChild(wrap);
+    arrLlRibbonTracks.appendChild(row);
+  }
+
+  function drawArrLlRibbon(r) {
+    arrLlRibbonTracks.innerHTML = "";
+    if (!r || !r.seq || !r.seq.length) {
+      arrLlRibbonHint.innerHTML = "listHead が 0 のとき、または辿れないときは矢印は出ません。";
+      return;
+    }
+
+    var seq = r.seq;
+    var st = readArrLlState();
+    var head = st.head;
+    var nexts = st.nexts;
+    var geom = measureArrLlGeom();
+    if (!geom) geom = arrLlGeomFallback();
+    var midY = geom.midY;
+    var rp = 5;
+    var rpHead = 6;
+    var hint =
+      "<strong>読み方：</strong> 行ごとに「どの添字から出す線か」が分かれています。<code>listHead</code> で入り、各 <code>" +
+      seq.join(" → ") +
+      "</code> で <code>val</code> → 下の <code>next</code> → 次の列へ。矢印の端は上の <code>val</code> 列の位置に合わせています。";
+    arrLlRibbonHint.innerHTML = hint;
+
+    var uid = 0;
+    arrLlAddTrackRow(
+      "listHead →",
+      function (svg, g) {
+        var xH = arrLlXAt(g, head);
+        var xStart = Math.max(4, xH - 52);
+        var lineIn = createSvgEl("line");
+        lineIn.setAttribute("x1", String(xStart));
+        lineIn.setAttribute("y1", String(midY));
+        lineIn.setAttribute("x2", String(xH - rpHead));
+        lineIn.setAttribute("y2", String(midY));
+        lineIn.setAttribute("stroke", "#7a8699");
+        lineIn.setAttribute("stroke-width", "2");
+        lineIn.setAttribute("stroke-dasharray", "4 3");
+        svg.appendChild(lineIn);
+        var c0 = createSvgEl("circle");
+        c0.setAttribute("cx", String(xH));
+        c0.setAttribute("cy", String(midY));
+        c0.setAttribute("r", String(rpHead));
+        c0.setAttribute("fill", "#3d5a80");
+        c0.setAttribute("stroke", "#3d5a80");
+        svg.appendChild(c0);
+        var t0 = createSvgEl("text");
+        t0.setAttribute("x", String(xH));
+        t0.setAttribute("y", String(midY + 4));
+        t0.setAttribute("text-anchor", "middle");
+        t0.setAttribute("font-size", "11");
+        t0.setAttribute("font-weight", "700");
+        t0.setAttribute("fill", "#fff");
+        t0.setAttribute("font-family", "ui-monospace, monospace");
+        t0.textContent = String(head);
+        svg.appendChild(t0);
+      },
+      geom
+    );
+
+    var k;
+    for (k = 0; k < seq.length - 1; k++) {
+      (function (from, to, rowLabel) {
+        var mkId = "arrLlArrow_" + uid++;
+        arrLlAddTrackRow(
+          rowLabel,
+          function (svg, g) {
+            arrLlAppendArrowDefs(svg, mkId);
+            var x1 = arrLlXAt(g, from);
+            var x2 = arrLlXAt(g, to);
+            var ln = createSvgEl("line");
+            ln.setAttribute("x1", String(x1 + rp));
+            ln.setAttribute("y1", String(midY));
+            ln.setAttribute("x2", String(x2 - rp));
+            ln.setAttribute("y2", String(midY));
+            ln.setAttribute("stroke", "#3d5a80");
+            ln.setAttribute("stroke-width", "2.5");
+            ln.setAttribute("marker-end", "url(#" + mkId + ")");
+            svg.appendChild(ln);
+            var c1 = createSvgEl("circle");
+            c1.setAttribute("cx", String(x1));
+            c1.setAttribute("cy", String(midY));
+            c1.setAttribute("r", String(rp));
+            c1.setAttribute("fill", "#e8ecf4");
+            c1.setAttribute("stroke", "#3d5a80");
+            c1.setAttribute("stroke-width", "2");
+            svg.appendChild(c1);
+            var c2 = createSvgEl("circle");
+            c2.setAttribute("cx", String(x2));
+            c2.setAttribute("cy", String(midY));
+            c2.setAttribute("r", String(rp));
+            c2.setAttribute("fill", "#e8ecf4");
+            c2.setAttribute("stroke", "#3d5a80");
+            c2.setAttribute("stroke-width", "2");
+            svg.appendChild(c2);
+            var t1 = createSvgEl("text");
+            t1.setAttribute("x", String(x1));
+            t1.setAttribute("y", String(midY + 4));
+            t1.setAttribute("text-anchor", "middle");
+            t1.setAttribute("font-size", "11");
+            t1.setAttribute("font-weight", "700");
+            t1.setAttribute("fill", "#3d5a80");
+            t1.setAttribute("font-family", "ui-monospace, monospace");
+            t1.textContent = String(from);
+            svg.appendChild(t1);
+            var t2 = createSvgEl("text");
+            t2.setAttribute("x", String(x2));
+            t2.setAttribute("y", String(midY + 4));
+            t2.setAttribute("text-anchor", "middle");
+            t2.setAttribute("font-size", "11");
+            t2.setAttribute("font-weight", "700");
+            t2.setAttribute("fill", "#3d5a80");
+            t2.setAttribute("font-family", "ui-monospace, monospace");
+            t2.textContent = String(to);
+            svg.appendChild(t2);
+          },
+          geom
+        );
+      })(seq[k], seq[k + 1], String(seq[k]) + " から →");
+    }
+
+    var last = seq[seq.length - 1];
+    var lastNext = nexts[last - 1];
+    if (lastNext === null || lastNext === undefined) {
+      arrLlAddTrackRow(
+        String(last) + " の next",
+        function (svg, g) {
+          var xL = arrLlXAt(g, last);
+          var c = createSvgEl("circle");
+          c.setAttribute("cx", String(xL));
+          c.setAttribute("cy", String(midY));
+          c.setAttribute("r", String(rp));
+          c.setAttribute("fill", "#fff8f0");
+          c.setAttribute("stroke", "#b45309");
+          c.setAttribute("stroke-width", "2");
+          svg.appendChild(c);
+          var te = createSvgEl("text");
+          te.setAttribute("x", String(xL));
+          te.setAttribute("y", String(midY + 4));
+          te.setAttribute("text-anchor", "middle");
+          te.setAttribute("font-size", "11");
+          te.setAttribute("font-weight", "700");
+          te.setAttribute("fill", "#b45309");
+          te.setAttribute("font-family", "ui-monospace, monospace");
+          te.textContent = String(last);
+          svg.appendChild(te);
+          var tx = createSvgEl("text");
+          tx.setAttribute("x", String(xL));
+          tx.setAttribute("y", "31");
+          tx.setAttribute("text-anchor", "middle");
+          tx.setAttribute("font-size", "10");
+          tx.setAttribute("fill", "#b45309");
+          tx.setAttribute("font-family", "system-ui, sans-serif");
+          tx.textContent = "∅ 終端";
+          svg.appendChild(tx);
+        },
+        geom
+      );
+    }
+  }
+
+  function renderArrLl() {
+    syncArrLlHeadReadout();
+    var r = traverseArrLl();
+    var okVisual = r.ok && r.kind !== "warn" && r.kind !== "cycle";
+    arrLlSeq.className = "arr-seq" + (okVisual ? "" : " arr-seq--warn");
+
+    clearArrLlHighlights();
+
+    if (r.kind === "cycle") {
+      clearArrLlRibbon();
+      arrLlSeq.textContent = r.text + (r.detail ? " " + r.detail : "");
+      setArrLlMsg(r.text, "warn");
+      arrLlRibbonHint.innerHTML = "ループのため、列どおりの終端矢印は描けません。";
+      return;
+    }
+    if (!r.ok || r.kind === "warn") {
+      clearArrLlRibbon();
+      arrLlSeq.textContent = r.text;
+      setArrLlMsg(r.text, "warn");
+      arrLlRibbonHint.textContent = "入力を直すと、辿りの矢印が表示されます。";
+      return;
+    }
+    if (r.kind === "empty") {
+      clearArrLlRibbon();
+      arrLlSeq.textContent = r.text;
+      setArrLlMsg("状態を更新しました。", "ok");
+      arrLlRibbonHint.textContent = "listHead が 0 なので、矢印はありません。";
+      return;
+    }
+
+    var chain = r.labels.join(" → ");
+    var idxPath = r.seq.join(" → ");
+    arrLlSeq.textContent = "値の列：" + chain + "　／　添字の辿り順：" + idxPath;
+    setArrLlMsg("listHead から辿れるリストを表示しています。", "ok");
+
+    applyArrLlHighlights(r.seq);
+    drawArrLlRibbon(r);
+  }
+
+  function resetArrLlExample() {
+    arrLlHeadInput.value = "1";
+    arrLlValInputs[0].value = "A";
+    arrLlValInputs[1].value = "C";
+    arrLlValInputs[2].value = "D";
+    arrLlValInputs[3].value = "B";
+    arrLlNextInputs[0].value = "4";
+    arrLlNextInputs[1].value = "3";
+    arrLlNextInputs[2].value = "";
+    arrLlNextInputs[3].value = "2";
+    renderArrLl();
+    logArrayLl("例に戻しました（A→B→C→D / 添字 1→4→2→3）");
+  }
+
+  function wireArrLlInputs() {
+    var i;
+    for (i = 0; i < 4; i++) {
+      arrLlValInputs[i].addEventListener("input", function () { renderArrLl(); });
+      arrLlNextInputs[i].addEventListener("input", function () { renderArrLl(); });
+    }
+    arrLlHeadInput.addEventListener("input", function () { renderArrLl(); });
+  }
+
+  btnArrLlReset.addEventListener("click", resetArrLlExample);
+  wireArrLlInputs();
+
+  var arrLlResizeTimer;
+  window.addEventListener("resize", function () {
+    clearTimeout(arrLlResizeTimer);
+    arrLlResizeTimer = setTimeout(function () {
+      if (!panelArrayLl.hidden) renderArrLl();
+    }, 120);
+  });
+
+  renderArrLl();
+  logArrayLl("配列リスト：起動（例の初期状態）");
 })();
   </script>
 </body>

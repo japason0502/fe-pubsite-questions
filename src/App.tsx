@@ -916,29 +916,31 @@ export default function App() {
 
       {showList && (
         <div className="overlay">
-          <div className="overlay-content">
+          <div className="overlay-content overlay-content--question-list">
             <div className="overlay-header">
               <h3>問題一覧</h3>
               <button className="outline" onClick={() => setShowList(false)}>
                 閉じる
               </button>
             </div>
-            <div className="grid">
-              {questions.map((q, idx) => {
-                const answered = Boolean(state.answers[q.id]);
-                const review = Boolean(state.reviewFlags[q.id]);
-                return (
-                  <button
-                    key={q.id}
-                    onClick={() => jumpTo(idx)}
-                    className={`grid-item ${idx === state.currentIndex ? "current" : ""} ${
-                      answered ? "answered" : "unanswered"
-                    } ${review ? "review" : ""}`}
-                  >
-                    {Number.isInteger(q.number) ? `問${q.number}` : `問${Math.floor(q.number)}#`}
-                  </button>
-                );
-              })}
+            <div className="question-list-scroll" role="region" aria-label="問題番号一覧">
+              <div className="grid">
+                {questions.map((q, idx) => {
+                  const answered = Boolean(state.answers[q.id]);
+                  const review = Boolean(state.reviewFlags[q.id]);
+                  return (
+                    <button
+                      key={q.id}
+                      onClick={() => jumpTo(idx)}
+                      className={`grid-item ${idx === state.currentIndex ? "current" : ""} ${
+                        answered ? "answered" : "unanswered"
+                      } ${review ? "review" : ""}`}
+                    >
+                      {Number.isInteger(q.number) ? `問${q.number}` : `問${Math.floor(q.number)}#`}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
             <div className="legend">
               <div className="legend-item">
