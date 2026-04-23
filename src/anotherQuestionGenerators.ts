@@ -733,7 +733,7 @@ function generateQ70(_baseQuestion: Question): GeneratedQuestionPatch {
   const pushBlockIndexA = [
     "○ 論理型：push(整数型：inputData)",
     "    if (stackPos ≤ stack の要素数)",
-    "        stack【 a 】 ← inputData",
+    "        stack[ 【 a 】 ] ← inputData",
     "        stackPos ← stackPos + 1",
     "        return true",
     "    else",

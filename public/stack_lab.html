@@ -258,6 +258,27 @@
       border-radius: 4px;
       color: var(--text);
     }
+    .inline-options {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 0.9rem;
+      margin-left: 0.2rem;
+    }
+    .inline-options .opt-title {
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .inline-options label {
+      display: inline-flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.35rem;
+      margin: 0;
+      color: var(--text);
+      font-size: 0.82rem;
+    }
     .log {
       font-family: var(--mono);
       font-size: 0.8rem;
@@ -529,43 +550,21 @@
 </head>
 <body>
   <div class="page">
-    <h1>データ構造ラボ</h1>
-    <p class="lead" style="margin-bottom: 0.85rem;">スタック（push / pop）・キュー（enqueue / dequeue）・単方向リスト（<code>append</code> / <code>delNode</code>）・<strong>配列</strong>（<code>val</code> / <code>next</code>）を図で確認できます。</p>
-
+    <h1></h1>
     <div class="tabs" role="tablist" aria-label="モード切替">
-      <button type="button" role="tab" id="tabStack" aria-selected="true" aria-controls="panel-stack">スタック（push / pop）</button>
-      <button type="button" role="tab" id="tabQueue" aria-selected="false" aria-controls="panel-queue">キュー（enqueue / dequeue）</button>
-        <button type="button" role="tab" id="tabList" aria-selected="false" aria-controls="panel-list">単方向リスト（append / delNode）</button>
-      <button type="button" role="tab" id="tabArrayLl" aria-selected="false" aria-controls="panel-array-ll">配列（val / next）</button>
+      <button type="button" role="tab" id="tabStack" aria-selected="true" aria-controls="panel-stack">スタック</button>
+      <button type="button" role="tab" id="tabQueue" aria-selected="false" aria-controls="panel-queue">キュー</button>
+        <button type="button" role="tab" id="tabList" aria-selected="false" aria-controls="panel-list">単方向リスト</button>
+      <button type="button" role="tab" id="tabArrayLl" aria-selected="false" aria-controls="panel-array-ll">配列</button>
     </div>
 
     <!-- スタック -->
     <section id="panel-stack" role="tabpanel" aria-labelledby="tabStack">
-      <p class="lead">
-        大域の配列 <code>stack</code>（要素数 4）と <code>stackPos</code>（<strong>1 始まり</strong>：次に格納する位置）で表現します。
-        初期状態は <code>stackPos ← 3</code>、<code>stack ← {4, 3, 未定義, 未定義}</code> です。
-      </p>
-
-      <div class="panel panel--ops">
-        <h2>操作</h2>
-        <div class="controls">
-          <label>
-            push する整数
-            <input type="number" id="pushInput" value="1" step="1">
-          </label>
-          <div class="btns">
-            <button type="button" class="primary" id="btnPush">push</button>
-            <button type="button" class="danger" id="btnPop">pop</button>
-            <button type="button" id="btnReset">初期状態に戻す</button>
-          </div>
-        </div>
-        <p class="msg" id="msg" aria-live="polite"></p>
-      </div>
 
       <div class="panel">
         <h2>現在の状態</h2>
         <div class="stack-wrap">
-          <table class="stack" aria-describedby="stack-desc">
+          <table class="stack">
             <thead>
               <tr>
                 <th scope="col">1</th>
@@ -580,19 +579,35 @@
             </tbody>
           </table>
         </div>
-        <p id="stack-desc" class="lead" style="margin: 0.65rem 0 0; font-size: 0.82rem;">
-          網掛けはその要素が未定義であることを示します。
-        </p>
         <div class="state-row">
-          <span>stackPos= <code id="dispStackPos">3</code></span>
-          <span>push 成否= <code id="dispPushOk">—</code></span>
-          <span>pop 戻り値= <code id="dispPopVal">—</code></span>
+          <span><span id="dispStackPosLabel">stackPos</span>= <code id="dispStackPos">3</code></span>
         </div>
+      </div>
+
+      <div class="panel panel--ops">
+        <h2>操作</h2>
+        <div class="controls">
+          <label>
+            push する整数
+            <input type="number" id="pushInput" value="1" step="1">
+          </label>
+          <div class="btns">
+            <button type="button" class="danger" id="btnPush">push</button>
+            <button type="button" class="primary" id="btnPop">pop</button>
+            <button type="button" id="btnReset">初期状態に戻す</button>
+          </div>
+          <div class="inline-options" role="group" aria-label="使用する変数">
+            <span class="opt-title">使用する変数</span>
+            <label><input type="radio" name="stackPosMode" id="stackModeNextPos" value="nextPos" checked> StackPos(次に格納する位置)</label>
+            <label><input type="radio" name="stackPosMode" id="stackModeLength" value="length"> length（格納済み個数）</label>
+          </div>
+        </div>
+        <p class="msg" id="msg" aria-live="polite"></p>
       </div>
 
       <div class="panel">
         <h2>教材の疑似プログラム（参照）</h2>
-        <pre class="pseudo">大域：整数型：stackPos ← 3
+        <pre class="pseudo" id="stackPseudo">大域：整数型：stackPos ← 3
 大域：整数型の配列：stack ← {4, 3, 未定義の値, 未定義の値}
 
 ○ 論理型：push(整数型：inputData)
@@ -622,10 +637,6 @@
 
     <!-- キュー（問題71 普通のキュー・教材と同じ初期状態） -->
     <section id="panel-queue" role="tabpanel" aria-labelledby="tabQueue" hidden>
-      <p class="lead">
-        大域の配列 <code>queue</code>（要素数 4）と <code>enPos</code>（<strong>1 始まり</strong>：次に格納する位置）、<code>dePos</code>（<strong>1 始まり</strong>：次に取り出す位置）で表現します。
-        初期状態は <code>enPos ← 3</code>、<code>dePos ← 1</code>、<code>queue ← {4, 3, 未定義, 未定義}</code> です（<code>genko_kihon.md</code> 問題71 と同じ）。
-      </p>
 
       <div class="panel panel--ops">
         <h2>操作</h2>
@@ -702,9 +713,6 @@
 
     <!-- 単方向リスト（append + delNode） -->
     <section id="panel-list" role="tabpanel" aria-labelledby="tabList" hidden>
-      <p class="lead">
-        <code>ListElement</code>（<code>val</code> / <code>next</code>）と <code>listHead</code>。<strong>append</strong>（<code>genko_kihon.md</code> 付近の記述）で末尾に追加、<strong>delNode</strong>（FE <strong>R4 問 10</strong> 型）で位置指定削除。位置は<strong>先頭を 1</strong> とします。
-      </p>
 
       <div class="panel">
         <h2>リストのデータ</h2>
@@ -799,11 +807,6 @@
 
     <!-- 配列で表す単方向リスト（append 等とは別モデル） -->
     <section id="panel-array-ll" role="tabpanel" aria-labelledby="tabArrayLl" hidden>
-      <p class="lead">
-        固定長の配列 <code>val</code>（値）と <code>next</code>（次の<strong>添字</strong>。空欄は未定義＝リスト終端）と、先頭を指す添字 <code>listHead</code>（<strong>1 始まり</strong>。<code>0</code> は「先頭なし」）で単方向リストを表します。
-        <code>listHead</code> 自体も <code>val</code> / <code>next</code> の<strong>どの添字を先頭にするか</strong>という変数で、その添字のセルと同じく <code>val[listHead]</code> と <code>next[listHead]</code> を読みます。
-        <code>next</code> を書き換えると<strong>論理上のつながり</strong>だけが変わります（セルに値が残る「削除」とは別の見方です）。
-      </p>
 
       <div class="panel panel--ops">
         <h2>listHead（val / next への入り口）</h2>
@@ -934,12 +937,61 @@
   var btnReset = document.getElementById("btnReset");
   var stackValues = document.getElementById("stackValues");
   var stackPosRow = document.getElementById("stackPosRow");
+  var dispStackPosLabel = document.getElementById("dispStackPosLabel");
   var dispStackPos = document.getElementById("dispStackPos");
-  var dispPushOk = document.getElementById("dispPushOk");
-  var dispPopVal = document.getElementById("dispPopVal");
   var msg = document.getElementById("msg");
   var logStackEl = document.getElementById("logStack");
+  var stackPseudo = document.getElementById("stackPseudo");
+  var stackModeNextPos = document.getElementById("stackModeNextPos");
+  var stackModeLength = document.getElementById("stackModeLength");
   var stackLines = [];
+  var stackPosMode = "nextPos";
+  var stackPseudoNextPos = "大域：整数型：stackPos ← 3\n"
+    + "大域：整数型の配列：stack ← {4, 3, 未定義の値, 未定義の値}\n\n"
+    + "○ 論理型：push(整数型：inputData)\n"
+    + "    if (stackPos ≤ stack の要素数)\n"
+    + "        stack[stackPos] ← inputData\n"
+    + "        stackPos ← stackPos + 1\n"
+    + "        return true\n"
+    + "    else\n"
+    + "        return false\n"
+    + "    endif\n\n"
+    + "○ 整数型：pop()\n"
+    + "    整数型：popData ← 未定義の値\n"
+    + "    if (stackPos > 1)\n"
+    + "        stackPos ← stackPos − 1\n"
+    + "        popData ← stack[stackPos]\n"
+    + "        stack[stackPos] ← 未定義の値\n"
+    + "    endif\n"
+    + "    return popData";
+  var stackPseudoLength = "大域：整数型：length ← 2\n"
+    + "大域：整数型の配列：stack ← {4, 3, 未定義の値, 未定義の値}\n\n"
+    + "○ 論理型：push(整数型：inputData)\n"
+    + "    if (length < stack の要素数)\n"
+    + "        stack[length + 1] ← inputData\n"
+    + "        length ← length + 1\n"
+    + "        return true\n"
+    + "    else\n"
+    + "        return false\n"
+    + "    endif\n\n"
+    + "○ 整数型：pop()\n"
+    + "    整数型：popData ← 未定義の値\n"
+    + "    if (length > 0)\n"
+    + "        length ← length − 1\n"
+    + "        popData ← stack[length + 1]\n"
+    + "        stack[length + 1] ← 未定義の値\n"
+    + "    endif\n"
+    + "    return popData";
+
+  function stackLenFromState() {
+    if (stackPosMode === "nextPos") return stackPos - 1;
+    return stackPos;
+  }
+
+  function stackPosFromLen(len) {
+    if (stackPosMode === "nextPos") return len + 1;
+    return len;
+  }
 
   function logStack(text) {
     var t = new Date().toLocaleTimeString("ja-JP", { hour12: false });
@@ -958,30 +1010,35 @@
       var v = stack[i];
       if (v === undefined) {
         td.classList.add("undefined");
-        td.textContent = "—";
+        td.textContent = "未定義";
         td.title = "未定義";
       } else {
         td.textContent = String(v);
       }
       stackValues.appendChild(td);
     }
+    var markerPos = stackPos;
+    var markerName = stackPosMode === "nextPos" ? "stackPos" : "length";
     for (i = 0; i < STACK_LEN; i++) {
       var tdP = document.createElement("td");
       var pos1 = i + 1;
-      if (pos1 === stackPos) {
-        tdP.innerHTML = "<strong>↑ stackPos</strong>";
+      if (pos1 === markerPos) {
+        tdP.innerHTML = "<strong>↑ " + markerName + "</strong>";
       } else {
         tdP.textContent = "";
       }
       stackPosRow.appendChild(tdP);
     }
     dispStackPos.textContent = String(stackPos);
+    dispStackPosLabel.textContent = stackPosMode === "nextPos" ? "stackPos" : "length";
+    stackPseudo.textContent = stackPosMode === "nextPos" ? stackPseudoNextPos : stackPseudoLength;
   }
 
   function push(inputData) {
-    if (stackPos <= STACK_LEN) {
-      stack[stackPos - 1] = inputData;
-      stackPos = stackPos + 1;
+    var len = stackLenFromState();
+    if (len < STACK_LEN) {
+      stack[len] = inputData;
+      stackPos = stackPosFromLen(len + 1);
       return true;
     }
     return false;
@@ -989,10 +1046,17 @@
 
   function pop() {
     var popData = undefined;
-    if (stackPos > 1) {
-      stackPos = stackPos - 1;
-      popData = stack[stackPos - 1];
-      stack[stackPos - 1] = undefined;
+    var len = stackLenFromState();
+    if (len > 0) {
+      if (stackPosMode === "nextPos") {
+        popData = stack[len - 1];
+        stack[len - 1] = undefined;
+        stackPos = stackPosFromLen(len - 1);
+      } else {
+        stackPos = stackPosFromLen(len - 1);
+        popData = stack[stackPos];
+        stack[stackPos] = undefined;
+      }
     }
     return popData;
   }
@@ -1010,7 +1074,6 @@
       return;
     }
     var ok = push(n);
-    dispPushOk.textContent = ok ? "true" : "false";
     if (ok) {
       setStackMsg("push(" + n + ") → true（格納しました）", "ok");
       logStack("push(" + n + ") → true  stackPos=" + stackPos);
@@ -1018,39 +1081,59 @@
       setStackMsg("push(" + n + ") → false（これ以上格納できません）", "warn");
       logStack("push(" + n + ") → false");
     }
-    dispPopVal.textContent = "—";
     renderStack();
   }
 
   function doPop() {
     var v = pop();
     var shown = v === undefined ? "未定義" : String(v);
-    dispPopVal.textContent = shown;
-    dispPushOk.textContent = "—";
     setStackMsg("pop() → " + shown, v === undefined ? "warn" : "ok");
     logStack("pop() → " + shown + "  stackPos=" + stackPos);
     renderStack();
   }
 
   function resetStack() {
-    stackPos = 3;
+    stackPos = stackPosFromLen(2);
     stack = [4, 3, undefined, undefined];
-    dispPushOk.textContent = "—";
-    dispPopVal.textContent = "—";
     setStackMsg("初期状態に戻しました。", "ok");
     logStack("--- リセット ---");
+    renderStack();
+  }
+
+  function applyStackPosMode(nextMode) {
+    var prevLen = stackLenFromState();
+    stackPosMode = nextMode;
+    stackPos = stackPosFromLen(prevLen);
+    setStackMsg(
+      nextMode === "nextPos"
+        ? "使用変数を stackPos（次に格納する位置）に切り替えました。"
+        : "使用変数を length（格納済み個数）に切り替えました。",
+      "ok"
+    );
+    logStack(
+      nextMode === "nextPos"
+        ? "モード切替：stackPos は次に格納する位置"
+        : "モード切替：stackPos は格納済み個数（length）"
+    );
     renderStack();
   }
 
   btnPush.addEventListener("click", doPush);
   btnPop.addEventListener("click", doPop);
   btnReset.addEventListener("click", resetStack);
+  stackModeNextPos.addEventListener("change", function () {
+    if (stackModeNextPos.checked) applyStackPosMode("nextPos");
+  });
+  stackModeLength.addEventListener("change", function () {
+    if (stackModeLength.checked) applyStackPosMode("length");
+  });
   pushInput.addEventListener("keydown", function (e) {
     if (e.key === "Enter") doPush();
   });
 
+  stackPos = stackPosFromLen(2);
   renderStack();
-  logStack("起動：初期 stackPos=3、stack=[4,3,（未定義）,（未定義）]");
+  logStack("起動：初期 stackPos=" + stackPos + "、stack=[4,3,（未定義）,（未定義）]");
 
   /* ---------- キュー（教材・問題71 と同じ初期状態） ---------- */
   var QUEUE_LEN = 4;
@@ -1089,7 +1172,7 @@
       var v = queue[i];
       if (v === undefined) {
         td.classList.add("undefined");
-        td.textContent = "—";
+        td.textContent = "未定義";
         td.title = "未定義";
       } else {
         td.textContent = String(v);

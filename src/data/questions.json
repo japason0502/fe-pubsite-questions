@@ -3191,7 +3191,7 @@
   {
     "id": "q66",
     "number": 66,
-    "title": "問題66（メソッドの基本）",
+    "title": "メソッドの基本",
     "questionText": "次のプログラムを実行すると，【　　　】が出力される。",
     "bodyBlocks": [
       {
@@ -3228,17 +3228,17 @@
       { "id": "c", "text": "ばんは" },
       { "id": "d", "text": "ばんにちは" }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=Pa7x5t7GQAI&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=58&t=391s",
     "correctChoiceId": "a",
     "hitokoto": "",
-    "hintVideoUrl": "",
-    "lessonUrl": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=Pa7x5t7GQAI&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=58&t=295s",
+    "lessonUrl": "https://www.youtube.com/watch?v=Pa7x5t7GQAI&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=58&t=1s",
     "another": 0
   },
   {
     "id": "q67",
     "number": 67,
-    "title": "問題67（メンバ変数の基本）",
+    "title": "メンバ変数の基本",
     "questionText": "次のプログラムを実行すると，【　　　】が出力される。",
     "bodyBlocks": [
       {
@@ -3288,17 +3288,17 @@
       { "id": "c", "text": "360,800" },
       { "id": "d", "text": "240,800" }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=100wGrJfFAA&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=59&t=246s",
     "correctChoiceId": "c",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "lessonUrl": "",
+    "lessonUrl": "https://www.youtube.com/watch?v=100wGrJfFAA&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=59&t=1s",
     "another": 0
   },
   {
     "id": "q68",
     "number": 68,
-    "title": "問題68（コンストラクタの基本）",
+    "title": "コンストラクタの基本",
     "questionText": "次のプログラムを実行すると，【　　　】が出力される。",
     "bodyBlocks": [
       {
@@ -3316,9 +3316,10 @@
         "caption": "表　クラス Item のコンストラクタの説明",
         "headers": ["コンストラクタ名", "説明"],
         "rows": [
+          ["Item()", "空のアイテムを生成する"],
           [
             "Item(文字列型:n, 整数型:p, 整数型:q)",
-            "nameにn、priceにp、qtyにqを設定する"
+            "引数nでメンバ変数nameを、引数pでメンバ変数priceを、引数qでメンバ変数qtyを初期化する"
           ]
         ]
       },
@@ -3343,19 +3344,50 @@
       { "id": "c", "text": "160" },
       { "id": "d", "text": "400" }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=WTyD_DnlqVk&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
     "correctChoiceId": "a",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "lessonUrl": "",
+    "lessonUrl": "https://www.youtube.com/watch?v=WTyD_DnlqVk&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
     "another": 0
   },
   {
     "id": "q69",
     "number": 69,
-    "title": "問題69 R4問5（オブジェクト指向・読解）",
+    "title": "オブジェクト指向・読解(令和4年度4月サンプル問題問5)",
     "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
-    "bodyText": "任意の異なる 2 文字を c1，c2 とするとき，英単語群に含まれる英単語において，c1 の次に c2 が出現する割合を求めるプログラムである。英単語は英小文字だけから成る。英単語の末尾の文字が c1 である場合，その箇所は割合の計算に含めない。\n\nc1 と c2 の並びが一度も出現しない場合，c1 の出現回数によらず割合を 0 と定義する。\n\n英単語群は Words 型の大域変数 words に格納されている。文字列に対する演算子 \"＋\" は連結。整数に対する演算子 \"÷\" は実数として計算する。\n\n表　クラス Words のメソッド\n・freq（文字列型：str）… 英単語群中の文字列 str の出現回数を返す。\n・freqE（文字列型：str）… 英単語群の中で，文字列 str で終わる英単語の数を返す。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "任意の異なる 2 文字を c1，c2 とするとき，英単語群に含まれる英単語において，c1 の次に c2 が出現する割合を求めるプログラムである。英単語は，英小文字だけから成る。英単語の末尾の文字が c1 である場合，その箇所は割合の計算に含めない。例えば，図に示す 4 語の英単語 \"importance\"， \"inflation\"， \"information\"， \"innovation\" から成る英単語群において，c1 を \"n\"，c2 を \"f\" とする。英単語の末尾の文字以外に \"n\" は五つあり，そのうち次の文字が \"f\" であるものは二つである。したがって，求める割合は，2 ÷ 5 ＝ 0.4 である。c1 と c2 の並びが一度も出現しない場合，c1 の出現回数によらず割合を 0 と定義する。"
+      },
+      {
+        "type": "image",
+        "src": "question-images/image-20260108142859649.png",
+        "alt": "図 4語から成る英単語群の例"
+      },
+      {
+        "type": "text",
+        "text": "プログラムにおいて，英単語群は Words 型の大域変数 words に格納されている。クラス Words のメソッドの説明を，表に示す。本問において，文字列に対する演算子 \"＋\" は，文字列の連結を表す。また，整数に対する演算子 \"÷\" は，実数として計算する。"
+      },
+      {
+        "type": "table",
+        "caption": "表　クラス Words のメソッドの説明",
+        "headers": ["メソッド", "戻り値", "説明"],
+        "rows": [
+          [
+            "freq（文字列型：str）",
+            "整数型",
+            "英単語群中の文字列 str の出現回数を返す。"
+          ],
+          [
+            "freqE（文字列型：str）",
+            "整数型",
+            "英単語群の中で，文字列 str で終わる英単語の数を返す。"
+          ]
+        ]
+      }
+    ],
     "pseudoCode": [
       "大域：Words：words  /* 英単語群 */",
       "",
@@ -3385,7 +3417,7 @@
   {
     "id": "q70",
     "number": 70,
-    "title": "問題70(R7問3)スタック(非オブジェクト指向)",
+    "title": "スタック(非オブジェクト指向)",
     "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyBlocks": [
       {
@@ -3427,7 +3459,7 @@
       "",
       "○ 論理型：push(整数型：inputData)",
       "    if (stackPos ≤ stack の要素数)",
-      "        stack【 a 】 ← inputData",
+      "        stack[ 【 a 】 ] ← inputData",
       "        stackPos ← stackPos + 1",
       "        return true",
       "    else",
@@ -3464,5 +3496,89 @@
     "hintVideoUrl": "",
     "lessonUrl": "",
     "another": 1
+  },
+  {
+    "id": "q71",
+    "number": 71,
+    "title": "キュー(非オブジェクト指向)",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "関数 enqueue は，引数で与えられた整数をキューに格納する。格納できる場合は true を返し，格納できなかった場合は false を返す。"
+      },
+      {
+        "type": "text",
+        "text": "関数 dequeue は，キューから値を取り出して返す。キューが空のときは未定義の値を返す。"
+      },
+      {
+        "type": "text",
+        "text": "キューを，要素数が 4 である大域の整数型の配列 queue，及び次に値を格納する位置を示す大域の変数 enPos 及び次に値を取り出す位置を示す大域の変数 dePos で表現する。キューの初期状態を図に示す。プログラムでは，配列の領域外を参照してはならないものとする。"
+      },
+      {
+        "type": "table",
+        "equalDataColumnWidths": true,
+        "caption": "図　キューの初期状態",
+        "headers": ["要素番号", "1", "2", "3", "4"],
+        "rows": [
+          [
+            "queue",
+            "4",
+            "3",
+            { "text": "", "shaded": true },
+            { "text": "", "shaded": true }
+          ],
+          ["", { "text": "↑\ndePos", "align": "center" }, "", { "text": "↑\nenPos", "align": "center" }, ""]
+        ]
+      },
+      {
+        "type": "text",
+        "text": "注記　網掛けはその要素が未定義であることを示す。"
+      }
+    ],
+    "pseudoCode": [
+      "大域：整数型：enPos ← 3",
+      "大域：整数型：dePos ← 1",
+      "大域：整数型の配列：queue ← {4, 3, 未定義の値, 未定義の値}",
+      "",
+      "○ 論理型：enqueue(整数型：inputData)",
+      "    if (enPos ≤ queue の要素数)",
+      "        queue[ 【 a 】 ] ← inputData",
+      "        enPos ← enPos + 1",
+      "        return true",
+      "    else",
+      "        return false",
+      "    endif",
+      "",
+      "○ 整数型：dequeue()",
+      "    整数型：deqData ← 未定義の値",
+      "    if (dePos < enPos)",
+      "        deqData ← queue[dePos]",
+      "        queue[dePos] ← 未定義の値",
+      "        dePos ← 【 b 】",
+      "    endif",
+      "    return deqData"
+    ],
+    "choices": [
+      { "id": "a", "text": "a=enPos, b=dePos + 1" },
+      { "id": "b", "text": "a=enPos, b=dePos − 1" },
+      { "id": "c", "text": "a=enPos − 1, b=dePos + 1" },
+      { "id": "d", "text": "a=enPos − 1, b=dePos − 1" }
+    ],
+    "choiceTable": {
+      "headers": ["a", "b"],
+      "rows": [
+        ["enPos", "dePos + 1"],
+        ["enPos", "dePos − 1"],
+        ["enPos − 1", "dePos + 1"],
+        ["enPos − 1", "dePos − 1"]
+      ]
+    },
+    "videoUrl": "",
+    "correctChoiceId": "a",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "lessonUrl": "",
+    "another": 0
   }
 ]
