@@ -3497,30 +3497,24 @@
     "bodyBlocks": [
       {
         "type": "text",
-        "text": "関数 enqueue は，引数で与えられた整数をキューに格納する。格納できる場合は true を返し，格納できなかった場合は false を返す。"
-      },
-      {
-        "type": "text",
-        "text": "関数 dequeue は，キューから値を取り出して返す。キューが空のときは未定義の値を返す。"
-      },
-      {
-        "type": "text",
-        "text": "キューを，要素数が 4 である大域の整数型の配列 queue，及び次に値を格納する位置を示す大域の変数 enPos 及び次に値を取り出す位置を示す大域の変数 dePos で表現する。キューの初期状態を図に示す。プログラムでは，配列の領域外を参照してはならないものとする。"
+        "text": "関数 enqueue は，引数で与えられた整数をキューに格納する。格納できる場合は true を返し，格納できなかった場合は false を返す。関数 dequeue は，キューから値を取り出して返す。キューが空のときは未定義の値を返す。キューを，要素数が 6 である大域の整数型の配列 queue，及び次に値を格納する位置を示す大域の変数 enPos 及び次に値を取り出す位置を示す大域の変数 dePos で表現する。キューの初期状態を図に示す。プログラムでは，配列の領域外を参照してはならないものとする。"
       },
       {
         "type": "table",
         "equalDataColumnWidths": true,
         "caption": "図　キューの初期状態",
-        "headers": ["要素番号", "1", "2", "3", "4"],
+        "headers": ["要素番号", "1", "2", "3", "4", "5", "6"],
         "rows": [
           [
             "queue",
-            "4",
+            { "text": "", "shaded": true },
+            { "text": "", "shaded": true },
             "3",
+            "4",
             { "text": "", "shaded": true },
             { "text": "", "shaded": true }
           ],
-          ["", { "text": "↑\ndePos", "align": "center" }, "", { "text": "↑\nenPos", "align": "center" }, ""]
+          ["", "", "", { "text": "↑\ndePos", "align": "center" }, "", { "text": "↑\nenPos", "align": "center" }, ""]
         ]
       },
       {
@@ -3529,9 +3523,9 @@
       }
     ],
     "pseudoCode": [
-      "大域：整数型：enPos ← 3",
-      "大域：整数型：dePos ← 1",
-      "大域：整数型の配列：queue ← {4, 3, 未定義の値, 未定義の値}",
+      "大域：整数型：enPos ← 5",
+      "大域：整数型：dePos ← 3",
+      "大域：整数型の配列：queue ← {未定義の値, 未定義の値, 3, 4, 未定義の値, 未定義の値}",
       "",
       "○ 論理型：enqueue(整数型：inputData)",
       "    if (enPos ≤ queue の要素数)",

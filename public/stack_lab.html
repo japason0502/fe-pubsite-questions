@@ -676,8 +676,6 @@
         <div class="state-row">
           <span>dePos= <code id="dispDePos">3</code></span>
           <span>enPos= <code id="dispEnPos">5</code></span>
-          <span>enqueue 成否= <code id="dispEnqOk">—</code></span>
-          <span>dequeue 戻り値= <code id="dispDeqVal">—</code></span>
         </div>
       </div>
 
@@ -692,6 +690,7 @@
             <button type="button" class="primary" id="btnEnqueue">enqueue</button>
             <button type="button" class="danger" id="btnDequeue">dequeue</button>
             <button type="button" id="btnQueueReset">初期状態に戻す</button>
+            <button type="button" id="btnQueueClear">すべて未定義</button>
           </div>
         </div>
         <p class="msg" id="queueMsg" aria-live="polite"></p>
@@ -1078,8 +1077,8 @@
     + "大域：整数型の配列：stack ← {4, 3, 未定義の値, 未定義の値}\n\n"
     + "○ 論理型：push(整数型：inputData)\n"
     + "    if (length < stack の要素数)\n"
-    + "        stack[length + 1] ← inputData\n"
     + "        length ← length + 1\n"
+    + "        stack[length] ← inputData\n"
     + "        return true\n"
     + "    else\n"
     + "        return false\n"
@@ -1087,9 +1086,9 @@
     + "○ 整数型：pop()\n"
     + "    整数型：popData ← 未定義の値\n"
     + "    if (length > 0)\n"
+    + "        popData ← stack[length]\n"
+    + "        stack[length] ← 未定義の値\n"
     + "        length ← length − 1\n"
-    + "        popData ← stack[length + 1]\n"
-    + "        stack[length + 1] ← 未定義の値\n"
     + "    endif\n"
     + "    return popData";
 
@@ -1158,15 +1157,9 @@
     var popData = undefined;
     var len = stackLenFromState();
     if (len > 0) {
-      if (stackPosMode === "nextPos") {
-        popData = stack[len - 1];
-        stack[len - 1] = undefined;
-        stackPos = stackPosFromLen(len - 1);
-      } else {
-        stackPos = stackPosFromLen(len - 1);
-        popData = stack[stackPos];
-        stack[stackPos] = undefined;
-      }
+      popData = stack[len - 1];
+      stack[len - 1] = undefined;
+      stackPos = stackPosFromLen(len - 1);
     }
     return popData;
   }
@@ -1255,12 +1248,11 @@
   var btnEnqueue = document.getElementById("btnEnqueue");
   var btnDequeue = document.getElementById("btnDequeue");
   var btnQueueReset = document.getElementById("btnQueueReset");
+  var btnQueueClear = document.getElementById("btnQueueClear");
   var queueValues = document.getElementById("queueValues");
   var queuePosRow = document.getElementById("queuePosRow");
   var dispDePos = document.getElementById("dispDePos");
   var dispEnPos = document.getElementById("dispEnPos");
-  var dispEnqOk = document.getElementById("dispEnqOk");
-  var dispDeqVal = document.getElementById("dispDeqVal");
   var queueMsg = document.getElementById("queueMsg");
   var logQueueEl = document.getElementById("logQueue");
   var queueLines = [];
@@ -1338,7 +1330,6 @@
       return;
     }
     var ok = enqueue(n);
-    dispEnqOk.textContent = ok ? "true" : "false";
     if (ok) {
       setQueueMsg("enqueue(" + n + ") 戻り値: true（格納しました）", "ok");
       logQueue("enqueue(" + n + ") 戻り値: true  dePos=" + dePos + " enPos=" + enPos);
@@ -1346,15 +1337,12 @@
       setQueueMsg("enqueue(" + n + ") 戻り値: false（これ以上格納できません）", "warn");
       logQueue("enqueue(" + n + ") 戻り値: false");
     }
-    dispDeqVal.textContent = "—";
     renderQueue();
   }
 
   function doDequeue() {
     var v = dequeue();
     var shown = v === undefined ? "未定義" : String(v);
-    dispDeqVal.textContent = shown;
-    dispEnqOk.textContent = "—";
     setQueueMsg("dequeue() 戻り値: " + shown, v === undefined ? "warn" : "ok");
     logQueue("dequeue() 戻り値: " + shown + "  dePos=" + dePos + " enPos=" + enPos);
     renderQueue();
@@ -1364,16 +1352,24 @@
     enPos = 5;
     dePos = 3;
     queue = [undefined, undefined, 3, 4, undefined, undefined];
-    dispEnqOk.textContent = "—";
-    dispDeqVal.textContent = "—";
     setQueueMsg("初期状態に戻しました。", "ok");
     logQueue("--- リセット ---");
+    renderQueue();
+  }
+
+  function clearQueue() {
+    enPos = 1;
+    dePos = 1;
+    queue = [undefined, undefined, undefined, undefined, undefined, undefined];
+    setQueueMsg("すべて未定義にしました。", "ok");
+    logQueue("--- すべて未定義 ---");
     renderQueue();
   }
 
   btnEnqueue.addEventListener("click", doEnqueue);
   btnDequeue.addEventListener("click", doDequeue);
   btnQueueReset.addEventListener("click", resetQueue);
+  btnQueueClear.addEventListener("click", clearQueue);
   enqueueInput.addEventListener("keydown", function (e) {
     if (e.key === "Enter") doEnqueue();
   });
