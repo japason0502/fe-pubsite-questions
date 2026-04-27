@@ -239,6 +239,20 @@
       color: var(--accent);
       font-weight: 700;
     }
+    table.stack td.cell.ring-used {
+      background: rgba(61, 90, 128, 0.08);
+      box-shadow: inset 0 0 0 2px rgba(61, 90, 128, 0.25);
+    }
+    table.stack td.cell.ring-free {
+      background: repeating-linear-gradient(
+        -45deg,
+        #f0f2f7,
+        #f0f2f7 6px,
+        #e4e8f0 6px,
+        #e4e8f0 12px
+      );
+      color: var(--muted);
+    }
     .state-row {
       display: flex;
       flex-wrap: wrap;
@@ -554,7 +568,8 @@
     <div class="tabs" role="tablist" aria-label="モード切替">
       <button type="button" role="tab" id="tabStack" aria-selected="true" aria-controls="panel-stack">スタック</button>
       <button type="button" role="tab" id="tabQueue" aria-selected="false" aria-controls="panel-queue">キュー</button>
-        <button type="button" role="tab" id="tabList" aria-selected="false" aria-controls="panel-list">単方向リスト</button>
+      <button type="button" role="tab" id="tabRingQueue" aria-selected="false" aria-controls="panel-ring-queue">循環キュー</button>
+      <button type="button" role="tab" id="tabList" aria-selected="false" aria-controls="panel-list">単方向リスト</button>
       <button type="button" role="tab" id="tabArrayLl" aria-selected="false" aria-controls="panel-array-ll">配列</button>
     </div>
 
@@ -638,6 +653,34 @@
     <!-- キュー（問題71 普通のキュー・教材と同じ初期状態） -->
     <section id="panel-queue" role="tabpanel" aria-labelledby="tabQueue" hidden>
 
+      <div class="panel">
+        <h2>現在の状態</h2>
+        <div class="stack-wrap">
+          <table class="stack">
+            <thead>
+              <tr>
+                <th scope="col">1</th>
+                <th scope="col">2</th>
+                <th scope="col">3</th>
+                <th scope="col">4</th>
+                <th scope="col">5</th>
+                <th scope="col">6</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="queueValues"></tr>
+              <tr class="pos-row" id="queuePosRow"></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="state-row">
+          <span>dePos= <code id="dispDePos">3</code></span>
+          <span>enPos= <code id="dispEnPos">5</code></span>
+          <span>enqueue 成否= <code id="dispEnqOk">—</code></span>
+          <span>dequeue 戻り値= <code id="dispDeqVal">—</code></span>
+        </div>
+      </div>
+
       <div class="panel panel--ops">
         <h2>操作</h2>
         <div class="controls">
@@ -655,36 +698,10 @@
       </div>
 
       <div class="panel">
-        <h2>現在の状態</h2>
-        <div class="stack-wrap">
-          <table class="stack">
-            <thead>
-              <tr>
-                <th scope="col">1</th>
-                <th scope="col">2</th>
-                <th scope="col">3</th>
-                <th scope="col">4</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr id="queueValues"></tr>
-              <tr class="pos-row" id="queuePosRow"></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="state-row">
-          <span>dePos= <code id="dispDePos">1</code></span>
-          <span>enPos= <code id="dispEnPos">3</code></span>
-          <span>enqueue 成否= <code id="dispEnqOk">—</code></span>
-          <span>dequeue 戻り値= <code id="dispDeqVal">—</code></span>
-        </div>
-      </div>
-
-      <div class="panel">
         <h2>教材の疑似プログラム（参照）</h2>
-        <pre class="pseudo">大域：整数型：enPos ← 3
-大域：整数型：dePos ← 1
-大域：整数型の配列：queue ← {4, 3, 未定義の値, 未定義の値}
+        <pre class="pseudo">大域：整数型：enPos ← 5
+大域：整数型：dePos ← 3
+大域：整数型の配列：queue ← {未定義の値, 未定義の値, 3, 4, 未定義の値, 未定義の値}
 
 ○ 論理型：enqueue(整数型：inputData)
     if (enPos ≤ queue の要素数)
@@ -708,6 +725,94 @@
       <div class="panel">
         <h2>ログ</h2>
         <pre class="log" id="logQueue"></pre>
+      </div>
+    </section>
+
+    <!-- 循環キュー（リングバッファ） -->
+    <section id="panel-ring-queue" role="tabpanel" aria-labelledby="tabRingQueue" hidden>
+
+      <div class="panel">
+        <h2>現在の状態</h2>
+        <p class="lead" style="margin: 0 0 0.65rem; font-size: 0.82rem;">
+          <code>head</code> から <code>length</code> 個だけがキュー内の要素です。空き領域にも古い値が残ることがあります。
+        </p>
+        <div class="stack-wrap">
+          <table class="stack">
+            <thead>
+              <tr id="ringIndexHeader"></tr>
+            </thead>
+            <tbody>
+              <tr id="ringValues"></tr>
+              <tr class="pos-row" id="ringPosRow"></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="state-row">
+          <span>head= <code id="dispRingHead">5</code></span>
+          <span><span id="dispRingModeLabel">length</span>= <code id="dispRingModeValue">5</code></span>
+          <span>capacity= <code id="dispRingCapacity">8</code></span>
+          <span>enqueue 戻り値= <code id="dispRingEnqOk">—</code></span>
+          <span>dequeue 戻り値= <code id="dispRingDeqVal">—</code></span>
+        </div>
+        <div id="ringSeq" class="arr-seq" aria-live="polite" style="margin-top: 0.85rem;">—</div>
+      </div>
+
+      <div class="panel panel--ops">
+        <h2>操作</h2>
+        <div class="controls">
+          <label>
+            enqueue する値
+            <input type="text" id="ringEnqueueInput" value="q" maxlength="8" autocomplete="off" spellcheck="false" style="width: 6rem;">
+          </label>
+          <div class="btns">
+            <button type="button" class="primary" id="btnRingEnqueue">enqueue</button>
+            <button type="button" class="danger" id="btnRingDequeue">dequeue</button>
+            <button type="button" id="btnRingReset">初期状態に戻す</button>
+          </div>
+          <div class="inline-options" role="group" aria-label="使用する変数">
+            <span class="opt-title">使用する変数</span>
+            <label><input type="radio" name="ringPosMode" id="ringModeLength" value="length" checked> length</label>
+            <label><input type="radio" name="ringPosMode" id="ringModeEnPos" value="enPos"> enPos（次の enqueue 位置）</label>
+          </div>
+          <div class="inline-options" role="group" aria-label="配列の添字">
+            <span class="opt-title">配列の添字</span>
+            <label><input type="radio" name="ringIndexBase" id="ringIndexZero" value="0" checked> 0始まり</label>
+            <label><input type="radio" name="ringIndexBase" id="ringIndexOne" value="1"> 1始まり</label>
+          </div>
+        </div>
+        <p class="msg" id="ringMsg" aria-live="polite"></p>
+      </div>
+
+      <div class="panel">
+        <h2>教材の疑似プログラム（参照）</h2>
+        <pre class="pseudo" id="ringPseudo">大域：整数型の配列：data ← 要素数 capacity
+大域：整数型：head ← 5
+大域：整数型：length ← 5
+大域：整数型：capacity ← 8
+
+○ 論理型：enqueue(整数型：val)
+    if (length &lt; capacity)
+        整数型：i ← (head + length) mod capacity
+        data[i] ← val
+        length ← length + 1
+        return true
+    else
+        return false
+    endif
+
+○ 整数型：dequeue()
+    整数型：val ← 未定義の値
+    if (length &gt; 0)
+        val ← data[head]
+        head ← (head + 1) mod capacity
+        length ← length - 1
+    endif
+    return val</pre>
+      </div>
+
+      <div class="panel">
+        <h2>ログ</h2>
+        <pre class="log" id="logRingQueue"></pre>
       </div>
     </section>
 
@@ -898,26 +1003,31 @@
   /* ---------- タブ ---------- */
   var tabStack = document.getElementById("tabStack");
   var tabQueue = document.getElementById("tabQueue");
+  var tabRingQueue = document.getElementById("tabRingQueue");
   var tabList = document.getElementById("tabList");
   var tabArrayLl = document.getElementById("tabArrayLl");
   var panelStack = document.getElementById("panel-stack");
   var panelQueue = document.getElementById("panel-queue");
+  var panelRingQueue = document.getElementById("panel-ring-queue");
   var panelList = document.getElementById("panel-list");
   var panelArrayLl = document.getElementById("panel-array-ll");
 
   function activateTab(which) {
     tabStack.setAttribute("aria-selected", which === "stack" ? "true" : "false");
     tabQueue.setAttribute("aria-selected", which === "queue" ? "true" : "false");
+    tabRingQueue.setAttribute("aria-selected", which === "ringQueue" ? "true" : "false");
     tabList.setAttribute("aria-selected", which === "list" ? "true" : "false");
     tabArrayLl.setAttribute("aria-selected", which === "arrayLl" ? "true" : "false");
     panelStack.hidden = which !== "stack";
     panelQueue.hidden = which !== "queue";
+    panelRingQueue.hidden = which !== "ringQueue";
     panelList.hidden = which !== "list";
     panelArrayLl.hidden = which !== "arrayLl";
   }
 
   tabStack.addEventListener("click", function () { activateTab("stack"); });
   tabQueue.addEventListener("click", function () { activateTab("queue"); });
+  tabRingQueue.addEventListener("click", function () { activateTab("ringQueue"); });
   tabList.addEventListener("click", function () { activateTab("list"); });
   tabArrayLl.addEventListener("click", function () {
     activateTab("arrayLl");
@@ -1075,11 +1185,11 @@
     }
     var ok = push(n);
     if (ok) {
-      setStackMsg("push(" + n + ") → true（格納しました）", "ok");
-      logStack("push(" + n + ") → true  stackPos=" + stackPos);
+      setStackMsg("push(" + n + ") 戻り値: true（格納しました）", "ok");
+      logStack("push(" + n + ") 戻り値: true  stackPos=" + stackPos);
     } else {
-      setStackMsg("push(" + n + ") → false（これ以上格納できません）", "warn");
-      logStack("push(" + n + ") → false");
+      setStackMsg("push(" + n + ") 戻り値: false（これ以上格納できません）", "warn");
+      logStack("push(" + n + ") 戻り値: false");
     }
     renderStack();
   }
@@ -1087,8 +1197,8 @@
   function doPop() {
     var v = pop();
     var shown = v === undefined ? "未定義" : String(v);
-    setStackMsg("pop() → " + shown, v === undefined ? "warn" : "ok");
-    logStack("pop() → " + shown + "  stackPos=" + stackPos);
+    setStackMsg("pop() 戻り値: " + shown, v === undefined ? "warn" : "ok");
+    logStack("pop() 戻り値: " + shown + "  stackPos=" + stackPos);
     renderStack();
   }
 
@@ -1136,10 +1246,10 @@
   logStack("起動：初期 stackPos=" + stackPos + "、stack=[4,3,（未定義）,（未定義）]");
 
   /* ---------- キュー（教材・問題71 と同じ初期状態） ---------- */
-  var QUEUE_LEN = 4;
-  var enPos = 3;
-  var dePos = 1;
-  var queue = [4, 3, undefined, undefined];
+  var QUEUE_LEN = 6;
+  var enPos = 5;
+  var dePos = 3;
+  var queue = [undefined, undefined, 3, 4, undefined, undefined];
 
   var enqueueInput = document.getElementById("enqueueInput");
   var btnEnqueue = document.getElementById("btnEnqueue");
@@ -1230,11 +1340,11 @@
     var ok = enqueue(n);
     dispEnqOk.textContent = ok ? "true" : "false";
     if (ok) {
-      setQueueMsg("enqueue(" + n + ") → true（格納しました）", "ok");
-      logQueue("enqueue(" + n + ") → true  dePos=" + dePos + " enPos=" + enPos);
+      setQueueMsg("enqueue(" + n + ") 戻り値: true（格納しました）", "ok");
+      logQueue("enqueue(" + n + ") 戻り値: true  dePos=" + dePos + " enPos=" + enPos);
     } else {
-      setQueueMsg("enqueue(" + n + ") → false（これ以上格納できません）", "warn");
-      logQueue("enqueue(" + n + ") → false");
+      setQueueMsg("enqueue(" + n + ") 戻り値: false（これ以上格納できません）", "warn");
+      logQueue("enqueue(" + n + ") 戻り値: false");
     }
     dispDeqVal.textContent = "—";
     renderQueue();
@@ -1245,15 +1355,15 @@
     var shown = v === undefined ? "未定義" : String(v);
     dispDeqVal.textContent = shown;
     dispEnqOk.textContent = "—";
-    setQueueMsg("dequeue() → " + shown, v === undefined ? "warn" : "ok");
-    logQueue("dequeue() → " + shown + "  dePos=" + dePos + " enPos=" + enPos);
+    setQueueMsg("dequeue() 戻り値: " + shown, v === undefined ? "warn" : "ok");
+    logQueue("dequeue() 戻り値: " + shown + "  dePos=" + dePos + " enPos=" + enPos);
     renderQueue();
   }
 
   function resetQueue() {
-    enPos = 3;
-    dePos = 1;
-    queue = [4, 3, undefined, undefined];
+    enPos = 5;
+    dePos = 3;
+    queue = [undefined, undefined, 3, 4, undefined, undefined];
     dispEnqOk.textContent = "—";
     dispDeqVal.textContent = "—";
     setQueueMsg("初期状態に戻しました。", "ok");
@@ -1269,7 +1379,283 @@
   });
 
   renderQueue();
-  logQueue("起動：初期 dePos=1、enPos=3、queue=[4,3,（未定義）,（未定義）]");
+  logQueue("起動：初期 dePos=3、enPos=5、queue=[（未定義）,（未定義）,3,4,（未定義）,（未定義）]");
+
+  /* ---------- 循環キュー（リングバッファ） ---------- */
+  var RING_CAPACITY = 8;
+  var ringMode = "length";
+  var ringIndexBase = 0;
+  var ringHead = 5;
+  var ringLength = 5;
+  var ringEnPos = 2;
+  var ringData = ["d", "e", "x", "y", "z", "a", "b", "c"];
+
+  var ringEnqueueInput = document.getElementById("ringEnqueueInput");
+  var btnRingEnqueue = document.getElementById("btnRingEnqueue");
+  var btnRingDequeue = document.getElementById("btnRingDequeue");
+  var btnRingReset = document.getElementById("btnRingReset");
+  var ringIndexHeader = document.getElementById("ringIndexHeader");
+  var ringValues = document.getElementById("ringValues");
+  var ringPosRow = document.getElementById("ringPosRow");
+  var dispRingHead = document.getElementById("dispRingHead");
+  var dispRingModeLabel = document.getElementById("dispRingModeLabel");
+  var dispRingModeValue = document.getElementById("dispRingModeValue");
+  var dispRingCapacity = document.getElementById("dispRingCapacity");
+  var dispRingEnqOk = document.getElementById("dispRingEnqOk");
+  var dispRingDeqVal = document.getElementById("dispRingDeqVal");
+  var ringPseudo = document.getElementById("ringPseudo");
+  var ringModeLength = document.getElementById("ringModeLength");
+  var ringModeEnPos = document.getElementById("ringModeEnPos");
+  var ringIndexZero = document.getElementById("ringIndexZero");
+  var ringIndexOne = document.getElementById("ringIndexOne");
+  var ringMsg = document.getElementById("ringMsg");
+  var ringSeq = document.getElementById("ringSeq");
+  var logRingQueueEl = document.getElementById("logRingQueue");
+  var ringLines = [];
+  var ringPseudoLength = "大域：整数型の配列：data ← 要素数 capacity\n"
+    + "大域：整数型：head ← 5\n"
+    + "大域：整数型：length ← 5\n"
+    + "大域：整数型：capacity ← 8\n\n"
+    + "○ 論理型：enqueue(整数型：val)\n"
+    + "    if (length < capacity)\n"
+    + "        整数型：i ← (head + length) mod capacity\n"
+    + "        data[i] ← val\n"
+    + "        length ← length + 1\n"
+    + "        return true\n"
+    + "    else\n"
+    + "        return false\n"
+    + "    endif\n\n"
+    + "○ 整数型：dequeue()\n"
+    + "    整数型：val ← 未定義の値\n"
+    + "    if (length > 0)\n"
+    + "        val ← data[head]\n"
+    + "        head ← (head + 1) mod capacity\n"
+    + "        length ← length - 1\n"
+    + "    endif\n"
+    + "    return val";
+  var ringPseudoEnPos = "大域：整数型の配列：data ← 要素数 capacity\n"
+    + "大域：整数型：head ← 5\n"
+    + "大域：整数型：enPos ← 2   ※ 次に enqueue する位置\n"
+    + "大域：整数型：capacity ← 8\n\n"
+    + "○ 論理型：enqueue(整数型：val)\n"
+    + "    if ((enPos + 1) mod capacity ≠ head)\n"
+    + "        data[enPos] ← val\n"
+    + "        enPos ← (enPos + 1) mod capacity\n"
+    + "        return true\n"
+    + "    else\n"
+    + "        return false\n"
+    + "    endif\n\n"
+    + "○ 整数型：dequeue()\n"
+    + "    整数型：val ← 未定義の値\n"
+    + "    if (head ≠ enPos)\n"
+    + "        val ← data[head]\n"
+    + "        head ← (head + 1) mod capacity\n"
+    + "    endif\n"
+    + "    return val";
+
+  function logRingQueue(text) {
+    var t = new Date().toLocaleTimeString("ja-JP", { hour12: false });
+    ringLines.push("[" + t + "] " + text);
+    if (ringLines.length > 80) ringLines.shift();
+    logRingQueueEl.textContent = ringLines.join("\n");
+  }
+
+  function setRingMsg(text, kind) {
+    ringMsg.textContent = text;
+    ringMsg.className = "msg" + (kind ? " " + kind : "");
+  }
+
+  function ringCount() {
+    if (ringMode === "length") return ringLength;
+    return (ringEnPos - ringHead + RING_CAPACITY) % RING_CAPACITY;
+  }
+
+  function ringDispIndex(idx) {
+    return ringIndexBase === 0 ? idx : idx + 1;
+  }
+
+  function ringEnqIndex() {
+    if (ringMode === "length") return (ringHead + ringLength) % RING_CAPACITY;
+    return ringEnPos;
+  }
+
+  function ringContainsIndex(idx) {
+    var count = ringCount();
+    var k;
+    for (k = 0; k < count; k++) {
+      if ((ringHead + k) % RING_CAPACITY === idx) return true;
+    }
+    return false;
+  }
+
+  function ringSequence() {
+    var count = ringCount();
+    var seq = [];
+    var k;
+    for (k = 0; k < count; k++) {
+      var idx = (ringHead + k) % RING_CAPACITY;
+      seq.push({ idx: idx, value: ringData[idx] });
+    }
+    return seq;
+  }
+
+  function renderRingQueue() {
+    ringIndexHeader.innerHTML = "";
+    var h;
+    for (h = 0; h < RING_CAPACITY; h++) {
+      var th = document.createElement("th");
+      th.scope = "col";
+      th.textContent = String(ringDispIndex(h));
+      ringIndexHeader.appendChild(th);
+    }
+
+    ringValues.innerHTML = "";
+    ringPosRow.innerHTML = "";
+    var enqIdx = ringEnqIndex();
+    var count = ringCount();
+    var i;
+    for (i = 0; i < RING_CAPACITY; i++) {
+      var td = document.createElement("td");
+      td.className = "cell " + (ringContainsIndex(i) ? "ring-used" : "ring-free");
+      if (ringLength > 0 && i === ringHead) td.classList.add("ring-head");
+      if (ringLength < RING_CAPACITY && i === enqIdx) td.classList.add("ring-enq");
+      td.textContent = String(ringData[i]);
+      ringValues.appendChild(td);
+    }
+    for (i = 0; i < RING_CAPACITY; i++) {
+      var tdP = document.createElement("td");
+      var parts = [];
+      if (i === ringHead) parts.push("<strong>↑ head</strong>");
+      if (ringMode === "enPos" && i === enqIdx) parts.push("<strong>↑enPos</strong>");
+      tdP.innerHTML = parts.join("<br>") || "";
+      ringPosRow.appendChild(tdP);
+    }
+
+    dispRingModeLabel.textContent = ringMode === "length" ? "length" : "enPos";
+    dispRingHead.textContent = String(ringDispIndex(ringHead));
+    dispRingModeValue.textContent = ringMode === "length" ? String(ringLength) : String(ringDispIndex(ringEnPos));
+    dispRingCapacity.textContent = String(RING_CAPACITY);
+    ringPseudo.textContent = ringMode === "length" ? ringPseudoLength : ringPseudoEnPos;
+
+    var seq = ringSequence();
+    if (seq.length === 0) {
+      ringSeq.textContent = "キューは空です。";
+      return;
+    }
+    ringSeq.textContent = "キュー内の順："
+      + seq.map(function (item) { return item.value + "（添字 " + ringDispIndex(item.idx) + "）"; }).join(" → ");
+  }
+
+  function ringEnqueue(val) {
+    if (ringMode === "length" && ringLength < RING_CAPACITY) {
+      var i = ringEnqIndex();
+      ringData[i] = val;
+      ringLength = ringLength + 1;
+      return { ok: true, index: i };
+    }
+    if (ringMode === "enPos" && ((ringEnPos + 1) % RING_CAPACITY) !== ringHead) {
+      var j = ringEnqIndex();
+      ringData[j] = val;
+      ringEnPos = (ringEnPos + 1) % RING_CAPACITY;
+      return { ok: true, index: j };
+    }
+    return { ok: false, index: null };
+  }
+
+  function ringDequeue() {
+    var val = undefined;
+    var from = ringHead;
+    if ((ringMode === "length" && ringLength > 0) || (ringMode === "enPos" && ringHead !== ringEnPos)) {
+      val = ringData[ringHead];
+      ringHead = (ringHead + 1) % RING_CAPACITY;
+      if (ringMode === "length") ringLength = ringLength - 1;
+    }
+    return { value: val, index: from };
+  }
+
+  function doRingEnqueue() {
+    var val = (ringEnqueueInput.value || "").trim();
+    if (!val) {
+      setRingMsg("enqueue する値を入力してください。", "warn");
+      return;
+    }
+    var r = ringEnqueue(val);
+    dispRingEnqOk.textContent = r.ok ? "true" : "false";
+    dispRingDeqVal.textContent = "—";
+    if (r.ok) {
+      setRingMsg("enqueue(" + val + ") 戻り値: true（添字 " + ringDispIndex(r.index) + " に格納しました）", "ok");
+      logRingQueue("enqueue(" + val + ") 戻り値: true  i=" + ringDispIndex(r.index) + " head=" + ringDispIndex(ringHead) + " length=" + ringCount());
+    } else {
+      setRingMsg("enqueue(" + val + ") 戻り値: false（満杯です）", "warn");
+      logRingQueue("enqueue(" + val + ") 戻り値: false");
+    }
+    renderRingQueue();
+  }
+
+  function doRingDequeue() {
+    var r = ringDequeue();
+    var shown = r.value === undefined ? "未定義" : String(r.value);
+    dispRingDeqVal.textContent = shown;
+    dispRingEnqOk.textContent = "—";
+    setRingMsg("dequeue() 戻り値: " + shown, r.value === undefined ? "warn" : "ok");
+    logRingQueue("dequeue() 戻り値: " + shown + "  oldHead=" + ringDispIndex(r.index) + " head=" + ringDispIndex(ringHead) + " length=" + ringCount());
+    renderRingQueue();
+  }
+
+  function resetRingQueue() {
+    ringMode = "length";
+    ringHead = 5;
+    ringLength = 5;
+    ringEnPos = 2;
+    ringData = ["d", "e", "x", "y", "z", "a", "b", "c"];
+    ringModeLength.checked = true;
+    ringModeEnPos.checked = false;
+    dispRingEnqOk.textContent = "—";
+    dispRingDeqVal.textContent = "—";
+    setRingMsg("初期状態に戻しました。", "ok");
+    logRingQueue("--- リセット ---");
+    renderRingQueue();
+  }
+
+  btnRingEnqueue.addEventListener("click", doRingEnqueue);
+  btnRingDequeue.addEventListener("click", doRingDequeue);
+  btnRingReset.addEventListener("click", resetRingQueue);
+  ringModeLength.addEventListener("change", function () {
+    if (!ringModeLength.checked) return;
+    ringMode = "length";
+    ringLength = (ringEnPos - ringHead + RING_CAPACITY) % RING_CAPACITY;
+    setRingMsg("使用変数を length に切り替えました。", "ok");
+    logRingQueue("モード切替：length");
+    renderRingQueue();
+  });
+  ringModeEnPos.addEventListener("change", function () {
+    if (!ringModeEnPos.checked) return;
+    ringMode = "enPos";
+    ringEnPos = (ringHead + ringLength) % RING_CAPACITY;
+    setRingMsg("使用変数を enPos（次の enqueue 位置）に切り替えました。", "ok");
+    logRingQueue("モード切替：enPos");
+    renderRingQueue();
+  });
+  ringIndexZero.addEventListener("change", function () {
+    if (!ringIndexZero.checked) return;
+    ringIndexBase = 0;
+    setRingMsg("配列の添字を 0 始まり表示に切り替えました。", "ok");
+    logRingQueue("表示切替：添字 0 始まり");
+    renderRingQueue();
+  });
+  ringIndexOne.addEventListener("change", function () {
+    if (!ringIndexOne.checked) return;
+    ringIndexBase = 1;
+    setRingMsg("配列の添字を 1 始まり表示に切り替えました。", "ok");
+    logRingQueue("表示切替：添字 1 始まり");
+    renderRingQueue();
+  });
+  ringEnqueueInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") doRingEnqueue();
+  });
+
+  renderRingQueue();
+  logRingQueue("起動：初期 head=5、length=5、data=[d,e,x,y,z,a,b,c]");
 
   /* ---------- 単方向リスト ---------- */
   var DEFAULT_LIST_STR = "A,B,C,D";
