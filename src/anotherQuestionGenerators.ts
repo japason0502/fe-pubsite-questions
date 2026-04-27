@@ -16,6 +16,7 @@ const CHOICE_IDS = ["a", "b", "c", "d", "e", "f", "g"];
 let lastQ58Mode: 0 | 1 | null = null;
 let lastQ60Mode: 0 | 1 | 2 | null = null;
 let lastQ61Mode: 0 | 1 | null = null;
+let lastQ70Mode: 0 | 1 | null = null;
 
 function randomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -668,7 +669,13 @@ function generateQ61(_baseQuestion: Question): GeneratedQuestionPatch {
 
 /** 値を変えてもう一度: 初期 stack / stackPos をランダム化。正解は a=stackPos+1, b=未定義の値(後ろの方) */
 function generateQ70(_baseQuestion: Question): GeneratedQuestionPatch {
-  const stackPos = randomInt(1, 5);
+  let mode = randomInt(0, 1) as 0 | 1; // 0: 既存（代入穴埋め）, 1: if 条件穴埋め
+  if (lastQ70Mode !== null && mode === lastQ70Mode) {
+    mode = (1 - mode) as 0 | 1;
+  }
+  lastQ70Mode = mode;
+
+  const stackPos = randomInt(2, 4);
   const vals = Array.from({ length: Math.max(0, stackPos - 1) }, () => randomInt(1, 9));
   const stackLiteralParts: string[] = [];
   for (let j = 1; j <= 4; j += 1) {
@@ -718,6 +725,63 @@ function generateQ70(_baseQuestion: Question): GeneratedQuestionPatch {
       text: "注記　網掛けはその要素が未定義であることを示す。"
     }
   ];
+
+  if (mode === 1) {
+    const globals: string[] = [
+      `大域：整数型：stackPos ← ${stackPos}`,
+      `大域：整数型の配列：stack ← {${stackLiteralParts.join(", ")}}`
+    ];
+    const pseudoCode = [
+      ...globals,
+      "",
+      "○ 論理型：push(整数型：inputData)",
+      "    if (【 a 】)",
+      "        stack[stackPos] ← inputData",
+      "        stackPos ← stackPos + 1",
+      "        return true",
+      "    else",
+      "        return false",
+      "    endif",
+      "",
+      "○ 整数型：pop()",
+      "    整数型：popData ← 未定義の値",
+      "    if (【 b 】)",
+      "        stackPos ← stackPos − 1",
+      "        popData ← stack[stackPos]",
+      "        stack[stackPos] ← 未定義の値",
+      "    endif",
+      "    return popData"
+    ];
+
+    const combos = shuffle([
+      { a: "stackPos ≤ stack の要素数", b: "stackPos > 1", correct: true as boolean },
+      { a: "stackPos < stack の要素数", b: "stackPos > 1", correct: false },
+      { a: "stackPos ≤ stack の要素数", b: "stackPos ≥ 1", correct: false },
+      { a: "stackPos < stack の要素数", b: "stackPos ≥ 1", correct: false }
+    ]);
+    const choices: Choice[] = combos.map((c, index) => ({
+      id: CHOICE_IDS[index] ?? "a",
+      text: `a=${c.a}, b=${c.b}`
+    }));
+    const correctChoiceId = CHOICE_IDS[combos.findIndex((c) => c.correct)] ?? "a";
+
+    return {
+      bodyBlocks,
+      pseudoCode,
+      choices,
+      correctChoiceId,
+      choiceTable: {
+        headers: ["a", "b"],
+        rows: combos.map((c) => [c.a, c.b])
+      },
+      anotherTraceLines: [
+        `初期: stackPos ← ${stackPos}`,
+        `stack ← {${stackLiteralParts.join(", ")}}`,
+        "パターン: if条件穴埋め",
+        "正解: a は stackPos ≤ stack の要素数, b は stackPos > 1"
+      ]
+    };
+  }
 
   /** 常に push→pop の順。
    * pushPattern 0:【a】は添字 stack【 a 】 / pushPattern 1:【a】は stackPos ← 【 a 】（正解 a=stackPos + 1）
