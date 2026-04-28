@@ -879,6 +879,62 @@ function generateQ70(_baseQuestion: Question): GeneratedQuestionPatch {
   };
 }
 
+/** q71「値を変えてもう一度」: 図・初期値はベースのまま。a は tail/head、b は 等しい/等しくない（4択）。 */
+function generateQ71(_baseQuestion: Question): GeneratedQuestionPatch {
+  const globals: string[] = [
+    "大域：整数型：tail ← 5",
+    "大域：整数型：head ← 3",
+    "大域：整数型の配列：queue ← {未定義の値, 未定義の値, 3, 4, 未定義の値, 未定義の値}"
+  ];
+
+  const pseudoCode = [
+    ...globals,
+    "",
+    "○ 論理型：enqueue(整数型：inputData)",
+    "    if (【 a 】 > queue の要素数)",
+    "        return false",
+    "    else",
+    "        queue[tail] ← inputData",
+    "        tail ← tail + 1",
+    "        return true",
+    "    endif",
+    "",
+    "○ 整数型：dequeue()",
+    "    整数型：deqData ← 未定義の値",
+    "    if (head と tail が【 b 】)",
+    "",
+    "    else",
+    "        deqData ← queue[head]",
+    "        queue[head] ← 未定義の値",
+    "        head ← head + 1",
+    "    endif",
+    "    return deqData"
+  ];
+
+  const combos = [
+    { a: "tail", b: "等しい" },
+    { a: "tail", b: "等しくない" },
+    { a: "head", b: "等しい" },
+    { a: "head", b: "等しくない" }
+  ];
+  const choices: Choice[] = combos.map((c, index) => ({
+    id: CHOICE_IDS[index] ?? "a",
+    text: `a=${c.a}, b=${c.b}`
+  }));
+  const correctChoiceId = "a";
+
+  return {
+    pseudoCode,
+    choices,
+    correctChoiceId,
+    choiceTable: {
+      headers: ["a", "b"],
+      rows: combos.map((c) => [c.a, c.b])
+    },
+    anotherTraceLines: ["正解: a は tail、b は 等しい（空キューのとき）"]
+  };
+}
+
 const anotherQuestionGenerators: Record<string, AnotherQuestionGenerator> = {
   q23: generateQ23,
   q33: generateQ33,
@@ -889,7 +945,8 @@ const anotherQuestionGenerators: Record<string, AnotherQuestionGenerator> = {
   q58: generateQ58,
   q60: generateQ60,
   q61: generateQ61,
-  q70: generateQ70
+  q70: generateQ70,
+  q71: generateQ71
 };
 
 export function generateAnotherQuestion(baseQuestion: Question): GeneratedQuestionPatch | null {

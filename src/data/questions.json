@@ -3492,12 +3492,12 @@
   {
     "id": "q71",
     "number": 71,
-    "title": "キュー(非オブジェクト指向)",
+    "title": "キュー",
     "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyBlocks": [
       {
         "type": "text",
-        "text": "関数 enqueue は，引数で与えられた整数をキューに格納する。格納できる場合は true を返し，格納できなかった場合は false を返す。関数 dequeue は，キューから値を取り出して返す。キューが空のときは未定義の値を返す。キューを，要素数が 6 である大域の整数型の配列 queue，及び次に値を格納する位置を示す大域の変数 enPos 及び次に値を取り出す位置を示す大域の変数 dePos で表現する。キューの初期状態を図に示す。プログラムでは，配列の領域外を参照してはならないものとする。"
+        "text": "関数 enqueue は，引数で与えられた整数をキューに格納する。格納できる場合は true を返し，格納できなかった場合は false を返す。関数 dequeue は，キューから値を取り出して返す。キューが空のときは未定義の値を返す。キューを，要素数が 6 である大域の整数型の配列 queue，及び次に値を格納する位置を示す大域の変数 tail 及び次に値を取り出す位置を示す大域の変数 head で表現する。キューの初期状態を図に示す。プログラムでは，配列の領域外を参照してはならないものとする。"
       },
       {
         "type": "table",
@@ -3514,7 +3514,7 @@
             { "text": "", "shaded": true },
             { "text": "", "shaded": true }
           ],
-          ["", "", "", { "text": "↑\ndePos", "align": "center" }, "", { "text": "↑\nenPos", "align": "center" }, ""]
+          ["", "", "", { "text": "↑\nhead", "align": "center" }, "", { "text": "↑\ntail", "align": "center" }, ""]
         ]
       },
       {
@@ -3523,41 +3523,42 @@
       }
     ],
     "pseudoCode": [
-      "大域：整数型：enPos ← 5",
-      "大域：整数型：dePos ← 3",
+      "大域：整数型：tail ← 5",
+      "大域：整数型：head ← 3",
       "大域：整数型の配列：queue ← {未定義の値, 未定義の値, 3, 4, 未定義の値, 未定義の値}",
       "",
       "○ 論理型：enqueue(整数型：inputData)",
-      "    if (enPos ≤ queue の要素数)",
-      "        queue[ 【 a 】 ] ← inputData",
-      "        enPos ← enPos + 1",
-      "        return true",
-      "    else",
+      "    if (tail > queue の要素数)",
       "        return false",
+      "    else",
+      "        queue[ 【 a 】 ] ← inputData",
+      "        tail ← tail + 1",
+      "        return true",
       "    endif",
       "",
       "○ 整数型：dequeue()",
       "    整数型：deqData ← 未定義の値",
-      "    if (dePos < enPos)",
-      "        deqData ← queue[dePos]",
-      "        queue[dePos] ← 未定義の値",
-      "        dePos ← 【 b 】",
+      "    if (head = tail)",
+      "    else",
+      "        deqData ← queue[head]",
+      "        queue[head] ← 未定義の値",
+      "        head ← 【 b 】",
       "    endif",
       "    return deqData"
     ],
     "choices": [
-      { "id": "a", "text": "a=enPos, b=dePos + 1" },
-      { "id": "b", "text": "a=enPos, b=dePos − 1" },
-      { "id": "c", "text": "a=enPos − 1, b=dePos + 1" },
-      { "id": "d", "text": "a=enPos − 1, b=dePos − 1" }
+      { "id": "a", "text": "a=tail, b=head + 1" },
+      { "id": "b", "text": "a=tail, b=head − 1" },
+      { "id": "c", "text": "a=tail − 1, b=head + 1" },
+      { "id": "d", "text": "a=tail − 1, b=head − 1" }
     ],
     "choiceTable": {
       "headers": ["a", "b"],
       "rows": [
-        ["enPos", "dePos + 1"],
-        ["enPos", "dePos − 1"],
-        ["enPos − 1", "dePos + 1"],
-        ["enPos − 1", "dePos − 1"]
+        ["tail", "head + 1"],
+        ["tail", "head − 1"],
+        ["tail − 1", "head + 1"],
+        ["tail − 1", "head − 1"]
       ]
     },
     "videoUrl": "",
@@ -3565,6 +3566,6 @@
     "hitokoto": "",
     "hintVideoUrl": "",
     "lessonUrl": "",
-    "another": 0
+    "another": 1
   }
 ]
