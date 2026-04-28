@@ -750,11 +750,11 @@
         </div>
         <div class="state-row">
           <span>head= <code id="dispRingHead">5</code></span>
-          <span><span id="dispRingModeLabel">length</span>= <code id="dispRingModeValue">5</code></span>
-          <span>capacity= <code id="dispRingCapacity">8</code></span>
+          <span>length= <code id="dispRingModeValue">5</code></span>
           <span>enqueue 戻り値= <code id="dispRingEnqOk">—</code></span>
           <span>dequeue 戻り値= <code id="dispRingDeqVal">—</code></span>
         </div>
+        <div class="arr-head-readout" id="ringOneBasedCalc" aria-live="polite" style="margin-top: 0.55rem; display: none;"></div>
         <div id="ringSeq" class="arr-seq" aria-live="polite" style="margin-top: 0.85rem;">—</div>
       </div>
 
@@ -771,11 +771,6 @@
             <button type="button" id="btnRingReset">初期状態に戻す</button>
             <button type="button" id="btnRingClear">すべて未定義</button>
           </div>
-          <div class="inline-options" role="group" aria-label="使用する変数">
-            <span class="opt-title">使用する変数</span>
-            <label><input type="radio" name="ringPosMode" id="ringModeLength" value="length"> length</label>
-            <label><input type="radio" name="ringPosMode" id="ringModeEnPos" value="enPos" checked> tail（次の enqueue 位置）</label>
-          </div>
           <div class="inline-options" role="group" aria-label="配列の添字">
             <span class="opt-title">配列の添字</span>
             <label><input type="radio" name="ringIndexBase" id="ringIndexZero" value="0" checked> 0始まり</label>
@@ -787,15 +782,14 @@
 
       <div class="panel">
         <h2>教材の疑似プログラム（参照）</h2>
-        <pre class="pseudo" id="ringPseudo">大域：整数型の配列：data ← 要素数 capacity
+        <pre class="pseudo" id="ringPseudo">大域：整数型の配列：ringBuffer ← 要素数 8
 大域：整数型：head ← 5
 大域：整数型：length ← 5
-大域：整数型：capacity ← 8
 
 ○ 論理型：enqueue(整数型：val)
-    if (length &lt; capacity)
-        整数型：i ← (head + length) mod capacity
-        data[i] ← val
+    if (length &lt; ringBuffer の要素数)
+        整数型：i ← (head + length) mod ringBuffer の要素数
+        ringBuffer[i] ← val
         length ← length + 1
         return true
     else
@@ -805,8 +799,8 @@
 ○ 整数型：dequeue()
     整数型：val ← 未定義の値
     if (length &gt; 0)
-        val ← data[head]
-        head ← (head + 1) mod capacity
+        val ← ringBuffer[head]
+        head ← (head + 1) mod ringBuffer の要素数
         length ← length - 1
     endif
     return val</pre>
@@ -1382,11 +1376,9 @@
 
   /* ---------- 循環キュー（リングバッファ） ---------- */
   var RING_CAPACITY = 8;
-  var ringMode = "enPos";
   var ringIndexBase = 0;
   var ringHead = 5;
   var ringLength = 5;
-  var ringEnPos = 2;
   var ringData = ["d", "e", "x", "y", "z", "a", "b", "c"];
 
   var ringEnqueueInput = document.getElementById("ringEnqueueInput");
@@ -1398,28 +1390,25 @@
   var ringValues = document.getElementById("ringValues");
   var ringPosRow = document.getElementById("ringPosRow");
   var dispRingHead = document.getElementById("dispRingHead");
-  var dispRingModeLabel = document.getElementById("dispRingModeLabel");
   var dispRingModeValue = document.getElementById("dispRingModeValue");
-  var dispRingCapacity = document.getElementById("dispRingCapacity");
   var dispRingEnqOk = document.getElementById("dispRingEnqOk");
   var dispRingDeqVal = document.getElementById("dispRingDeqVal");
+  var ringOneBasedCalc = document.getElementById("ringOneBasedCalc");
   var ringPseudo = document.getElementById("ringPseudo");
-  var ringModeLength = document.getElementById("ringModeLength");
-  var ringModeEnPos = document.getElementById("ringModeEnPos");
   var ringIndexZero = document.getElementById("ringIndexZero");
   var ringIndexOne = document.getElementById("ringIndexOne");
   var ringMsg = document.getElementById("ringMsg");
   var ringSeq = document.getElementById("ringSeq");
   var logRingQueueEl = document.getElementById("logRingQueue");
   var ringLines = [];
-  var ringPseudoLength = "大域：整数型の配列：data ← 要素数 capacity\n"
+  var ringPseudoLength = "大域：整数型の配列：ringBuffer ← 要素数 8\n"
     + "大域：整数型：head ← 5\n"
     + "大域：整数型：length ← 5\n"
-    + "大域：整数型：capacity ← 8\n\n"
+    + "\n"
     + "○ 論理型：enqueue(整数型：val)\n"
-    + "    if (length < capacity)\n"
-    + "        整数型：i ← (head + length) mod capacity\n"
-    + "        data[i] ← val\n"
+    + "    if (length < ringBuffer の要素数)\n"
+    + "        整数型：i ← (head + length) mod ringBuffer の要素数\n"
+    + "        ringBuffer[i] ← val\n"
     + "        length ← length + 1\n"
     + "        return true\n"
     + "    else\n"
@@ -1428,28 +1417,30 @@
     + "○ 整数型：dequeue()\n"
     + "    整数型：val ← 未定義の値\n"
     + "    if (length > 0)\n"
-    + "        val ← data[head]\n"
-    + "        head ← (head + 1) mod capacity\n"
+    + "        val ← ringBuffer[head]\n"
+    + "        head ← (head + 1) mod ringBuffer の要素数\n"
     + "        length ← length - 1\n"
     + "    endif\n"
     + "    return val";
-  var ringPseudoEnPos = "大域：整数型の配列：data ← 要素数 capacity\n"
-    + "大域：整数型：head ← 5\n"
-    + "大域：整数型：tail ← 2   ※ 次に enqueue する位置\n"
-    + "大域：整数型：capacity ← 8\n\n"
+  var ringPseudoLengthOneBased = "大域：整数型の配列：ringBuffer ← 要素数 8\n"
+    + "大域：整数型：head ← 6\n"
+    + "大域：整数型：length ← 5\n"
+    + "\n"
     + "○ 論理型：enqueue(整数型：val)\n"
-    + "    if ((tail + 1) mod capacity ≠ head)\n"
-    + "        data[tail] ← val\n"
-    + "        tail ← (tail + 1) mod capacity\n"
+    + "    if (length < ringBuffer の要素数)\n"
+    + "        整数型：i ← ((head + length - 1) mod ringBuffer の要素数) + 1\n"
+    + "        ringBuffer[i] ← val\n"
+    + "        length ← length + 1\n"
     + "        return true\n"
     + "    else\n"
     + "        return false\n"
     + "    endif\n\n"
     + "○ 整数型：dequeue()\n"
     + "    整数型：val ← 未定義の値\n"
-    + "    if (head ≠ tail)\n"
-    + "        val ← data[head]\n"
-    + "        head ← (head + 1) mod capacity\n"
+    + "    if (length > 0)\n"
+    + "        val ← ringBuffer[head]\n"
+    + "        head ← (head mod ringBuffer の要素数) + 1\n"
+    + "        length ← length - 1\n"
     + "    endif\n"
     + "    return val";
 
@@ -1474,8 +1465,7 @@
   }
 
   function ringEnqIndex() {
-    if (ringMode === "length") return (ringHead + ringLength) % RING_CAPACITY;
-    return ringEnPos;
+    return (ringHead + ringLength) % RING_CAPACITY;
   }
 
   function ringContainsIndex(idx) {
@@ -1525,16 +1515,33 @@
       var tdP = document.createElement("td");
       var parts = [];
       if (i === ringHead) parts.push("<strong>↑ head</strong>");
-      if (ringMode === "enPos" && i === enqIdx) parts.push("<strong>↑tail</strong>");
       tdP.innerHTML = parts.join("<br>") || "";
       ringPosRow.appendChild(tdP);
     }
 
-    dispRingModeLabel.textContent = ringMode === "length" ? "length" : "tail";
     dispRingHead.textContent = String(ringDispIndex(ringHead));
-    dispRingModeValue.textContent = ringMode === "length" ? String(ringLength) : String(ringDispIndex(ringEnPos));
-    dispRingCapacity.textContent = String(RING_CAPACITY);
-    ringPseudo.textContent = ringMode === "length" ? ringPseudoLength : ringPseudoEnPos;
+    dispRingModeValue.textContent = String(ringLength);
+    ringPseudo.textContent = ringIndexBase === 1 ? ringPseudoLengthOneBased : ringPseudoLength;
+    if (ringOneBasedCalc) {
+      var len1 = ringCount();
+      var n1 = RING_CAPACITY;
+      ringOneBasedCalc.style.display = "block";
+      if (ringIndexBase === 1) {
+        var head1 = ringHead + 1;
+        var a1 = ((head1 + len1 - 1) % n1) + 1;
+        var b1 = (head1 % n1) + 1;
+        ringOneBasedCalc.style.display = "block";
+        ringOneBasedCalc.innerHTML =
+          "エンキュー先: <code>((head + length - 1) mod ringBuffer の要素数) + 1</code> = <code>" + a1 + "</code><br>" +
+          "デキューした場合のHeadの移動先: <code>(head mod ringBuffer の要素数) + 1</code> = <code>" + b1 + "</code>";
+      } else {
+        var a0 = (ringHead + len1) % n1;
+        var b0 = (ringHead + 1) % n1;
+        ringOneBasedCalc.innerHTML =
+          "エンキュー先: <code>(head + length) mod ringBuffer の要素数</code> = <code>" + a0 + "</code><br>" +
+          "デキューした場合のHeadの移動先: <code>(head + 1) mod ringBuffer の要素数</code> = <code>" + b0 + "</code>";
+      }
+    }
 
     var seq = ringSequence();
     if (seq.length === 0) {
@@ -1546,18 +1553,11 @@
   }
 
   function ringEnqueue(val) {
-    if (ringMode === "length" && ringLength < RING_CAPACITY) {
+    if (ringLength < RING_CAPACITY) {
       var i = ringEnqIndex();
       ringData[i] = val;
       ringLength = ringLength + 1;
       return { ok: true, index: i };
-    }
-    if (ringMode === "enPos" && ringLength < RING_CAPACITY) {
-      var j = ringEnqIndex();
-      ringData[j] = val;
-      ringEnPos = (ringEnPos + 1) % RING_CAPACITY;
-      ringLength = ringLength + 1;
-      return { ok: true, index: j };
     }
     return { ok: false, index: null };
   }
@@ -1604,13 +1604,12 @@
   }
 
   function resetRingQueue() {
-    ringMode = "enPos";
     ringHead = 5;
     ringLength = 5;
-    ringEnPos = 2;
     ringData = ["d", "e", "x", "y", "z", "a", "b", "c"];
-    ringModeLength.checked = false;
-    ringModeEnPos.checked = true;
+    ringIndexBase = 0;
+    ringIndexZero.checked = true;
+    ringIndexOne.checked = false;
     dispRingEnqOk.textContent = "—";
     dispRingDeqVal.textContent = "—";
     setRingMsg("初期状態に戻しました。", "ok");
@@ -1621,7 +1620,6 @@
   function clearRingQueue() {
     ringHead = 0;
     ringLength = 0;
-    ringEnPos = 0;
     ringData = ["", "", "", "", "", "", "", ""];
     dispRingEnqOk.textContent = "—";
     dispRingDeqVal.textContent = "—";
@@ -1634,21 +1632,6 @@
   btnRingDequeue.addEventListener("click", doRingDequeue);
   btnRingReset.addEventListener("click", resetRingQueue);
   btnRingClear.addEventListener("click", clearRingQueue);
-  ringModeLength.addEventListener("change", function () {
-    if (!ringModeLength.checked) return;
-    ringMode = "length";
-    setRingMsg("使用変数を length に切り替えました。", "ok");
-    logRingQueue("モード切替：length");
-    renderRingQueue();
-  });
-  ringModeEnPos.addEventListener("change", function () {
-    if (!ringModeEnPos.checked) return;
-    ringMode = "enPos";
-    ringEnPos = (ringHead + ringLength) % RING_CAPACITY;
-    setRingMsg("使用変数を tail（次の enqueue 位置）に切り替えました。", "ok");
-    logRingQueue("モード切替：tail");
-    renderRingQueue();
-  });
   ringIndexZero.addEventListener("change", function () {
     if (!ringIndexZero.checked) return;
     ringIndexBase = 0;
@@ -1667,6 +1650,10 @@
     if (e.key === "Enter") doRingEnqueue();
   });
 
+  // 起動時は必ず 0 始まり表示に固定
+  ringIndexBase = 0;
+  ringIndexZero.checked = true;
+  ringIndexOne.checked = false;
   renderRingQueue();
   logRingQueue("起動：初期 head=5、length=5、data=[d,e,x,y,z,a,b,c]");
 
