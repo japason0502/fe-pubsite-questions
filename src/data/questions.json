@@ -3407,11 +3407,11 @@
       { "id": "c", "text": "words.freq(s1 + s2) ÷ (words.freq(s1) − words.freqE(s1))" },
       { "id": "d", "text": "words.freq(s1 + s2) ÷ (words.freq(s2) − words.freqE(s2))" }
     ],
-    "videoUrl": "https://www.youtube.com/watch?v=SNIRvtXYYBs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=61&pp=iAQBsAQBsAgC",
+    "videoUrl": "",
     "correctChoiceId": "c",
     "hitokoto": "",
-    "hintVideoUrl": "https://www.youtube.com/watch?v=zVvceUsfPic&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=62&t=183s",
-    "lessonUrl": "https://www.youtube.com/watch?v=zVvceUsfPic&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=62&t=206s",
+    "hintVideoUrl": "",
+    "lessonUrl": "",
     "another": 0
   },
   {
@@ -3482,11 +3482,11 @@
         ["stackPos − 1", "stackPos − 1"]
       ]
     },
-    "videoUrl": "https://www.youtube.com/watch?v=v9O6OdA7WfE&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=63&t=1s",
+    "videoUrl": "https://www.youtube.com/watch?v=zVvceUsfPic&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=62&t=206s",
     "correctChoiceId": "b",
     "hitokoto": "",
-    "hintVideoUrl": "",
-    "lessonUrl": "https://www.youtube.com/watch?v=v9O6OdA7WfE&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=63&t=180s",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=zVvceUsfPic&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=62&t=183s",
+    "lessonUrl": "https://www.youtube.com/watch?v=SNIRvtXYYBs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=61&pp=iAQBsAQBsAgC",
     "another": 1
   },
   {
@@ -3561,11 +3561,11 @@
         ["tail − 1", "head − 1"]
       ]
     },
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=v9O6OdA7WfE&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=63&t=180s",
     "correctChoiceId": "a",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "lessonUrl": "",
+    "lessonUrl": "https://www.youtube.com/watch?v=v9O6OdA7WfE&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=63&t=1s",
     "another": 1
   }
 ]
