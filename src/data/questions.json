@@ -3567,5 +3567,122 @@
     "hintVideoUrl": "",
     "lessonUrl": "https://www.youtube.com/watch?v=v9O6OdA7WfE&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=63&t=1s",
     "another": 1
+  },
+  {
+    "id": "q84",
+    "number": 84,
+    "title": "ルートと平方根(令和4年度12月サンプル問題問5)",
+    "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "関数calcは，正の実数xとyを受け取り，√(x²+y²) の計算結果を返す。関数calcが使う関数powは，第1引数として正の実数aを，第2引数として実数bを受け取り，aのb乗の値を実数型で返す。"
+      }
+    ],
+    "pseudoCode": [
+      "○実数型：calc（実数型：x，実数型：y）",
+      "  return 【　　　】"
+    ],
+    "choices": [
+      { "id": "a", "text": "(pow(x，2) ＋ pow(y，2)) ÷ pow(2，0.5)" },
+      { "id": "b", "text": "(pow(x，2) ＋ pow(y，2)) ÷ pow(x，y)" },
+      { "id": "c", "text": "pow(2，pow(x，0.5)) ＋ pow(2，pow(y，0.5))" },
+      { "id": "d", "text": "pow(pow(pow(2，x)，y)，0.5)" },
+      { "id": "e", "text": "pow(pow(x，2) ＋ pow(y，2)，0.5)" },
+      { "id": "f", "text": "pow(x，2) × pow(y，2) ÷ pow(x，y)" },
+      { "id": "g", "text": "pow(x，y) ÷ pow(2，0.5)" }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=Wce9bbEuEMk&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=64&t=98s",
+    "correctChoiceId": "e",
+    "hitokoto": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=Wce9bbEuEMk&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=64&t=55s",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q85",
+    "number": 85,
+    "title": "素数(令和5年度サンプル問題問1)",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は1から始まる。",
+    "bodyText": "関数findPrimeNumbersは，引数で与えられた整数以下の，全ての素数だけを格納した配列を返す関数である。ここで，引数に与える整数は2以上である。",
+    "pseudoCode": [
+      "○整数型の配列：findPrimeNumbers（整数型：maxNum）",
+      "  整数型の配列：pnList ← {}  // 要素数0の配列",
+      "  整数型：i，j",
+      "  論理型：divideFlag",
+      "",
+      "  for（i を 2 から 【 a 】まで 1 ずつ増やす）",
+      "    divideFlag ← true",
+      "",
+      "    /* i の正の平方根の整数部分が 2 未満のときは，繰返し処理を実行しない */",
+      "    for（j を 2 から i の正の平方根の整数部分 まで 1 ずつ増やす）",
+      "      if（【 b 】）",
+      "        divideFlag ← false",
+      "        繰返し処理を終了する",
+      "      endif",
+      "    endfor",
+      "",
+      "    if（divideFlag が true と等しい）",
+      "      pnList の末尾 に i の値 を追加する",
+      "    endif",
+      "  endfor",
+      "",
+      "  return pnList"
+    ],
+    "choices": [
+      { "id": "a", "text": "a=maxNum, b=i ÷ j の余り が 0 と等しい" },
+      { "id": "b", "text": "a=maxNum, b=i ÷ j の商 が 1 と等しくない" },
+      { "id": "c", "text": "a=maxNum + 1, b=i ÷ j の余り が 0 と等しい" },
+      { "id": "d", "text": "a=maxNum + 1, b=i ÷ j の商 が 1 と等しくない" }
+    ],
+    "choiceTable": {
+      "headers": ["a", "b"],
+      "rows": [
+        ["maxNum", "i ÷ j の余り が 0 と等しい"],
+        ["maxNum", "i ÷ j の商 が 1 と等しくない"],
+        ["maxNum + 1", "i ÷ j の余り が 0 と等しい"],
+        ["maxNum + 1", "i ÷ j の商 が 1 と等しくない"]
+      ]
+    },
+    "videoUrl": "https://www.youtube.com/watch?v=7yV0bV2wHGs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=65&t=53s",
+    "correctChoiceId": "a",
+    "hitokoto": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=7yV0bV2wHGs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=65&t=8s",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q86",
+    "number": 86,
+    "title": "最大公約数(実行回数)",
+    "questionText": "次のプログラム中の【  】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyText": "次のプログラムは，2つの正の整数a，bを引数として受け取り，それらの最大公約数を求める関数funcである。関数func(128, 24)を実行したとき，//*** a *** の行の処理が実行される回数は【　】回である。",
+    "pseudoCode": [
+      "○ 整数型: func(整数型: a, 整数型: b)",
+      "  整数型: p ← a",
+      "  整数型: q ← b",
+      "  整数型: temp",
+      "",
+      "  while (q ≠ 0)",
+      "    temp ← p mod q    //*** a ***",
+      "    p ← q",
+      "    q ← temp",
+      "  endwhile",
+      "",
+      "  return p"
+    ],
+    "choices": [
+      { "id": "a", "text": "2" },
+      { "id": "b", "text": "3" },
+      { "id": "c", "text": "4" },
+      { "id": "d", "text": "5" },
+      { "id": "e", "text": "6" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "a",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "lessonUrl": "",
+    "another": 0
   }
 ]
