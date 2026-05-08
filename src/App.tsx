@@ -527,7 +527,7 @@ export default function App() {
   const handleGradeNow = () => {
     setGradeNowImageError(false);
     const q = currentQuestion;
-    const traceLines = q.id === "q23" ? q.anotherTraceLines : undefined;
+    const traceLines = q.anotherTraceLines?.length ? q.anotherTraceLines : undefined;
     const correctId = q.correctChoiceId;
     if (!correctId) {
       window.alert("この問題には正解が設定されていません。");

@@ -291,14 +291,14 @@ function generateQ37(baseQuestion: Question): GeneratedQuestionPatch {
   );
 
   return {
-    bodyText: "次の手続 sort は，大域の整数型の配列 data の，引数 first で与えられた要素番号から引数 last で与えられた要素番号までの要素を昇順に整列する。ここで，first < last とする。手続 sort を sort(1, 5) として呼び出すと，/*** a ***/ の行を最初に実行したときの出力は「【　】」となる。",
+    bodyText: "次の手続 sort は，大域の整数型の配列 data の，引数 first で与えられた要素番号から引数 last で与えられた要素番号までの要素を昇順に整列する。ここで，first < last とする。手続 sort を sort(1, 5) として呼び出すと，/*** α ***/ の行を最初に実行したときの出力は「【　】」となる。",
     pseudoCode,
     choices: baseQuestion.choices,
     correctChoiceId,
     anotherTraceLines: [
       `初期data = {${sourceData.join(", ")}}`,
       `while(true) の反復回数 = ${loopCount}`,
-      `/*** a ***/ 最初の出力 = ${answerText}`
+      `/*** α ***/ 最初の出力 = ${answerText}`
     ]
   };
 }
@@ -935,6 +935,37 @@ function generateQ71(_baseQuestion: Question): GeneratedQuestionPatch {
   };
 }
 
+/** q86「値を変えてもう一度」: func(24, 30) または func(24, 128)（後者は 128,24 の入れ替え）。どちらも mod 行は 3 回（イ／b） */
+function generateQ86(_baseQuestion: Question): GeneratedQuestionPatch {
+  const swapped = randomInt(0, 1) === 1;
+  if (!swapped) {
+    return {
+      bodyText:
+        "関数 func は，2つの正の整数 a, b を引数として受け取り，それらの最大公約数を返す関数である｡関数 func(24, 30) を実行したとき，/*** α ***/ の行の処理が実行される回数は【　】回である。",
+      correctChoiceId: "b",
+      anotherTraceLines: [
+        "func(24, 30)：p, q でトレース",
+        "(p, q) = (24, 30) → temp = 24 mod 30 = 24",
+        "(p, q) = (30, 24) → temp = 30 mod 24 = 6",
+        "(p, q) = (24, 6) → temp = 24 mod 6 = 0",
+        "/*** α ***/ の実行回数 = 3（イ）"
+      ]
+    };
+  }
+  return {
+    bodyText:
+      "関数 func は，2つの正の整数 a, b を引数として受け取り，それらの最大公約数を返す関数である｡関数 func(24, 128) を実行したとき，/*** α ***/ の行の処理が実行される回数は【　】回である。",
+    correctChoiceId: "b",
+    anotherTraceLines: [
+      "func(24, 128)（128, 24 を入れ替え）：p, q でトレース",
+      "(p, q) = (24, 128) → temp = 24 mod 128 = 24",
+      "(p, q) = (128, 24) → temp = 128 mod 24 = 8",
+      "(p, q) = (24, 8) → temp = 24 mod 8 = 0",
+      "/*** α ***/ の実行回数 = 3（イ）"
+    ]
+  };
+}
+
 const anotherQuestionGenerators: Record<string, AnotherQuestionGenerator> = {
   q23: generateQ23,
   q33: generateQ33,
@@ -946,7 +977,8 @@ const anotherQuestionGenerators: Record<string, AnotherQuestionGenerator> = {
   q60: generateQ60,
   q61: generateQ61,
   q70: generateQ70,
-  q71: generateQ71
+  q71: generateQ71,
+  q86: generateQ86
 };
 
 export function generateAnotherQuestion(baseQuestion: Question): GeneratedQuestionPatch | null {
