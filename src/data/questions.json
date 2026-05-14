@@ -3569,6 +3569,229 @@
     "another": 1
   },
   {
+    "id": "q72",
+    "number": 72,
+    "title": "循環型キュー（head と length）",
+    "questionText": "次のプログラム中の【 a 】および【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は 0 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "関数 enqueue は，引数で与えられた整数を循環型キューに格納する。格納できる場合は true を返し，格納できなかった場合は false を返す。関数 dequeue は，キューから値を取り出して返す。キューが空のときは未定義の値を返す。キューを，要素数が 8 である大域の整数型の配列 ringBuffer，次に値を取り出す位置を示す大域の変数 head，及び値が格納済みの要素数を示す大域の変数 length で表現する。循環型キューの初期状態を図に示す。図は，a,b,c,d,eの5つが循環型キューに格納されている状態を示し，このとき length の値は 5 である。プログラムでは，配列の領域外を参照してはならないものとする。"
+      },
+      {
+        "type": "table",
+        "equalDataColumnWidths": true,
+        "caption": "図　循環型キューの初期状態",
+        "headers": ["添字", "0", "1", "2", "3", "4", "5", "6", "7"],
+        "rows": [
+          ["ringBuffer", "d", "e", "x", "y", "z", "a", "b", "c"],
+          ["", "", "", "", "", "", { "text": "↑\nhead", "align": "center" }, "", ""]
+        ]
+      },
+      {
+        "type": "text",
+        "text": "length:5"
+      }
+    ],
+    "pseudoCode": [
+      "大域：整数型の配列：ringBuffer ← {d, e, x, y, z, a, b, c}",
+      "大域：整数型：head ← 5",
+      "大域：整数型：length ← 5",
+      "",
+      "○ 論理型：enqueue(整数型：val)",
+      "    if (length < ringBuffer の要素数)",
+      "        ringBuffer[【 a 】] ← val",
+      "        length ← length + 1",
+      "        return true",
+      "    else",
+      "        return false",
+      "    endif",
+      "",
+      "○ 整数型：dequeue()",
+      "    整数型：val ← 未定義の値",
+      "    if (length > 0)",
+      "        val ← ringBuffer[head]",
+      "        head ← 【 b 】",
+      "        length ← length - 1",
+      "    endif",
+      "    return val"
+    ],
+    "choices": [
+      { "id": "a", "text": "a=(head + length) mod ringBufferの要素数, b=(head + 1) mod ringBufferの要素数" },
+      { "id": "b", "text": "a=(head + length) mod ringBufferの要素数, b=head + 1" },
+      { "id": "c", "text": "a=(head + length) mod ringBufferの要素数, b=head mod ringBufferの要素数" },
+      { "id": "d", "text": "a=head + length, b=(head + 1) mod ringBufferの要素数" },
+      { "id": "e", "text": "a=head + length, b=head + 1" },
+      { "id": "f", "text": "a=head + length, b=head mod ringBufferの要素数" },
+      { "id": "g", "text": "a=(head + 1 + length) mod ringBufferの要素数, b=(head + 1) mod ringBufferの要素数" },
+      { "id": "h", "text": "a=(head + 1 + length) mod ringBufferの要素数, b=head + 1" },
+      { "id": "i", "text": "a=(head + 1 + length) mod ringBufferの要素数, b=head mod ringBufferの要素数" }
+    ],
+    "choiceTable": {
+      "headers": ["a", "b"],
+      "rows": [
+        ["(head + length) mod ringBufferの要素数", "(head + 1) mod ringBufferの要素数"],
+        ["(head + length) mod ringBufferの要素数", "head + 1"],
+        ["(head + length) mod ringBufferの要素数", "head mod ringBufferの要素数"],
+        ["head + length", "(head + 1) mod ringBufferの要素数"],
+        ["head + length", "head + 1"],
+        ["head + length", "head mod ringBufferの要素数"],
+        ["(head + 1 + length) mod ringBufferの要素数", "(head + 1) mod ringBufferの要素数"],
+        ["(head + 1 + length) mod ringBufferの要素数", "head + 1"],
+        ["(head + 1 + length) mod ringBufferの要素数", "head mod ringBufferの要素数"]
+      ]
+    },
+    "videoUrl": "https://www.youtube.com/watch?v=jZA7m2-iY1A&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=68&t=846s",
+    "correctChoiceId": "a",
+    "hitokoto": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=jZA7m2-iY1A&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=68&t=768s",
+    "lessonUrl": "https://www.youtube.com/watch?v=jZA7m2-iY1A&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=68&t=1s",
+    "another": 0
+  },
+  {
+    "id": "q73",
+    "number": 73,
+    "title": "循環型キュー（tail と fullFlag）",
+    "questionText": "次のプログラム中の【 a 】および【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は 0 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "関数 enqueue は，引数で与えられた整数を循環型キューに格納する。格納できる場合は true を返し，格納できなかった場合は false を返す。関数 dequeue は，キューから値を取り出して返す。キューが空のときは未定義の値を返す。キューを，要素数が 8 である大域の整数型の配列 ringBuffer，次に値を取り出す位置を示す大域の変数 head，及び次の格納位置を示す大域の変数 tail，キューが満杯かどうかを示す大域の変数 fullFlag で表現する。循環型キューの初期状態を図に示す。図は，a,b,c,d,eの5つが循環型キューに格納されている状態を示す。プログラムでは，配列の領域外を参照してはならないものとする。"
+      },
+      {
+        "type": "table",
+        "equalDataColumnWidths": true,
+        "caption": "図　循環型キューの初期状態",
+        "headers": ["添字", "0", "1", "2", "3", "4", "5", "6", "7"],
+        "rows": [
+          ["ringBuffer", "d", "e", "x", "y", "z", "a", "b", "c"],
+          ["", "", "", { "text": "↑\ntail", "align": "center" }, "", "", { "text": "↑\nhead", "align": "center" }, "", ""]
+        ]
+      }
+    ],
+    "pseudoCode": [
+      "大域：整数型の配列：ringBuffer  ← {d, e, x, y, z, a, b, c}",
+      "大域：整数型：head ← 5",
+      "大域：整数型：tail ← 2",
+      "大域：論理型：fullFlag ← false",
+      "",
+      "○ 論理型：enqueue(整数型：inputData)",
+      "    if (【 a 】)",
+      "        return false",
+      "    endif",
+      "",
+      "    ringBuffer[tail] ← inputData",
+      "    tail ← (tail + 1) mod ringBuffer の要素数",
+      "",
+      "    if (tail = head)",
+      "        fullFlag ← true",
+      "    endif",
+      "",
+      "    return true",
+      "",
+      "○ 整数型：dequeue()",
+      "    整数型：val ← 未定義の値",
+      "",
+      "    if (【 b 】)",
+      "        return val",
+      "    endif",
+      "",
+      "    val ← ringBuffer[head]",
+      "    head ← (head + 1) mod ringBuffer の要素数",
+      "    fullFlag ← false",
+      "    return val"
+    ],
+    "choices": [
+      { "id": "a", "text": "a=fullFlagがtrueと等しい, b=(fullFlag ≠ true) and (head と tailが等しい)" },
+      { "id": "b", "text": "a=fullFlagがtrueと等しい, b=fullFlag ≠ true" },
+      { "id": "c", "text": "a=fullFlagがtrueと等しい, b=headとtailが等しい" },
+      { "id": "d", "text": "a=headとtailが等しい, b=(fullFlag ≠ true) and (head と tailが等しい)" },
+      { "id": "e", "text": "a=headとtailが等しい, b=fullFlag ≠ true" },
+      { "id": "f", "text": "a=headとtailが等しい, b=headとtailが等しい" },
+      { "id": "g", "text": "a=(fullFlagがtrueと等しい) and (head≠tail), b=(fullFlag ≠ true) and (head と tailが等しい)" },
+      { "id": "h", "text": "a=(fullFlagがtrueと等しい) and (head≠tail), b=fullFlag ≠ true" },
+      { "id": "i", "text": "a=(fullFlagがtrueと等しい) and (head≠tail), b=headとtailが等しい" }
+    ],
+    "choiceTable": {
+      "headers": ["a", "b"],
+      "rows": [
+        ["fullFlagがtrueと等しい", "(fullFlag ≠ true) and (head と tailが等しい)"],
+        ["fullFlagがtrueと等しい", "fullFlag ≠ true"],
+        ["fullFlagがtrueと等しい", "headとtailが等しい"],
+        ["headとtailが等しい", "(fullFlag ≠ true) and (head と tailが等しい)"],
+        ["headとtailが等しい", "fullFlag ≠ true"],
+        ["headとtailが等しい", "headとtailが等しい"],
+        ["(fullFlagがtrueと等しい) and (head≠tail)", "(fullFlag ≠ true) and (head と tailが等しい)"],
+        ["(fullFlagがtrueと等しい) and (head≠tail)", "fullFlag ≠ true"],
+        ["(fullFlagがtrueと等しい) and (head≠tail)", "headとtailが等しい"]
+      ]
+    },
+    "videoUrl": "https://www.youtube.com/watch?v=4y4dPUlB3jM&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=69&t=358s",
+    "correctChoiceId": "a",
+    "hitokoto": "",
+    "lessonUrl": "https://www.youtube.com/watch?v=4y4dPUlB3jM&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=69&t=1s",
+    "another": 0
+  },
+  {
+    "id": "q74",
+    "number": 74,
+    "title": "優先度付きキュー(令和4年度サンプル問題問8)",
+    "questionText": "次のプログラムを実行すると，【　　　】の順に出力される。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "優先度付きキューを操作するプログラムである。優先度付きキューとは扱う要素に優先度を付けたキューであり，要素を取り出す際には優先度の高いものから順番に取り出される。クラス PrioQueue は優先度付きキューを表すクラスである。クラス PrioQueue の説明を図に示す。ここで，優先度は整数型の値 1，2，3 のいずれかであり，小さい値ほど優先度が高いものとする。"
+      },
+      {
+        "type": "table",
+        "caption": "図　クラス PrioQueue のコンストラクタの説明",
+        "headers": ["コンストラクタ", "説明"],
+        "rows": [
+          ["PrioQueue()", "空の優先度付きキューを生成する。"]
+        ]
+      },
+      {
+        "type": "table",
+        "caption": "図　クラス PrioQueue のメソッドの説明",
+        "headers": ["メソッド名", "戻り値", "説明"],
+        "rows": [
+          ["enqueue(文字列型:s, 整数型:prio)", "なし", "優先度付きキューに，文字列 s を要素として，優先度 prio で追加する。"],
+          ["dequeue()", "文字列型", "優先度付きキューからキュー内で最も優先度の高い要素を取り出して返す。最も優先度の高い要素が複数あるときは，そのうちの最初に追加された要素を一つ取り出して返す。"],
+          ["size()", "整数型", "優先度付きキューに格納されている要素の個数を返す。"]
+        ]
+      }
+    ],
+    "pseudoCode": [
+      "○prioSched()",
+      "  PrioQueue：prioQueue ← PrioQueue()",
+      "  prioQueue.enqueue(\"A\", 1)",
+      "  prioQueue.enqueue(\"B\", 2)",
+      "  prioQueue.enqueue(\"C\", 2)",
+      "  prioQueue.enqueue(\"D\", 3)",
+      "  prioQueue.dequeue()  /* 戻り値は使用しない */",
+      "  prioQueue.dequeue()  /* 戻り値は使用しない */",
+      "  prioQueue.enqueue(\"D\", 3)",
+      "  prioQueue.enqueue(\"B\", 2)",
+      "  prioQueue.dequeue()  /* 戻り値は使用しない */",
+      "  prioQueue.dequeue()  /* 戻り値は使用しない */",
+      "  prioQueue.enqueue(\"C\", 2)",
+      "  prioQueue.enqueue(\"A\", 1)",
+      "  while (prioQueue.size() が 0 と等しくない)",
+      "    prioQueue.dequeue() の戻り値を出力",
+      "  endwhile"
+    ],
+    "choices": [
+      { "id": "a", "text": "\"A\", \"B\", \"C\", \"D\"" },
+      { "id": "b", "text": "\"A\", \"B\", \"D\", \"D\"" },
+      { "id": "c", "text": "\"A\", \"C\", \"C\", \"D\"" },
+      { "id": "d", "text": "\"A\", \"C\", \"D\", \"D\"" }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=9w_hI1eW1ao&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=70&t=18s",
+    "correctChoiceId": "b",
+    "hitokoto": "",
+    "another": 0
+  },
+  {
     "id": "q84",
     "number": 84,
     "title": "ルートと平方根(令和4年度12月サンプル問題問5)",
