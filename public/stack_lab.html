@@ -354,6 +354,11 @@
       border-style: dashed;
       opacity: 0.92;
     }
+    .ll-node--trace-curr {
+      border-color: var(--ok);
+      border-style: dashed;
+      box-shadow: 0 0 0 2px rgba(45, 106, 79, 0.2);
+    }
     .ll-node-pos {
       font-size: 0.65rem;
       text-align: center;
@@ -570,7 +575,7 @@
       <button type="button" role="tab" id="tabQueue" aria-selected="false" aria-controls="panel-queue">キュー</button>
       <button type="button" role="tab" id="tabRingQueue" aria-selected="false" aria-controls="panel-ring-queue">循環キュー</button>
       <button type="button" role="tab" id="tabList" aria-selected="false" aria-controls="panel-list">単方向リスト</button>
-      <button type="button" role="tab" id="tabArrayLl" aria-selected="false" aria-controls="panel-array-ll">配列</button>
+      <button type="button" role="tab" id="tabArrayLl" aria-selected="false" aria-controls="panel-array-ll">単方向リスト(配列)</button>
     </div>
 
     <!-- スタック -->
@@ -824,8 +829,13 @@
 
       <div class="panel">
         <h2>リストのデータ</h2>
+        <div class="inline-options" role="group" aria-label="説明モード" style="margin-bottom: 0.65rem;">
+          <span class="opt-title">モード</span>
+          <label><input type="radio" name="listLabMode" id="listModeTreasure" value="treasure"> 宝探し</label>
+          <label><input type="radio" name="listLabMode" id="listModeProgram" value="program" checked> プログラム</label>
+        </div>
         <label>
-          ノードの値（先頭からカンマ区切り）
+          <span id="listValuesLabelText">ノードの値（先頭からカンマ区切り）</span>
           <input type="text" id="listValues" value="A,B,C,D" autocomplete="off" spellcheck="false">
         </label>
         <div class="btns" style="margin-top: 0.65rem;">
@@ -838,11 +848,13 @@
         <h2>操作</h2>
         <div class="controls" style="margin-bottom: 0.65rem;">
           <label>
-            append する文字（1 文字）
+            <span id="appendValLabelText">append する文字</span>
             <input type="text" id="appendVal" value="X" maxlength="8" autocomplete="off" style="width: 6rem;">
           </label>
           <div class="btns">
             <button type="button" class="primary" id="btnAppend">append</button>
+            <button type="button" id="btnAppendTrace">append トレース</button>
+            <button type="button" class="primary" id="btnAppendTraceNext" hidden disabled>次へ</button>
           </div>
         </div>
         <div class="controls">
@@ -859,7 +871,7 @@
       </div>
 
       <div class="panel">
-        <h2>現在の状態（listHead とリンク）</h2>
+        <h2 id="listStatePanelTitle">現在の状態（listHead とリンク）</h2>
         <div class="ll-box" aria-live="polite">
           <div id="llDiagram" class="ll-row"></div>
           <p id="llCaption" class="ll-caption">リストを反映するとここに説明が出ます。</p>
@@ -878,7 +890,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td style="border:1px solid var(--border); padding:0.35rem;">val</td><td style="border:1px solid var(--border); padding:0.35rem;">文字型</td><td style="border:1px solid var(--border); padding:0.35rem;">リストに格納する文字。</td></tr>
+            <tr><td style="border:1px solid var(--border); padding:0.35rem;">val</td><td style="border:1px solid var(--border); padding:0.35rem;">文字型</td><td id="llMemberValDesc" style="border:1px solid var(--border); padding:0.35rem;">リストに格納する文字。</td></tr>
             <tr><td style="border:1px solid var(--border); padding:0.35rem;">next</td><td style="border:1px solid var(--border); padding:0.35rem;">ListElement</td><td style="border:1px solid var(--border); padding:0.35rem;">リストの次の文字を保持するインスタンスの参照。初期状態は未定義である。</td></tr>
           </tbody>
         </table>
@@ -921,12 +933,10 @@
         <div class="arr-head-control">
           <label>
             listHead（先頭の添字、0＝空）
-            <input type="number" id="arrLlHead" value="1" min="0" max="4" step="1">
+            <input type="number" id="arrLlHead" value="2" min="0" max="4" step="1">
           </label>
-          <button type="button" id="btnArrLlReset">例（A→B→C→D）に戻す</button>
+          <button type="button" id="btnArrLlReset">例（公園→図書館→学校）に戻す</button>
         </div>
-        <div class="arr-head-readout" id="arrLlHeadReadout" aria-live="polite"></div>
-        <p class="msg" id="arrLlMsg" aria-live="polite"></p>
       </div>
 
       <div class="panel">
@@ -946,48 +956,38 @@
             <tbody>
               <tr>
                 <th scope="row" class="row-label">val</th>
-                <td class="cell"><input type="text" class="arr-val-in" id="arrLlVal1" value="A" maxlength="8" autocomplete="off"></td>
-                <td class="cell"><input type="text" class="arr-val-in" id="arrLlVal2" value="C" maxlength="8" autocomplete="off"></td>
-                <td class="cell"><input type="text" class="arr-val-in" id="arrLlVal3" value="D" maxlength="8" autocomplete="off"></td>
-                <td class="cell"><input type="text" class="arr-val-in" id="arrLlVal4" value="B" maxlength="8" autocomplete="off"></td>
+                <td class="cell"><input type="text" class="arr-val-in" id="arrLlVal1" value="学校" maxlength="8" autocomplete="off"></td>
+                <td class="cell"><input type="text" class="arr-val-in" id="arrLlVal2" value="公園" maxlength="8" autocomplete="off"></td>
+                <td class="cell"><input type="text" class="arr-val-in" id="arrLlVal3" value="図書館" maxlength="8" autocomplete="off"></td>
+                <td class="cell"><input type="text" class="arr-val-in" id="arrLlVal4" value="" maxlength="8" autocomplete="off"></td>
+              </tr>
+              <tr>
+                <th scope="row" class="row-label">next</th>
+                <td class="cell"><input type="number" class="arr-next-in" id="arrLlNext1" min="1" max="4" step="1" placeholder="空" aria-label="添字1のnext"></td>
+                <td class="cell"><input type="number" class="arr-next-in" id="arrLlNext2" min="1" max="4" step="1" value="3" placeholder="空" aria-label="添字2のnext"></td>
+                <td class="cell"><input type="number" class="arr-next-in" id="arrLlNext3" min="1" max="4" step="1" value="1" placeholder="空" aria-label="添字3のnext"></td>
+                <td class="cell"><input type="number" class="arr-next-in" id="arrLlNext4" min="1" max="4" step="1" placeholder="空" aria-label="添字4のnext"></td>
               </tr>
               <tr class="arr-ll-ribbon-row">
-                <th scope="row" class="row-label">辿り</th>
+                <th scope="row" class="row-label">巡り</th>
                 <td class="arr-ll-ribbon-cell" colspan="4" id="arrLlRibbonCell">
-                  <p class="arr-ll-ribbon-hint" id="arrLlRibbonHint">listHead から <code>val</code> → <code>next</code> で次の添字へ、と読み進める流れを矢印で示します。</p>
+                  <p class="arr-ll-ribbon-hint" id="arrLlRibbonHint">上の <code>val</code> と <code>next</code> を読んだあと、<code>listHead</code> から次の添字へ進む流れを矢印で示します。</p>
                   <div class="arr-ll-ribbon-inner" id="arrLlRibbonInner" aria-hidden="true">
                     <div id="arrLlRibbonTracks" class="arr-ll-tracks"></div>
                   </div>
                 </td>
               </tr>
-              <tr>
-                <th scope="row" class="row-label">next</th>
-                <td class="cell"><input type="number" class="arr-next-in" id="arrLlNext1" min="1" max="4" step="1" value="4" placeholder="空" aria-label="添字1のnext"></td>
-                <td class="cell"><input type="number" class="arr-next-in" id="arrLlNext2" min="1" max="4" step="1" value="3" placeholder="空" aria-label="添字2のnext"></td>
-                <td class="cell"><input type="number" class="arr-next-in" id="arrLlNext3" min="1" max="4" step="1" placeholder="空" aria-label="添字3のnext"></td>
-                <td class="cell"><input type="number" class="arr-next-in" id="arrLlNext4" min="1" max="4" step="1" value="2" placeholder="空" aria-label="添字4のnext"></td>
-              </tr>
             </tbody>
           </table>
         </div>
         <p id="arr-ll-desc" class="lead" style="margin: 0.65rem 0 0; font-size: 0.82rem;">
-          行の順は <strong>val → 辿り（矢印）→ next</strong> です。例の初期状態：<code>listHead←1</code>、<code>val</code> は 1:A, 2:C, 3:D, 4:B、<code>next</code> は 1→4, 2→3, 3→∅, 4→2。辿ると <strong>A → B → C → D</strong> になります。
+          行の順は <strong>val → next → 巡り（矢印）</strong> です。例の初期状態：<code>listHead←2</code>、<code>val</code> は 1:学校, 2:公園, 3:図書館（配列の並びはリスト順と違う）、<code>next</code> は 2→3, 3→1, 1→∅。辿ると <strong>公園 → 図書館 → 学校</strong> になります。
         </p>
       </div>
 
       <div class="panel">
         <h2>リストの状態（listHead から辿った順）</h2>
         <div id="arrLlSeq" class="arr-seq" aria-live="polite">—</div>
-      </div>
-
-      <div class="panel">
-        <h2>考え方メモ</h2>
-        <pre class="pseudo">大域：整数型：listHead        ※ 先頭セルの添字（1 始まり）。0 なら空
-大域：文字型の配列：val[1..4]
-大域：整数型の配列：next[1..4]  ※ 各セルが「次の添字」。未定義ならリスト終端
-
-※ 先頭から読むときは val[listHead] と next[listHead] を見る（他の添字と同じ配列の要素）。
-※ 実装では next[k] が「空」＝終端。動的な new は使わない。</pre>
       </div>
 
       <div class="panel">
@@ -1794,12 +1794,22 @@
   logRingQueue("起動：初期 head=5、length=5、data=[d,e,x,y,z,a,b,c]");
 
   /* ---------- 単方向リスト ---------- */
-  var DEFAULT_LIST_STR = "A,B,C,D";
+  var LIST_PROGRAM_DEFAULT = "A,B,C,D";
+  var LIST_TREASURE_DEFAULT = "公園,図書館,学校";
+  var listLabMode = "program";
   var listValuesInput = document.getElementById("listValues");
+  var listValuesLabelText = document.getElementById("listValuesLabelText");
+  var appendValLabelText = document.getElementById("appendValLabelText");
+  var listModeTreasure = document.getElementById("listModeTreasure");
+  var listModeProgram = document.getElementById("listModeProgram");
+  var listStatePanelTitle = document.getElementById("listStatePanelTitle");
+  var llMemberValDesc = document.getElementById("llMemberValDesc");
   var btnListApply = document.getElementById("btnListApply");
   var btnListReset = document.getElementById("btnListReset");
   var appendValInput = document.getElementById("appendVal");
   var btnAppend = document.getElementById("btnAppend");
+  var btnAppendTrace = document.getElementById("btnAppendTrace");
+  var btnAppendTraceNext = document.getElementById("btnAppendTraceNext");
   var llDiagram = document.getElementById("llDiagram");
   var llCaption = document.getElementById("llCaption");
   var delPosInput = document.getElementById("delPos");
@@ -1810,6 +1820,110 @@
   var listLines = [];
   var listHead = null;
   var traceBusy = false;
+  var appendTraceActive = false;
+  var appendTraceSteps = [];
+  var appendTraceStepIndex = 0;
+  var appendTraceCurrNode = null;
+  var appendTraceStartN = 0;
+  var delTraceActive = false;
+  var delTraceSteps = [];
+  var delTraceStepIndex = 0;
+  var delTracePos = 0;
+
+  function listEsc(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function listIsTreasureMode() {
+    return listLabMode === "treasure";
+  }
+
+  function getDefaultListString() {
+    return listIsTreasureMode() ? LIST_TREASURE_DEFAULT : LIST_PROGRAM_DEFAULT;
+  }
+
+  function getDefaultAppendString() {
+    return listIsTreasureMode() ? "カフェ" : "X";
+  }
+
+  function syncListLabModeUi() {
+    var tre = listIsTreasureMode();
+    listValuesLabelText.textContent = tre
+      ? "場所の名前（先頭からカンマ区切り。例：公園→図書館→学校）"
+      : "ノードの値（先頭からカンマ区切り）";
+    listModeProgram.checked = !tre;
+    listModeTreasure.checked = tre;
+    btnListReset.textContent = tre
+      ? "例の初期（公園→図書館→学校）に戻す"
+      : "例の初期（A,B,C,D）に戻す";
+    appendValLabelText.textContent = tre ? "append する場所の名前" : "append する文字";
+    listStatePanelTitle.textContent = tre
+      ? "現在の状態（宝探し・listHead と next）"
+      : "現在の状態（listHead とリンク）";
+    llMemberValDesc.textContent = tre
+      ? "リストに格納する場所の名前（スポット）。メモの「次の場所」と同じ役割。"
+      : "リストに格納する文字。";
+  }
+
+  function applyListLabMode(next) {
+    if (traceBusy) {
+      setListMsg("トレース中はモードを切り替えられません。", "warn");
+      listModeProgram.checked = listLabMode === "program";
+      listModeTreasure.checked = listLabMode === "treasure";
+      return;
+    }
+    if (listLabMode === next) return;
+    listLabMode = next;
+    syncListLabModeUi();
+    appendValInput.value = getDefaultAppendString();
+    listValuesInput.value = getDefaultListString();
+    applyListFromInput();
+  }
+
+  function closeListTraceUi() {
+    appendTraceActive = false;
+    appendTraceSteps = [];
+    appendTraceStepIndex = 0;
+    appendTraceCurrNode = null;
+    appendTraceStartN = 0;
+    delTraceActive = false;
+    delTraceSteps = [];
+    delTraceStepIndex = 0;
+    delTracePos = 0;
+    traceBusy = false;
+    btnAppendTraceNext.hidden = true;
+    btnAppendTraceNext.disabled = true;
+    btnDelNow.disabled = false;
+    btnDelTrace.disabled = false;
+    btnListApply.disabled = false;
+    btnListReset.disabled = false;
+    btnAppend.disabled = false;
+    btnAppendTrace.disabled = false;
+    appendValInput.disabled = false;
+    listValuesInput.disabled = false;
+    listModeTreasure.disabled = false;
+    listModeProgram.disabled = false;
+  }
+
+  function lockListTraceUi() {
+    traceBusy = true;
+    btnDelNow.disabled = true;
+    btnDelTrace.disabled = true;
+    btnListApply.disabled = true;
+    btnListReset.disabled = true;
+    btnAppend.disabled = true;
+    btnAppendTrace.disabled = true;
+    appendValInput.disabled = true;
+    listValuesInput.disabled = true;
+    listModeTreasure.disabled = true;
+    listModeProgram.disabled = true;
+    btnAppendTraceNext.hidden = false;
+    btnAppendTraceNext.disabled = false;
+  }
 
   function logList(text) {
     var t = new Date().toLocaleTimeString("ja-JP", { hour12: false });
@@ -1864,13 +1978,32 @@
     llDiagram.innerHTML = "";
     var prevRef = highlight.prevRef;
     var cutRef = highlight.cutRef;
+    var traceCurr = highlight.traceCurr;
+    var listShowNone = !!highlight.listShowNone;
+    var listPrefixEnd = highlight.listPrefixEnd || null;
 
     var headLbl = document.createElement("span");
     headLbl.className = "ll-head-label";
-    headLbl.textContent = listHead ? "listHead →" : "listHead →";
+    headLbl.textContent = listHead ? "listHead（" + listHead.val + "）→" : "listHead →";
     llDiagram.appendChild(headLbl);
 
-    if (!listHead) {
+    function appendTraceCurrNodeEl() {
+      if (!traceCurr) return;
+      var wrap = document.createElement("div");
+      wrap.className = "ll-node ll-node--trace-curr";
+      var valEl = document.createElement("div");
+      valEl.className = "ll-node-val";
+      valEl.style.paddingTop = "0.45rem";
+      valEl.textContent = traceCurr.val;
+      wrap.appendChild(valEl);
+      var nextEl = document.createElement("div");
+      nextEl.className = "ll-node-next";
+      nextEl.textContent = "next → ∅";
+      wrap.appendChild(nextEl);
+      llDiagram.appendChild(wrap);
+    }
+
+    if (!listHead && !traceCurr) {
       var empty = document.createElement("span");
       empty.className = "ll-null";
       empty.textContent = "（空）";
@@ -1878,7 +2011,28 @@
       return;
     }
 
-    var idx = 1;
+    if (!listHead && traceCurr) {
+      var empty2 = document.createElement("span");
+      empty2.className = "ll-null";
+      empty2.textContent = "（空）";
+      llDiagram.appendChild(empty2);
+      appendTraceCurrNodeEl();
+      var nullEl0 = document.createElement("span");
+      nullEl0.className = "ll-null";
+      nullEl0.textContent = "∅";
+      llDiagram.appendChild(nullEl0);
+      return;
+    }
+
+    if (listHead && traceCurr && listShowNone) {
+      appendTraceCurrNodeEl();
+      var nullElSkip = document.createElement("span");
+      nullElSkip.className = "ll-null";
+      nullElSkip.textContent = "∅";
+      llDiagram.appendChild(nullElSkip);
+      return;
+    }
+
     var node = listHead;
     while (node) {
       var wrap = document.createElement("div");
@@ -1886,33 +2040,32 @@
       if (prevRef && node === prevRef) wrap.classList.add("ll-node--prev");
       if (cutRef && node === cutRef) wrap.classList.add("ll-node--cut");
 
-      var posEl = document.createElement("div");
-      posEl.className = "ll-node-pos";
-      posEl.textContent = "位置 " + idx;
-      wrap.appendChild(posEl);
-
       var valEl = document.createElement("div");
       valEl.className = "ll-node-val";
+      valEl.style.paddingTop = "0.45rem";
       valEl.textContent = node.val;
       wrap.appendChild(valEl);
 
       var nextEl = document.createElement("div");
       nextEl.className = "ll-node-next";
-      nextEl.textContent = node.next ? "next →" : "next → ∅";
+      nextEl.textContent = node.next ? ("next → " + String(node.next.val)) : "next → ∅";
       wrap.appendChild(nextEl);
 
       llDiagram.appendChild(wrap);
 
-      if (node.next) {
+      var atPrefixEnd = listPrefixEnd && node === listPrefixEnd;
+      if (node.next && !atPrefixEnd) {
         var ar = document.createElement("span");
         ar.className = "ll-arrow";
         ar.textContent = "→";
         llDiagram.appendChild(ar);
       }
 
+      if (atPrefixEnd) break;
       node = node.next;
-      idx++;
     }
+
+    appendTraceCurrNodeEl();
 
     var nullEl = document.createElement("span");
     nullEl.className = "ll-null";
@@ -1921,10 +2074,14 @@
   }
 
   function applyListFromInput() {
+    if (traceBusy) {
+      setListMsg("トレース中はリストを反映できません。", "warn");
+      return;
+    }
     var parts = parseListString(listValuesInput.value);
     if (parts.length === 0) {
       listHead = null;
-      setListMsg("ノードが空です。カンマ区切りで値を入れてください。", "warn");
+      setListMsg(listIsTreasureMode() ? "スポットがありません。場所の名前をカンマ区切りで入れてください。" : "ノードが空です。カンマ区切りで値を入れてください。", "warn");
       llCaption.textContent = "リストが空です。";
       renderDiagram({});
       logList("リスト反映：空");
@@ -1938,7 +2095,8 @@
   }
 
   function resetListInput() {
-    listValuesInput.value = DEFAULT_LIST_STR;
+    if (traceBusy) return;
+    listValuesInput.value = getDefaultListString();
     applyListFromInput();
   }
 
@@ -1984,7 +2142,7 @@
     if (traceBusy) return;
     var raw = (appendValInput.value || "").trim();
     if (!raw) {
-      setListMsg("append する文字を入力してください。", "warn");
+      setListMsg(listIsTreasureMode() ? "append する場所の名前を入力してください。" : "append する文字を入力してください。", "warn");
       return;
     }
     appendList(raw);
@@ -1993,6 +2151,101 @@
     renderDiagram({});
     logList("append(\"" + raw + "\")：末尾追加");
     setListMsg("append(\"" + raw + "\") を実行しました。", "ok");
+  }
+
+  function startAppendTrace() {
+    if (traceBusy) return;
+    var raw = (appendValInput.value || "").trim();
+    if (!raw) {
+      setListMsg(listIsTreasureMode() ? "append する場所の名前を入力してください。" : "append する文字を入力してください。", "warn");
+      return;
+    }
+    appendTraceActive = true;
+    appendTraceCurrNode = { val: raw, next: null };
+    appendTraceStartN = listHead ? countNodes(listHead) : 0;
+    if (!listHead) {
+      appendTraceSteps = ["curr", "setHead"];
+    } else {
+      appendTraceSteps = ["curr"];
+      var kk;
+      for (kk = 1; kk <= appendTraceStartN; kk++) {
+        appendTraceSteps.push("prev:" + kk);
+      }
+      appendTraceSteps.push("link");
+    }
+    appendTraceStepIndex = 0;
+    lockListTraceUi();
+    llCaption.textContent = "疑似プログラムの append を、「次へ」ボタンで 1 ステップずつ追います。";
+    setListMsg("「次へ」でトレースを進めてください。", "ok");
+    renderDiagram({});
+  }
+
+  function appendTraceNextStep() {
+    if (!appendTraceActive) return;
+    if (appendTraceStepIndex >= appendTraceSteps.length) return;
+    var step = appendTraceSteps[appendTraceStepIndex];
+    appendTraceStepIndex++;
+
+    if (step === "curr") {
+      llCaption.innerHTML =
+        "<code>curr ← ListElement（" + listEsc(appendTraceCurrNode.val) + "）</code> で、追加する"
+        + (listIsTreasureMode() ? "スポット" : "ノード")
+        + "を用意します。";
+      if (listHead) {
+        renderDiagram({ traceCurr: appendTraceCurrNode, listShowNone: true });
+      } else {
+        renderDiagram({ traceCurr: appendTraceCurrNode });
+      }
+      return;
+    }
+    if (step === "setHead") {
+      listHead = appendTraceCurrNode;
+      syncListInputFromHead();
+      llCaption.textContent = "リストが空のため <code>listHead ← curr</code> とします。";
+      renderDiagram({});
+      logList("トレース append：空リストに先頭追加 \"" + appendTraceCurrNode.val + "\"");
+      setListMsg("append トレース完了。", "ok");
+      closeListTraceUi();
+      return;
+    }
+    if (step.slice(0, 5) === "prev:") {
+      var pos = parseInt(step.slice(5), 10);
+      var prevRef = nodeAtPosition(listHead, pos);
+      if (!prevRef) {
+        setListMsg("内部エラー：prev が見つかりません。", "warn");
+        closeListTraceUi();
+        return;
+      }
+      if (pos === 1) {
+        llCaption.innerHTML =
+          "<code>else</code> 側：<code>prev ← listHead</code>。いま <code>prev</code> は位置 1（値「"
+          + listEsc(String(prevRef.val)) + "」）です。";
+      } else {
+        llCaption.innerHTML =
+          "<code>while（prev.next が 未定義でない）</code> が真なので <code>prev ← prev.next</code>。いま <code>prev</code> は位置 "
+          + pos + "（値「" + listEsc(String(prevRef.val)) + "」）です。";
+      }
+      renderDiagram({ prevRef: prevRef, traceCurr: appendTraceCurrNode, listPrefixEnd: prevRef });
+      return;
+    }
+    if (step === "link") {
+      var tail = nodeAtPosition(listHead, appendTraceStartN);
+      if (!tail) {
+        setListMsg("内部エラー：末尾が見つかりません。", "warn");
+        closeListTraceUi();
+        return;
+      }
+      tail.next = appendTraceCurrNode;
+      syncListInputFromHead();
+      llCaption.innerHTML =
+        "末尾の <code>prev</code>（値「" + listEsc(String(tail.val)) + "」）に対して <code>prev.next ← curr</code>（「"
+        + listEsc(appendTraceCurrNode.val) + "」をつなぐ）を実行しました。";
+      renderDiagram({});
+      logList("トレース append：末尾に \"" + appendTraceCurrNode.val + "\" を追加");
+      setListMsg("append トレース完了。", "ok");
+      closeListTraceUi();
+      return;
+    }
   }
 
   function doDeleteNow() {
@@ -2018,7 +2271,19 @@
     renderDiagram({});
   }
 
-  async function doTrace() {
+  function buildDelTraceSteps(pos) {
+    if (pos === 1) return ["delPos1Caption", "delPos1Do"];
+    var steps = ["delPrevHead"];
+    var i;
+    for (i = 2; i <= pos - 1; i++) {
+      steps.push("delLoop:" + i);
+    }
+    steps.push("delVictim");
+    steps.push("delLink");
+    return steps;
+  }
+
+  function startDelTrace() {
     if (traceBusy) return;
     var pos = parseInt(delPosInput.value, 10);
     var n = countNodes(listHead);
@@ -2030,94 +2295,146 @@
       setListMsg("pos は 1 〜 " + n + " にしてください。", "warn");
       return;
     }
+    delTraceActive = true;
+    delTracePos = pos;
+    delTraceSteps = buildDelTraceSteps(pos);
+    delTraceStepIndex = 0;
+    lockListTraceUi();
+    llCaption.textContent = "delNode のトレースを「次へ」ボタンで 1 ステップずつ進めます。";
+    setListMsg("「次へ」でトレースを進めてください。", "ok");
+    renderDiagram({});
+  }
 
-    traceBusy = true;
-    btnDelNow.disabled = true;
-    btnDelTrace.disabled = true;
-    btnListApply.disabled = true;
-    btnAppend.disabled = true;
-    setListMsg("トレース中…（完了までお待ちください）", "ok");
+  function delTraceNextStep() {
+    if (!delTraceActive) return;
+    if (delTraceStepIndex >= delTraceSteps.length) return;
+    var step = delTraceSteps[delTraceStepIndex];
+    delTraceStepIndex++;
+    var pos = delTracePos;
 
-    if (pos === 1) {
-      llCaption.innerHTML = "<code>pos</code> が 1 なので、<code>listHead ← listHead.next</code> だけで先頭を外します。";
+    if (step === "delPos1Caption") {
+      llCaption.innerHTML =
+        "<code>pos</code> が 1 なので、<code>listHead ← listHead.next</code> だけで先頭を外します。";
       renderDiagram({});
-      await sleep(900);
-      listHead = listHead.next;
-      var serial0 = [];
-      var q0 = listHead;
-      while (q0) {
-        serial0.push(q0.val);
-        q0 = q0.next;
-      }
-      listValuesInput.value = serial0.join(",");
-      llCaption.textContent = "削除後：残りは「" + (serial0.length ? serial0.join("」→「") : "（なし）") + "」です。";
-      renderDiagram({});
-      logList("トレース delNode(" + pos + ")：先頭削除");
-      setListMsg("トレース完了（先頭削除）。", "ok");
-      traceBusy = false;
-      btnDelNow.disabled = false;
-      btnDelTrace.disabled = false;
-      btnListApply.disabled = false;
-      btnAppend.disabled = false;
       return;
     }
-
-    var prev = listHead;
-    var victim = nodeAtPosition(listHead, pos);
-
-    llCaption.innerHTML = "まず <code>prev ← listHead</code>。いま <code>prev</code> は位置 1（値「" + prev.val + "」）を指します。";
-    renderDiagram({ prevRef: prev });
-    await sleep(1000);
-
-    var i;
-    for (i = 2; i <= pos - 1; i++) {
-      prev = prev.next;
-      llCaption.innerHTML = "for ループ：<code>i = " + i + "</code> のとき <code>prev ← prev.next</code>。いま <code>prev</code> は位置 " + i + "（値「" + prev.val + "」）。";
-      renderDiagram({ prevRef: prev });
-      await sleep(1100);
+    if (step === "delPos1Do") {
+      listHead = listHead.next;
+      syncListInputFromHead();
+      var serial0 = parseListString(listValuesInput.value);
+      llCaption.textContent =
+        "削除後：残りは「" + (serial0.length ? serial0.join("」→「") : "（なし）") + "」です。";
+      renderDiagram({});
+      logList("トレース delNode(" + pos + ")：先頭削除");
+      setListMsg("delNode トレース完了（先頭削除）。", "ok");
+      closeListTraceUi();
+      return;
     }
-
-    llCaption.innerHTML = "削除したいノードは <code>prev.next</code>（位置 " + pos + "、値「" + victim.val + "」）。空欄は <strong><code>prev.next.next</code></strong> —— つまり「<code>prev</code> の次の次」へつなぎます（間を飛ばす）。";
-    renderDiagram({ prevRef: prev, cutRef: victim });
-    await sleep(1400);
-
-    prev.next = prev.next.next;
-    var serial = [];
-    var q = listHead;
-    while (q) {
-      serial.push(q.val);
-      q = q.next;
+    if (step === "delPrevHead") {
+      var prevH = listHead;
+      if (!prevH) {
+        setListMsg("内部エラー：リストが空です。", "warn");
+        closeListTraceUi();
+        return;
+      }
+      llCaption.innerHTML =
+        "まず <code>prev ← listHead</code>。いま <code>prev</code> は位置 1（値「"
+        + listEsc(String(prevH.val))
+        + "」）を指します。";
+      renderDiagram({ prevRef: prevH });
+      return;
     }
-    listValuesInput.value = serial.join(",");
-    llCaption.textContent = "実行後：prev.next ← prev.next.next により、位置 " + pos + " のノードはリストから外れました。残りは「" + (serial.length ? serial.join("」→「") : "（なし）") + "」です。";
-    renderDiagram({});
-    logList("トレース delNode(" + pos + ")：prev.next ← prev.next.next");
-    setListMsg("トレース完了。", "ok");
+    if (step.slice(0, 8) === "delLoop:") {
+      var iLoop = parseInt(step.slice(8), 10);
+      var prevLoop = nodeAtPosition(listHead, iLoop);
+      if (!prevLoop) {
+        setListMsg("内部エラー：prev が見つかりません。", "warn");
+        closeListTraceUi();
+        return;
+      }
+      llCaption.innerHTML =
+        "for ループ：<code>i = "
+        + iLoop
+        + "</code> のとき <code>prev ← prev.next</code>。いま <code>prev</code> は位置 "
+        + iLoop
+        + "（値「"
+        + listEsc(String(prevLoop.val))
+        + "」）。";
+      renderDiagram({ prevRef: prevLoop });
+      return;
+    }
+    if (step === "delVictim") {
+      var victim = nodeAtPosition(listHead, pos);
+      var prevCut = nodeAtPosition(listHead, pos - 1);
+      if (!victim || !prevCut) {
+        setListMsg("内部エラー：削除対象ノードが見つかりません。", "warn");
+        closeListTraceUi();
+        return;
+      }
+      llCaption.innerHTML =
+        "削除したいノードは <code>prev.next</code>（位置 "
+        + pos
+        + "、値「"
+        + listEsc(String(victim.val))
+        + "」）。空欄は <strong><code>prev.next.next</code></strong> —— つまり「<code>prev</code> の次の次」へつなぎます（間を飛ばす）。";
+      renderDiagram({ prevRef: prevCut, cutRef: victim });
+      return;
+    }
+    if (step === "delLink") {
+      var prevLink = nodeAtPosition(listHead, pos - 1);
+      if (!prevLink || !prevLink.next) {
+        setListMsg("内部エラー：リンク更新に失敗しました。", "warn");
+        closeListTraceUi();
+        return;
+      }
+      prevLink.next = prevLink.next.next;
+      syncListInputFromHead();
+      var serial = parseListString(listValuesInput.value);
+      llCaption.textContent =
+        "実行後：prev.next ← prev.next.next により、位置 "
+        + pos
+        + " のノードはリストから外れました。残りは「"
+        + (serial.length ? serial.join("」→「") : "（なし）")
+        + "」です。";
+      renderDiagram({});
+      logList("トレース delNode(" + pos + ")：prev.next ← prev.next.next");
+      setListMsg("delNode トレース完了。", "ok");
+      closeListTraceUi();
+      return;
+    }
+  }
 
-    traceBusy = false;
-    btnDelNow.disabled = false;
-    btnDelTrace.disabled = false;
-    btnListApply.disabled = false;
-    btnAppend.disabled = false;
+  function listTraceNextStep() {
+    if (appendTraceActive) appendTraceNextStep();
+    else if (delTraceActive) delTraceNextStep();
   }
 
   btnListApply.addEventListener("click", applyListFromInput);
   btnListReset.addEventListener("click", resetListInput);
   btnAppend.addEventListener("click", doAppend);
+  btnAppendTrace.addEventListener("click", startAppendTrace);
+  btnAppendTraceNext.addEventListener("click", listTraceNextStep);
   appendValInput.addEventListener("keydown", function (e) {
     if (e.key === "Enter") doAppend();
   });
   btnDelNow.addEventListener("click", doDeleteNow);
-  btnDelTrace.addEventListener("click", function () { doTrace(); });
+  btnDelTrace.addEventListener("click", startDelTrace);
 
-  listValuesInput.value = DEFAULT_LIST_STR;
+  listModeTreasure.addEventListener("change", function () {
+    if (listModeTreasure.checked) applyListLabMode("treasure");
+  });
+  listModeProgram.addEventListener("change", function () {
+    if (listModeProgram.checked) applyListLabMode("program");
+  });
+
+  syncListLabModeUi();
+  listValuesInput.value = getDefaultListString();
   applyListFromInput();
-  logList("単方向リスト：起動（初期 A,B,C,D）— append / delNode 利用可");
+  logList("単方向リスト：起動（プログラム例 A,B,C,D）— 宝探し/プログラム切替・append / append トレース / delNode 利用可");
 
   /* ---------- 配列による単方向リスト（val / next / listHead） ---------- */
   var arrLlHeadInput = document.getElementById("arrLlHead");
   var btnArrLlReset = document.getElementById("btnArrLlReset");
-  var arrLlMsg = document.getElementById("arrLlMsg");
   var arrLlSeq = document.getElementById("arrLlSeq");
   var logArrayLlEl = document.getElementById("logArrayLl");
   var arrLlLines = [];
@@ -2137,72 +2454,11 @@
   var arrLlRibbonTracks = document.getElementById("arrLlRibbonTracks");
   var arrLlRibbonInner = document.getElementById("arrLlRibbonInner");
   var arrLlRibbonHint = document.getElementById("arrLlRibbonHint");
-  var arrLlHeadReadout = document.getElementById("arrLlHeadReadout");
-
   function logArrayLl(text) {
     var t = new Date().toLocaleTimeString("ja-JP", { hour12: false });
     arrLlLines.push("[" + t + "] " + text);
     if (arrLlLines.length > 80) arrLlLines.shift();
     logArrayLlEl.textContent = arrLlLines.join("\n");
-  }
-
-  function setArrLlMsg(text, kind) {
-    arrLlMsg.textContent = text;
-    arrLlMsg.className = "msg" + (kind ? " " + kind : "");
-  }
-
-  function arrLlEscapeHtml(s) {
-    return String(s)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-  }
-
-  /** listHead は添字なので、val[listHead] / next[listHead] を明示する */
-  function syncArrLlHeadReadout() {
-    if (!arrLlHeadReadout) return;
-    var hRaw = arrLlHeadInput.value;
-    var h = parseInt(hRaw, 10);
-    if (hRaw === "" || Number.isNaN(h) || h < 0 || h > 4) {
-      arrLlHeadReadout.innerHTML = "<span class=\"arr-hd-muted\">listHead は 0〜4 の整数にしてください。</span>";
-      return;
-    }
-    if (h === 0) {
-      arrLlHeadReadout.innerHTML =
-        "<code>listHead</code> が <code>0</code> のときは空リスト。先頭として使う添字はなく、<code>val</code> / <code>next</code> のどのセルも「入り口」ではありません。";
-      return;
-    }
-    var vRaw = (arrLlValInputs[h - 1].value || "").trim();
-    var vShow = vRaw === "" ? "（空）" : '"' + arrLlEscapeHtml(vRaw) + '"';
-    var nRaw = (arrLlNextInputs[h - 1].value || "").trim();
-    var nParsed = parseInt(nRaw, 10);
-    var nPart;
-    if (nRaw === "") {
-      nPart = "<code>∅</code> <span class=\"arr-hd-muted\">（未定義）</span>";
-    } else if (!Number.isNaN(nParsed) && nParsed >= 1 && nParsed <= 4) {
-      nPart = "添字 <code>" + nParsed + "</code>";
-    } else {
-      nPart = "<span class=\"arr-hd-muted\">1〜4 か空にしてください</span>";
-    }
-    arrLlHeadReadout.innerHTML =
-      "いま <code>listHead</code> = <code>" +
-      h +
-      "</code> なので、入り口は添字 <code>" +
-      h +
-      "</code> のセルと同じく <code>val[" +
-      h +
-      "]</code> と <code>next[" +
-      h +
-      "]</code> を読みます → <code>val[" +
-      h +
-      "] = " +
-      vShow +
-      "</code>、<code>next[" +
-      h +
-      "] = </code> " +
-      nPart +
-      "。";
   }
 
   function parseNextField(el) {
@@ -2346,7 +2602,7 @@
   function clearArrLlRibbon() {
     arrLlRibbonTracks.innerHTML = "";
     arrLlRibbonHint.innerHTML =
-      "listHead から <code>val</code> → <code>next</code> で次の添字へ、と読み進める流れを矢印で示します。";
+      "上の <code>val</code> と <code>next</code> を読んだあと、<code>listHead</code> から次の添字へ進む流れを矢印で示します。";
   }
 
   function arrLlAppendArrowDefs(svg, markerId) {
@@ -2403,7 +2659,7 @@
     var hint =
       "<strong>読み方：</strong> 行ごとに「どの添字から出す線か」が分かれています。<code>listHead</code> で入り、各 <code>" +
       seq.join(" → ") +
-      "</code> で <code>val</code> → 下の <code>next</code> → 次の列へ。矢印の端は上の <code>val</code> 列の位置に合わせています。";
+      "</code> で上の <code>val</code> → <code>next</code> を読み、下の矢印で次の列へ。矢印の端は <code>val</code> 列の位置に合わせています。";
     arrLlRibbonHint.innerHTML = hint;
 
     var uid = 0;
@@ -2544,7 +2800,6 @@
   }
 
   function renderArrLl() {
-    syncArrLlHeadReadout();
     var r = traverseArrLl();
     var okVisual = r.ok && r.kind !== "warn" && r.kind !== "cycle";
     arrLlSeq.className = "arr-seq" + (okVisual ? "" : " arr-seq--warn");
@@ -2554,21 +2809,18 @@
     if (r.kind === "cycle") {
       clearArrLlRibbon();
       arrLlSeq.textContent = r.text + (r.detail ? " " + r.detail : "");
-      setArrLlMsg(r.text, "warn");
       arrLlRibbonHint.innerHTML = "ループのため、列どおりの終端矢印は描けません。";
       return;
     }
     if (!r.ok || r.kind === "warn") {
       clearArrLlRibbon();
       arrLlSeq.textContent = r.text;
-      setArrLlMsg(r.text, "warn");
-      arrLlRibbonHint.textContent = "入力を直すと、辿りの矢印が表示されます。";
+      arrLlRibbonHint.textContent = "入力を直すと、巡りの矢印が表示されます。";
       return;
     }
     if (r.kind === "empty") {
       clearArrLlRibbon();
       arrLlSeq.textContent = r.text;
-      setArrLlMsg("状態を更新しました。", "ok");
       arrLlRibbonHint.textContent = "listHead が 0 なので、矢印はありません。";
       return;
     }
@@ -2576,24 +2828,23 @@
     var chain = r.labels.join(" → ");
     var idxPath = r.seq.join(" → ");
     arrLlSeq.textContent = "値の列：" + chain + "　／　添字の辿り順：" + idxPath;
-    setArrLlMsg("listHead から辿れるリストを表示しています。", "ok");
 
     applyArrLlHighlights(r.seq);
     drawArrLlRibbon(r);
   }
 
   function resetArrLlExample() {
-    arrLlHeadInput.value = "1";
-    arrLlValInputs[0].value = "A";
-    arrLlValInputs[1].value = "C";
-    arrLlValInputs[2].value = "D";
-    arrLlValInputs[3].value = "B";
-    arrLlNextInputs[0].value = "4";
+    arrLlHeadInput.value = "2";
+    arrLlValInputs[0].value = "学校";
+    arrLlValInputs[1].value = "公園";
+    arrLlValInputs[2].value = "図書館";
+    arrLlValInputs[3].value = "";
+    arrLlNextInputs[0].value = "";
     arrLlNextInputs[1].value = "3";
-    arrLlNextInputs[2].value = "";
-    arrLlNextInputs[3].value = "2";
+    arrLlNextInputs[2].value = "1";
+    arrLlNextInputs[3].value = "";
     renderArrLl();
-    logArrayLl("例に戻しました（A→B→C→D / 添字 1→4→2→3）");
+    logArrayLl("例に戻しました（val は 1:学校,2:公園,3:図書館 / 辿り 2→3→1）");
   }
 
   function wireArrLlInputs() {
@@ -2616,8 +2867,9 @@
     }, 120);
   });
 
+  arrLlHeadInput.value = "2";
   renderArrLl();
-  logArrayLl("配列リスト：起動（例の初期状態）");
+  logArrayLl("単方向リスト(配列)：起動（listHead=2 / val 1:学校,2:公園,3:図書館）");
 })();
   </script>
 </body>

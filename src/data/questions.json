@@ -3792,6 +3792,244 @@
     "another": 0
   },
   {
+    "id": "q78",
+    "number": 78,
+    "title": "予防接種・理論度数(令和7年度サンプル問題問5)",
+    "questionText": "次の記述中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "予防接種の病気 X に対する予防効果を調査するために集めたデータの集計結果を基に，病気 X にかかるかどうかが，予防接種の有無に影響されないと仮定した場合の人数を計算する。この人数を理論度数という。表 1 に集計結果の例を示し，表 2 に表 1 を基に計算した理論度数を示す。関数 f は，引数 data で受け取った集計結果を基に計算した理論度数を返す。引数と戻り値は二次元配列で，その行が表の行，その列が表の列に対応する。"
+      },
+      {
+        "type": "table",
+        "caption": "表1　集計結果の例（単位　人）",
+        "headers": ["", "病気Xにかからなかった", "病気Xにかかった"],
+        "rows": [
+          ["予防接種を受けた", "82", "6"],
+          ["予防接種を受けていない", "58", "8"]
+        ]
+      },
+      {
+        "type": "table",
+        "caption": "表2　表1を基に計算した理論度数（単位　人）",
+        "headers": ["", "病気Xにかからなかった", "病気Xにかかった"],
+        "rows": [
+          ["予防接種を受けた", "a", { "text": "", "shaded": true }],
+          ["予防接種を受けていない", { "text": "", "shaded": true }, "b"]
+        ]
+      },
+      {
+        "type": "text",
+        "text": "注記　網掛けの部分は数値を表示していない。"
+      }
+    ],
+    "pseudoCode": [
+      "○実数型の二次元配列：f(実数型の二次元配列：data)",
+      "  実数型：t ← dataの要素の和",
+      "  整数型：row ← dataの行数",
+      "  整数型：col ← dataの列数",
+      "  実数型の二次元配列：result ← {row行col列の 未定義の値}",
+      "  整数型：r，c",
+      "  for（r を 1 から row まで 1 ずつ増やす）",
+      "    for（c を 1 から col まで 1 ずつ増やす）",
+      "      result[r, c] ← (dataの行番号rの要素の和) × (dataの列番号cの要素の和) ÷ t",
+      "    endfor",
+      "  endfor",
+      "  return result"
+    ],
+    "choices": [
+      { "id": "a", "text": "a=44, b=33" },
+      { "id": "b", "text": "a=58, b=8" },
+      { "id": "c", "text": "a=70, b=7" },
+      { "id": "d", "text": "a=75, b=2" },
+      { "id": "e", "text": "a=80, b=6" },
+      { "id": "f", "text": "a=80, b=8" },
+      { "id": "g", "text": "a=82, b=6" }
+    ],
+    "choiceTable": {
+      "headers": ["a", "b"],
+      "rows": [
+        ["44", "33"],
+        ["58", "8"],
+        ["70", "7"],
+        ["75", "2"],
+        ["80", "6"],
+        ["80", "8"],
+        ["82", "6"]
+      ]
+    },
+    "videoUrl": "https://www.youtube.com/watch?v=wjzr4aKqoq4&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=67&t=87s",
+    "correctChoiceId": "e",
+    "hitokoto": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=wjzr4aKqoq4&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=67&t=31s",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q79",
+    "number": 79,
+    "title": "配列&繰り返し(令和4年度4月 サンプル問題問2)",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "次のプログラムは，整数型の配列 array の要素の並びを逆順にする。",
+    "pseudoCode": [
+      "整数型の配列：array ← {1, 2, 3, 4, 5}",
+      "整数型：right, left",
+      "整数型：tmp",
+      "",
+      "for（left を 1 から（array の要素数 ÷ 2 の商）まで 1 ずつ増やす）",
+      "  right ← 【 a 】",
+      "  tmp ← array[right]",
+      "  array[right] ← array[left]",
+      "  【 b 】 ← tmp",
+      "endfor"
+    ],
+    "choices": [
+      { "id": "a", "text": "a=array の要素数 − left, b=array[left]" },
+      { "id": "b", "text": "a=array の要素数 − left, b=array[right]" },
+      { "id": "c", "text": "a=array の要素数 − left + 1, b=array[left]" },
+      { "id": "d", "text": "a=array の要素数 − left + 1, b=array[right]" }
+    ],
+    "choiceTable": {
+      "headers": ["a", "b"],
+      "rows": [
+        ["array の要素数 − left", "array[left]"],
+        ["array の要素数 − left", "array[right]"],
+        ["array の要素数 − left + 1", "array[left]"],
+        ["array の要素数 − left + 1", "array[right]"]
+      ]
+    },
+    "videoUrl": "https://www.youtube.com/watch?v=ryH90Ocp58k&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=68&t=50s",
+    "correctChoiceId": "c",
+    "hitokoto": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=ryH90Ocp58k&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=68&t=3s",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q80",
+    "number": 80,
+    "title": "function1・function2(令和7年度サンプル問題問1)",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "関数 function1 が受け取る引数と，関数 function2 が受け取る引数とが同じとき，二つの関数は同じ値を返す。ここで，引数 n と引数 m は正の整数であり，引数 m は引数 n よりも 10 以上大きい数とする。"
+      }
+    ],
+    "pseudoCode": [
+      "○整数型：function1（整数型：n，整数型：m）",
+      "  整数型：count ← 0",
+      "  整数型：i",
+      "  for（i を n から m まで 1 ずつ増やす）",
+      "    if（（i mod 4）が 0 と等しい）",
+      "      count ← count + 1",
+      "    endif",
+      "  endfor",
+      "  return count",
+      "",
+      "○整数型：function2（整数型：n，整数型：m）",
+      "  整数型：count ← 0",
+      "  整数型：tempN ← n",
+      "  整数型：i, j",
+      "",
+      "  for（【 a 】）",
+      "    if（（tempN mod 4）が 0 と等しい）",
+      "      繰返し処理を終了する",
+      "    endif",
+      "    tempN ← tempN + 1",
+      "  endfor",
+      "",
+      "  for（【 b 】）",
+      "    count ← count + 1",
+      "  endfor",
+      "",
+      "  return count"
+    ],
+    "choices": [
+      { "id": "a", "text": "a=iを1から2まで1ずつ増やす, b=jをnから始めてmを超えない範囲でtempNずつ増やす" },
+      { "id": "b", "text": "a=iを1から2まで1ずつ増やす, b=jをtempNからmまで1ずつ増やす" },
+      { "id": "c", "text": "a=iを1から2まで1ずつ増やす, b=jをtempNから始めてmを超えない範囲で4ずつ増やす" },
+      { "id": "d", "text": "a=iを1から3まで1ずつ増やす, b=jをnから始めてmを超えない範囲でtempNずつ増やす" },
+      { "id": "e", "text": "a=iを1から3まで1ずつ増やす, b=jをtempNからmまで1ずつ増やす" },
+      { "id": "f", "text": "a=iを1から3まで1ずつ増やす, b=jをtempNから始めてmを超えない範囲で4ずつ増やす" }
+    ],
+    "choiceTable": {
+      "headers": ["a", "b"],
+      "rows": [
+        ["iを1から2まで1ずつ増やす", "jをnから始めてmを超えない範囲でtempNずつ増やす"],
+        ["iを1から2まで1ずつ増やす", "jをtempNからmまで1ずつ増やす"],
+        ["iを1から2まで1ずつ増やす", "jをtempNから始めてmを超えない範囲で4ずつ増やす"],
+        ["iを1から3まで1ずつ増やす", "jをnから始めてmを超えない範囲でtempNずつ増やす"],
+        ["iを1から3まで1ずつ増やす", "jをtempNからmまで1ずつ増やす"],
+        ["iを1から3まで1ずつ増やす", "jをtempNから始めてmを超えない範囲で4ずつ増やす"]
+      ]
+    },
+    "videoUrl": "https://www.youtube.com/watch?v=s3PPNghUEAU&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=69&t=34s",
+    "correctChoiceId": "f",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q81",
+    "number": 81,
+    "title": "隣接行列(令和6年度サンプル問題問3)",
+    "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "図1に示すグラフの頂点には，1から順に整数で番号が付けられている。グラフは無向グラフであり，各頂点間には高々一つの辺がある。一つの辺は両端の頂点の番号を要素にもつ要素数2の整数型の配列で表現できる。例えば，{1，3}は頂点1と頂点3を端点とする辺を表す。グラフ全体は，グラフに含まれる辺を表す要素数2の配列を全て格納した配列（以下，辺の配列という）で表現できる。図1のグラフは整数型配列の配列{{1，3}，{1，4}，{3，4}，{2，4}，{4，5}}と表現できる。"
+      },
+      {
+        "type": "table",
+        "caption": "図2　図1のグラフを表現する隣接行列",
+        "headers": ["", "1", "2", "3", "4", "5"],
+        "rows": [
+          ["1", "0", "0", "1", "1", "0"],
+          ["2", "0", "0", "0", "1", "0"],
+          ["3", "0", "0", "0", "1", "0"],
+          ["4", "0", "1", "1", "0", "1"],
+          ["5", "0", "0", "0", "1", "0"]
+        ]
+      },
+      {
+        "type": "text",
+        "text": "関数 edgesToMatrix は，辺の配列を隣接行列に変換する。隣接行列とは，グラフに含まれる頂点の個数と等しい行数及び列数の正方行列で，i行j列の成分は頂点iと頂点jを結ぶ辺があるときに1となり，それ以外は0となる。行列の対角成分は全て0で，無向グラフの場合は対称行列になる。関数 edgesToMatrix は，引数 edgeList で辺の配列を，引数 nodeNum でグラフの頂点の個数をそれぞれ受け取り，隣接行列を表す整数型の二次元配列を返す。"
+      }
+    ],
+    "pseudoCode": [
+      "○整数型の二次元配列：edgesToMatrix（整数型配列の配列：edgeList，",
+      "                             整数型：nodeNum）",
+      "  整数型の二次元配列：adjMatrix ← {nodeNum行nodeNum列の0}",
+      "  整数型：i，u，v",
+      "",
+      "  for（i を 1 から edgeListの要素数 まで 1 ずつ増やす）",
+      "    u ← edgeList[i][1]",
+      "    v ← edgeList[i][2]",
+      "",
+      "    【　　　】",
+      "  endfor",
+      "",
+      "  return adjMatrix"
+    ],
+    "choices": [
+      { "id": "a", "text": "adjMatrix[u, u] ← 1" },
+      { "id": "b", "text": "adjMatrix[u, u] ← 1\n    adjMatrix[v, v] ← 1" },
+      { "id": "c", "text": "adjMatrix[u, v] ← 1" },
+      { "id": "d", "text": "adjMatrix[u, v] ← 1\n    adjMatrix[v, u] ← 1" },
+      { "id": "e", "text": "adjMatrix[v, u] ← 1" },
+      { "id": "f", "text": "adjMatrix[v, v] ← 1" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "d",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
     "id": "q84",
     "number": 84,
     "title": "ルートと平方根(令和4年度12月サンプル問題問5)",
