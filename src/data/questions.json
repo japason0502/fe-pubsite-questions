@@ -3975,63 +3975,85 @@
   {
     "id": "q81",
     "number": 81,
-    "title": "隣接行列(令和6年度サンプル問題問3)",
-    "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "title": "100円玉(令和7年度サンプル問題問2)",
+    "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
     "bodyBlocks": [
       {
         "type": "text",
-        "text": "図1に示すグラフの頂点には，1から順に整数で番号が付けられている。グラフは無向グラフであり，各頂点間には高々一つの辺がある。一つの辺は両端の頂点の番号を要素にもつ要素数2の整数型の配列で表現できる。例えば，{1，3}は頂点1と頂点3を端点とする辺を表す。グラフ全体は，グラフに含まれる辺を表す要素数2の配列を全て格納した配列（以下，辺の配列という）で表現できる。図1のグラフは整数型配列の配列{{1，3}，{1，4}，{3，4}，{2，4}，{4，5}}と表現できる。"
-      },
-      {
-        "type": "table",
-        "caption": "図2　図1のグラフを表現する隣接行列",
-        "headers": ["", "1", "2", "3", "4", "5"],
-        "rows": [
-          ["1", "0", "0", "1", "1", "0"],
-          ["2", "0", "0", "0", "1", "0"],
-          ["3", "0", "0", "0", "1", "0"],
-          ["4", "0", "1", "1", "0", "1"],
-          ["5", "0", "0", "0", "1", "0"]
-        ]
-      },
-      {
-        "type": "text",
-        "text": "関数 edgesToMatrix は，辺の配列を隣接行列に変換する。隣接行列とは，グラフに含まれる頂点の個数と等しい行数及び列数の正方行列で，i行j列の成分は頂点iと頂点jを結ぶ辺があるときに1となり，それ以外は0となる。行列の対角成分は全て0で，無向グラフの場合は対称行列になる。関数 edgesToMatrix は，引数 edgeList で辺の配列を，引数 nodeNum でグラフの頂点の個数をそれぞれ受け取り，隣接行列を表す整数型の二次元配列を返す。"
+        "text": "関数 change は，10 より大きい整数を引数 n で受け取り，1 円玉，5 円玉，10 円玉を使ってちょうど n 円にする組合せの総数を返す。\n例えば，12 円にする組合せは，次のように数えられる。10 円玉を使わない場合には，1 円玉と 5 円玉だけでちょうど 12 円にすることになる。その組合せは，使える 5 円玉の枚数が 0 以上（12 ÷ 5 の商）以下なので，（12 ÷ 5 の商）＋ 1 ＝ 3 通りある。同様に，10 円玉を 1 枚使う場合には，1 円玉と 5 円玉だけでちょうど 2 円にすることになり，その組合せは（2 ÷ 5 の商）＋ 1 ＝ 1 通りある。10 円玉を 2 枚以上使う組合せはない。よって，1 円玉，5 円玉，10 円玉を使ってちょうど 12 円にする組合せは，3 ＋ 1 ＝ 4 通りである。"
       }
     ],
     "pseudoCode": [
-      "○整数型の二次元配列：edgesToMatrix（整数型配列の配列：edgeList，",
-      "                             整数型：nodeNum）",
-      "  整数型の二次元配列：adjMatrix ← {nodeNum行nodeNum列の0}",
-      "  整数型：i，u，v",
-      "",
-      "  for（i を 1 から edgeListの要素数 まで 1 ずつ増やす）",
-      "    u ← edgeList[i][1]",
-      "    v ← edgeList[i][2]",
-      "",
-      "    【　　　】",
-      "  endfor",
-      "",
-      "  return adjMatrix"
+      "○整数型：change（整数型：n）",
+      "  整数型：count ← 0",
+      "  整数型：rest ← n",
+      "  while（【　　　】）",
+      "    count ← count ＋（rest ÷ 5 の商）＋ 1",
+      "    rest ← rest － 10",
+      "  endwhile",
+      "  return count"
     ],
     "choices": [
-      { "id": "a", "text": "adjMatrix[u, u] ← 1" },
-      { "id": "b", "text": "adjMatrix[u, u] ← 1\n    adjMatrix[v, v] ← 1" },
-      { "id": "c", "text": "adjMatrix[u, v] ← 1" },
-      { "id": "d", "text": "adjMatrix[u, v] ← 1\n    adjMatrix[v, u] ← 1" },
-      { "id": "e", "text": "adjMatrix[v, u] ← 1" },
-      { "id": "f", "text": "adjMatrix[v, v] ← 1" }
+      { "id": "a", "text": "rest ≧ 0" },
+      { "id": "b", "text": "rest ≧ 5" },
+      { "id": "c", "text": "rest ≧ 10" },
+      { "id": "d", "text": "rest ＞ 0" },
+      { "id": "e", "text": "rest ＞ 5" },
+      { "id": "f", "text": "rest ＞ 10" }
     ],
-    "videoUrl": "",
-    "correctChoiceId": "d",
+    "videoUrl": "https://www.youtube.com/watch?v=Okg7SVLwVgs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=143s",
+    "correctChoiceId": "a",
     "hitokoto": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=Okg7SVLwVgs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=63s",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q82",
+    "number": 82,
+    "title": "三目並べ(令和4年度サンプル問題問15)",
+    "questionText": "次の記述中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "三目並べにおいて自分が勝利する可能性が最も高い手を決定する。次の手順で，ゲームの状態遷移を木構造として表現し，根以外の各節の評価値を求める。その結果，根の子の中で最も評価値が高い手を，最も勝利する可能性が高い手とする。自分が選択した手を〇で表し，相手が選択した手を×で表す。\n\n〔手順〕\n(1) 現在の盤面の状態を根とし，勝敗がつくか，引き分けとなるまでの考えられる全ての手を木構造で表現する。\n(2) 葉の状態を次のように評価する。\n　① 自分が勝ちの場合は10\n　② 自分が負けの場合は−10\n　③ 引き分けの場合は0\n(3) 葉以外の節の評価値は，その節の全ての子の評価値を基に決定する。\n　① 自分の手番の節である場合，子の評価値で最大の評価値を節の評価値とする。\n　② 相手の手番の節である場合，子の評価値で最小の評価値を節の評価値とする。\n\nゲームが図の最上部にある根の状態のとき，自分が選択できる手は三つある。そのうちAが指す子の評価値は【 a 】であり，Bが指す子の評価値は【 b 】である。"
+      },
+      {
+        "type": "image",
+        "src": "media/media/2026-01-27-16-07-46.png",
+        "alt": "図　三目並べの状態遷移",
+        "width": "90%"
+      },
+      {
+        "type": "textCenter",
+        "text": "図　三目並べの状態遷移"
+      }
+    ],
+    "choices": [
+      { "id": "a", "text": "a=0, b=−10" },
+      { "id": "b", "text": "a=0, b=0" },
+      { "id": "c", "text": "a=10, b=−10" },
+      { "id": "d", "text": "a=10, b=0" }
+    ],
+    "choiceTable": {
+      "headers": ["a", "b"],
+      "rows": [
+        ["0", "−10"],
+        ["0", "0"],
+        ["10", "−10"],
+        ["10", "0"]
+      ]
+    },
+    "videoUrl": "",
+    "correctChoiceId": "a",
+    "hitokoto": "自力で解こう!",
     "hintVideoUrl": "",
     "lessonUrl": "",
     "another": 0
   },
   {
-    "id": "q84",
-    "number": 84,
+    "id": "q83",
+    "number": 83,
     "title": "ルートと平方根(令和4年度12月サンプル問題問5)",
     "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
     "bodyBlocks": [
@@ -4061,8 +4083,8 @@
     "another": 0
   },
   {
-    "id": "q85",
-    "number": 85,
+    "id": "q84",
+    "number": 84,
     "title": "素数(令和5年度サンプル問題問1)",
     "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は1から始まる。",
     "bodyText": "関数findPrimeNumbersは，引数で与えられた整数以下の，全ての素数だけを格納した配列を返す関数である。ここで，引数に与える整数は2以上である。",
@@ -4113,8 +4135,8 @@
     "another": 0
   },
   {
-    "id": "q86",
-    "number": 86,
+    "id": "q85",
+    "number": 85,
     "title": "最大公約数(実行回数)",
     "questionText": "次のプログラム中の【  】に入れる正しい答えを，解答群の中から選べ。",
     "bodyText": "関数 func は，2つの正の整数 a, b を引数として受け取り，それらの最大公約数を返す関数である｡関数 func(128, 24) を実行したとき，/*** α ***/ の行の処理が実行される回数は【　】回である。",
@@ -4147,8 +4169,8 @@
     "another": 1
   },
   {
-    "id": "q87",
-    "number": 87,
+    "id": "q86",
+    "number": 86,
     "title": "令和4年度サンプル問題問4(最大公約数: while/ifの条件)",
     "questionText": "次のプログラム中の【a】〜【c】に入れる正しい答えの組合せを，解答群の中から選べ。",
     "bodyText": "関数 gcd は，引数で与えられた二つの正の整数 num1 と num2 の最大公約数を，\n次の (1)〜(3) の性質を利用して求める。\n\n(1)num1 と num2 が等しいとき，num1 と num2 の最大公約数は num1 である。\n(2)num1 が num2 より大きいとき，num1 と num2 の最大公約数は，(num1 − num2) と num2 の最大公約数と等しい。\n(3)num2 が num1 より大きいとき，num1 と num2 の最大公約数は，(num2 − num1) と num1 の最大公約数と等しい。",
@@ -4188,6 +4210,106 @@
     "correctChoiceId": "d",
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=XJ3S-3MTV80&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=67",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q87",
+    "number": 87,
+    "title": "binSort(令和4年度サンプル問題問11)",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "関数 binSort を binSort(【　】) として呼び出すと，戻り値の配列には未定義の要素は含まれておらず，値は昇順に並んでいる。",
+    "pseudoCode": [
+      "○ 整数型の配列: binSort(整数型の配列: data)",
+      "    整数型: n ← data の要素数",
+      "    整数型の配列: bins ← { n 個の未定義の値 }",
+      "    整数型: i",
+      "",
+      "    for (i を 1 から n まで 1 ずつ増やす)",
+      "        bins[data[i]] ← data[i]",
+      "    endfor",
+      "",
+      "    return bins"
+    ],
+    "choices": [
+      { "id": "a", "text": "{2, 6, 3, 1, 4, 5}" },
+      { "id": "b", "text": "{3, 1, 4, 4, 5, 2}" },
+      { "id": "c", "text": "{4, 2, 1, 5, 6, 2}" },
+      { "id": "d", "text": "{5, 3, 4, 3, 2, 6}" }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=IBH_UOYAaqc&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=14&pp=iAQBsAgC",
+    "correctChoiceId": "a",
+    "hitokoto": "解答群を良く見よう!",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=IBH_UOYAaqc&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=14",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q89",
+    "number": 89,
+    "title": "隣接行列(令和6年度サンプル問題問3)",
+    "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "図1に示すグラフの頂点には，1から順に整数で番号が付けられている。グラフは無向グラフであり，各頂点間には高々一つの辺がある。一つの辺は両端の頂点の番号を要素にもつ要素数2の整数型の配列で表現できる。例えば，{1，3}は頂点1と頂点3を端点とする辺を表す。グラフ全体は，グラフに含まれる辺を表す要素数2の配列を全て格納した配列（以下，辺の配列という）で表現できる。辺の配列の要素数はグラフの辺の個数と等しい。図1のグラフは整数型配列の配列{{1，3}，{1，4}，{3，4}，{2，4}，{4，5}}と表現できる。"
+      },
+      {
+        "type": "image",
+        "src": "assets/image-20260109105815091.png",
+        "alt": "図1　グラフの例",
+        "width": "25%"
+      },
+      {
+        "type": "textCenter",
+        "text": "図1　グラフの例"
+      },
+      {
+        "type": "text",
+        "text": "関数 edgesToMatrix は，辺の配列を隣接行列に変換する。隣接行列とは，グラフに含まれる頂点の個数と等しい行数及び列数の正方行列で，i行j列の成分は頂点iと頂点jを結ぶ辺があるときに1となり，それ以外は0となる。行列の対角成分は全て0で，無向グラフの場合は対称行列になる。図1のグラフを表現する隣接行列を図2に示す。"
+      },
+      {
+        "type": "image",
+        "src": "assets/image-20260109105826786.png",
+        "alt": "図2　図1のグラフを表現する隣接行列",
+        "width": "20%"
+      },
+      {
+        "type": "textCenter",
+        "text": "図2　図1のグラフを表現する隣接行列"
+      },
+      {
+        "type": "text",
+        "text": "関数 edgesToMatrix は，引数 edgeList で辺の配列を，引数 nodeNum でグラフの頂点の個数をそれぞれ受け取り，隣接行列を表す整数型の二次元配列を返す。"
+      }
+    ],
+    "pseudoCode": [
+      "○整数型の二次元配列：edgesToMatrix（整数型配列の配列：edgeList，",
+      "                             整数型：nodeNum）",
+      "  整数型の二次元配列：adjMatrix ← {nodeNum行nodeNum列の0}",
+      "  整数型：i，u，v",
+      "",
+      "  for（i を 1 から edgeListの要素数 まで 1 ずつ増やす）",
+      "    u ← edgeList[i][1]",
+      "    v ← edgeList[i][2]",
+      "",
+      "    【　　　】",
+      "  endfor",
+      "",
+      "  return adjMatrix"
+    ],
+    "choices": [
+      { "id": "a", "text": "adjMatrix[u, u] ← 1" },
+      { "id": "b", "text": "adjMatrix[u, u] ← 1\n    adjMatrix[v, v] ← 1" },
+      { "id": "c", "text": "adjMatrix[u, v] ← 1" },
+      { "id": "d", "text": "adjMatrix[u, v] ← 1\n    adjMatrix[v, u] ← 1" },
+      { "id": "e", "text": "adjMatrix[v, u] ← 1" },
+      { "id": "f", "text": "adjMatrix[v, v] ← 1" }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "d",
+    "hitokoto": "",
+    "hintVideoUrl": "",
     "lessonUrl": "",
     "another": 0
   }

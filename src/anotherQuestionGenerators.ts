@@ -935,7 +935,7 @@ function generateQ71(_baseQuestion: Question): GeneratedQuestionPatch {
   };
 }
 
-/** q86「値を変えてもう一度」: func(24, 30) または func(24, 128)（後者は 128,24 の入れ替え）。どちらも mod 行は 3 回（イ／b） */
+/** q85「値を変えてもう一度」: func(24, 30) または func(24, 128)（後者は 128,24 の入れ替え）。どちらも mod 行は 3 回（イ／b） */
 function generateQ86(_baseQuestion: Question): GeneratedQuestionPatch {
   const swapped = randomInt(0, 1) === 1;
   if (!swapped) {
@@ -978,7 +978,7 @@ const anotherQuestionGenerators: Record<string, AnotherQuestionGenerator> = {
   q61: generateQ61,
   q70: generateQ70,
   q71: generateQ71,
-  q86: generateQ86
+  q85: generateQ86
 };
 
 export function generateAnotherQuestion(baseQuestion: Question): GeneratedQuestionPatch | null {

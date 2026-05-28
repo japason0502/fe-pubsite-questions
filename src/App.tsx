@@ -161,7 +161,13 @@ function renderBodyBlock(block: BodyBlock, idx: number) {
     case "image":
       return (
         <div key={idx} className="body-image-block">
-          <img src={bodyAssetSrc(block.src)} alt={block.alt ?? ""} className="body-inline-image" loading="lazy" />
+          <img
+            src={bodyAssetSrc(block.src)}
+            alt={block.alt ?? ""}
+            className="body-inline-image"
+            style={block.width ? { width: block.width } : undefined}
+            loading="lazy"
+          />
         </div>
       );
     default:
