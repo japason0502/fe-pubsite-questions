@@ -2458,13 +2458,37 @@
       }
     ],
     "choiceTable": {
-      "headers": ["a", "b", "c"],
+      "headers": [
+        "a",
+        "b",
+        "c"
+      ],
       "rows": [
-        ["3", "3と5", "5"],
-        ["3", "5", "3と5"],
-        ["3と5", "3", "5"],
-        ["5", "3", "3と5"],
-        ["5", "3と5", "3"]
+        [
+          "3",
+          "3と5",
+          "5"
+        ],
+        [
+          "3",
+          "5",
+          "3と5"
+        ],
+        [
+          "3と5",
+          "3",
+          "5"
+        ],
+        [
+          "5",
+          "3",
+          "3と5"
+        ],
+        [
+          "5",
+          "3と5",
+          "3"
+        ]
       ]
     },
     "videoUrl": "https://www.youtube.com/watch?v=NfSRhCGtf8k&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=39&t=67s",
@@ -2481,10 +2505,22 @@
     "bodyText": "関数 triArea は，整数型の引数である底辺 b と高さ hを受け取り､三角形の面積を返す。三角形の面積は「(底辺× 高さ) ÷ 2」で求められる。ここで､底辺bと高さhいずれも､0が渡されることはないものとする｡いくつかの入力例と戻り値を下表に示す。",
     "bodyTable": {
       "caption": "表　triArea に与える b, h 及び戻り値の例",
-      "headers": ["b", "h", "戻り値"],
+      "headers": [
+        "b",
+        "h",
+        "戻り値"
+      ],
       "rows": [
-        ["3", "4", "6"],
-        ["7", "2", "7"]
+        [
+          "3",
+          "4",
+          "6"
+        ],
+        [
+          "7",
+          "2",
+          "7"
+        ]
       ]
     },
     "pseudoCode": [
@@ -2527,12 +2563,32 @@
     "bodyText": "関数simRatioは，引数として与えられた要素数1以上の二つの文字型の配列s1とs2を比較し，要素数が等しい場合は，配列の並びがどの程度似ているかを示す指標として，（要素番号が同じ要素の文字同士が一致する要素の組の個数 ÷ s1の要素数）を返す。すべて一致すれば戻り値は1，一致しなければ0，要素数が異なる場合は−1を返す。",
     "bodyTable": {
       "caption": "表 関数 simRatio に与える s1，s2 及び戻り値の例",
-      "headers": ["s1", "s2", "戻り値"],
+      "headers": [
+        "s1",
+        "s2",
+        "戻り値"
+      ],
       "rows": [
-        ["{ \"a\", \"p\", \"p\", \"l\", \"e\" }", "{ \"a\", \"p\", \"p\", \"l\", \"e\" }", "1"],
-        ["{ \"a\", \"p\", \"p\", \"l\", \"e\" }", "{ \"a\", \"p\", \"r\", \"i\", \"l\" }", "0.4"],
-        ["{ \"a\", \"p\", \"p\", \"l\", \"e\" }", "{ \"m\", \"e\", \"l\", \"o\", \"n\" }", "0"],
-        ["{ \"a\", \"p\", \"p\", \"l\", \"e\" }", "{ \"p\", \"e\", \"n\" }", "−1"]
+        [
+          "{ \"a\", \"p\", \"p\", \"l\", \"e\" }",
+          "{ \"a\", \"p\", \"p\", \"l\", \"e\" }",
+          "1"
+        ],
+        [
+          "{ \"a\", \"p\", \"p\", \"l\", \"e\" }",
+          "{ \"a\", \"p\", \"r\", \"i\", \"l\" }",
+          "0.4"
+        ],
+        [
+          "{ \"a\", \"p\", \"p\", \"l\", \"e\" }",
+          "{ \"m\", \"e\", \"l\", \"o\", \"n\" }",
+          "0"
+        ],
+        [
+          "{ \"a\", \"p\", \"p\", \"l\", \"e\" }",
+          "{ \"p\", \"e\", \"n\" }",
+          "−1"
+        ]
       ]
     },
     "pseudoCode": [
@@ -2585,22 +2641,53 @@
       {
         "type": "table",
         "caption": "表　注文データの例",
-        "headers": ["注文番号", "購入された商品のリスト"],
+        "headers": [
+          "注文番号",
+          "購入された商品のリスト"
+        ],
         "rows": [
-          ["1", "A, B, D"],
-          ["2", "A, D"],
-          ["3", "A"],
-          ["4", "A, B, E"],
-          ["5", "B"],
-          ["6", "C, E"]
+          [
+            "1",
+            "A, B, D"
+          ],
+          [
+            "2",
+            "A, D"
+          ],
+          [
+            "3",
+            "A"
+          ],
+          [
+            "4",
+            "A, B, E"
+          ],
+          [
+            "5",
+            "B"
+          ],
+          [
+            "6",
+            "C, E"
+          ]
         ]
       },
       {
         "type": "textSub",
         "parts": [
-          { "kind": "s", "text": "注文データから，商品 x と商品 y とが同一の注文で購入されやすい傾向を示す関連度 " },
-          { "kind": "sub", "base": "L", "script": "xy" },
-          { "kind": "s", "text": " を，次の式で計算する。" }
+          {
+            "kind": "s",
+            "text": "注文データから，商品 x と商品 y とが同一の注文で購入されやすい傾向を示す関連度 "
+          },
+          {
+            "kind": "sub",
+            "base": "L",
+            "script": "xy"
+          },
+          {
+            "kind": "s",
+            "text": " を，次の式で計算する。"
+          }
         ]
       },
       {
@@ -2610,21 +2697,73 @@
       {
         "type": "textSub",
         "parts": [
-          { "kind": "s", "text": "ここで，" },
-          { "kind": "sub", "base": "M", "script": "xy" },
-          { "kind": "s", "text": " は商品 x と商品 y とが同一の注文で購入された注文数，" },
-          { "kind": "sub", "base": "K", "script": "x" },
-          { "kind": "s", "text": " は商品 x が購入された注文数，" },
-          { "kind": "sub", "base": "K", "script": "y" },
-          { "kind": "s", "text": " は商品 y が購入された注文数を表す。表の例では，" },
-          { "kind": "sub", "base": "M", "script": "AB" },
-          { "kind": "s", "text": " が2，全注文数が6，" },
-          { "kind": "sub", "base": "K", "script": "A" },
-          { "kind": "s", "text": " が4，" },
-          { "kind": "sub", "base": "K", "script": "B" },
-          { "kind": "s", "text": " が3であるので，商品Aと商品Bの関連度 " },
-          { "kind": "sub", "base": "L", "script": "AB" },
-          { "kind": "s", "text": " は，(2 × 6) / (4 × 3) ＝ 1.0 である。\n\n手続 putRelatedItem は，大域変数 orders に格納された注文データを基に，引数で与えられた商品との関連度が最も大きい商品のうちの一つと，その関連度を出力する。\nプログラムでは，商品は文字列で表し，注文は購入された商品の配列，注文データは注文の配列で表している。注文データには2種類以上の商品が含まれるものとする。\nまた，注文データにある商品以外の商品が，引数として与えられることはないものとする。" }
+          {
+            "kind": "s",
+            "text": "ここで，"
+          },
+          {
+            "kind": "sub",
+            "base": "M",
+            "script": "xy"
+          },
+          {
+            "kind": "s",
+            "text": " は商品 x と商品 y とが同一の注文で購入された注文数，"
+          },
+          {
+            "kind": "sub",
+            "base": "K",
+            "script": "x"
+          },
+          {
+            "kind": "s",
+            "text": " は商品 x が購入された注文数，"
+          },
+          {
+            "kind": "sub",
+            "base": "K",
+            "script": "y"
+          },
+          {
+            "kind": "s",
+            "text": " は商品 y が購入された注文数を表す。表の例では，"
+          },
+          {
+            "kind": "sub",
+            "base": "M",
+            "script": "AB"
+          },
+          {
+            "kind": "s",
+            "text": " が2，全注文数が6，"
+          },
+          {
+            "kind": "sub",
+            "base": "K",
+            "script": "A"
+          },
+          {
+            "kind": "s",
+            "text": " が4，"
+          },
+          {
+            "kind": "sub",
+            "base": "K",
+            "script": "B"
+          },
+          {
+            "kind": "s",
+            "text": " が3であるので，商品Aと商品Bの関連度 "
+          },
+          {
+            "kind": "sub",
+            "base": "L",
+            "script": "AB"
+          },
+          {
+            "kind": "s",
+            "text": " は，(2 × 6) / (4 × 3) ＝ 1.0 である。\n\n手続 putRelatedItem は，大域変数 orders に格納された注文データを基に，引数で与えられた商品との関連度が最も大きい商品のうちの一つと，その関連度を出力する。\nプログラムでは，商品は文字列で表し，注文は購入された商品の配列，注文データは注文の配列で表している。注文データには2種類以上の商品が含まれるものとする。\nまた，注文データにある商品以外の商品が，引数として与えられることはないものとする。"
+          }
         ]
       }
     ],
@@ -2698,14 +2837,42 @@
       }
     ],
     "choiceTable": {
-      "headers": ["a", "b", "c"],
+      "headers": [
+        "a",
+        "b",
+        "c"
+      ],
       "rows": [
-        ["arrayK[i]", "arrayM[i]", "allItemsの要素数"],
-        ["arrayK[i]", "arrayM[i]", "ordersの要素数"],
-        ["arrayK[i]", "arrayM[i]", "otherItemsの要素数"],
-        ["arrayM[i]", "arrayK[i]", "allItemsの要素数"],
-        ["arrayM[i]", "arrayK[i]", "ordersの要素数"],
-        ["arrayM[i]", "arrayK[i]", "otherItemsの要素数"]
+        [
+          "arrayK[i]",
+          "arrayM[i]",
+          "allItemsの要素数"
+        ],
+        [
+          "arrayK[i]",
+          "arrayM[i]",
+          "ordersの要素数"
+        ],
+        [
+          "arrayK[i]",
+          "arrayM[i]",
+          "otherItemsの要素数"
+        ],
+        [
+          "arrayM[i]",
+          "arrayK[i]",
+          "allItemsの要素数"
+        ],
+        [
+          "arrayM[i]",
+          "arrayK[i]",
+          "ordersの要素数"
+        ],
+        [
+          "arrayM[i]",
+          "arrayK[i]",
+          "otherItemsの要素数"
+        ]
       ]
     },
     "videoUrl": "https://www.youtube.com/watch?v=bXm9U08DKbg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=42&t=720s",
@@ -2793,17 +2960,47 @@
       }
     ],
     "choiceTable": {
-      "headers": ["a", "b"],
+      "headers": [
+        "a",
+        "b"
+      ],
       "rows": [
-        ["(vector1[i] × vector2[i]) の正の平方根", "denominator × (tempの正の平方根)"],
-        ["(vector1[i] × vector2[i]) の正の平方根", "denominator + (tempの正の平方根)"],
-        ["(vector1[i] × vector2[i]) の正の平方根", "tempの正の平方根"],
-        ["vector1[i] × vector2[i]", "denominator × (tempの正の平方根)"],
-        ["vector1[i] × vector2[i]", "denominator + (tempの正の平方根)"],
-        ["vector1[i] × vector2[i]", "tempの正の平方根"],
-        ["vector1[i] の2乗", "denominator × (tempの正の平方根)"],
-        ["vector1[i] の2乗", "denominator + (tempの正の平方根)"],
-        ["vector1[i] の2乗", "tempの正の平方根"]
+        [
+          "(vector1[i] × vector2[i]) の正の平方根",
+          "denominator × (tempの正の平方根)"
+        ],
+        [
+          "(vector1[i] × vector2[i]) の正の平方根",
+          "denominator + (tempの正の平方根)"
+        ],
+        [
+          "(vector1[i] × vector2[i]) の正の平方根",
+          "tempの正の平方根"
+        ],
+        [
+          "vector1[i] × vector2[i]",
+          "denominator × (tempの正の平方根)"
+        ],
+        [
+          "vector1[i] × vector2[i]",
+          "denominator + (tempの正の平方根)"
+        ],
+        [
+          "vector1[i] × vector2[i]",
+          "tempの正の平方根"
+        ],
+        [
+          "vector1[i] の2乗",
+          "denominator × (tempの正の平方根)"
+        ],
+        [
+          "vector1[i] の2乗",
+          "denominator + (tempの正の平方根)"
+        ],
+        [
+          "vector1[i] の2乗",
+          "tempの正の平方根"
+        ]
       ]
     },
     "videoUrl": "https://www.youtube.com/watch?v=zf7rqNQ52rc&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=43&t=92s",
@@ -2864,12 +3061,30 @@
       "  return 【　　　】"
     ],
     "choices": [
-      { "id": "a", "text": "(n − 1) + sum(n)" },
-      { "id": "b", "text": "sum(n − 1)" },
-      { "id": "c", "text": "n" },
-      { "id": "d", "text": "n + (n − 1)" },
-      { "id": "e", "text": "n + sum(1)" },
-      { "id": "f", "text": "n + sum(n − 1)" }
+      {
+        "id": "a",
+        "text": "(n − 1) + sum(n)"
+      },
+      {
+        "id": "b",
+        "text": "sum(n − 1)"
+      },
+      {
+        "id": "c",
+        "text": "n"
+      },
+      {
+        "id": "d",
+        "text": "n + (n − 1)"
+      },
+      {
+        "id": "e",
+        "text": "n + sum(1)"
+      },
+      {
+        "id": "f",
+        "text": "n + sum(n − 1)"
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=g3ofy8R50JI&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=45&pp=iAQBsAgC",
     "correctChoiceId": "f",
@@ -2892,12 +3107,30 @@
       "  return 【　　　】"
     ],
     "choices": [
-      { "id": "a", "text": "(n − 1) × factorial(n)" },
-      { "id": "b", "text": "factorial(n − 1)" },
-      { "id": "c", "text": "n" },
-      { "id": "d", "text": "n × (n − 1)" },
-      { "id": "e", "text": "n × factorial(1)" },
-      { "id": "f", "text": "n × factorial(n − 1)" }
+      {
+        "id": "a",
+        "text": "(n − 1) × factorial(n)"
+      },
+      {
+        "id": "b",
+        "text": "factorial(n − 1)"
+      },
+      {
+        "id": "c",
+        "text": "n"
+      },
+      {
+        "id": "d",
+        "text": "n × (n − 1)"
+      },
+      {
+        "id": "e",
+        "text": "n × factorial(1)"
+      },
+      {
+        "id": "f",
+        "text": "n × factorial(n − 1)"
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=n60hez89vic&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=46&pp=iAQBsAgC",
     "correctChoiceId": "f",
@@ -2921,10 +3154,22 @@
       "  endif"
     ],
     "choices": [
-      { "id": "a", "text": "2, 1, 0, 1, 2" },
-      { "id": "b", "text": "2, 1, 0, 2, 1" },
-      { "id": "c", "text": "0, 1, 2, 1, 0" },
-      { "id": "d", "text": "2, 1, 1, 0, 2" }
+      {
+        "id": "a",
+        "text": "2, 1, 0, 1, 2"
+      },
+      {
+        "id": "b",
+        "text": "2, 1, 0, 2, 1"
+      },
+      {
+        "id": "c",
+        "text": "0, 1, 2, 1, 0"
+      },
+      {
+        "id": "d",
+        "text": "2, 1, 1, 0, 2"
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=QhCL7UOPF0Y&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=47&pp=iAQBsAgC",
     "correctChoiceId": "a",
@@ -2974,10 +3219,22 @@
       "  endif"
     ],
     "choices": [
-      { "id": "a", "text": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14" },
-      { "id": "b", "text": "1, 2, 4, 8, 9, 5, 10, 11, 3, 6, 12, 13, 7, 14" },
-      { "id": "c", "text": "8, 4, 9, 2, 10, 5, 11, 1, 12, 6, 13, 3, 14, 7" },
-      { "id": "d", "text": "8, 9, 4, 10, 11, 5, 2, 12, 13, 6, 14, 7, 3, 1" }
+      {
+        "id": "a",
+        "text": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14"
+      },
+      {
+        "id": "b",
+        "text": "1, 2, 4, 8, 9, 5, 10, 11, 3, 6, 12, 13, 7, 14"
+      },
+      {
+        "id": "c",
+        "text": "8, 4, 9, 2, 10, 5, 11, 1, 12, 6, 13, 3, 14, 7"
+      },
+      {
+        "id": "d",
+        "text": "8, 9, 4, 10, 11, 5, 2, 12, 13, 6, 14, 7, 3, 1"
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=mgUfmoP0bk0&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=48&t=107s",
     "correctChoiceId": "c",
@@ -3002,10 +3259,22 @@
       "    return result"
     ],
     "choices": [
-      { "id": "a", "text": "result + int(binary の (length − i + 1)文字目の文字)" },
-      { "id": "b", "text": "result + int(binary の i文字目の文字)" },
-      { "id": "c", "text": "result × 2 + int(binary の (length − i + 1)文字目の文字)" },
-      { "id": "d", "text": "result × 2 + int(binary の i文字目の文字)" }
+      {
+        "id": "a",
+        "text": "result + int(binary の (length − i + 1)文字目の文字)"
+      },
+      {
+        "id": "b",
+        "text": "result + int(binary の i文字目の文字)"
+      },
+      {
+        "id": "c",
+        "text": "result × 2 + int(binary の (length − i + 1)文字目の文字)"
+      },
+      {
+        "id": "d",
+        "text": "result × 2 + int(binary の i文字目の文字)"
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=tTAwaVJgd6M&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=50&t=72s",
     "correctChoiceId": "d",
@@ -3021,9 +3290,18 @@
     "questionText": "次の文中の【　】に入れる正しい答えを，解答群の中から選べ。",
     "bodyText": "01001011 から上位4ビットを右詰めで取り出す(00000100)には【　】を行う。\n\nなお､演算子 >> は論理右シフト，演算子 << は論理左シフトを表す。例えば，value >> n は value の値を n ビットだけ右に論理シフトし，value << n は value の値を n ビットだけ左に論理シフトする。\n\nここで､除算の余り､商を取得する際は､ビットを2進数とみなして整数に変換した上で計算を行い､2進数変換して再度ビットに戻すものとする｡",
     "choices": [
-      { "id": "a", "text": ">> 4" },
-      { "id": "b", "text": "<< 4" },
-      { "id": "c", "text": "÷16の余りを取得" }
+      {
+        "id": "a",
+        "text": ">> 4"
+      },
+      {
+        "id": "b",
+        "text": "<< 4"
+      },
+      {
+        "id": "c",
+        "text": "÷16の余りを取得"
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=ZxfPWYOptSE&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=51&t=1474s",
     "correctChoiceId": "a",
@@ -3045,10 +3323,22 @@
       "    return r"
     ],
     "choices": [
-      { "id": "a", "text": "r ← (rbyte ∧ 00001111)" },
-      { "id": "b", "text": "r ← (rbyte ∨ 00001111)" },
-      { "id": "c", "text": "r ← (rbyte >> 4)" },
-      { "id": "d", "text": "r ← (rbyte << 4)" }
+      {
+        "id": "a",
+        "text": "r ← (rbyte ∧ 00001111)"
+      },
+      {
+        "id": "b",
+        "text": "r ← (rbyte ∨ 00001111)"
+      },
+      {
+        "id": "c",
+        "text": "r ← (rbyte >> 4)"
+      },
+      {
+        "id": "d",
+        "text": "r ← (rbyte << 4)"
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=p294AvRiLmY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=53&pp=iAQBsAQBsAgC",
     "correctChoiceId": "a",
@@ -3076,12 +3366,30 @@
       "    return count"
     ],
     "choices": [
-      { "id": "a", "text": "rbyte ← rbyte << 1" },
-      { "id": "b", "text": "rbyte ← rbyte << 7" },
-      { "id": "c", "text": "rbyte ← rbyte >> 1" },
-      { "id": "d", "text": "rbyte ← rbyte >> 7" },
-      { "id": "e", "text": "rbyte ← rbyte ∧ 00000001" },
-      { "id": "f", "text": "rbyte ← rbyte ∨ 00000001" }
+      {
+        "id": "a",
+        "text": "rbyte ← rbyte << 1"
+      },
+      {
+        "id": "b",
+        "text": "rbyte ← rbyte << 7"
+      },
+      {
+        "id": "c",
+        "text": "rbyte ← rbyte >> 1"
+      },
+      {
+        "id": "d",
+        "text": "rbyte ← rbyte >> 7"
+      },
+      {
+        "id": "e",
+        "text": "rbyte ← rbyte ∧ 00000001"
+      },
+      {
+        "id": "f",
+        "text": "rbyte ← rbyte ∨ 00000001"
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=pVlL-Fv6K5g&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=54&t=57s",
     "correctChoiceId": "c",
@@ -3107,10 +3415,22 @@
       "    return r"
     ],
     "choices": [
-      { "id": "a", "text": "r ← (r << 1) ∨ (rbyte ∧ 00000001)\nrbyte ← rbyte >> 1" },
-      { "id": "b", "text": "r ← (r << 7) ∨ (rbyte ∧ 00000001)\nrbyte ← rbyte >> 7" },
-      { "id": "c", "text": "r ← (rbyte << 1) ∨ (rbyte >> 7)\nrbyte ← r" },
-      { "id": "d", "text": "r ← (rbyte >> 1) ∨ (rbyte << 7)\nrbyte ← r" }
+      {
+        "id": "a",
+        "text": "r ← (r << 1) ∨ (rbyte ∧ 00000001)\nrbyte ← rbyte >> 1"
+      },
+      {
+        "id": "b",
+        "text": "r ← (r << 7) ∨ (rbyte ∧ 00000001)\nrbyte ← rbyte >> 7"
+      },
+      {
+        "id": "c",
+        "text": "r ← (rbyte << 1) ∨ (rbyte >> 7)\nrbyte ← r"
+      },
+      {
+        "id": "d",
+        "text": "r ← (rbyte >> 1) ∨ (rbyte << 7)\nrbyte ← r"
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=srXR_nf2ZQo&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=55",
     "correctChoiceId": "a",
@@ -3134,11 +3454,26 @@
       "    return swapped"
     ],
     "choices": [
-      { "id": "a", "text": "2" },
-      { "id": "b", "text": "6" },
-      { "id": "c", "text": "16" },
-      { "id": "d", "text": "64" },
-      { "id": "e", "text": "256" }
+      {
+        "id": "a",
+        "text": "2"
+      },
+      {
+        "id": "b",
+        "text": "6"
+      },
+      {
+        "id": "c",
+        "text": "16"
+      },
+      {
+        "id": "d",
+        "text": "64"
+      },
+      {
+        "id": "e",
+        "text": "256"
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=K14m5rc0UqU&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=56&t=57s",
     "correctChoiceId": "c",
@@ -3171,15 +3506,42 @@
       "    return utf8Bytes"
     ],
     "choices": [
-      { "id": "a", "text": "((4 − i) × 2)" },
-      { "id": "b", "text": "(2 の (4 − i) 乗)" },
-      { "id": "c", "text": "(2 の i 乗)" },
-      { "id": "d", "text": "(i × 2)" },
-      { "id": "e", "text": "2" },
-      { "id": "f", "text": "6" },
-      { "id": "g", "text": "16" },
-      { "id": "h", "text": "64" },
-      { "id": "i", "text": "256" }
+      {
+        "id": "a",
+        "text": "((4 − i) × 2)"
+      },
+      {
+        "id": "b",
+        "text": "(2 の (4 − i) 乗)"
+      },
+      {
+        "id": "c",
+        "text": "(2 の i 乗)"
+      },
+      {
+        "id": "d",
+        "text": "(i × 2)"
+      },
+      {
+        "id": "e",
+        "text": "2"
+      },
+      {
+        "id": "f",
+        "text": "6"
+      },
+      {
+        "id": "g",
+        "text": "16"
+      },
+      {
+        "id": "h",
+        "text": "64"
+      },
+      {
+        "id": "i",
+        "text": "256"
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=HBJcpbO0KUw&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=57&t=107s",
     "correctChoiceId": "h",
@@ -3197,7 +3559,11 @@
       {
         "type": "table",
         "caption": "表　クラス OperationString のメソッドの説明",
-        "headers": ["メソッド", "戻り値", "説明"],
+        "headers": [
+          "メソッド",
+          "戻り値",
+          "説明"
+        ],
         "rows": [
           [
             "concat（文字列型：str1, 文字列型：str2）",
@@ -3223,10 +3589,22 @@
       "rs を出力する"
     ],
     "choices": [
-      { "id": "a", "text": "こんばんは" },
-      { "id": "b", "text": "こんにちは" },
-      { "id": "c", "text": "ばんは" },
-      { "id": "d", "text": "ばんにちは" }
+      {
+        "id": "a",
+        "text": "こんばんは"
+      },
+      {
+        "id": "b",
+        "text": "こんにちは"
+      },
+      {
+        "id": "c",
+        "text": "ばんは"
+      },
+      {
+        "id": "d",
+        "text": "ばんにちは"
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=Pa7x5t7GQAI&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=58&t=391s",
     "correctChoiceId": "a",
@@ -3244,20 +3622,48 @@
       {
         "type": "table",
         "caption": "表　クラス Item のメンバ変数の説明",
-        "headers": ["メンバ名", "型", "説明"],
+        "headers": [
+          "メンバ名",
+          "型",
+          "説明"
+        ],
         "rows": [
-          ["name", "文字列型", "商品名を表す文字列"],
-          ["price", "整数型", "価格を表す整数"],
-          ["qty", "整数型", "個数を表す整数"]
+          [
+            "name",
+            "文字列型",
+            "商品名を表す文字列"
+          ],
+          [
+            "price",
+            "整数型",
+            "価格を表す整数"
+          ],
+          [
+            "qty",
+            "整数型",
+            "個数を表す整数"
+          ]
         ]
       },
       {
         "type": "table",
         "caption": "表　クラス Item のメソッドの説明",
-        "headers": ["メソッド名", "戻り値の型", "説明"],
+        "headers": [
+          "メソッド名",
+          "戻り値の型",
+          "説明"
+        ],
         "rows": [
-          ["total()", "整数型", "メンバ変数price × メンバ変数qty の結果を返す"],
-          ["addQty(整数型: n)", "なし", "メンバ変数qty に 引数nを加算する"]
+          [
+            "total()",
+            "整数型",
+            "メンバ変数price × メンバ変数qty の結果を返す"
+          ],
+          [
+            "addQty(整数型: n)",
+            "なし",
+            "メンバ変数qty に 引数nを加算する"
+          ]
         ]
       }
     ],
@@ -3283,10 +3689,22 @@
       "penTotalとnoteTotalの値をこの順位にカンマ区切りで出力する"
     ],
     "choices": [
-      { "id": "a", "text": "240,400" },
-      { "id": "b", "text": "360,600" },
-      { "id": "c", "text": "360,800" },
-      { "id": "d", "text": "240,800" }
+      {
+        "id": "a",
+        "text": "240,400"
+      },
+      {
+        "id": "b",
+        "text": "360,600"
+      },
+      {
+        "id": "c",
+        "text": "360,800"
+      },
+      {
+        "id": "d",
+        "text": "240,800"
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=100wGrJfFAA&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=59&t=246s",
     "correctChoiceId": "c",
@@ -3304,19 +3722,41 @@
       {
         "type": "table",
         "caption": "表　クラス Item のメンバ変数の説明",
-        "headers": ["メンバ名", "型", "説明"],
+        "headers": [
+          "メンバ名",
+          "型",
+          "説明"
+        ],
         "rows": [
-          ["name", "文字列型", "商品名を表す文字列"],
-          ["price", "整数型", "価格を表す整数"],
-          ["qty", "整数型", "個数を表す整数"]
+          [
+            "name",
+            "文字列型",
+            "商品名を表す文字列"
+          ],
+          [
+            "price",
+            "整数型",
+            "価格を表す整数"
+          ],
+          [
+            "qty",
+            "整数型",
+            "個数を表す整数"
+          ]
         ]
       },
       {
         "type": "table",
         "caption": "表　クラス Item のコンストラクタの説明",
-        "headers": ["コンストラクタ名", "説明"],
+        "headers": [
+          "コンストラクタ名",
+          "説明"
+        ],
         "rows": [
-          ["Item()", "空のアイテムを生成する"],
+          [
+            "Item()",
+            "空のアイテムを生成する"
+          ],
           [
             "Item(文字列型:n, 整数型:p, 整数型:q)",
             "引数nでメンバ変数nameを、引数pでメンバ変数priceを、引数qでメンバ変数qtyを初期化する"
@@ -3326,8 +3766,18 @@
       {
         "type": "table",
         "caption": "表　クラス Item のメソッドの説明",
-        "headers": ["メソッド名", "戻り値の型", "説明"],
-        "rows": [["total()", "整数型", "price × qty を返す"]]
+        "headers": [
+          "メソッド名",
+          "戻り値の型",
+          "説明"
+        ],
+        "rows": [
+          [
+            "total()",
+            "整数型",
+            "price × qty を返す"
+          ]
+        ]
       }
     ],
     "pseudoCode": [
@@ -3339,10 +3789,22 @@
       "penTotalの値を出力する"
     ],
     "choices": [
-      { "id": "a", "text": "240" },
-      { "id": "b", "text": "120" },
-      { "id": "c", "text": "160" },
-      { "id": "d", "text": "400" }
+      {
+        "id": "a",
+        "text": "240"
+      },
+      {
+        "id": "b",
+        "text": "120"
+      },
+      {
+        "id": "c",
+        "text": "160"
+      },
+      {
+        "id": "d",
+        "text": "400"
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=WTyD_DnlqVk&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
     "correctChoiceId": "a",
@@ -3373,7 +3835,11 @@
       {
         "type": "table",
         "caption": "表　クラス Words のメソッドの説明",
-        "headers": ["メソッド", "戻り値", "説明"],
+        "headers": [
+          "メソッド",
+          "戻り値",
+          "説明"
+        ],
         "rows": [
           [
             "freq（文字列型：str）",
@@ -3402,10 +3868,22 @@
       "    endif"
     ],
     "choices": [
-      { "id": "a", "text": "(words.freq(s1) − words.freqE(s1)) ÷ words.freq(s1 + s2)" },
-      { "id": "b", "text": "(words.freq(s2) − words.freqE(s2)) ÷ words.freq(s1 + s2)" },
-      { "id": "c", "text": "words.freq(s1 + s2) ÷ (words.freq(s1) − words.freqE(s1))" },
-      { "id": "d", "text": "words.freq(s1 + s2) ÷ (words.freq(s2) − words.freqE(s2))" }
+      {
+        "id": "a",
+        "text": "(words.freq(s1) − words.freqE(s1)) ÷ words.freq(s1 + s2)"
+      },
+      {
+        "id": "b",
+        "text": "(words.freq(s2) − words.freqE(s2)) ÷ words.freq(s1 + s2)"
+      },
+      {
+        "id": "c",
+        "text": "words.freq(s1 + s2) ÷ (words.freq(s1) − words.freqE(s1))"
+      },
+      {
+        "id": "d",
+        "text": "words.freq(s1 + s2) ÷ (words.freq(s2) − words.freqE(s2))"
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=W7yrjXnd8Yg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=66&t=52s",
     "correctChoiceId": "c",
@@ -3428,16 +3906,37 @@
         "type": "table",
         "equalDataColumnWidths": true,
         "caption": "図　スタックの初期状態",
-        "headers": ["要素番号", "1", "2", "3", "4"],
+        "headers": [
+          "要素番号",
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
         "rows": [
           [
             "stack",
             "4",
             "3",
-            { "text": "", "shaded": true },
-            { "text": "", "shaded": true }
+            {
+              "text": "",
+              "shaded": true
+            },
+            {
+              "text": "",
+              "shaded": true
+            }
           ],
-          ["", "", "", { "text": "↑\nstackPos", "align": "center" }, ""]
+          [
+            "",
+            "",
+            "",
+            {
+              "text": "↑\nstackPos",
+              "align": "center"
+            },
+            ""
+          ]
         ]
       },
       {
@@ -3468,18 +3967,45 @@
       "    return popData"
     ],
     "choices": [
-      { "id": "a", "text": "a=stackPos, b=stackPos + 1" },
-      { "id": "b", "text": "a=stackPos, b=stackPos − 1" },
-      { "id": "c", "text": "a=stackPos − 1, b=stackPos + 1" },
-      { "id": "d", "text": "a=stackPos − 1, b=stackPos − 1" }
+      {
+        "id": "a",
+        "text": "a=stackPos, b=stackPos + 1"
+      },
+      {
+        "id": "b",
+        "text": "a=stackPos, b=stackPos − 1"
+      },
+      {
+        "id": "c",
+        "text": "a=stackPos − 1, b=stackPos + 1"
+      },
+      {
+        "id": "d",
+        "text": "a=stackPos − 1, b=stackPos − 1"
+      }
     ],
     "choiceTable": {
-      "headers": ["a", "b"],
+      "headers": [
+        "a",
+        "b"
+      ],
       "rows": [
-        ["stackPos", "stackPos + 1"],
-        ["stackPos", "stackPos − 1"],
-        ["stackPos − 1", "stackPos + 1"],
-        ["stackPos − 1", "stackPos − 1"]
+        [
+          "stackPos",
+          "stackPos + 1"
+        ],
+        [
+          "stackPos",
+          "stackPos − 1"
+        ],
+        [
+          "stackPos − 1",
+          "stackPos + 1"
+        ],
+        [
+          "stackPos − 1",
+          "stackPos − 1"
+        ]
       ]
     },
     "videoUrl": "https://www.youtube.com/watch?v=zVvceUsfPic&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=62&t=206s",
@@ -3503,18 +4029,52 @@
         "type": "table",
         "equalDataColumnWidths": true,
         "caption": "図　キューの初期状態",
-        "headers": ["要素番号", "1", "2", "3", "4", "5", "6"],
+        "headers": [
+          "要素番号",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
         "rows": [
           [
             "queue",
-            { "text": "", "shaded": true },
-            { "text": "", "shaded": true },
+            {
+              "text": "",
+              "shaded": true
+            },
+            {
+              "text": "",
+              "shaded": true
+            },
             "3",
             "4",
-            { "text": "", "shaded": true },
-            { "text": "", "shaded": true }
+            {
+              "text": "",
+              "shaded": true
+            },
+            {
+              "text": "",
+              "shaded": true
+            }
           ],
-          ["", "", "", { "text": "↑\nhead", "align": "center" }, "", { "text": "↑\ntail", "align": "center" }, ""]
+          [
+            "",
+            "",
+            "",
+            {
+              "text": "↑\nhead",
+              "align": "center"
+            },
+            "",
+            {
+              "text": "↑\ntail",
+              "align": "center"
+            },
+            ""
+          ]
         ]
       },
       {
@@ -3547,18 +4107,45 @@
       "    return deqData"
     ],
     "choices": [
-      { "id": "a", "text": "a=tail, b=head + 1" },
-      { "id": "b", "text": "a=tail, b=head − 1" },
-      { "id": "c", "text": "a=tail − 1, b=head + 1" },
-      { "id": "d", "text": "a=tail − 1, b=head − 1" }
+      {
+        "id": "a",
+        "text": "a=tail, b=head + 1"
+      },
+      {
+        "id": "b",
+        "text": "a=tail, b=head − 1"
+      },
+      {
+        "id": "c",
+        "text": "a=tail − 1, b=head + 1"
+      },
+      {
+        "id": "d",
+        "text": "a=tail − 1, b=head − 1"
+      }
     ],
     "choiceTable": {
-      "headers": ["a", "b"],
+      "headers": [
+        "a",
+        "b"
+      ],
       "rows": [
-        ["tail", "head + 1"],
-        ["tail", "head − 1"],
-        ["tail − 1", "head + 1"],
-        ["tail − 1", "head − 1"]
+        [
+          "tail",
+          "head + 1"
+        ],
+        [
+          "tail",
+          "head − 1"
+        ],
+        [
+          "tail − 1",
+          "head + 1"
+        ],
+        [
+          "tail − 1",
+          "head − 1"
+        ]
       ]
     },
     "videoUrl": "https://www.youtube.com/watch?v=v9O6OdA7WfE&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=63&t=180s",
@@ -3582,10 +4169,43 @@
         "type": "table",
         "equalDataColumnWidths": true,
         "caption": "図　循環型キューの初期状態",
-        "headers": ["添字", "0", "1", "2", "3", "4", "5", "6", "7"],
+        "headers": [
+          "添字",
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7"
+        ],
         "rows": [
-          ["ringBuffer", "d", "e", "x", "y", "z", "a", "b", "c"],
-          ["", "", "", "", "", "", { "text": "↑\nhead", "align": "center" }, "", ""]
+          [
+            "ringBuffer",
+            "d",
+            "e",
+            "x",
+            "y",
+            "z",
+            "a",
+            "b",
+            "c"
+          ],
+          [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            {
+              "text": "↑\nhead",
+              "align": "center"
+            },
+            "",
+            ""
+          ]
         ]
       },
       {
@@ -3617,28 +4237,85 @@
       "    return val"
     ],
     "choices": [
-      { "id": "a", "text": "a=(head + length) mod ringBufferの要素数, b=(head + 1) mod ringBufferの要素数" },
-      { "id": "b", "text": "a=(head + length) mod ringBufferの要素数, b=head + 1" },
-      { "id": "c", "text": "a=(head + length) mod ringBufferの要素数, b=head mod ringBufferの要素数" },
-      { "id": "d", "text": "a=head + length, b=(head + 1) mod ringBufferの要素数" },
-      { "id": "e", "text": "a=head + length, b=head + 1" },
-      { "id": "f", "text": "a=head + length, b=head mod ringBufferの要素数" },
-      { "id": "g", "text": "a=(head + 1 + length) mod ringBufferの要素数, b=(head + 1) mod ringBufferの要素数" },
-      { "id": "h", "text": "a=(head + 1 + length) mod ringBufferの要素数, b=head + 1" },
-      { "id": "i", "text": "a=(head + 1 + length) mod ringBufferの要素数, b=head mod ringBufferの要素数" }
+      {
+        "id": "a",
+        "text": "a=(head + length) mod ringBufferの要素数, b=(head + 1) mod ringBufferの要素数"
+      },
+      {
+        "id": "b",
+        "text": "a=(head + length) mod ringBufferの要素数, b=head + 1"
+      },
+      {
+        "id": "c",
+        "text": "a=(head + length) mod ringBufferの要素数, b=head mod ringBufferの要素数"
+      },
+      {
+        "id": "d",
+        "text": "a=head + length, b=(head + 1) mod ringBufferの要素数"
+      },
+      {
+        "id": "e",
+        "text": "a=head + length, b=head + 1"
+      },
+      {
+        "id": "f",
+        "text": "a=head + length, b=head mod ringBufferの要素数"
+      },
+      {
+        "id": "g",
+        "text": "a=(head + 1 + length) mod ringBufferの要素数, b=(head + 1) mod ringBufferの要素数"
+      },
+      {
+        "id": "h",
+        "text": "a=(head + 1 + length) mod ringBufferの要素数, b=head + 1"
+      },
+      {
+        "id": "i",
+        "text": "a=(head + 1 + length) mod ringBufferの要素数, b=head mod ringBufferの要素数"
+      }
     ],
     "choiceTable": {
-      "headers": ["a", "b"],
+      "headers": [
+        "a",
+        "b"
+      ],
       "rows": [
-        ["(head + length) mod ringBufferの要素数", "(head + 1) mod ringBufferの要素数"],
-        ["(head + length) mod ringBufferの要素数", "head + 1"],
-        ["(head + length) mod ringBufferの要素数", "head mod ringBufferの要素数"],
-        ["head + length", "(head + 1) mod ringBufferの要素数"],
-        ["head + length", "head + 1"],
-        ["head + length", "head mod ringBufferの要素数"],
-        ["(head + 1 + length) mod ringBufferの要素数", "(head + 1) mod ringBufferの要素数"],
-        ["(head + 1 + length) mod ringBufferの要素数", "head + 1"],
-        ["(head + 1 + length) mod ringBufferの要素数", "head mod ringBufferの要素数"]
+        [
+          "(head + length) mod ringBufferの要素数",
+          "(head + 1) mod ringBufferの要素数"
+        ],
+        [
+          "(head + length) mod ringBufferの要素数",
+          "head + 1"
+        ],
+        [
+          "(head + length) mod ringBufferの要素数",
+          "head mod ringBufferの要素数"
+        ],
+        [
+          "head + length",
+          "(head + 1) mod ringBufferの要素数"
+        ],
+        [
+          "head + length",
+          "head + 1"
+        ],
+        [
+          "head + length",
+          "head mod ringBufferの要素数"
+        ],
+        [
+          "(head + 1 + length) mod ringBufferの要素数",
+          "(head + 1) mod ringBufferの要素数"
+        ],
+        [
+          "(head + 1 + length) mod ringBufferの要素数",
+          "head + 1"
+        ],
+        [
+          "(head + 1 + length) mod ringBufferの要素数",
+          "head mod ringBufferの要素数"
+        ]
       ]
     },
     "videoUrl": "https://www.youtube.com/watch?v=jZA7m2-iY1A&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=68&t=846s",
@@ -3662,10 +4339,46 @@
         "type": "table",
         "equalDataColumnWidths": true,
         "caption": "図　循環型キューの初期状態",
-        "headers": ["添字", "0", "1", "2", "3", "4", "5", "6", "7"],
+        "headers": [
+          "添字",
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7"
+        ],
         "rows": [
-          ["ringBuffer", "d", "e", "x", "y", "z", "a", "b", "c"],
-          ["", "", "", { "text": "↑\ntail", "align": "center" }, "", "", { "text": "↑\nhead", "align": "center" }, "", ""]
+          [
+            "ringBuffer",
+            "d",
+            "e",
+            "x",
+            "y",
+            "z",
+            "a",
+            "b",
+            "c"
+          ],
+          [
+            "",
+            "",
+            "",
+            {
+              "text": "↑\ntail",
+              "align": "center"
+            },
+            "",
+            "",
+            {
+              "text": "↑\nhead",
+              "align": "center"
+            },
+            "",
+            ""
+          ]
         ]
       }
     ],
@@ -3702,28 +4415,85 @@
       "    return val"
     ],
     "choices": [
-      { "id": "a", "text": "a=fullFlagがtrueと等しい, b=(fullFlag ≠ true) and (head と tailが等しい)" },
-      { "id": "b", "text": "a=fullFlagがtrueと等しい, b=fullFlag ≠ true" },
-      { "id": "c", "text": "a=fullFlagがtrueと等しい, b=headとtailが等しい" },
-      { "id": "d", "text": "a=headとtailが等しい, b=(fullFlag ≠ true) and (head と tailが等しい)" },
-      { "id": "e", "text": "a=headとtailが等しい, b=fullFlag ≠ true" },
-      { "id": "f", "text": "a=headとtailが等しい, b=headとtailが等しい" },
-      { "id": "g", "text": "a=(fullFlagがtrueと等しい) and (head≠tail), b=(fullFlag ≠ true) and (head と tailが等しい)" },
-      { "id": "h", "text": "a=(fullFlagがtrueと等しい) and (head≠tail), b=fullFlag ≠ true" },
-      { "id": "i", "text": "a=(fullFlagがtrueと等しい) and (head≠tail), b=headとtailが等しい" }
+      {
+        "id": "a",
+        "text": "a=fullFlagがtrueと等しい, b=(fullFlag ≠ true) and (head と tailが等しい)"
+      },
+      {
+        "id": "b",
+        "text": "a=fullFlagがtrueと等しい, b=fullFlag ≠ true"
+      },
+      {
+        "id": "c",
+        "text": "a=fullFlagがtrueと等しい, b=headとtailが等しい"
+      },
+      {
+        "id": "d",
+        "text": "a=headとtailが等しい, b=(fullFlag ≠ true) and (head と tailが等しい)"
+      },
+      {
+        "id": "e",
+        "text": "a=headとtailが等しい, b=fullFlag ≠ true"
+      },
+      {
+        "id": "f",
+        "text": "a=headとtailが等しい, b=headとtailが等しい"
+      },
+      {
+        "id": "g",
+        "text": "a=(fullFlagがtrueと等しい) and (head≠tail), b=(fullFlag ≠ true) and (head と tailが等しい)"
+      },
+      {
+        "id": "h",
+        "text": "a=(fullFlagがtrueと等しい) and (head≠tail), b=fullFlag ≠ true"
+      },
+      {
+        "id": "i",
+        "text": "a=(fullFlagがtrueと等しい) and (head≠tail), b=headとtailが等しい"
+      }
     ],
     "choiceTable": {
-      "headers": ["a", "b"],
+      "headers": [
+        "a",
+        "b"
+      ],
       "rows": [
-        ["fullFlagがtrueと等しい", "(fullFlag ≠ true) and (head と tailが等しい)"],
-        ["fullFlagがtrueと等しい", "fullFlag ≠ true"],
-        ["fullFlagがtrueと等しい", "headとtailが等しい"],
-        ["headとtailが等しい", "(fullFlag ≠ true) and (head と tailが等しい)"],
-        ["headとtailが等しい", "fullFlag ≠ true"],
-        ["headとtailが等しい", "headとtailが等しい"],
-        ["(fullFlagがtrueと等しい) and (head≠tail)", "(fullFlag ≠ true) and (head と tailが等しい)"],
-        ["(fullFlagがtrueと等しい) and (head≠tail)", "fullFlag ≠ true"],
-        ["(fullFlagがtrueと等しい) and (head≠tail)", "headとtailが等しい"]
+        [
+          "fullFlagがtrueと等しい",
+          "(fullFlag ≠ true) and (head と tailが等しい)"
+        ],
+        [
+          "fullFlagがtrueと等しい",
+          "fullFlag ≠ true"
+        ],
+        [
+          "fullFlagがtrueと等しい",
+          "headとtailが等しい"
+        ],
+        [
+          "headとtailが等しい",
+          "(fullFlag ≠ true) and (head と tailが等しい)"
+        ],
+        [
+          "headとtailが等しい",
+          "fullFlag ≠ true"
+        ],
+        [
+          "headとtailが等しい",
+          "headとtailが等しい"
+        ],
+        [
+          "(fullFlagがtrueと等しい) and (head≠tail)",
+          "(fullFlag ≠ true) and (head と tailが等しい)"
+        ],
+        [
+          "(fullFlagがtrueと等しい) and (head≠tail)",
+          "fullFlag ≠ true"
+        ],
+        [
+          "(fullFlagがtrueと等しい) and (head≠tail)",
+          "headとtailが等しい"
+        ]
       ]
     },
     "videoUrl": "https://www.youtube.com/watch?v=4y4dPUlB3jM&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=69&t=358s",
@@ -3745,19 +4515,41 @@
       {
         "type": "table",
         "caption": "図　クラス PrioQueue のコンストラクタの説明",
-        "headers": ["コンストラクタ", "説明"],
+        "headers": [
+          "コンストラクタ",
+          "説明"
+        ],
         "rows": [
-          ["PrioQueue()", "空の優先度付きキューを生成する。"]
+          [
+            "PrioQueue()",
+            "空の優先度付きキューを生成する。"
+          ]
         ]
       },
       {
         "type": "table",
         "caption": "図　クラス PrioQueue のメソッドの説明",
-        "headers": ["メソッド名", "戻り値", "説明"],
+        "headers": [
+          "メソッド名",
+          "戻り値",
+          "説明"
+        ],
         "rows": [
-          ["enqueue(文字列型:s, 整数型:prio)", "なし", "優先度付きキューに，文字列 s を要素として，優先度 prio で追加する。"],
-          ["dequeue()", "文字列型", "優先度付きキューからキュー内で最も優先度の高い要素を取り出して返す。最も優先度の高い要素が複数あるときは，そのうちの最初に追加された要素を一つ取り出して返す。"],
-          ["size()", "整数型", "優先度付きキューに格納されている要素の個数を返す。"]
+          [
+            "enqueue(文字列型:s, 整数型:prio)",
+            "なし",
+            "優先度付きキューに，文字列 s を要素として，優先度 prio で追加する。"
+          ],
+          [
+            "dequeue()",
+            "文字列型",
+            "優先度付きキューからキュー内で最も優先度の高い要素を取り出して返す。最も優先度の高い要素が複数あるときは，そのうちの最初に追加された要素を一つ取り出して返す。"
+          ],
+          [
+            "size()",
+            "整数型",
+            "優先度付きキューに格納されている要素の個数を返す。"
+          ]
         ]
       }
     ],
@@ -3781,10 +4573,22 @@
       "  endwhile"
     ],
     "choices": [
-      { "id": "a", "text": "\"A\", \"B\", \"C\", \"D\"" },
-      { "id": "b", "text": "\"A\", \"B\", \"D\", \"D\"" },
-      { "id": "c", "text": "\"A\", \"C\", \"C\", \"D\"" },
-      { "id": "d", "text": "\"A\", \"C\", \"D\", \"D\"" }
+      {
+        "id": "a",
+        "text": "\"A\", \"B\", \"C\", \"D\""
+      },
+      {
+        "id": "b",
+        "text": "\"A\", \"B\", \"D\", \"D\""
+      },
+      {
+        "id": "c",
+        "text": "\"A\", \"C\", \"C\", \"D\""
+      },
+      {
+        "id": "d",
+        "text": "\"A\", \"C\", \"D\", \"D\""
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=9w_hI1eW1ao&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=70&t=18s",
     "correctChoiceId": "b",
@@ -3794,6 +4598,263 @@
   {
     "id": "q78",
     "number": 78,
+    "title": "ルートと平方根(令和4年度12月サンプル問題問5)",
+    "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "関数calcは，正の実数xとyを受け取り，√(x²+y²) の計算結果を返す。関数calcが使う関数powは，第1引数として正の実数aを，第2引数として実数bを受け取り，aのb乗の値を実数型で返す。"
+      }
+    ],
+    "pseudoCode": [
+      "○実数型：calc（実数型：x，実数型：y）",
+      "  return 【　　　】"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "(pow(x，2) ＋ pow(y，2)) ÷ pow(2，0.5)"
+      },
+      {
+        "id": "b",
+        "text": "(pow(x，2) ＋ pow(y，2)) ÷ pow(x，y)"
+      },
+      {
+        "id": "c",
+        "text": "pow(2，pow(x，0.5)) ＋ pow(2，pow(y，0.5))"
+      },
+      {
+        "id": "d",
+        "text": "pow(pow(pow(2，x)，y)，0.5)"
+      },
+      {
+        "id": "e",
+        "text": "pow(pow(x，2) ＋ pow(y，2)，0.5)"
+      },
+      {
+        "id": "f",
+        "text": "pow(x，2) × pow(y，2) ÷ pow(x，y)"
+      },
+      {
+        "id": "g",
+        "text": "pow(x，y) ÷ pow(2，0.5)"
+      }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=Wce9bbEuEMk&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=64&t=98s",
+    "correctChoiceId": "e",
+    "hitokoto": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=Wce9bbEuEMk&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=64&t=55s",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q79",
+    "number": 79,
+    "title": "素数(令和5年度サンプル問題問1)",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は1から始まる。",
+    "bodyText": "関数findPrimeNumbersは，引数で与えられた整数以下の，全ての素数だけを格納した配列を返す関数である。ここで，引数に与える整数は2以上である。",
+    "pseudoCode": [
+      "○整数型の配列：findPrimeNumbers（整数型：maxNum）",
+      "  整数型の配列：pnList ← {}  // 要素数0の配列",
+      "  整数型：i，j",
+      "  論理型：divideFlag",
+      "",
+      "  for（i を 2 から 【 a 】まで 1 ずつ増やす）",
+      "    divideFlag ← true",
+      "",
+      "    /* i の正の平方根の整数部分が 2 未満のときは，繰返し処理を実行しない */",
+      "    for（j を 2 から i の正の平方根の整数部分 まで 1 ずつ増やす）",
+      "      if（【 b 】）",
+      "        divideFlag ← false",
+      "        繰返し処理を終了する",
+      "      endif",
+      "    endfor",
+      "",
+      "    if（divideFlag が true と等しい）",
+      "      pnList の末尾 に i の値 を追加する",
+      "    endif",
+      "  endfor",
+      "",
+      "  return pnList"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "a=maxNum, b=i ÷ j の余り が 0 と等しい"
+      },
+      {
+        "id": "b",
+        "text": "a=maxNum, b=i ÷ j の商 が 1 と等しくない"
+      },
+      {
+        "id": "c",
+        "text": "a=maxNum + 1, b=i ÷ j の余り が 0 と等しい"
+      },
+      {
+        "id": "d",
+        "text": "a=maxNum + 1, b=i ÷ j の商 が 1 と等しくない"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "a",
+        "b"
+      ],
+      "rows": [
+        [
+          "maxNum",
+          "i ÷ j の余り が 0 と等しい"
+        ],
+        [
+          "maxNum",
+          "i ÷ j の商 が 1 と等しくない"
+        ],
+        [
+          "maxNum + 1",
+          "i ÷ j の余り が 0 と等しい"
+        ],
+        [
+          "maxNum + 1",
+          "i ÷ j の商 が 1 と等しくない"
+        ]
+      ]
+    },
+    "videoUrl": "https://www.youtube.com/watch?v=7yV0bV2wHGs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=65&t=53s",
+    "correctChoiceId": "a",
+    "hitokoto": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=7yV0bV2wHGs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=65&t=8s",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q80",
+    "number": 80,
+    "title": "最大公約数(実行回数)",
+    "questionText": "次のプログラム中の【  】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyText": "関数 func は，2つの正の整数 a, b を引数として受け取り，それらの最大公約数を返す関数である｡関数 func(128, 24) を実行したとき，/*** α ***/ の行の処理が実行される回数は【　】回である。",
+    "pseudoCode": [
+      "○ 整数型: func(整数型: a, 整数型: b)",
+      "  整数型: p ← a",
+      "  整数型: q ← b",
+      "  整数型: temp",
+      "",
+      "  while (q ≠ 0)",
+      "    temp ← p mod q    /*** α ***/",
+      "    p ← q",
+      "    q ← temp",
+      "  endwhile",
+      "",
+      "  return p"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "2"
+      },
+      {
+        "id": "b",
+        "text": "3"
+      },
+      {
+        "id": "c",
+        "text": "4"
+      },
+      {
+        "id": "d",
+        "text": "5"
+      },
+      {
+        "id": "e",
+        "text": "6"
+      }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=W7yrjXnd8Yg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=66&t=52s",
+    "correctChoiceId": "a",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "lessonUrl": "",
+    "another": 1
+  },
+  {
+    "id": "q81",
+    "number": 81,
+    "title": "令和4年度サンプル問題問4(最大公約数: while/ifの条件)",
+    "questionText": "次のプログラム中の【a】〜【c】に入れる正しい答えの組合せを，解答群の中から選べ。",
+    "bodyText": "関数 gcd は，引数で与えられた二つの正の整数 num1 と num2 の最大公約数を，\n次の (1)〜(3) の性質を利用して求める。\n\n(1)num1 と num2 が等しいとき，num1 と num2 の最大公約数は num1 である。\n(2)num1 が num2 より大きいとき，num1 と num2 の最大公約数は，(num1 − num2) と num2 の最大公約数と等しい。\n(3)num2 が num1 より大きいとき，num1 と num2 の最大公約数は，(num2 − num1) と num1 の最大公約数と等しい。",
+    "pseudoCode": [
+      "○ 整数型: gcd(整数型: num1, 整数型: num2)",
+      "    整数型: x ← num1",
+      "    整数型: y ← num2",
+      "",
+      "    【 a 】",
+      "",
+      "      if ( 【 b 】 )",
+      "          x ← x − y",
+      "      else",
+      "          y ← y − x",
+      "      endif",
+      "",
+      "    【 c 】",
+      "",
+      "    return x"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "a=if (x ≠ y), b=x < y, c=endif"
+      },
+      {
+        "id": "b",
+        "text": "a=if (x ≠ y), b=x > y, c=endif"
+      },
+      {
+        "id": "c",
+        "text": "a=while (x ≠ y), b=x < y, c=endwhile"
+      },
+      {
+        "id": "d",
+        "text": "a=while (x ≠ y), b=x > y, c=endwhile"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "a",
+        "b",
+        "c"
+      ],
+      "rows": [
+        [
+          "if (x ≠ y)",
+          "x < y",
+          "endif"
+        ],
+        [
+          "if (x ≠ y)",
+          "x > y",
+          "endif"
+        ],
+        [
+          "while (x ≠ y)",
+          "x < y",
+          "endwhile"
+        ],
+        [
+          "while (x ≠ y)",
+          "x > y",
+          "endwhile"
+        ]
+      ]
+    },
+    "videoUrl": "https://www.youtube.com/watch?v=XJ3S-3MTV80&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=67&t=64s",
+    "correctChoiceId": "d",
+    "hitokoto": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=XJ3S-3MTV80&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=67",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q82",
+    "number": 82,
     "title": "予防接種・理論度数(令和7年度サンプル問題問5)",
     "questionText": "次の記述中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyBlocks": [
@@ -3804,19 +4865,49 @@
       {
         "type": "table",
         "caption": "表1　集計結果の例（単位　人）",
-        "headers": ["", "病気Xにかからなかった", "病気Xにかかった"],
+        "headers": [
+          "",
+          "病気Xにかからなかった",
+          "病気Xにかかった"
+        ],
         "rows": [
-          ["予防接種を受けた", "82", "6"],
-          ["予防接種を受けていない", "58", "8"]
+          [
+            "予防接種を受けた",
+            "82",
+            "6"
+          ],
+          [
+            "予防接種を受けていない",
+            "58",
+            "8"
+          ]
         ]
       },
       {
         "type": "table",
         "caption": "表2　表1を基に計算した理論度数（単位　人）",
-        "headers": ["", "病気Xにかからなかった", "病気Xにかかった"],
+        "headers": [
+          "",
+          "病気Xにかからなかった",
+          "病気Xにかかった"
+        ],
         "rows": [
-          ["予防接種を受けた", "a", { "text": "", "shaded": true }],
-          ["予防接種を受けていない", { "text": "", "shaded": true }, "b"]
+          [
+            "予防接種を受けた",
+            "a",
+            {
+              "text": "",
+              "shaded": true
+            }
+          ],
+          [
+            "予防接種を受けていない",
+            {
+              "text": "",
+              "shaded": true
+            },
+            "b"
+          ]
         ]
       },
       {
@@ -3839,24 +4930,69 @@
       "  return result"
     ],
     "choices": [
-      { "id": "a", "text": "a=44, b=33" },
-      { "id": "b", "text": "a=58, b=8" },
-      { "id": "c", "text": "a=70, b=7" },
-      { "id": "d", "text": "a=75, b=2" },
-      { "id": "e", "text": "a=80, b=6" },
-      { "id": "f", "text": "a=80, b=8" },
-      { "id": "g", "text": "a=82, b=6" }
+      {
+        "id": "a",
+        "text": "a=44, b=33"
+      },
+      {
+        "id": "b",
+        "text": "a=58, b=8"
+      },
+      {
+        "id": "c",
+        "text": "a=70, b=7"
+      },
+      {
+        "id": "d",
+        "text": "a=75, b=2"
+      },
+      {
+        "id": "e",
+        "text": "a=80, b=6"
+      },
+      {
+        "id": "f",
+        "text": "a=80, b=8"
+      },
+      {
+        "id": "g",
+        "text": "a=82, b=6"
+      }
     ],
     "choiceTable": {
-      "headers": ["a", "b"],
+      "headers": [
+        "a",
+        "b"
+      ],
       "rows": [
-        ["44", "33"],
-        ["58", "8"],
-        ["70", "7"],
-        ["75", "2"],
-        ["80", "6"],
-        ["80", "8"],
-        ["82", "6"]
+        [
+          "44",
+          "33"
+        ],
+        [
+          "58",
+          "8"
+        ],
+        [
+          "70",
+          "7"
+        ],
+        [
+          "75",
+          "2"
+        ],
+        [
+          "80",
+          "6"
+        ],
+        [
+          "80",
+          "8"
+        ],
+        [
+          "82",
+          "6"
+        ]
       ]
     },
     "videoUrl": "https://www.youtube.com/watch?v=wjzr4aKqoq4&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=67&t=87s",
@@ -3867,8 +5003,8 @@
     "another": 0
   },
   {
-    "id": "q79",
-    "number": 79,
+    "id": "q83",
+    "number": 83,
     "title": "配列&繰り返し(令和4年度4月 サンプル問題問2)",
     "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyText": "次のプログラムは，整数型の配列 array の要素の並びを逆順にする。",
@@ -3885,18 +5021,45 @@
       "endfor"
     ],
     "choices": [
-      { "id": "a", "text": "a=array の要素数 − left, b=array[left]" },
-      { "id": "b", "text": "a=array の要素数 − left, b=array[right]" },
-      { "id": "c", "text": "a=array の要素数 − left + 1, b=array[left]" },
-      { "id": "d", "text": "a=array の要素数 − left + 1, b=array[right]" }
+      {
+        "id": "a",
+        "text": "a=array の要素数 − left, b=array[left]"
+      },
+      {
+        "id": "b",
+        "text": "a=array の要素数 − left, b=array[right]"
+      },
+      {
+        "id": "c",
+        "text": "a=array の要素数 − left + 1, b=array[left]"
+      },
+      {
+        "id": "d",
+        "text": "a=array の要素数 − left + 1, b=array[right]"
+      }
     ],
     "choiceTable": {
-      "headers": ["a", "b"],
+      "headers": [
+        "a",
+        "b"
+      ],
       "rows": [
-        ["array の要素数 − left", "array[left]"],
-        ["array の要素数 − left", "array[right]"],
-        ["array の要素数 − left + 1", "array[left]"],
-        ["array の要素数 − left + 1", "array[right]"]
+        [
+          "array の要素数 − left",
+          "array[left]"
+        ],
+        [
+          "array の要素数 − left",
+          "array[right]"
+        ],
+        [
+          "array の要素数 − left + 1",
+          "array[left]"
+        ],
+        [
+          "array の要素数 − left + 1",
+          "array[right]"
+        ]
       ]
     },
     "videoUrl": "https://www.youtube.com/watch?v=ryH90Ocp58k&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=68&t=50s",
@@ -3907,8 +5070,8 @@
     "another": 0
   },
   {
-    "id": "q80",
-    "number": 80,
+    "id": "q84",
+    "number": 84,
     "title": "function1・function2(令和7年度サンプル問題問1)",
     "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。",
     "bodyBlocks": [
@@ -3947,22 +5110,61 @@
       "  return count"
     ],
     "choices": [
-      { "id": "a", "text": "a=iを1から2まで1ずつ増やす, b=jをnから始めてmを超えない範囲でtempNずつ増やす" },
-      { "id": "b", "text": "a=iを1から2まで1ずつ増やす, b=jをtempNからmまで1ずつ増やす" },
-      { "id": "c", "text": "a=iを1から2まで1ずつ増やす, b=jをtempNから始めてmを超えない範囲で4ずつ増やす" },
-      { "id": "d", "text": "a=iを1から3まで1ずつ増やす, b=jをnから始めてmを超えない範囲でtempNずつ増やす" },
-      { "id": "e", "text": "a=iを1から3まで1ずつ増やす, b=jをtempNからmまで1ずつ増やす" },
-      { "id": "f", "text": "a=iを1から3まで1ずつ増やす, b=jをtempNから始めてmを超えない範囲で4ずつ増やす" }
+      {
+        "id": "a",
+        "text": "a=iを1から2まで1ずつ増やす, b=jをnから始めてmを超えない範囲でtempNずつ増やす"
+      },
+      {
+        "id": "b",
+        "text": "a=iを1から2まで1ずつ増やす, b=jをtempNからmまで1ずつ増やす"
+      },
+      {
+        "id": "c",
+        "text": "a=iを1から2まで1ずつ増やす, b=jをtempNから始めてmを超えない範囲で4ずつ増やす"
+      },
+      {
+        "id": "d",
+        "text": "a=iを1から3まで1ずつ増やす, b=jをnから始めてmを超えない範囲でtempNずつ増やす"
+      },
+      {
+        "id": "e",
+        "text": "a=iを1から3まで1ずつ増やす, b=jをtempNからmまで1ずつ増やす"
+      },
+      {
+        "id": "f",
+        "text": "a=iを1から3まで1ずつ増やす, b=jをtempNから始めてmを超えない範囲で4ずつ増やす"
+      }
     ],
     "choiceTable": {
-      "headers": ["a", "b"],
+      "headers": [
+        "a",
+        "b"
+      ],
       "rows": [
-        ["iを1から2まで1ずつ増やす", "jをnから始めてmを超えない範囲でtempNずつ増やす"],
-        ["iを1から2まで1ずつ増やす", "jをtempNからmまで1ずつ増やす"],
-        ["iを1から2まで1ずつ増やす", "jをtempNから始めてmを超えない範囲で4ずつ増やす"],
-        ["iを1から3まで1ずつ増やす", "jをnから始めてmを超えない範囲でtempNずつ増やす"],
-        ["iを1から3まで1ずつ増やす", "jをtempNからmまで1ずつ増やす"],
-        ["iを1から3まで1ずつ増やす", "jをtempNから始めてmを超えない範囲で4ずつ増やす"]
+        [
+          "iを1から2まで1ずつ増やす",
+          "jをnから始めてmを超えない範囲でtempNずつ増やす"
+        ],
+        [
+          "iを1から2まで1ずつ増やす",
+          "jをtempNからmまで1ずつ増やす"
+        ],
+        [
+          "iを1から2まで1ずつ増やす",
+          "jをtempNから始めてmを超えない範囲で4ずつ増やす"
+        ],
+        [
+          "iを1から3まで1ずつ増やす",
+          "jをnから始めてmを超えない範囲でtempNずつ増やす"
+        ],
+        [
+          "iを1から3まで1ずつ増やす",
+          "jをtempNからmまで1ずつ増やす"
+        ],
+        [
+          "iを1から3まで1ずつ増やす",
+          "jをtempNから始めてmを超えない範囲で4ずつ増やす"
+        ]
       ]
     },
     "videoUrl": "https://www.youtube.com/watch?v=s3PPNghUEAU&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=69&t=34s",
@@ -3973,8 +5175,8 @@
     "another": 0
   },
   {
-    "id": "q81",
-    "number": 81,
+    "id": "q85",
+    "number": 85,
     "title": "100円玉(令和7年度サンプル問題問2)",
     "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
     "bodyBlocks": [
@@ -3994,12 +5196,30 @@
       "  return count"
     ],
     "choices": [
-      { "id": "a", "text": "rest ≧ 0" },
-      { "id": "b", "text": "rest ≧ 5" },
-      { "id": "c", "text": "rest ≧ 10" },
-      { "id": "d", "text": "rest ＞ 0" },
-      { "id": "e", "text": "rest ＞ 5" },
-      { "id": "f", "text": "rest ＞ 10" }
+      {
+        "id": "a",
+        "text": "rest ≧ 0"
+      },
+      {
+        "id": "b",
+        "text": "rest ≧ 5"
+      },
+      {
+        "id": "c",
+        "text": "rest ≧ 10"
+      },
+      {
+        "id": "d",
+        "text": "rest ＞ 0"
+      },
+      {
+        "id": "e",
+        "text": "rest ＞ 5"
+      },
+      {
+        "id": "f",
+        "text": "rest ＞ 10"
+      }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=Okg7SVLwVgs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=143s",
     "correctChoiceId": "a",
@@ -4009,8 +5229,8 @@
     "another": 0
   },
   {
-    "id": "q82",
-    "number": 82,
+    "id": "q86",
+    "number": 86,
     "title": "三目並べ(令和4年度サンプル問題問15)",
     "questionText": "次の記述中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。",
     "bodyBlocks": [
@@ -4030,186 +5250,51 @@
       }
     ],
     "choices": [
-      { "id": "a", "text": "a=0, b=−10" },
-      { "id": "b", "text": "a=0, b=0" },
-      { "id": "c", "text": "a=10, b=−10" },
-      { "id": "d", "text": "a=10, b=0" }
-    ],
-    "choiceTable": {
-      "headers": ["a", "b"],
-      "rows": [
-        ["0", "−10"],
-        ["0", "0"],
-        ["10", "−10"],
-        ["10", "0"]
-      ]
-    },
-    "videoUrl": "",
-    "correctChoiceId": "a",
-    "hitokoto": "自力で解こう!",
-    "hintVideoUrl": "",
-    "lessonUrl": "",
-    "another": 0
-  },
-  {
-    "id": "q83",
-    "number": 83,
-    "title": "ルートと平方根(令和4年度12月サンプル問題問5)",
-    "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
-    "bodyBlocks": [
       {
-        "type": "text",
-        "text": "関数calcは，正の実数xとyを受け取り，√(x²+y²) の計算結果を返す。関数calcが使う関数powは，第1引数として正の実数aを，第2引数として実数bを受け取り，aのb乗の値を実数型で返す。"
+        "id": "a",
+        "text": "a=0, b=−10"
+      },
+      {
+        "id": "b",
+        "text": "a=0, b=0"
+      },
+      {
+        "id": "c",
+        "text": "a=10, b=−10"
+      },
+      {
+        "id": "d",
+        "text": "a=10, b=0"
       }
     ],
-    "pseudoCode": [
-      "○実数型：calc（実数型：x，実数型：y）",
-      "  return 【　　　】"
-    ],
-    "choices": [
-      { "id": "a", "text": "(pow(x，2) ＋ pow(y，2)) ÷ pow(2，0.5)" },
-      { "id": "b", "text": "(pow(x，2) ＋ pow(y，2)) ÷ pow(x，y)" },
-      { "id": "c", "text": "pow(2，pow(x，0.5)) ＋ pow(2，pow(y，0.5))" },
-      { "id": "d", "text": "pow(pow(pow(2，x)，y)，0.5)" },
-      { "id": "e", "text": "pow(pow(x，2) ＋ pow(y，2)，0.5)" },
-      { "id": "f", "text": "pow(x，2) × pow(y，2) ÷ pow(x，y)" },
-      { "id": "g", "text": "pow(x，y) ÷ pow(2，0.5)" }
-    ],
-    "videoUrl": "https://www.youtube.com/watch?v=Wce9bbEuEMk&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=64&t=98s",
-    "correctChoiceId": "e",
-    "hitokoto": "",
-    "hintVideoUrl": "https://www.youtube.com/watch?v=Wce9bbEuEMk&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=64&t=55s",
-    "lessonUrl": "",
-    "another": 0
-  },
-  {
-    "id": "q84",
-    "number": 84,
-    "title": "素数(令和5年度サンプル問題問1)",
-    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は1から始まる。",
-    "bodyText": "関数findPrimeNumbersは，引数で与えられた整数以下の，全ての素数だけを格納した配列を返す関数である。ここで，引数に与える整数は2以上である。",
-    "pseudoCode": [
-      "○整数型の配列：findPrimeNumbers（整数型：maxNum）",
-      "  整数型の配列：pnList ← {}  // 要素数0の配列",
-      "  整数型：i，j",
-      "  論理型：divideFlag",
-      "",
-      "  for（i を 2 から 【 a 】まで 1 ずつ増やす）",
-      "    divideFlag ← true",
-      "",
-      "    /* i の正の平方根の整数部分が 2 未満のときは，繰返し処理を実行しない */",
-      "    for（j を 2 から i の正の平方根の整数部分 まで 1 ずつ増やす）",
-      "      if（【 b 】）",
-      "        divideFlag ← false",
-      "        繰返し処理を終了する",
-      "      endif",
-      "    endfor",
-      "",
-      "    if（divideFlag が true と等しい）",
-      "      pnList の末尾 に i の値 を追加する",
-      "    endif",
-      "  endfor",
-      "",
-      "  return pnList"
-    ],
-    "choices": [
-      { "id": "a", "text": "a=maxNum, b=i ÷ j の余り が 0 と等しい" },
-      { "id": "b", "text": "a=maxNum, b=i ÷ j の商 が 1 と等しくない" },
-      { "id": "c", "text": "a=maxNum + 1, b=i ÷ j の余り が 0 と等しい" },
-      { "id": "d", "text": "a=maxNum + 1, b=i ÷ j の商 が 1 と等しくない" }
-    ],
     "choiceTable": {
-      "headers": ["a", "b"],
+      "headers": [
+        "a",
+        "b"
+      ],
       "rows": [
-        ["maxNum", "i ÷ j の余り が 0 と等しい"],
-        ["maxNum", "i ÷ j の商 が 1 と等しくない"],
-        ["maxNum + 1", "i ÷ j の余り が 0 と等しい"],
-        ["maxNum + 1", "i ÷ j の商 が 1 と等しくない"]
+        [
+          "0",
+          "−10"
+        ],
+        [
+          "0",
+          "0"
+        ],
+        [
+          "10",
+          "−10"
+        ],
+        [
+          "10",
+          "0"
+        ]
       ]
     },
-    "videoUrl": "https://www.youtube.com/watch?v=7yV0bV2wHGs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=65&t=53s",
+    "videoUrl": "https://www.youtube.com/watch?v=Qh39Qex_NRM&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=46s",
     "correctChoiceId": "a",
-    "hitokoto": "",
-    "hintVideoUrl": "https://www.youtube.com/watch?v=7yV0bV2wHGs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=65&t=8s",
-    "lessonUrl": "",
-    "another": 0
-  },
-  {
-    "id": "q85",
-    "number": 85,
-    "title": "最大公約数(実行回数)",
-    "questionText": "次のプログラム中の【  】に入れる正しい答えを，解答群の中から選べ。",
-    "bodyText": "関数 func は，2つの正の整数 a, b を引数として受け取り，それらの最大公約数を返す関数である｡関数 func(128, 24) を実行したとき，/*** α ***/ の行の処理が実行される回数は【　】回である。",
-    "pseudoCode": [
-      "○ 整数型: func(整数型: a, 整数型: b)",
-      "  整数型: p ← a",
-      "  整数型: q ← b",
-      "  整数型: temp",
-      "",
-      "  while (q ≠ 0)",
-      "    temp ← p mod q    /*** α ***/",
-      "    p ← q",
-      "    q ← temp",
-      "  endwhile",
-      "",
-      "  return p"
-    ],
-    "choices": [
-      { "id": "a", "text": "2" },
-      { "id": "b", "text": "3" },
-      { "id": "c", "text": "4" },
-      { "id": "d", "text": "5" },
-      { "id": "e", "text": "6" }
-    ],
-    "videoUrl": "https://www.youtube.com/watch?v=W7yrjXnd8Yg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=66&t=52s",
-    "correctChoiceId": "a",
-    "hitokoto": "",
-    "hintVideoUrl": "",
-    "lessonUrl": "",
-    "another": 1
-  },
-  {
-    "id": "q86",
-    "number": 86,
-    "title": "令和4年度サンプル問題問4(最大公約数: while/ifの条件)",
-    "questionText": "次のプログラム中の【a】〜【c】に入れる正しい答えの組合せを，解答群の中から選べ。",
-    "bodyText": "関数 gcd は，引数で与えられた二つの正の整数 num1 と num2 の最大公約数を，\n次の (1)〜(3) の性質を利用して求める。\n\n(1)num1 と num2 が等しいとき，num1 と num2 の最大公約数は num1 である。\n(2)num1 が num2 より大きいとき，num1 と num2 の最大公約数は，(num1 − num2) と num2 の最大公約数と等しい。\n(3)num2 が num1 より大きいとき，num1 と num2 の最大公約数は，(num2 − num1) と num1 の最大公約数と等しい。",
-    "pseudoCode": [
-      "○ 整数型: gcd(整数型: num1, 整数型: num2)",
-      "    整数型: x ← num1",
-      "    整数型: y ← num2",
-      "",
-      "    【 a 】",
-      "",
-      "      if ( 【 b 】 )",
-      "          x ← x − y",
-      "      else",
-      "          y ← y − x",
-      "      endif",
-      "",
-      "    【 c 】",
-      "",
-      "    return x"
-    ],
-    "choices": [
-      { "id": "a", "text": "a=if (x ≠ y), b=x < y, c=endif" },
-      { "id": "b", "text": "a=if (x ≠ y), b=x > y, c=endif" },
-      { "id": "c", "text": "a=while (x ≠ y), b=x < y, c=endwhile" },
-      { "id": "d", "text": "a=while (x ≠ y), b=x > y, c=endwhile" }
-    ],
-    "choiceTable": {
-      "headers": ["a", "b", "c"],
-      "rows": [
-        ["if (x ≠ y)", "x < y", "endif"],
-        ["if (x ≠ y)", "x > y", "endif"],
-        ["while (x ≠ y)", "x < y", "endwhile"],
-        ["while (x ≠ y)", "x > y", "endwhile"]
-      ]
-    },
-    "videoUrl": "https://www.youtube.com/watch?v=XJ3S-3MTV80&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=67&t=64s",
-    "correctChoiceId": "d",
-    "hitokoto": "",
-    "hintVideoUrl": "https://www.youtube.com/watch?v=XJ3S-3MTV80&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=67",
+    "hitokoto": "自力で解こう!",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=Qh39Qex_NRM&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=1s",
     "lessonUrl": "",
     "another": 0
   },
@@ -4232,15 +5317,27 @@
       "    return bins"
     ],
     "choices": [
-      { "id": "a", "text": "{2, 6, 3, 1, 4, 5}" },
-      { "id": "b", "text": "{3, 1, 4, 4, 5, 2}" },
-      { "id": "c", "text": "{4, 2, 1, 5, 6, 2}" },
-      { "id": "d", "text": "{5, 3, 4, 3, 2, 6}" }
+      {
+        "id": "a",
+        "text": "{2, 6, 3, 1, 4, 5}"
+      },
+      {
+        "id": "b",
+        "text": "{3, 1, 4, 4, 5, 2}"
+      },
+      {
+        "id": "c",
+        "text": "{4, 2, 1, 5, 6, 2}"
+      },
+      {
+        "id": "d",
+        "text": "{5, 3, 4, 3, 2, 6}"
+      }
     ],
-    "videoUrl": "https://www.youtube.com/watch?v=IBH_UOYAaqc&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=14&pp=iAQBsAgC",
+    "videoUrl": "https://www.youtube.com/watch?v=gIm42q7NZs0&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=1s",
     "correctChoiceId": "a",
     "hitokoto": "解答群を良く見よう!",
-    "hintVideoUrl": "https://www.youtube.com/watch?v=IBH_UOYAaqc&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=14",
+    "hintVideoUrl": "",
     "lessonUrl": "",
     "another": 0
   },
@@ -4299,12 +5396,30 @@
       "  return adjMatrix"
     ],
     "choices": [
-      { "id": "a", "text": "adjMatrix[u, u] ← 1" },
-      { "id": "b", "text": "adjMatrix[u, u] ← 1\n    adjMatrix[v, v] ← 1" },
-      { "id": "c", "text": "adjMatrix[u, v] ← 1" },
-      { "id": "d", "text": "adjMatrix[u, v] ← 1\n    adjMatrix[v, u] ← 1" },
-      { "id": "e", "text": "adjMatrix[v, u] ← 1" },
-      { "id": "f", "text": "adjMatrix[v, v] ← 1" }
+      {
+        "id": "a",
+        "text": "adjMatrix[u, u] ← 1"
+      },
+      {
+        "id": "b",
+        "text": "adjMatrix[u, u] ← 1\n    adjMatrix[v, v] ← 1"
+      },
+      {
+        "id": "c",
+        "text": "adjMatrix[u, v] ← 1"
+      },
+      {
+        "id": "d",
+        "text": "adjMatrix[u, v] ← 1\n    adjMatrix[v, u] ← 1"
+      },
+      {
+        "id": "e",
+        "text": "adjMatrix[v, u] ← 1"
+      },
+      {
+        "id": "f",
+        "text": "adjMatrix[v, v] ← 1"
+      }
     ],
     "videoUrl": "",
     "correctChoiceId": "d",
