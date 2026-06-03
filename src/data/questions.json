@@ -5342,6 +5342,45 @@
     "another": 0
   },
   {
+    "id": "q88",
+    "number": 88,
+    "title": "令和4年度サンプル問題問13(無限ループ)",
+    "questionText": "次の記述中の【　　　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "関数 search は，引数 data で指定された配列に，引数 target で指定された値が含まれていればその要素番号を返し，含まれていなければ −1 を返す。data は昇順に整列されており，値に重複はない。\n\n関数 search には不具合がある。例えば，data の【　　　】場合は，無限ループになる。",
+    "pseudoCode": [
+      "○ 整数型：search（整数型の配列：data，整数型：target）",
+      "  整数型：low，high，middle",
+      "",
+      "  low ← 1",
+      "  high ← data の要素数",
+      "",
+      "  while（low ≤ high）",
+      "    middle ←（low ＋ high）÷ 2 の商",
+      "    if（data[middle] < target）",
+      "      low ← middle",
+      "    elseif（data[middle] > target）",
+      "      high ← middle",
+      "    else",
+      "      return middle",
+      "    endif",
+      "  endwhile",
+      "",
+      "  return −1"
+    ],
+    "choices": [
+      { "id": "a", "text": "要素数が 1 で，target がその要素の値と等しい" },
+      { "id": "b", "text": "要素数が 2 で，target が data の先頭要素の値と等しい" },
+      { "id": "c", "text": "要素数が 2 で，target が data の末尾要素の値と等しい" },
+      { "id": "d", "text": "要素に −1 が含まれている" }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=vel-YlCl1BI&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=26s",
+    "correctChoiceId": "c",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
     "id": "q89",
     "number": 89,
     "title": "隣接行列(令和6年度サンプル問題問3)",
@@ -5421,10 +5460,10 @@
         "text": "adjMatrix[v, v] ← 1"
       }
     ],
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=WFcQO6RmJsY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=60s",
     "correctChoiceId": "d",
     "hitokoto": "",
-    "hintVideoUrl": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=WFcQO6RmJsY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=15s",
     "lessonUrl": "",
     "another": 0
   }
