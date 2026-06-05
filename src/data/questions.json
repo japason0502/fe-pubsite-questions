@@ -4596,6 +4596,328 @@
     "another": 0
   },
   {
+    "id": "q75",
+    "number": 75,
+    "title": "配列を使った単方向リスト",
+    "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "関数 makeArray は，2 つの配列 data と point を用いて単方向リストを表現している。data[i] はリストの要素の値を，point[i] は次の要素の位置を表す。point[i] が未定義の場合，その要素はリストの末尾である。data[i] が未定義の場合，対応する point[i] も未定義となる。変数 listhead には，単方向リストの先頭要素の位置が格納されている。次の初期状態のとき，makeArray の戻り値の配列の中身は【　　　】である。"
+      },
+      {
+        "type": "table",
+        "equalDataColumnWidths": true,
+        "caption": "data と point の初期状態（data）",
+        "headers": [
+          "要素番号",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        "rows": [
+          [
+            "data",
+            "A",
+            "B",
+            "C",
+            "D",
+            {
+              "text": "未定義",
+              "shaded": true
+            }
+          ]
+        ]
+      },
+      {
+        "type": "table",
+        "equalDataColumnWidths": true,
+        "caption": "data と point の初期状態（point）",
+        "headers": [
+          "要素番号",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        "rows": [
+          [
+            "point",
+            "3",
+            "1",
+            {
+              "text": "未定義",
+              "shaded": true
+            },
+            "2",
+            {
+              "text": "未定義",
+              "shaded": true
+            }
+          ]
+        ]
+      }
+    ],
+    "pseudoCode": [
+      "大域：文字型の配列：data ← {A, B, C, D, 未定義}",
+      "大域：整数型の配列：point ← {3, 1, 未定義, 2, 未定義}",
+      "大域：整数型：listhead ← 4",
+      "",
+      "○ 文字型の配列：makeArray()",
+      "  文字型の配列：out ← { }  // 要素数0の配列",
+      "  整数型：i",
+      "",
+      "  i ← listhead",
+      "",
+      "  while（point[i] が 未定義 でない）",
+      "    out の末尾に data[i] を追加する",
+      "    i ← point[i]",
+      "  endwhile",
+      "",
+      "  out の末尾に data[i] を追加する",
+      "",
+      "  return out"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "{D, B, A, C}"
+      },
+      {
+        "id": "b",
+        "text": "{D, B, A}"
+      },
+      {
+        "id": "c",
+        "text": "{D, A, B, C}"
+      },
+      {
+        "id": "d",
+        "text": "{A, C, D, B}"
+      }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "a",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q76",
+    "number": 76,
+    "title": "単方向リスト(オブジェクト指向)(令和4年度4月サンプル問題問3)",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "手続 append は，引数で与えられた文字を単方向リストに追加する手続である。単方向リストの各要素は，クラス ListElement を用いて表現する。クラス ListElement の説明を表に示す。ListElement 型の変数はクラス ListElement のインスタンスの参照を格納するものとする。大域変数 listHead は，単方向リストの先頭の要素の参照を格納する。リストが空のときは，listHead は未定義である。"
+      },
+      {
+        "type": "table",
+        "caption": "クラス ListElement のメンバ変数",
+        "headers": [
+          "メンバ変数",
+          "型",
+          "説明"
+        ],
+        "rows": [
+          [
+            "val",
+            "文字型",
+            "リストに格納する文字。"
+          ],
+          [
+            "next",
+            "ListElement",
+            "リストの次の文字を保持するインスタンスの参照。初期状態は未定義である。"
+          ]
+        ]
+      },
+      {
+        "type": "table",
+        "caption": "クラス ListElement のコンストラクタ",
+        "headers": [
+          "コンストラクタ",
+          "説明"
+        ],
+        "rows": [
+          [
+            "ListElement（文字型：qVal）",
+            "引数 qVal でメンバ変数 val を初期化する。"
+          ]
+        ]
+      }
+    ],
+    "pseudoCode": [
+      "大域：ListElement：listHead ← 未定義の値",
+      "",
+      "○ append（文字型：qVal）",
+      "  ListElement：prev，curr",
+      "  curr ← ListElement（qVal）",
+      "  if（listHead が 【 a 】）",
+      "    listHead ← curr",
+      "  else",
+      "    prev ← listHead",
+      "    while（prev.next が 未定義でない）",
+      "      prev ← prev.next",
+      "    endwhile",
+      "    prev.next ← 【 b 】",
+      "  endif"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "a=未定義, b=curr"
+      },
+      {
+        "id": "b",
+        "text": "a=未定義, b=curr.next"
+      },
+      {
+        "id": "c",
+        "text": "a=未定義, b=listHead"
+      },
+      {
+        "id": "d",
+        "text": "a=未定義でない, b=curr"
+      },
+      {
+        "id": "e",
+        "text": "a=未定義でない, b=curr.next"
+      },
+      {
+        "id": "f",
+        "text": "a=未定義でない, b=listHead"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "a",
+        "b"
+      ],
+      "rows": [
+        [
+          "未定義",
+          "curr"
+        ],
+        [
+          "未定義",
+          "curr.next"
+        ],
+        [
+          "未定義",
+          "listHead"
+        ],
+        [
+          "未定義でない",
+          "curr"
+        ],
+        [
+          "未定義でない",
+          "curr.next"
+        ],
+        [
+          "未定義でない",
+          "listHead"
+        ]
+      ]
+    },
+    "videoUrl": "",
+    "correctChoiceId": "a",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q77",
+    "number": 77,
+    "title": "単方向リスト(令和4年度サンプル問題問10)",
+    "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "手続 delNode は，単方向リストから，引数 pos で指定された位置の要素を削除する手続である。引数 pos は，リストの要素数以下の正の整数とする。リストの先頭の位置を 1 とする。クラス ListElement は，単方向リストの要素を表す。ListElement 型の変数はクラス ListElement のインスタンスの参照を格納するものとする。大域変数 listHead には，リストの先頭要素の参照があらかじめ格納されている。"
+      },
+      {
+        "type": "table",
+        "caption": "クラス ListElement のメンバ変数の説明",
+        "headers": [
+          "メンバ変数",
+          "型",
+          "説明"
+        ],
+        "rows": [
+          [
+            "val",
+            "文字型",
+            "要素の値"
+          ],
+          [
+            "next",
+            "ListElement",
+            "次の要素の参照（次の要素がないときの状態は未定義）"
+          ]
+        ]
+      }
+    ],
+    "pseudoCode": [
+      "大域：ListElement：listHead  // リストの先頭要素が格納されている",
+      "",
+      "○ delNode（整数型：pos）  /* pos は，リストの要素数以下の正の整数 */",
+      "  ListElement：prev",
+      "  整数型：i",
+      "",
+      "  if（pos が 1 と等しい）",
+      "    listHead ← listHead.next",
+      "  else",
+      "    prev ← listHead",
+      "    /* pos が 2 と等しいときは繰返し処理を実行しない */",
+      "    for（i を 2 から pos − 1 まで 1 ずつ増やす）",
+      "      prev ← prev.next",
+      "    endfor",
+      "",
+      "    prev.next ← 【　　　】",
+      "  endif"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "listHead"
+      },
+      {
+        "id": "b",
+        "text": "listHead.next"
+      },
+      {
+        "id": "c",
+        "text": "listHead.next.next"
+      },
+      {
+        "id": "d",
+        "text": "prev"
+      },
+      {
+        "id": "e",
+        "text": "prev.next"
+      },
+      {
+        "id": "f",
+        "text": "prev.next.next"
+      }
+    ],
+    "videoUrl": "",
+    "correctChoiceId": "f",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
     "id": "q78",
     "number": 78,
     "title": "ルートと平方根(令和4年度12月サンプル問題問5)",
