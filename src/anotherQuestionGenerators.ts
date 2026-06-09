@@ -935,7 +935,77 @@ function generateQ71(_baseQuestion: Question): GeneratedQuestionPatch {
   };
 }
 
-/** q85「値を変えてもう一度」: func(24, 30) または func(24, 128)（後者は 128,24 の入れ替え）。どちらも mod 行は 3 回（イ／b） */
+const Q76_CHAINS = [
+  ["公園", "図書館", "学校"],
+  ["A", "B", "C"],
+  ["北", "東", "南"],
+  ["1", "2", "3"]
+];
+
+function formatListLiteral(vals: string[]): string {
+  return `{${vals.join(", ")}}`;
+}
+
+function q76InitialStateRows(chain: [string, string, string]): BodyTableCell[][] {
+  return [
+    ["val", `"${chain[0]}"`, "", `"${chain[1]}"`, "", `"${chain[2]}"`],
+    [
+      "next",
+      `${chain[1]}のインスタンスを参照`,
+      "",
+      `${chain[2]}のインスタンスを参照`,
+      "",
+      "未定義"
+    ],
+    [
+      "listHeadの参照先",
+      { text: "↑", align: "center" as const },
+      "",
+      "",
+      "",
+      ""
+    ]
+  ];
+}
+
+/** q76「値を変えてもう一度」: 3 要素の単方向リスト（クラス）の val を別セットに差し替え */
+function generateQ76(baseQuestion: Question): GeneratedQuestionPatch {
+  const chain = Q76_CHAINS[randomInt(0, Q76_CHAINS.length - 1)] as [string, string, string];
+  const correctText = formatListLiteral(chain);
+  const wrongTexts = [
+    formatListLiteral([chain[0], chain[2], chain[1]]),
+    formatListLiteral([chain[2], chain[0], chain[1]]),
+    formatListLiteral([chain[2], chain[1], chain[0]])
+  ];
+  const { choices, correctChoiceId } = shuffleFourChoices(
+    correctText,
+    wrongTexts[0],
+    wrongTexts[1],
+    wrongTexts[2]
+  );
+
+  const bodyBlocks = baseQuestion.bodyBlocks?.map((block) => {
+    if (block.type === "table" && block.caption === "初期状態") {
+      return {
+        ...block,
+        rows: q76InitialStateRows(chain)
+      };
+    }
+    return block;
+  });
+
+  return {
+    bodyBlocks,
+    choices,
+    correctChoiceId,
+    anotherTraceLines: [
+      `listHead からの順: ${chain.join(" → ")}`,
+      `戻り値 out = ${correctText}`
+    ]
+  };
+}
+
+/** q81「値を変えてもう一度」: func(24, 30) または func(24, 128)（後者は 128,24 の入れ替え）。どちらも mod 行は 3 回（イ／b） */
 function generateQ86(_baseQuestion: Question): GeneratedQuestionPatch {
   const swapped = randomInt(0, 1) === 1;
   if (!swapped) {
@@ -978,7 +1048,8 @@ const anotherQuestionGenerators: Record<string, AnotherQuestionGenerator> = {
   q61: generateQ61,
   q70: generateQ70,
   q71: generateQ71,
-  q80: generateQ86
+  q76: generateQ76,
+  q81: generateQ86
 };
 
 export function generateAnotherQuestion(baseQuestion: Question): GeneratedQuestionPatch | null {
