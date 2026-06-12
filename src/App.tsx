@@ -50,6 +50,7 @@ function BodyTableView({ bt }: { bt?: BodyTable }) {
     bt.rows.length > 0 &&
     bt.rows.every((row) => row.length === bt.headers.length);
   if (!ok) return null;
+  const hideHeader = bt.headers.every((h) => !h.trim());
   return (
     <div className="body-table-block">
       {bt.caption ? <p className="body-table-caption">{bt.caption}</p> : null}
@@ -57,18 +58,21 @@ function BodyTableView({ bt }: { bt?: BodyTable }) {
         <table
           className={
             "choice-table body-table" +
+            (hideHeader ? " body-table--no-header" : "") +
             (bt.equalDataColumnWidths ? " body-table--equal-data-cols" : "")
           }
         >
-          <thead>
-            <tr>
-              {bt.headers.map((h, hi) => (
-                <th key={hi} scope="col">
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
+          {!hideHeader ? (
+            <thead>
+              <tr>
+                {bt.headers.map((h, hi) => (
+                  <th key={hi} scope="col">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+          ) : null}
           <tbody>
             {bt.rows.map((row, ri) => (
               <tr key={ri}>
