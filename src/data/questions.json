@@ -1137,7 +1137,8 @@
     "correctChoiceId": "f",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 1
+    "another": 1,
+    "slug": "r4-mon3"
   },
   {
     "id": "q24",
@@ -1657,7 +1658,8 @@
     "correctChoiceId": "h",
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=z6ckOGIKntg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=22&t=15s",
-    "another": 1
+    "another": 1,
+    "slug": "r7-mon4"
   },
   {
     "id": "q34",
@@ -1812,7 +1814,8 @@
     "correctChoiceId": "d",
     "hitokoto": "自力で解こう!",
     "hintVideoUrl": "https://www.youtube.com/watch?v=cEG7MhMIzLI&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=25",
-    "another": 1
+    "another": 1,
+    "slug": "r6-mon4"
   },
   {
     "id": "q37",
@@ -1872,7 +1875,8 @@
     "correctChoiceId": "d",
     "hitokoto": "自力で解こう!(補足:｢大域｣は無視､while(true)は常に○)",
     "hintVideoUrl": "https://www.youtube.com/watch?v=BsBei5dYKw8&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=26",
-    "another": 1
+    "another": 1,
+    "slug": "r5-mon3"
   },
   {
     "id": "q38",
@@ -1931,7 +1935,8 @@
     "correctChoiceId": "h",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "slug": "r5-mon2"
   },
   {
     "id": "q39",
@@ -2126,7 +2131,8 @@
     "correctChoiceId": "h",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "slug": "r4-mon14"
   },
   {
     "id": "q43",
@@ -2188,7 +2194,8 @@
     "correctChoiceId": "d",
     "hitokoto": "modは余りを求める演算子(例)3 mod 10 = 3､10 mod 3 = 1",
     "hintVideoUrl": "https://www.youtube.com/watch?v=u2Mv24jWhYM&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=32&t=1s",
-    "another": 0
+    "another": 0,
+    "slug": "r5-mon4"
   },
   {
     "id": "q44",
@@ -2273,7 +2280,8 @@
     "correctChoiceId": "b",
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=taayUZu2n9Y&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=34&t=16s",
-    "another": 1
+    "another": 1,
+    "slug": "r404-mon4"
   },
   {
     "id": "q46",
@@ -2359,7 +2367,8 @@
     "correctChoiceId": "b",
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=wTkSMohhDNY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=36&pp=iAQBsAgC",
-    "another": 0
+    "another": 0,
+    "slug": "r6-mon1"
   },
   {
     "id": "q48",
@@ -2413,7 +2422,8 @@
     "correctChoiceId": "f",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "slug": "r404-mon1"
   },
   {
     "id": "q49",
@@ -2495,7 +2505,8 @@
     "correctChoiceId": "c",
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=NfSRhCGtf8k&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=39&t=11s",
-    "another": 0
+    "another": 0,
+    "slug": "r4-mon2"
   },
   {
     "id": "q50",
@@ -2626,7 +2637,8 @@
     "correctChoiceId": "d",
     "hitokoto": "自力で解こう!",
     "hintVideoUrl": "https://www.youtube.com/watch?v=JRoLu68Bqb8&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=41&t=1s",
-    "another": 0
+    "another": 0,
+    "slug": "r4-mon12"
   },
   {
     "id": "q52",
@@ -2879,7 +2891,8 @@
     "correctChoiceId": "e",
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=bXm9U08DKbg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=42&t=170s",
-    "another": 0
+    "another": 0,
+    "slug": "r6-mon5"
   },
   {
     "id": "q53",
@@ -3007,7 +3020,8 @@
     "correctChoiceId": "d",
     "hitokoto": "",
     "hintVideoUrl": "https://youtu.be/zf7rqNQ52rc?si=PmwwbqOc0FuA7Adu&t=1",
-    "another": 0
+    "another": 0,
+    "slug": "r5-mon5"
   },
   {
     "id": "q54",
@@ -3136,7 +3150,8 @@
     "correctChoiceId": "f",
     "hitokoto": "自力で解こう!",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "slug": "r4-mon7"
   },
   {
     "id": "q57",
@@ -3241,7 +3256,8 @@
     "hitokoto": "自力で解こう!",
     "hintVideoUrl": "https://www.youtube.com/watch?v=mgUfmoP0bk0&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=48&t=1s",
     "lessonUrl": "",
-    "another": 1
+    "another": 1,
+    "slug": "r4-mon9"
   },
   {
     "id": "q59",
@@ -3281,7 +3297,8 @@
     "hitokoto": "講義のあとに､自力で解こう!",
     "hintVideoUrl": "https://www.youtube.com/watch?v=tTAwaVJgd6M&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=50&t=22s",
     "lessonUrl": "https://www.youtube.com/watch?v=_V_W6s7EVm0&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=49&pp=iAQBsAgC",
-    "another": 0
+    "another": 0,
+    "slug": "r6-mon2"
   },
   {
     "id": "q60",
@@ -3437,7 +3454,8 @@
     "hitokoto": "自力で解こう!",
     "hintVideoUrl": "",
     "lessonUrl": "",
-    "another": 0
+    "another": 0,
+    "slug": "r4-mon6"
   },
   {
     "id": "q64",
@@ -3548,7 +3566,8 @@
     "hitokoto": "自力で解こう!",
     "hintVideoUrl": "https://www.youtube.com/watch?v=HBJcpbO0KUw&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=57&t=26s",
     "lessonUrl": "",
-    "another": 0
+    "another": 0,
+    "slug": "r4-mon16"
   },
   {
     "id": "q66",
@@ -3890,7 +3909,8 @@
     "hitokoto": "",
     "hintVideoUrl": "",
     "lessonUrl": "",
-    "another": 0
+    "another": 0,
+    "slug": "r404-mon5"
   },
   {
     "id": "q70",
@@ -4013,7 +4033,8 @@
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=zVvceUsfPic&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=62&t=183s",
     "lessonUrl": "https://www.youtube.com/watch?v=SNIRvtXYYBs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=61&pp=iAQBsAQBsAgC",
-    "another": 1
+    "another": 1,
+    "slug": "r7-mon3"
   },
   {
     "id": "q71",
@@ -4593,7 +4614,8 @@
     "videoUrl": "https://www.youtube.com/watch?v=9w_hI1eW1ao&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=70&t=18s",
     "correctChoiceId": "b",
     "hitokoto": "",
-    "another": 0
+    "another": 0,
+    "slug": "r4-mon8"
   },
   {
     "id": "q75",
@@ -4961,7 +4983,8 @@
     "hitokoto": "講義を聴きながら解こう!",
     "hintVideoUrl": "",
     "lessonUrl": "https://www.youtube.com/watch?v=7KX1iZFPojc&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=1266s",
-    "another": 0
+    "another": 0,
+    "slug": "r404-mon3"
   },
   {
     "id": "q78",
@@ -5045,7 +5068,8 @@
     "hitokoto": "講義を聴いた後､自力で解こう!",
     "hintVideoUrl": "https://www.youtube.com/watch?v=SbWRgPIKpwY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=140s",
     "lessonUrl": "https://www.youtube.com/watch?v=SbWRgPIKpwY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=0s",
-    "another": 0
+    "another": 0,
+    "slug": "r4-mon10"
   },
   {
     "id": "q79",
@@ -5097,7 +5121,8 @@
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=Wce9bbEuEMk&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=64&t=55s",
     "lessonUrl": "",
-    "another": 0
+    "another": 0,
+    "slug": "r4-mon5"
   },
   {
     "id": "q80",
@@ -5176,7 +5201,8 @@
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=7yV0bV2wHGs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=65&t=8s",
     "lessonUrl": "",
-    "another": 0
+    "another": 0,
+    "slug": "r5-mon1"
   },
   {
     "id": "q81",
@@ -5302,7 +5328,8 @@
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=XJ3S-3MTV80&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=67",
     "lessonUrl": "",
-    "another": 0
+    "another": 0,
+    "slug": "r4-mon4"
   },
   {
     "id": "q83",
@@ -5452,7 +5479,8 @@
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=wjzr4aKqoq4&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=67&t=31s",
     "lessonUrl": "",
-    "another": 0
+    "another": 0,
+    "slug": "r7-mon5"
   },
   {
     "id": "q84",
@@ -5519,7 +5547,8 @@
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=ryH90Ocp58k&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=68&t=3s",
     "lessonUrl": "",
-    "another": 0
+    "another": 0,
+    "slug": "r404-mon2"
   },
   {
     "id": "q85",
@@ -5624,7 +5653,8 @@
     "hitokoto": "",
     "hintVideoUrl": "",
     "lessonUrl": "",
-    "another": 0
+    "another": 0,
+    "slug": "r7-mon1"
   },
   {
     "id": "q86",
@@ -5678,7 +5708,8 @@
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=Okg7SVLwVgs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=63s",
     "lessonUrl": "",
-    "another": 0
+    "another": 0,
+    "slug": "r7-mon2"
   },
   {
     "id": "q87",
@@ -5748,7 +5779,8 @@
     "hitokoto": "自力で解こう!",
     "hintVideoUrl": "https://www.youtube.com/watch?v=Qh39Qex_NRM&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=1s",
     "lessonUrl": "",
-    "another": 0
+    "another": 0,
+    "slug": "r4-mon15"
   },
   {
     "id": "q88",
@@ -5791,7 +5823,8 @@
     "hitokoto": "解答群を良く見よう!",
     "hintVideoUrl": "",
     "lessonUrl": "",
-    "another": 0
+    "another": 0,
+    "slug": "r4-mon11"
   },
   {
     "id": "q89",
@@ -5842,7 +5875,8 @@
     "hitokoto": "",
     "hintVideoUrl": "",
     "lessonUrl": "",
-    "another": 0
+    "another": 0,
+    "slug": "r4-mon13"
   },
   {
     "id": "q90",
@@ -5929,7 +5963,8 @@
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=WFcQO6RmJsY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=15s",
     "lessonUrl": "",
-    "another": 0
+    "another": 0,
+    "slug": "r6-mon3"
   },
   {
     "id": "q91",
