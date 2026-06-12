@@ -223,8 +223,34 @@ function secondsToClock(sec: number) {
 
 export default function App() {
   const questions = useMemo<Question[]>(() => questionsData as Question[], []);
+
+  // --- 埋め込み / ディープリンク用 URL パラメータ ---
+  // ?q=<問題idまたはnumber> でその問題を初期表示。?embed=1 で埋め込みモード
+  // （モード選択をスキップ・ヘッダー/フッターを隠して1問に固定・localStorage非汚染）。
+  const urlParams = useMemo(() => new URLSearchParams(window.location.search), []);
+  const qParam = urlParams.get("q");
+  const embed = urlParams.get("embed") === "1";
+  const deepLinkIndex = useMemo(() => {
+    if (!qParam) return -1;
+    let i = questions.findIndex((x) => x.id === qParam);
+    if (i < 0) i = questions.findIndex((x) => String(x.number) === qParam);
+    return i;
+  }, [questions, qParam]);
+
   const [questionOverrides, setQuestionOverrides] = useState<Record<string, Partial<Question>>>({});
-  const [state, setState] = useState<ExamState>(() => loadState());
+  const [state, setState] = useState<ExamState>(() => {
+    const base = embed ? { ...initialState } : loadState();
+    const next: ExamState = { ...base };
+    // q または embed があれば、モード選択オーバーレイを飛ばして演習モードで開始
+    if ((embed || qParam) && !next.mode) {
+      next.mode = "practice";
+      next.hideTimer = true;
+      next.practiceMode = false;
+      next.perQuestionGrading = true;
+    }
+    if (deepLinkIndex >= 0) next.currentIndex = deepLinkIndex;
+    return next;
+  });
   const [showList, setShowList] = useState(false);
   const [showTimeUp, setShowTimeUp] = useState(false);
   const [showPerQuestionTimeUp, setShowPerQuestionTimeUp] = useState(false);
@@ -256,10 +282,11 @@ export default function App() {
   const [gradeNowImageError, setGradeNowImageError] = useState(false);
   const dividerRef = useRef<HTMLDivElement | null>(null);
 
-  // state 永続化
+  // state 永続化（埋め込みモードでは保存しない＝通常サイトの state を汚さない）
   useEffect(() => {
+    if (embed) return;
     saveState(state);
-  }, [state]);
+  }, [state, embed]);
 
   // タイマー（全体）※100分数えないのときは計測しない
   useEffect(() => {
@@ -623,7 +650,7 @@ export default function App() {
   const isAnotherOverridden = Boolean(currentQuestion && questionOverrides[currentQuestion.id]);
 
   return (
-    <div className="app">
+    <div className={embed ? "app app--embed" : "app"}>
       <header className="top-bar">
         <div className="left-controls">
           <span className="zoom-percent" aria-label={`ズーム倍率 ${Math.round(state.zoom * 100)}%`}>

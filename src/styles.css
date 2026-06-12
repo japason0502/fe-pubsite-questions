@@ -20,6 +20,17 @@ body {
   height: 100vh;
 }
 
+/* 埋め込みモード（?embed=1）：ヘッダー/フッターを隠して1問に固定。
+   前へ/次へ・一覧・終了などの脱出導線が消えるので、有料問題へ歩いて行けない。 */
+.app--embed .top-bar,
+.app--embed .bottom-bar {
+  display: none !important;
+}
+.app--embed .layout {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 .top-bar {
   display: flex;
   justify-content: space-between;
