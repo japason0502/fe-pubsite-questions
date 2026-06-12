@@ -232,7 +232,9 @@ export default function App() {
   const embed = urlParams.get("embed") === "1";
   const deepLinkIndex = useMemo(() => {
     if (!qParam) return -1;
-    let i = questions.findIndex((x) => x.id === qParam);
+    // slug 優先（?q=r6-mon1）→ id（?q=q49）→ number（?q=49）の順でマッチ
+    let i = questions.findIndex((x) => x.slug === qParam);
+    if (i < 0) i = questions.findIndex((x) => x.id === qParam);
     if (i < 0) i = questions.findIndex((x) => String(x.number) === qParam);
     return i;
   }, [questions, qParam]);

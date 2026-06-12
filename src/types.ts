@@ -40,6 +40,8 @@ export type BodyBlock =
 
 export type Question = {
   id: string;
+  /** 埋め込み/ディープリンク用の安定キー（?q=slug）。例: "r6-mon1"。add-slugs.mjs で付与 */
+  slug?: string;
   number: number;
   title: string;
   body?: string; // 後方互換性のため残す
