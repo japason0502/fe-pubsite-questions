@@ -400,7 +400,7 @@
       }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=400s",
-    "correctChoiceId": "c",
+    "correctChoiceId": "a",
     "hitokoto": "",
     "hintVideoUrl": "",
     "another": 0
@@ -6097,152 +6097,15 @@
       ]
     },
     "correctChoiceId": "e",
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=YXoltMuVY5I&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=54s",
     "hitokoto": "",
-    "hintVideoUrl": "",
-    "lessonUrl": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=YXoltMuVY5I&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=18s",
+    "lessonUrl": "https://www.youtube.com/watch?v=F1xOYHsUIQY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
     "another": 0
   },
   {
     "id": "q92",
     "number": 92,
-    "title": "R4年度12月サンプル問題問17",
-    "bodyBlocks": [
-      {
-        "type": "text",
-        "text": "製造業のA社では，ECサイト（以下，A社のECサイトをAサイトという）を使用し，個人向けの製品販売を行っている。Aサイトは，A社の製品やサービスが検索可能で，ログイン機能を有しており，あらかじめAサイトに利用登録した個人（以下，会員という）の氏名やメールアドレスといった情報（以下，会員情報という）を管理している。Aサイトは，B社のPaaSで稼働しており，PaaS上のDBMSとアプリケーションサーバを利用している。\n　A社は，Aサイトの開発，運用をC社に委託している。A社とC社との間の委託契約では，Webアプリケーションプログラムの脆弱性対策は，C社が実施するとしている。\n\n　最近，A社の同業他社が運営しているWebサイトで脆弱性が悪用され，個人情報が漏えいするという事件が発生した。そこでA社は，セキュリティ診断サービスを行っているD社に，Aサイトの脆弱性診断を依頼した。脆弱性診断の結果，対策が必要なセキュリティ上の脆弱性が複数指摘された。図1にD社からの指摘事項を示す。"
-      },
-      {
-        "type": "table",
-        "headers": [
-          ""
-        ],
-        "rows": [
-          [
-            "項番1　Aサイトで利用しているアプリケーションサーバのOSに既知の脆弱性があり，脆弱性を悪用した攻撃を受けるおそれがある。\n項番2　Aサイトにクロスサイトスクリプティングの脆弱性があり，会員情報を不正に取得されるおそれがある。\n項番3　Aサイトで利用しているDBMSに既知の脆弱性があり，脆弱性を悪用した攻撃を受けるおそれがある。"
-          ]
-        ]
-      },
-      {
-        "type": "textCenter",
-        "text": "図1　D社からの指摘事項"
-      },
-      {
-        "type": "text",
-        "text": "設問　図1中の各項番それぞれに対処する組織の適切な組合せを，解答群の中から選べ。"
-      }
-    ],
-    "choices": [
-      {
-        "id": "a",
-        "text": "A社，A社，A社"
-      },
-      {
-        "id": "b",
-        "text": "A社，A社，C社"
-      },
-      {
-        "id": "c",
-        "text": "A社，B社，B社"
-      },
-      {
-        "id": "d",
-        "text": "B社，B社，B社"
-      },
-      {
-        "id": "e",
-        "text": "B社，B社，C社"
-      },
-      {
-        "id": "f",
-        "text": "B社，C社，B社"
-      },
-      {
-        "id": "g",
-        "text": "B社，C社，C社"
-      },
-      {
-        "id": "h",
-        "text": "C社，B社，B社"
-      },
-      {
-        "id": "i",
-        "text": "C社，B社，C社"
-      },
-      {
-        "id": "j",
-        "text": "C社，C社，B社"
-      }
-    ],
-    "choiceTable": {
-      "headers": [
-        "項番1",
-        "項番2",
-        "項番3"
-      ],
-      "rows": [
-        [
-          "A社",
-          "A社",
-          "A社"
-        ],
-        [
-          "A社",
-          "A社",
-          "C社"
-        ],
-        [
-          "A社",
-          "B社",
-          "B社"
-        ],
-        [
-          "B社",
-          "B社",
-          "B社"
-        ],
-        [
-          "B社",
-          "B社",
-          "C社"
-        ],
-        [
-          "B社",
-          "C社",
-          "B社"
-        ],
-        [
-          "B社",
-          "C社",
-          "C社"
-        ],
-        [
-          "C社",
-          "B社",
-          "B社"
-        ],
-        [
-          "C社",
-          "B社",
-          "C社"
-        ],
-        [
-          "C社",
-          "C社",
-          "B社"
-        ]
-      ]
-    },
-    "correctChoiceId": "f",
-    "videoUrl": "",
-    "hitokoto": "",
-    "hintVideoUrl": "",
-    "lessonUrl": "",
-    "another": 0
-  },
-  {
-    "id": "q93",
-    "number": 93,
     "title": "R4年度12月サンプル問題問18",
     "bodyBlocks": [
       {
@@ -6357,15 +6220,15 @@
       ]
     },
     "correctChoiceId": "d",
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=TTAKRYsdRc8&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=13s",
     "hitokoto": "",
-    "hintVideoUrl": "",
-    "lessonUrl": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=TTAKRYsdRc8&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=0s",
+    "lessonUrl": "https://www.youtube.com/watch?v=F1xOYHsUIQY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
     "another": 0
   },
   {
-    "id": "q94",
-    "number": 94,
+    "id": "q93",
+    "number": 93,
     "title": "R4年度12月サンプル問題問19",
     "bodyBlocks": [
       {
@@ -6487,15 +6350,15 @@
       ]
     },
     "correctChoiceId": "d",
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=NNGzCIwCL_o&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=0s",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "lessonUrl": "",
+    "lessonUrl": "https://www.youtube.com/watch?v=F1xOYHsUIQY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
     "another": 0
   },
   {
-    "id": "q95",
-    "number": 95,
+    "id": "q94",
+    "number": 94,
     "title": "R4年度12月サンプル問題問20",
     "bodyBlocks": [
       {
@@ -6583,15 +6446,15 @@
       }
     ],
     "correctChoiceId": "f",
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=pw80o8BGDPU&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=54s",
     "hitokoto": "",
-    "hintVideoUrl": "",
-    "lessonUrl": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=pw80o8BGDPU&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=26s",
+    "lessonUrl": "https://www.youtube.com/watch?v=F1xOYHsUIQY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
     "another": 0
   },
   {
-    "id": "q96",
-    "number": 96,
+    "id": "q95",
+    "number": 95,
     "title": "R5年度公開問題問6",
     "bodyBlocks": [
       {
@@ -6686,8 +6549,8 @@
     "another": 0
   },
   {
-    "id": "q97",
-    "number": 97,
+    "id": "q96",
+    "number": 96,
     "title": "R6年度公開問題問6",
     "bodyBlocks": [
       {
@@ -6748,8 +6611,8 @@
     "another": 0
   },
   {
-    "id": "q98",
-    "number": 98,
+    "id": "q97",
+    "number": 97,
     "title": "R7年度公開問題問6",
     "bodyBlocks": [
       {
