@@ -1357,7 +1357,7 @@
       }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=aPANzBFytqk&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=17&t=15s",
-    "correctChoiceId": "d",
+    "correctChoiceId": "c",
     "hitokoto": "",
     "hintVideoUrl": "",
     "another": 0
@@ -1811,7 +1811,7 @@
       }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=cEG7MhMIzLI&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=25&t=23s",
-    "correctChoiceId": "d",
+    "correctChoiceId": "b",
     "hitokoto": "自力で解こう!",
     "hintVideoUrl": "https://www.youtube.com/watch?v=cEG7MhMIzLI&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=25",
     "another": 1,
@@ -4612,7 +4612,7 @@
       }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=9w_hI1eW1ao&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=70&t=18s",
-    "correctChoiceId": "b",
+    "correctChoiceId": "d",
     "hitokoto": "",
     "another": 0,
     "slug": "r4-mon8"
