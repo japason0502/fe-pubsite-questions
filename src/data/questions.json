@@ -273,7 +273,7 @@
         "text": "5"
       }
     ],
-    "correctChoiceId": "c",
+    "correctChoiceId": "d",
     "hitokoto": "自力で解こう!",
     "hintVideoUrl": "",
     "another": 0
@@ -316,8 +316,9 @@
     ],
     "videoUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=6&t=160s",
     "correctChoiceId": "a",
-    "hitokoto": "解説を聞いてから解こう!",
+    "hitokoto": "講義を聞いてから解こう!",
     "hintVideoUrl": "",
+    "lessonUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=7&t=0s",
     "another": 0
   },
   {
@@ -825,8 +826,9 @@
       }
     ],
     "correctChoiceId": "c",
-    "hitokoto": "解説を聞いてから解こう!",
+    "hitokoto": "講義を聞いてから解こう!",
     "hintVideoUrl": "",
+    "lessonUrl": "https://www.youtube.com/watch?v=uZtuNcCZZXA&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=9&t=0s",
     "another": 0
   },
   {
@@ -868,8 +870,9 @@
     ],
     "videoUrl": "https://www.youtube.com/watch?v=YYcAzjqQfiY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=9&t=128s",
     "correctChoiceId": "d",
-    "hitokoto": "解説を聞いてから解こう!",
+    "hitokoto": "講義を聞いてから解こう!",
     "hintVideoUrl": "",
+    "lessonUrl": "https://www.youtube.com/watch?v=YYcAzjqQfiY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=9&t=0s",
     "another": 0
   },
   {
@@ -1261,8 +1264,9 @@
     ],
     "videoUrl": "https://www.youtube.com/watch?v=d4v5nO0yjy8&t=180s",
     "correctChoiceId": "d",
-    "hitokoto": "解説を聞いてから解こう!",
+    "hitokoto": "講義を聞いてから解こう!",
     "hintVideoUrl": "",
+    "lessonUrl": "https://www.youtube.com/watch?v=d4v5nO0yjy8&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=15&t=0s",
     "another": 0
   },
   {
@@ -1411,6 +1415,7 @@
     "correctChoiceId": "a",
     "hitokoto": "",
     "hintVideoUrl": "",
+    "lessonUrl": "https://www.youtube.com/watch?v=iLQN9P4O47U&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=18&t=0s",
     "another": 0
   },
   {
@@ -1701,14 +1706,14 @@
     ],
     "videoUrl": "https://www.youtube.com/watch?v=hG2pWFqg278&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=23&pp=iAQBsAgC",
     "correctChoiceId": "a",
-    "hitokoto": "",
+    "hitokoto": "解説を聞きながら解こう!",
     "hintVideoUrl": "",
     "another": 0
   },
   {
     "id": "q35",
     "number": 35,
-    "title": "while&分岐トレース練習",
+    "title": "while&ifトレース練習",
     "questionText": "次の記述中の【　】に入る正しい答えを，解答群の中から選べ。",
     "bodyText": "次のプログラムを実行すると，出力される値は【　】である。",
     "pseudoCode": [
@@ -2020,7 +2025,7 @@
     "videoUrl": "https://www.youtube.com/watch?v=dRxXFqoQxh4&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=29&t=79s",
     "correctChoiceId": "b",
     "hitokoto": "",
-    "hintVideoUrl": "https://www.youtube.com/watch?v=dRxXFqoQxh4&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=29&t=01s",
+    "lessonUrl": "https://www.youtube.com/watch?v=dRxXFqoQxh4&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=29&t=01s",
     "another": 0
   },
   {
@@ -2276,6 +2281,15 @@
         "text": "a={1，2，3，4，5，4，5}, b={1，2，2，3，3，4，5}, c={3，2，2，1，3，2，1}"
       }
     ],
+    "choiceTable": {
+      "headers": ["a", "b", "c"],
+      "rows": [
+        ["1，2，2，3，3，4，5", "1，2，3，4，5，4，5", "3，2，2，1，2，3，1"],
+        ["1，2，2，3，3，4，5", "1，2，3，4，5，4，5", "3，2，2，1，3，2，1"],
+        ["1，2，3，4，5，4，5", "1，2，2，3，3，4，5", "3，2，2，1，2，3，1"],
+        ["1，2，3，4，5，4，5", "1，2，2，3，3，4，5", "3，2，2，1，3，2，1"]
+      ]
+    },
     "videoUrl": "https://www.youtube.com/watch?v=taayUZu2n9Y&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=34&t=59s",
     "correctChoiceId": "b",
     "hitokoto": "",
@@ -2367,6 +2381,7 @@
     "correctChoiceId": "b",
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=wTkSMohhDNY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=36&pp=iAQBsAgC",
+    "lessonUrl": "https://www.youtube.com/watch?v=wTkSMohhDNY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=36&t=0s",
     "another": 0,
     "slug": "r6-mon1"
   },
@@ -2887,10 +2902,10 @@
         ]
       ]
     },
-    "videoUrl": "https://www.youtube.com/watch?v=bXm9U08DKbg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=42&t=720s",
+    "videoUrl": "https://www.youtube.com/watch?v=bXm9U08DKbg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=42&t=170s",
     "correctChoiceId": "e",
     "hitokoto": "",
-    "hintVideoUrl": "https://www.youtube.com/watch?v=bXm9U08DKbg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=42&t=170s",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=bXm9U08DKbg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=42&t=60s",
     "another": 0,
     "slug": "r6-mon5"
   },
@@ -3157,7 +3172,8 @@
     "id": "q57",
     "number": 57,
     "title": "途中で再帰",
-    "questionText": "次の手続 f を f(2) として呼び出す。出力される順として正しいものを選べ。",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyText": "手続きfをf2 として呼び出すと，【　】の順に出力される。",
     "pseudoCode": [
       "○ 手続き: f(整数型: n)",
       "  if (n = 0)",
@@ -5818,7 +5834,7 @@
         "text": "{5, 3, 4, 3, 2, 6}"
       }
     ],
-    "videoUrl": "https://www.youtube.com/watch?v=gIm42q7NZs0&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=1s",
+    "videoUrl": "https://www.youtube.com/watch?v=gIm42q7NZs0&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=18s",
     "correctChoiceId": "a",
     "hitokoto": "解答群を良く見よう!",
     "hintVideoUrl": "",
@@ -6787,10 +6803,10 @@
       ]
     },
     "correctChoiceId": "h",
-    "videoUrl": "",
+    "videoUrl": "https://www.youtube.com/watch?v=CeWTl0Ks5jo&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=25s",
     "hitokoto": "",
-    "hintVideoUrl": "",
-    "lessonUrl": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=CeWTl0Ks5jo&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=0s",
+    "lessonUrl": "https://www.youtube.com/watch?v=F1xOYHsUIQY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
     "another": 0
   }
 ]
