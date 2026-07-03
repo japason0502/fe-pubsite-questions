@@ -1,0 +1,638 @@
+[
+  {
+    "id": "m1",
+    "slug": "mogi1-1",
+    "number": 1,
+    "title": "大域変数",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyText": "func2() を実行すると、【　】が出力される。",
+    "pseudoCode": [
+      "大域: 整数型: g ← 4",
+      "",
+      "○func1()",
+      "  整数型: a ← 5",
+      "  g ← g − a",
+      "",
+      "○func2()",
+      "  整数型: a ← 3",
+      "  g ← g × a",
+      "  func1()",
+      "  g ← g ＋ a",
+      "  gの値を出力"
+    ],
+    "choices": [
+      { "id": "c1", "text": "7" },
+      { "id": "c2", "text": "10" },
+      { "id": "c3", "text": "12" },
+      { "id": "c4", "text": "15" }
+    ],
+    "correctChoiceId": "c2"
+  },
+  {
+    "id": "m2",
+    "slug": "mogi1-2",
+    "number": 2,
+    "title": "条件分岐",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyText": "関数 add を add(2) として呼び出したとき，戻り値は【　】である。",
+    "pseudoCode": [
+      "○ 整数型: add(整数型: n)",
+      "  if (n が 1と等しい)",
+      "      n ← n + 5",
+      "  elseif (nが2と等しくない)",
+      "      n ← n + 7",
+      "  else",
+      "      n ← n + 3",
+      "  endif",
+      "  return n"
+    ],
+    "choices": [
+      { "id": "c1", "text": "5" },
+      { "id": "c2", "text": "9" },
+      { "id": "c3", "text": "10" },
+      { "id": "c4", "text": "12" },
+      { "id": "c5", "text": "14" }
+    ],
+    "correctChoiceId": "c1"
+  },
+  {
+    "id": "m3",
+    "slug": "mogi1-3",
+    "number": 3,
+    "title": "2次元配列",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "関数 findPos を findPos({{4, 2, 7}, {1, 5, 3}, {6, 2, 8}}, 20) として呼び出したとき，戻り値の配列 pos の要素番号 2 の値は【　】となる。",
+    "pseudoCode": [
+      "○ 整数型の配列: findPos(整数型の二次元配列: data, 整数型: limit)",
+      "    整数型の配列: pos ← {−1, −1}",
+      "    整数型: i, j, sum ← 0",
+      "    for (i を 1 から data の行数 まで 1 ずつ増やす)",
+      "        for (j を 1 から data の列数 まで 1 ずつ増やす)",
+      "            sum ← sum ＋ data[i][j]",
+      "            if (sum ＞ limit)",
+      "                pos[1] ← i",
+      "                pos[2] ← j",
+      "                return pos",
+      "            endif",
+      "        endfor",
+      "    endfor",
+      "    return pos"
+    ],
+    "choices": [
+      { "id": "c1", "text": "1" },
+      { "id": "c2", "text": "2" },
+      { "id": "c3", "text": "3" },
+      { "id": "c4", "text": "4" },
+      { "id": "c5", "text": "−1" }
+    ],
+    "correctChoiceId": "c3"
+  },
+  {
+    "id": "m4",
+    "slug": "mogi1-4",
+    "number": 4,
+    "title": "最大公約数",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。",
+    "bodyText": "関数 gcd は，二つの正の整数 a と b（a ＞ b）の最大公約数を，除算法によるユークリッド互除法で求めて返す。除算法では，大きい方を小さい方で割った余りを新たな小さい方とする操作を，余りが 0 になるまで繰り返し，最後に残った数を最大公約数とする。",
+    "pseudoCode": [
+      "○整数型: gcd(整数型: a, 整数型: b)",
+      "  整数型: r",
+      "  while (【 a 】)",
+      "    r ← 【 b 】",
+      "    a ← b",
+      "    b ← r",
+      "  endwhile",
+      "  return a"
+    ],
+    "choices": [
+      { "id": "c1", "text": "a：b ＝ 0　b：a mod b" },
+      { "id": "c2", "text": "a：b ＝ 0　b：a − b" },
+      { "id": "c3", "text": "a：b ＝ 0　b：a ÷ b の商" },
+      { "id": "c4", "text": "a：b ＝ 0　b：b mod a" },
+      { "id": "c5", "text": "a：b ≠ 0　b：a mod b" },
+      { "id": "c6", "text": "a：b ≠ 0　b：a − b" },
+      { "id": "c7", "text": "a：b ≠ 0　b：a ÷ b の商" },
+      { "id": "c8", "text": "a：b ≠ 0　b：b mod a" }
+    ],
+    "choiceTable": {
+      "headers": ["a（while の条件）", "b（r への代入）"],
+      "rows": [
+        ["b ＝ 0", "a mod b"],
+        ["b ＝ 0", "a − b"],
+        ["b ＝ 0", "a ÷ b の商"],
+        ["b ＝ 0", "b mod a"],
+        ["b ≠ 0", "a mod b"],
+        ["b ≠ 0", "a − b"],
+        ["b ≠ 0", "a ÷ b の商"],
+        ["b ≠ 0", "b mod a"]
+      ]
+    },
+    "correctChoiceId": "c5"
+  },
+  {
+    "id": "m5",
+    "slug": "mogi1-5",
+    "number": 5,
+    "title": "カプレカ操作",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。",
+    "bodyText": "カプレカ操作とは，4桁の整数（各桁が全て同じものを除く）に対して，各桁の数字を大きい順に並べた整数から，小さい順に並べた整数を引く操作である。この操作を繰り返すと，どの数から始めても必ず 6174 に到達することが知られている。関数 kaprekar は，各桁が全て同じではない4桁の整数 n を受け取り，n が 6174 になるまでにカプレカ操作を繰り返した回数を返す。ここで，関数 toDesc(n) は n の各桁を大きい順に，関数 toAsc(n) は小さい順に並べた整数を返す。例えば toDesc(3524) は 5432を返し､toAsc(3524) は 2345を返す。先頭が 0 になる場合は，その分だけ桁数の少ない整数として扱う（例：0378 は 378）。",
+    "pseudoCode": [
+      "○整数型: kaprekar(整数型: n)",
+      "  整数型: count ← 0",
+      "  while (【 a 】)",
+      "    n ← 【 b 】",
+      "    count ← count ＋ 1",
+      "  endwhile",
+      "  return count"
+    ],
+    "choices": [
+      { "id": "c1", "text": "a：n ＝ 6174　b：toDesc(n) − toAsc(n)" },
+      { "id": "c2", "text": "a：n ＝ 6174　b：toAsc(n) − toDesc(n)" },
+      { "id": "c3", "text": "a：n ＝ 6174　b：toDesc(n) − n" },
+      { "id": "c4", "text": "a：n ＝ 6174　b：n − toAsc(n)" },
+      { "id": "c5", "text": "a：n ≠ 6174　b：toDesc(n) − toAsc(n)" },
+      { "id": "c6", "text": "a：n ≠ 6174　b：toAsc(n) − toDesc(n)" },
+      { "id": "c7", "text": "a：n ≠ 6174　b：toDesc(n) − n" },
+      { "id": "c8", "text": "a：n ≠ 6174　b：n − toAsc(n)" }
+    ],
+    "choiceTable": {
+      "headers": ["a（while の条件）", "b（n への代入）"],
+      "rows": [
+        ["n ＝ 6174", "toDesc(n) − toAsc(n)"],
+        ["n ＝ 6174", "toAsc(n) − toDesc(n)"],
+        ["n ＝ 6174", "toDesc(n) − n"],
+        ["n ＝ 6174", "n − toAsc(n)"],
+        ["n ≠ 6174", "toDesc(n) − toAsc(n)"],
+        ["n ≠ 6174", "toAsc(n) − toDesc(n)"],
+        ["n ≠ 6174", "toDesc(n) − n"],
+        ["n ≠ 6174", "n − toAsc(n)"]
+      ]
+    },
+    "correctChoiceId": "c5"
+  },
+  {
+    "id": "m6",
+    "slug": "mogi1-6",
+    "number": 6,
+    "title": "2進数変換",
+    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まり，二つの【　】には同じ答えが入る。",
+    "bodyText": "関数 toBinary は，引数として与えられた 0 より大きく 100 未満の整数を 8 桁の符号なしの 2 進数に変換し，上位桁から順に 1 ビットずつ要素に格納した整数型の配列を返す。例えば，引数として 50 を与えると，{0, 0, 1, 1, 0, 0, 1, 0} が返る。",
+    "pseudoCode": [
+      "○ 整数型の配列: toBinary(整数型: j)",
+      "    整数型の配列: out ← {0, 0, 0, 0, 0, 0, 0, 0}",
+      "    整数型: k",
+      "    for (k を 8 から 1 まで 1 ずつ減らす)",
+      "        out[k] ← j ÷ 【　】 の余り",
+      "        j ← j ÷ 【　】 の商",
+      "    endfor",
+      "    return out"
+    ],
+    "choices": [
+      { "id": "c1", "text": "2" },
+      { "id": "c2", "text": "4" },
+      { "id": "c3", "text": "8" },
+      { "id": "c4", "text": "16" },
+      { "id": "c5", "text": "32" },
+      { "id": "c6", "text": "64" }
+    ],
+    "correctChoiceId": "c1"
+  },
+  {
+    "id": "m7",
+    "slug": "mogi1-7",
+    "number": 7,
+    "title": "再帰",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyText": "次の手続 proc を proc(5) として呼び出したとき，「【　】」が出力される。",
+    "pseudoCode": [
+      "○proc(整数型: n)",
+      "  if (n が 0 でない)",
+      "    n を出力する",
+      "    proc(n − 1)",
+      "    n を出力する",
+      "  endif"
+    ],
+    "choices": [
+      { "id": "c1", "text": "5 4 3 2 1 2 3 4 5" },
+      { "id": "c2", "text": "5 4 3 2 1 1 2 3 4 5" },
+      { "id": "c3", "text": "5 4 3 2 1 0 1 2 3 4 5" },
+      { "id": "c4", "text": "5 4 3 2 1 0 0 1 2 3 4 5" }
+    ],
+    "correctChoiceId": "c2"
+  },
+  {
+    "id": "m8",
+    "slug": "mogi1-8",
+    "number": 8,
+    "title": "循環キュー",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は 0 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "関数 enqueue は，引数で与えられた整数を循環型キューに格納する。格納できる場合は true を返し，格納できなかった場合は false を返す。関数 dequeue は，キューから値を取り出して返す。キューが空のときは未定義の値を返す。キューを，要素数が 8 である大域の整数型の配列 ringBuffer，次に値を取り出す位置を示す大域の変数 head，及び次の格納位置を示す大域の変数 tail，キューが満杯かどうかを示す大域の変数 fullFlag で表現する。循環型キューの初期状態を図に示す。図は，a, b, c, d, e の5つが循環型キューに格納されている状態を示す。プログラムでは，配列の領域外を参照してはならないものとする。"
+      },
+      {
+        "type": "table",
+        "caption": "図　循環型キューの初期状態",
+        "headers": ["添字", "0", "1", "2", "3", "4", "5", "6", "7"],
+        "rows": [
+          ["ringBuffer", "d", "e", "x", "y", "z", "a", "b", "c"],
+          [
+            "",
+            "",
+            "",
+            { "text": "↑\ntail", "align": "center" },
+            "",
+            "",
+            { "text": "↑\nhead", "align": "center" },
+            "",
+            ""
+          ]
+        ]
+      }
+    ],
+    "pseudoCode": [
+      "○ 論理型：enqueue(整数型：inputData)",
+      "    if (fullFlag が true と等しい)",
+      "        return false",
+      "    endif",
+      "    ringBuffer[tail] ← inputData",
+      "    tail ← (tail + 1) mod ringBuffer の要素数",
+      "    if (tailとheadが【 a 】)",
+      "        fullFlag ← true",
+      "    endif",
+      "    return true",
+      "",
+      "○ 整数型：dequeue()",
+      "    整数型：val ← 未定義の値",
+      "    if ((fullFlag が false と等しい) and (head と tail が等しい))",
+      "        return val",
+      "    endif",
+      "    val ← ringBuffer[head]",
+      "    head ← (head + 1) mod ringBuffer の要素数",
+      "    fullFlag ← 【 b 】",
+      "    return val"
+    ],
+    "choices": [
+      { "id": "c1", "text": "a：等しい　b：false" },
+      { "id": "c2", "text": "a：等しい　b：true" },
+      { "id": "c3", "text": "a：等しくない　b：false" },
+      { "id": "c4", "text": "a：等しくない　b：true" }
+    ],
+    "choiceTable": {
+      "headers": ["a", "b"],
+      "rows": [
+        ["等しい", "false"],
+        ["等しい", "true"],
+        ["等しくない", "false"],
+        ["等しくない", "true"]
+      ]
+    },
+    "correctChoiceId": "c1"
+  },
+  {
+    "id": "m9",
+    "slug": "mogi1-9",
+    "number": 9,
+    "title": "2分木の走査",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "手続 order は，大域の配列 tree で表される 2 分木の，引数で指定した節を根とする部分木をたどりながら，全ての節番号を出力する。配列 tree の要素は，対応する節の子の節番号を，左の子，右の子の順に格納した配列である（例：要素番号 1 は {2, 3}＝節 1 の左の子が 2，右の子が 3）。子が一つの場合は左の子とし，その節番号だけを格納する（例：要素番号 5 は {10}）。手続 order を order(1) として呼び出すと，【　】の順に出力される。",
+    "pseudoCode": [
+      "大域: 整数型配列の配列: tree ← {{2, 3}, {4, 5}, {6, 7}, {8, 9}, {10},",
+      "                              {11, 12}, {13, 14}, {}, {}, {}, {},",
+      "                              {}, {}, {}}   // {} は要素数 0 の配列",
+      "",
+      "○order(整数型: n)",
+      "    if (tree[n] の要素数 が 2 と等しい)",
+      "        order(tree[n][1])",
+      "        order(tree[n][2])",
+      "        n を出力",
+      "    elseif (tree[n] の要素数 が 1 と等しい)",
+      "        order(tree[n][1])",
+      "        n を出力",
+      "    else",
+      "        n を出力",
+      "    endif"
+    ],
+    "choices": [
+      { "id": "c1", "text": "1 2 4 8 9 5 10 3 6 11 12 7 13 14" },
+      { "id": "c2", "text": "8 4 9 2 10 5 1 11 6 12 3 13 7 14" },
+      { "id": "c3", "text": "8 9 4 10 5 2 11 12 6 13 14 7 3 1" },
+      { "id": "c4", "text": "1 2 3 4 5 6 7 8 9 10 11 12 13 14" }
+    ],
+    "correctChoiceId": "c3"
+  },
+  {
+    "id": "m10",
+    "slug": "mogi1-10",
+    "number": 10,
+    "title": "単方向リスト",
+    "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "手続 delLast は，単方向リストの末尾（最後）の要素を削除する手続である。リストには要素が 1 つ以上あるものとする。"
+      },
+      {
+        "type": "text",
+        "text": "クラス ListElement は，単方向リストの要素を表す。ListElement 型の変数はクラス ListElement のインスタンスの参照を格納するものとする。大域変数 listHead には，リストの先頭要素の参照があらかじめ格納されている。"
+      },
+      {
+        "type": "table",
+        "headers": ["メンバ変数", "型", "説明"],
+        "rows": [
+          ["val", "文字型", "要素の値"],
+          ["next", "ListElement", "次の要素の参照（次の要素がないときの状態は未定義）"]
+        ]
+      }
+    ],
+    "pseudoCode": [
+      "大域：ListElement: listHead   // リストの先頭要素が格納されている",
+      "",
+      "○delLast()",
+      "  ListElement: prev",
+      "",
+      "  if (listHead.next が 未定義)   // 要素が1つだけ（先頭がそのまま末尾）",
+      "    listHead ← 未定義",
+      "  else",
+      "    prev ← listHead",
+      "    while (【　　　】)",
+      "      prev ← prev.next",
+      "    endwhile",
+      "    prev.next ← 未定義   // 末尾を切り離す",
+      "  endif"
+    ],
+    "choices": [
+      { "id": "c1", "text": "prev.next が 未定義" },
+      { "id": "c2", "text": "prev.next が 未定義でない" },
+      { "id": "c3", "text": "prev.next.next が 未定義" },
+      { "id": "c4", "text": "prev.next.next が 未定義でない" }
+    ],
+    "correctChoiceId": "c4"
+  },
+  {
+    "id": "m11",
+    "slug": "mogi1-11",
+    "number": 11,
+    "title": "出現回数",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "関数 count は，各要素が 1 以上 3 以下の整数である整数型の配列 data を引数にとり，各値の出現回数を，その値を要素番号とする位置に格納した配列を返す。関数 count を count(【　】) として呼び出すと，戻り値は {2, 1, 3} となる。",
+    "pseudoCode": [
+      "○ 整数型の配列: count(整数型の配列: data)   // data の各要素は 1〜3",
+      "    整数型の配列: cnt ← { 3 個の 0 }",
+      "    整数型: i",
+      "    for (i を 1 から data の要素数 まで 1 ずつ増やす)",
+      "        cnt[data[i]] ← cnt[data[i]] + 1",
+      "    endfor",
+      "    return cnt"
+    ],
+    "choices": [
+      { "id": "c1", "text": "{3, 3, 3, 3, 2, 1}" },
+      { "id": "c2", "text": "{3, 1, 3, 2, 1, 3}" },
+      { "id": "c3", "text": "{1, 1, 1, 2, 3, 3}" },
+      { "id": "c4", "text": "{3, 1, 2, 2, 1, 3}" }
+    ],
+    "correctChoiceId": "c2"
+  },
+  {
+    "id": "m12",
+    "slug": "mogi1-12",
+    "number": 12,
+    "title": "文字列の検査",
+    "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。ここで，文字列の文字番号は 1 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "関数 checkPw は，文字列 pw がパスワードとして安全かどうかを検査し，次の条件をすべて満たす場合に true を，一つでも満たさない場合に false を返す。"
+      },
+      { "type": "text", "text": "・文字数が 8 以上である。" },
+      { "type": "text", "text": "・英大文字，英小文字，数字のすべてを，少なくとも 1 文字ずつ含む。" },
+      { "type": "text", "text": "・同じ文字が 3 個以上連続しない。" },
+      {
+        "type": "text",
+        "text": "関数 isUpper(ch)，isLower(ch)，isDigit(ch) は，文字 ch がそれぞれ英大文字，英小文字，数字のときに true を返す。"
+      },
+      {
+        "type": "text",
+        "text": "例えば，関数 checkPw を checkPw(\"Pass1234\") として呼び出すと true を，checkPw(\"Passs123\") として呼び出すと false を返す。"
+      }
+    ],
+    "pseudoCode": [
+      "○論理型：checkPw（文字列型：pw）",
+      "  論理型：hasUpper ← false, hasLower ← false, hasDigit ← false",
+      "  整数型：i, run ← 1",
+      "  if（pw の文字数 が 8 未満）",
+      "    return false",
+      "  endif",
+      "  for（i を 1 から pw の文字数 まで 1 ずつ増やす）",
+      "    if（isUpper（pw の i 文字目））",
+      "      hasUpper ← true",
+      "    elseif（isLower（pw の i 文字目））",
+      "      hasLower ← true",
+      "    elseif（isDigit（pw の i 文字目））",
+      "      hasDigit ← true",
+      "    endif",
+      "    if（i が 2 以上）",
+      "      if（（pw の i 文字目）が（pw の（i − 1）文字目）と等しい）",
+      "        run ← run + 1",
+      "        if（run が【　　　】以上）",
+      "          return false",
+      "        endif",
+      "      else",
+      "        run ← 1",
+      "      endif",
+      "    endif",
+      "  endfor",
+      "  if（hasUpper and hasLower and hasDigit）",
+      "    return true",
+      "  else",
+      "    return false",
+      "  endif"
+    ],
+    "choices": [
+      { "id": "c1", "text": "1" },
+      { "id": "c2", "text": "2" },
+      { "id": "c3", "text": "3" },
+      { "id": "c4", "text": "8" }
+    ],
+    "correctChoiceId": "c3"
+  },
+  {
+    "id": "m13",
+    "slug": "mogi1-13",
+    "number": 13,
+    "title": "線形探索",
+    "questionText": "次の記述中の【　　　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "関数 search は，引数 data で指定された配列に，引数 target で指定された値が含まれていれば一致した最初の要素番号を返し，含まれていなければ −1 を返す。番兵法（配列の末尾の次に target を置いてから先頭から順に比較する方法）を用いており，data は整列されていなくてもよい。"
+      },
+      {
+        "type": "text",
+        "text": "関数 search には不具合がある。例えば，target が data の【　　　】場合は，正しく戻り値が返らない。"
+      }
+    ],
+    "pseudoCode": [
+      "○ 整数型：search（整数型の配列：data，整数型：target）",
+      "  整数型：i，n",
+      "",
+      "  n ← data の要素数",
+      "  dataの末尾に target を追加          // 末尾の次に番兵を置く",
+      "  i ← 1",
+      "",
+      "  while（data[i] ≠ target）",
+      "    i ← i ＋ 1",
+      "  endwhile",
+      "",
+      "  return i"
+    ],
+    "choices": [
+      { "id": "c1", "text": "いずれの要素とも等しくない" },
+      { "id": "c2", "text": "先頭要素の値と等しい" },
+      { "id": "c3", "text": "末尾要素の値と等しい" },
+      { "id": "c4", "text": "複数の要素の値と等しい" }
+    ],
+    "correctChoiceId": "c1"
+  },
+  {
+    "id": "m14",
+    "slug": "mogi1-14",
+    "number": 14,
+    "title": "整列",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "関数 bubble は，整数型の配列 data を受け取り，昇順に整列された整数型の配列を返す。bubble({4, 1, 3, 2}) として呼び出したとき，/*** α ***/ の条件式が真となる回数は【　】回である。",
+    "pseudoCode": [
+      "○ 整数型の配列: bubble(整数型の配列: data)",
+      "    整数型: n ← data の要素数",
+      "    整数型: i, j, tmp",
+      "    for (i を 1 から n − 1 まで 1 ずつ増やす)",
+      "        for (j を 1 から n − i まで 1 ずつ増やす)",
+      "            if (data[j] > data[j + 1])     /*** α ***/",
+      "                tmp ← data[j]",
+      "                data[j] ← data[j + 1]",
+      "                data[j + 1] ← tmp",
+      "            endif",
+      "        endfor",
+      "    endfor",
+      "    return data"
+    ],
+    "choices": [
+      { "id": "c1", "text": "3" },
+      { "id": "c2", "text": "4" },
+      { "id": "c3", "text": "5" },
+      { "id": "c4", "text": "6" }
+    ],
+    "correctChoiceId": "c2"
+  },
+  {
+    "id": "m15",
+    "slug": "mogi1-15",
+    "number": 15,
+    "title": "ランレングス圧縮",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，文字列の文字番号は 1 から始まり，同じ文字の連続は 9 個以下とする。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "ランレングス圧縮とは，同じ文字が連続する部分を「文字＋連続した個数」に置き換えて，文字列を短く表現する圧縮方法である。"
+      },
+      {
+        "type": "text",
+        "text": "関数 rle は，文字列 text をランレングス圧縮した文字列を返す。例えば，関数 rle を rle(\"AAABBBBCC\") として呼び出すと，A が 3 個，B が 4 個，C が 2 個連続しているので，\"A3B4C2\" を返す。"
+      },
+      {
+        "type": "text",
+        "text": "関数 numToChar は，0～9 の整数を対応する数字の文字に変換する。例えば，numToChar(4) は文字 '4' を返す。"
+      }
+    ],
+    "pseudoCode": [
+      "○文字列型：rle（文字列型：text）",
+      "  文字列型：result ← \"\"",
+      "  整数型：n ← text の文字数",
+      "  整数型：i, cnt ← 1",
+      "  for（i を 2 から n まで 1 ずつ増やす）",
+      "    if（（text の i 文字目）が（text の（i − 1）文字目）と【 a 】）",
+      "      cnt ← cnt + 1",
+      "    else",
+      "      result ← result + （text の（i − 1）文字目） + numToChar（cnt）",
+      "      cnt ← 【 b 】",
+      "    endif",
+      "  endfor",
+      "  result ← result + （text の n 文字目） + numToChar（cnt）",
+      "  return result"
+    ],
+    "choices": [
+      { "id": "c1", "text": "a：等しい　b：0" },
+      { "id": "c2", "text": "a：等しい　b：1" },
+      { "id": "c3", "text": "a：等しい　b：cnt + 1" },
+      { "id": "c4", "text": "a：等しくない　b：0" },
+      { "id": "c5", "text": "a：等しくない　b：1" },
+      { "id": "c6", "text": "a：等しくない　b：cnt + 1" }
+    ],
+    "choiceTable": {
+      "headers": ["a", "b"],
+      "rows": [
+        ["等しい", "0"],
+        ["等しい", "1"],
+        ["等しい", "cnt + 1"],
+        ["等しくない", "0"],
+        ["等しくない", "1"],
+        ["等しくない", "cnt + 1"]
+      ]
+    },
+    "correctChoiceId": "c2"
+  },
+  {
+    "id": "m16",
+    "slug": "mogi1-16",
+    "number": 16,
+    "title": "アクセス権限",
+    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "関数 hasRight は 8 ビット型の引数 flags と整数型の引数 i を受け取り，flags の i ビット目が 1 ならば true を，0 ならば false を返す。ここで，ビットは最下位から順に 1 ビット目，2 ビット目，…，8 ビット目と数える。"
+      },
+      {
+        "type": "text",
+        "text": "flags は利用者のアクセス権限を表しており，各ビットは表に示す権限に対応する。ビットが 1 のとき，その権限が許可されていることを表す。"
+      },
+      {
+        "type": "table",
+        "headers": ["ビット", "権限"],
+        "rows": [
+          ["1 ビット目（最下位）", "読取り"],
+          ["2 ビット目", "書込み"],
+          ["3 ビット目", "実行"],
+          ["4 ビット目", "削除"],
+          ["5～8 ビット目", "未使用（常に 0）"]
+        ]
+      },
+      {
+        "type": "text",
+        "text": "例えば，flags が 00000110（書込みと実行が許可）のとき，関数 hasRight を hasRight(flags, 2) として呼び出すと，戻り値は true となり，hasRight(flags, 1) として呼び出すと，戻り値は false となる。"
+      },
+      {
+        "type": "text",
+        "text": "なお，演算子 ∧ はビット単位の論理積，演算子 >> は論理右シフト，演算子 << は論理左シフトを表す。例えば，value >> n は value の値を n ビットだけ右に論理シフトし，value << n は value の値を n ビットだけ左に論理シフトする。"
+      }
+    ],
+    "pseudoCode": [
+      "○ 論理型: hasRight(8ビット型: flags, 整数型: i)",
+      "    8ビット型: w",
+      "    w ← 【　】",
+      "    if ((w ∧ 00000001) が 00000001 と等しい)",
+      "        return true",
+      "    else",
+      "        return false",
+      "    endif"
+    ],
+    "choices": [
+      { "id": "c1", "text": "flags >> (i − 1)" },
+      { "id": "c2", "text": "flags >> i" },
+      { "id": "c3", "text": "flags << (i − 1)" },
+      { "id": "c4", "text": "flags << i" }
+    ],
+    "correctChoiceId": "c1"
+  }
+]

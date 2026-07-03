@@ -2,11 +2,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 import questionsData from "./data/questions.json";
+import mogiQuestionsData from "./data/mogiQuestions.json";
 import { BodyBlock, BodyTable, BodyTableCell, ExamState, Question } from "./types";
 import { generateAnotherQuestion } from "./anotherQuestionGenerators";
 
 const STORAGE_KEY = "exam-state";
+const MOGI_STORAGE_KEY = "exam-state-mogi"; // 模擬試験は保存キーを分けて通常演習の状態を汚さない
 const DEFAULT_TIME = 30 * 60; // 30 分
+const MOGI_TIME = 100 * 60; // 模擬試験 100 分（本番と同じ計測）
 const PER_QUESTION_TIME = 5 * 60; // 5 分
 const MIN_ZOOM = 0.5; // 50%
 const MAX_ZOOM = 1.5; // 150%
@@ -196,8 +199,8 @@ const initialState: ExamState = {
   instructorMode: false
 };
 
-function loadState(): ExamState {
-  const raw = localStorage.getItem(STORAGE_KEY);
+function loadState(key: string): ExamState {
+  const raw = localStorage.getItem(key);
   if (!raw) return initialState;
   try {
     const parsed = JSON.parse(raw) as Partial<ExamState>;
@@ -207,8 +210,8 @@ function loadState(): ExamState {
   }
 }
 
-function saveState(state: ExamState) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+function saveState(key: string, state: ExamState) {
+  localStorage.setItem(key, JSON.stringify(state));
 }
 
 function secondsToClock(sec: number) {
@@ -222,14 +225,21 @@ function secondsToClock(sec: number) {
 }
 
 export default function App() {
-  const questions = useMemo<Question[]>(() => questionsData as Question[], []);
-
-  // --- 埋め込み / ディープリンク用 URL パラメータ ---
+  // --- 埋め込み / ディープリンク / 模擬試験用 URL パラメータ ---
   // ?q=<問題idまたはnumber> でその問題を初期表示。?embed=1 で埋め込みモード
   // （モード選択をスキップ・ヘッダー/フッターを隠して1問に固定・localStorage非汚染）。
+  // ?mock=1 で模擬試験（問題セット・保存キー・タイマーを切り替え。URL直接指定でも起動可能）。
   const urlParams = useMemo(() => new URLSearchParams(window.location.search), []);
   const qParam = urlParams.get("q");
   const embed = urlParams.get("embed") === "1";
+  const isMogi = urlParams.get("mock") === "1";
+
+  const questions = useMemo<Question[]>(
+    () => (isMogi ? (mogiQuestionsData as Question[]) : (questionsData as Question[])),
+    [isMogi]
+  );
+  const storageKey = isMogi ? MOGI_STORAGE_KEY : STORAGE_KEY;
+  const examDefaultTime = isMogi ? MOGI_TIME : DEFAULT_TIME;
   const deepLinkIndex = useMemo(() => {
     if (!qParam) return -1;
     // slug 優先（?q=r6-mon1）→ id（?q=q49）→ number（?q=49）の順でマッチ
@@ -239,9 +249,14 @@ export default function App() {
     return i;
   }, [questions, qParam]);
 
+  // 模擬試験ページではタブタイトルを変える
+  useEffect(() => {
+    if (isMogi) document.title = "科目B 模擬試験";
+  }, [isMogi]);
+
   const [questionOverrides, setQuestionOverrides] = useState<Record<string, Partial<Question>>>({});
   const [state, setState] = useState<ExamState>(() => {
-    const base = embed ? { ...initialState } : loadState();
+    const base = embed ? { ...initialState } : loadState(isMogi ? MOGI_STORAGE_KEY : STORAGE_KEY);
     const next: ExamState = { ...base };
     // q または embed があれば、モード選択オーバーレイを飛ばして演習モードで開始
     if ((embed || qParam) && !next.mode) {
@@ -250,11 +265,29 @@ export default function App() {
       next.practiceMode = false;
       next.perQuestionGrading = true;
     }
+    // 模擬試験（?mock=1）はモード選択を挟まず、開いた時点で試験モード＋ガイダンス表示
+    // （URLを直接渡す運用でも一本道になる。計測はガイダンスの「試験開始」から）
+    if (isMogi && !embed && !qParam && !next.mode) {
+      next.mode = "exam";
+      next.hideTimer = false;
+      next.practiceMode = false;
+      next.perQuestionGrading = false;
+      next.perQuestionTimer = false;
+      next.perQuestionTimerAlert = false;
+      next.remainingSeconds = MOGI_TIME;
+      next.instructorMode = urlParams.get("instructor") === "1";
+    }
     if (deepLinkIndex >= 0) next.currentIndex = deepLinkIndex;
     return next;
   });
   const [showList, setShowList] = useState(false);
   const [showTimeUp, setShowTimeUp] = useState(false);
+  // 模擬試験のガイダンス画面（表示中はタイマーを動かさない）
+  // ?mock=1 で新規に開いた場合（＝保存済みの試験が無い場合）は最初からガイダンスを表示する
+  const [showGuidance, setShowGuidance] = useState<boolean>(() => {
+    if (!isMogi || embed || qParam) return false;
+    return !loadState(MOGI_STORAGE_KEY).mode;
+  });
   const [showPerQuestionTimeUp, setShowPerQuestionTimeUp] = useState(false);
   const [showReference, setShowReference] = useState(false);
   const [referenceTab, setReferenceTab] = useState<"notes" | "materials">("notes");
@@ -287,11 +320,12 @@ export default function App() {
   // state 永続化（埋め込みモードでは保存しない＝通常サイトの state を汚さない）
   useEffect(() => {
     if (embed) return;
-    saveState(state);
-  }, [state, embed]);
+    saveState(storageKey, state);
+  }, [state, embed, storageKey]);
 
-  // タイマー（全体）※100分数えないのときは計測しない
+  // タイマー（全体）※100分数えないのときは計測しない。ガイダンス表示中も計測しない
   useEffect(() => {
+    if (showGuidance) return;
     if (state.hideTimer) return;
     if (state.practiceMode) return;
     if (state.remainingSeconds <= 0) return;
@@ -307,10 +341,11 @@ export default function App() {
       });
     }, 1000);
     return () => clearInterval(id);
-  }, [state.hideTimer, state.practiceMode, state.remainingSeconds]);
+  }, [state.hideTimer, state.practiceMode, state.remainingSeconds, showGuidance]);
 
   // タイマー（問題ごと）
   useEffect(() => {
+    if (showGuidance) return;
     if (!state.perQuestionTimer) return;
     if (state.practiceMode) return;
     if (state.perQuestionTimerPaused) return;
@@ -339,7 +374,7 @@ export default function App() {
       });
     }, 1000);
     return () => clearInterval(id);
-  }, [state.perQuestionTimer, state.practiceMode, state.perQuestionTimerPaused, state.currentIndex, state.perQuestionRemainingSeconds, questions]);
+  }, [state.perQuestionTimer, state.practiceMode, state.perQuestionTimerPaused, state.currentIndex, state.perQuestionRemainingSeconds, questions, showGuidance]);
 
   // Ctrl + ホイールでズーム
   useEffect(() => {
@@ -511,6 +546,8 @@ export default function App() {
 
   const startMode = (mode: "practice" | "exam", hideTimer: boolean, perQuestionGrading: boolean, perQuestionTimer: boolean, perQuestionTimerAlert: boolean, instructorMode: boolean) => {
     setQuestionOverrides({});
+    // 模擬試験は開始前にガイダンス画面を挟む（閉じるまでタイマーは動かない）
+    if (isMogi) setShowGuidance(true);
     setState((prev) => {
       const newState = {
         ...initialState,
@@ -518,7 +555,7 @@ export default function App() {
         mode,
         hideTimer,
         practiceMode: false,
-        remainingSeconds: DEFAULT_TIME,
+        remainingSeconds: examDefaultTime,
         perQuestionGrading,
         perQuestionTimer,
         perQuestionTimerAlert,
@@ -582,7 +619,9 @@ export default function App() {
         correctLabel: CHOICE_LABELS[q.choices.findIndex((c) => c.id === correctId)] ?? "",
         correctText: q.choices.find((c) => c.id === correctId)?.text ?? "",
         videoUrl: q.videoUrl,
-        imageSrc: getQuestionImageSrc(q.number),
+        imageSrc: isMogi
+          ? `${import.meta.env.BASE_URL}question-images/mogi/${questionNumberToImageKey(q.number)}.png`
+          : getQuestionImageSrc(q.number),
         traceLines
       });
       return;
@@ -602,7 +641,9 @@ export default function App() {
       selectedLabel,
       selectedText,
       videoUrl: q.videoUrl,
-      imageSrc: getQuestionImageSrc(q.number),
+      imageSrc: isMogi
+        ? `${import.meta.env.BASE_URL}question-images/mogi/${questionNumberToImageKey(q.number)}.png`
+        : getQuestionImageSrc(q.number),
       traceLines
     });
   };
@@ -731,10 +772,27 @@ export default function App() {
       {!state.mode && (
         <div className="overlay">
           <div className="overlay-content overlay-content--mode-select">
-            <h3>モード選択</h3>
-            <p>開始するモードとオプションを選んでください。</p>
-            <ModePicker onStart={startMode} />
+            <h3>{isMogi ? "模擬試験" : "モード選択"}</h3>
+            <p>{isMogi ? "本番形式の模擬試験（アルゴリズム16問）です。" : "開始するモードとオプションを選んでください。"}</p>
+            <ModePicker isMogi={isMogi} onStart={startMode} />
             <a href="https://docs.google.com/document/d/1ZeSTp8iQiQnJuN79rt70V2k_TZDqRG-LwSipn162PPo/edit?usp=sharing" target="_blank" className="usage-link">サイトの使い方はこちら</a>
+          </div>
+        </div>
+      )}
+
+      {showGuidance && (
+        <div className="overlay">
+          <div className="overlay-content">
+            <h3>ガイダンス</h3>
+            <p>これから模擬試験を開始します。</p>
+            <ul className="guidance-list" style={{ textAlign: "left", lineHeight: 1.8 }}>
+              <li>問題数はアルゴリズム16問です。</li>
+              <li>「試験開始」を押すと100分の計測が始まります。</li>
+              <li>画面下の「一覧へ」で問題間を移動できます。迷った問題は「あとで見返す」に登録できます。</li>
+              <li>解き終えたら右上の「終了」を押してください。採点結果が表示されます。</li>
+              <li>途中でブラウザを閉じても、解答状況は保存されます。</li>
+            </ul>
+            <button onClick={() => setShowGuidance(false)}>試験開始</button>
           </div>
         </div>
       )}
@@ -765,7 +823,7 @@ export default function App() {
           }}
         >
           <div className="question-title-row">
-            <h2>{state.instructorMode ? currentQuestion.title : (Number.isInteger(currentQuestion.number) ? `${currentQuestion.number}問: ${currentQuestion.title}` : `${Math.floor(currentQuestion.number)}#問: ${currentQuestion.title}`)}</h2>
+            <h2>{isMogi && !state.instructorMode ? formatQuestionNumber(currentQuestion.number) : state.instructorMode ? currentQuestion.title : (Number.isInteger(currentQuestion.number) ? `${currentQuestion.number}問: ${currentQuestion.title}` : `${Math.floor(currentQuestion.number)}#問: ${currentQuestion.title}`)}</h2>
             {hitokotoDisplay ? <p className="hitokoto">{hitokotoDisplay}</p> : null}
           </div>
           {currentQuestion.questionText && <p>{currentQuestion.questionText}</p>}
@@ -856,7 +914,8 @@ export default function App() {
 
         <section className={`pane choices ${isMobile && mobilePane !== "choices" ? "mobile-hidden" : ""}`}>
           <div className="choices-header">
-            {state.perQuestionGrading && (
+            {/* 模擬試験では採点・解説系ボタンを常に非表示（機能自体は温存） */}
+            {state.perQuestionGrading && !isMogi && (
               <>
                 {lessonUrlDisplay && (
                   <button
@@ -1074,7 +1133,19 @@ export default function App() {
               className="outline"
               onClick={() => {
                 setShowResult(false);
-                setState((prev) => ({ ...prev, mode: null }));
+                if (isMogi) {
+                  // 模擬試験はモード選択に戻らず、次の受験に備えてガイダンスからやり直し
+                  setQuestionOverrides({});
+                  setState((prev) => ({
+                    ...prev,
+                    mode: "exam",
+                    practiceMode: false,
+                    remainingSeconds: MOGI_TIME
+                  }));
+                  setShowGuidance(true);
+                } else {
+                  setState((prev) => ({ ...prev, mode: null }));
+                }
               }}
             >
               閉じる
@@ -1131,14 +1202,16 @@ export default function App() {
 }
 
 type ModePickerProps = {
+  /** 模擬試験ページ（?mock=1）かどうか */
+  isMogi?: boolean;
   onStart: (mode: "practice" | "exam", hideTimer: boolean, perQuestionGrading: boolean, perQuestionTimer: boolean, perQuestionTimerAlert: boolean, instructorMode: boolean) => void;
 };
 
-function ModePicker({ onStart }: ModePickerProps) {
-  const [mode, setMode] = useState<"practice" | "exam">("practice");
+function ModePicker({ isMogi = false, onStart }: ModePickerProps) {
+  const [mode, setMode] = useState<"practice" | "exam">(isMogi ? "exam" : "practice");
   const [hideTimer, setHideTimer] = useState(false);
-  const [perQuestionGrading, setPerQuestionGrading] = useState(true);
-  const [perQuestionTimer, setPerQuestionTimer] = useState(true);
+  const [perQuestionGrading, setPerQuestionGrading] = useState(!isMogi);
+  const [perQuestionTimer, setPerQuestionTimer] = useState(!isMogi);
   const [perQuestionTimerAlert, setPerQuestionTimerAlert] = useState(false);
   const [instructorMode, setInstructorMode] = useState(false);
 
@@ -1147,62 +1220,104 @@ function ModePicker({ onStart }: ModePickerProps) {
   const effectivePerQuestionGrading = perQuestionGrading;
   const effectivePerQuestionTimer = perQuestionTimer;
 
+  // 模擬試験は別URL（?mock=1）で切り替える。モード選択からも相互に行き来できる
+  const goMogi = () => {
+    window.location.href = `${window.location.pathname}?mock=1`;
+  };
+  const goPractice = () => {
+    window.location.href = window.location.pathname;
+  };
+
   return (
     <div className="mode-picker">
       <div className="mode-buttons">
-        <button className={mode === "practice" ? "" : "outline"} onClick={() => setMode("practice")}>
+        <button
+          className={!isMogi && mode === "practice" ? "" : "outline"}
+          onClick={() => (isMogi ? goPractice() : setMode("practice"))}
+        >
           問題演習
         </button>
-        {/* <button className={mode === "exam" ? "" : "outline"} onClick={() => setMode("exam")}>
+        <button className={isMogi ? "" : "outline"} onClick={() => (isMogi ? undefined : goMogi())}>
           模擬試験
-        </button> */}
+        </button>
       </div>
-      <div className="mode-options">
-        <label className={isPractice ? "mode-option-fixed" : ""}>
-          <input
-            type="checkbox"
-            checked={effectiveHideTimer}
-            onChange={(e) => setHideTimer(e.target.checked)}
-            disabled={isPractice}
-          />{" "}
-          100分数えない
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={perQuestionGrading}
-            onChange={(e) => setPerQuestionGrading(e.target.checked)}
-          />{" "}
-          問題ごとに採点
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={perQuestionTimer}
-            onChange={(e) => setPerQuestionTimer(e.target.checked)}
-          />{" "}
-          問題ごとに5分計る
-        </label>
-        {perQuestionTimer && (
-          <label className="mode-option-indent">
+      {!isMogi ? (
+        <div className="mode-options">
+          <label className={isPractice ? "mode-option-fixed" : ""}>
             <input
               type="checkbox"
-              checked={perQuestionTimerAlert}
-              onChange={(e) => setPerQuestionTimerAlert(e.target.checked)}
+              checked={effectiveHideTimer}
+              onChange={(e) => setHideTimer(e.target.checked)}
+              disabled={isPractice}
             />{" "}
-            5分経過をウィンドウで知らせる
+            100分数えない
           </label>
-        )}
-        <label>
-          <input
-            type="checkbox"
-            checked={instructorMode}
-            onChange={(e) => setInstructorMode(e.target.checked)}
-          />{" "}
-          講師モード
-        </label>
-      </div>
-      <button onClick={() => onStart(mode, effectiveHideTimer, effectivePerQuestionGrading, effectivePerQuestionTimer, perQuestionTimerAlert, instructorMode)}>開始</button>
+          <label>
+            <input
+              type="checkbox"
+              checked={perQuestionGrading}
+              onChange={(e) => setPerQuestionGrading(e.target.checked)}
+            />{" "}
+            問題ごとに採点
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={perQuestionTimer}
+              onChange={(e) => setPerQuestionTimer(e.target.checked)}
+            />{" "}
+            問題ごとに5分計る
+          </label>
+          {perQuestionTimer && (
+            <label className="mode-option-indent">
+              <input
+                type="checkbox"
+                checked={perQuestionTimerAlert}
+                onChange={(e) => setPerQuestionTimerAlert(e.target.checked)}
+              />{" "}
+              5分経過をウィンドウで知らせる
+            </label>
+          )}
+          <label>
+            <input
+              type="checkbox"
+              checked={instructorMode}
+              onChange={(e) => setInstructorMode(e.target.checked)}
+            />{" "}
+            講師モード
+          </label>
+        </div>
+      ) : (
+        <div className="mode-options">
+          <label>
+            <input
+              type="checkbox"
+              checked={instructorMode}
+              onChange={(e) => setInstructorMode(e.target.checked)}
+            />{" "}
+            講師モード
+          </label>
+        </div>
+      )}
+      <button
+        onClick={() =>
+          onStart(
+            isMogi ? "exam" : mode,
+            isMogi ? false : effectiveHideTimer,
+            isMogi ? false : effectivePerQuestionGrading,
+            isMogi ? false : effectivePerQuestionTimer,
+            isMogi ? false : perQuestionTimerAlert,
+            instructorMode
+          )
+        }
+      >
+        開始
+      </button>
+      {isMogi && (
+        <p className="mogi-note" style={{ fontSize: "0.85em", marginTop: "0.75em", textAlign: "left" }}>
+          ※最初にガイダンス画面が表示されます｡試験開始ボタンを押した後､試験が開始され､100分の計測が始まります｡
+        </p>
+      )}
     </div>
   );
 }
