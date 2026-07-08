@@ -192,8 +192,27 @@ button.small {
 }
 
 .question-body-html .question-body-text {
-  margin: 0 0 0.65em;
+  margin: 0;
   white-space: pre-line;
+  line-height: 1.8;
+}
+
+.question-body-html .question-body-text-center {
+  margin: 0;
+  white-space: pre-line;
+  line-height: 1.8;
+}
+
+.question-body-html .body-table-block {
+  margin: 8px 0 12px;
+}
+
+.question-body-html .body-formula {
+  margin: 8px 0 12px;
+}
+
+.question-body-html .body-image-block {
+  margin: 8px 0 12px;
 }
 
 .question-body-html .question-body-text:last-child {

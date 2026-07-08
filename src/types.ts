@@ -56,6 +56,8 @@ export type Question = {
   /** 設定時は問題文側の解答群を表で表示（choices は採点・ボタン用に同順で維持） */
   choiceTable?: ChoiceTable;
   videoUrl?: string;
+  /** 解説記事URL。videoUrl 未設定時のフォールバック先（模試の「解説へ」で使用） */
+  explanationUrl?: string;
   /** 講義URL（記載がある場合のみボタン表示） */
   lessonUrl?: string;
   /** ヒント動画URL（記載がある場合のみボタン表示） */
