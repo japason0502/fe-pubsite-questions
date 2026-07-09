@@ -633,7 +633,7 @@
     "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi1-mon10/",
     "number": 10,
     "title": "単方向リスト",
-    "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。",
     "bodyBlocks": [
       {
         "type": "text",
@@ -641,7 +641,7 @@
       },
       {
         "type": "text",
-        "text": "クラス ListElement は，単方向リストの要素を表す。ListElement 型の変数はクラス ListElement のインスタンスの参照を格納するものとする。大域変数 listHead には，リストの先頭要素の参照があらかじめ格納されている。"
+        "text": "クラス ListElement は，単方向リストの要素を表す。ListElement 型の変数はクラス ListElement のインスタンスの参照を格納するものとする。大域変数 listHead には，リストの先頭要素の参照があらかじめ格納されている。リストが空のときは，listHead は未定義である。"
       },
       {
         "type": "table",
@@ -670,43 +670,75 @@
       "○delLast()",
       "  ListElement: prev",
       "",
-      "  if (listHead.next が 未定義)   // 要素が1つだけ（先頭がそのまま末尾）",
-      "    listHead ← 未定義",
+      "  if (listHead.next が 未定義)",
+      "    【 a 】 ← 未定義",
       "  else",
       "    prev ← listHead",
-      "    while (【　】 が 未定義でない)",
+      "    while (prev.next.next が 未定義でない)",
       "      prev ← prev.next",
       "    endwhile",
-      "    prev.next ← 未定義   // 末尾を切り離す",
+      "    prev.next ← 【 b 】",
       "  endif"
     ],
     "choices": [
       {
         "id": "c1",
-        "text": "listHead"
+        "text": "a：listHead　b：prev.next.next"
       },
       {
         "id": "c2",
-        "text": "listHead.next"
+        "text": "a：listHead　b：prev"
       },
       {
         "id": "c3",
-        "text": "listHead.next.next"
+        "text": "a：listHead　b：listHead"
       },
       {
         "id": "c4",
-        "text": "prev"
+        "text": "a：listHead.next　b：prev.next.next"
       },
       {
         "id": "c5",
-        "text": "prev.next"
+        "text": "a：listHead.next　b：prev"
       },
       {
         "id": "c6",
-        "text": "prev.next.next"
+        "text": "a：listHead.next　b：listHead"
       }
     ],
-    "correctChoiceId": "c6"
+    "choiceTable": {
+      "headers": [
+        "a",
+        "b"
+      ],
+      "rows": [
+        [
+          "listHead",
+          "prev.next.next"
+        ],
+        [
+          "listHead",
+          "prev"
+        ],
+        [
+          "listHead",
+          "listHead"
+        ],
+        [
+          "listHead.next",
+          "prev.next.next"
+        ],
+        [
+          "listHead.next",
+          "prev"
+        ],
+        [
+          "listHead.next",
+          "listHead"
+        ]
+      ]
+    },
+    "correctChoiceId": "c1"
   },
   {
     "id": "m11",
