@@ -1255,6 +1255,18 @@ export default function App() {
               ))}
             </div>
             <p className="result-note">※採点結果は記録されません。スクリーンショット等で保存してください（例: Windows+Shift+S）。</p>
+            {mogiSet === "1" && (
+              <div className="result-review">
+                <a
+                  className="result-review-link"
+                  href="https://docs.google.com/document/d/1MNhQlraRNPBOnf-PFMSzMU5GPUkxLmxhEb8YyysK6ag/edit?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  (受けた後に読んでください)全体の振り返り
+                </a>
+              </div>
+            )}
             <button
               className="outline"
               onClick={() => {

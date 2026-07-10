@@ -762,6 +762,26 @@ button:disabled {
   line-height: 1.4;
 }
 
+.result-review {
+  margin: 0.7em 0 0.2em;
+  padding: 0.75em 0.9em;
+  border: 1px solid #60a5fa;
+  border-radius: 8px;
+  background: #eff6ff;
+  text-align: center;
+}
+
+.result-review-link {
+  color: #1d4ed8;
+  font-weight: bold;
+  font-size: 1rem;
+  text-decoration: underline;
+}
+
+.result-review-link:hover {
+  color: #1e40af;
+}
+
 .chip {
   width: 16px;
   height: 16px;
