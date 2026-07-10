@@ -4,7 +4,7 @@
     "slug": "mogi1-1",
     "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi1-mon1/",
     "number": 1,
-    "title": "大域変数",
+    "title": "大域変数 ",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。",
     "bodyText": "func2() を実行すると、【　】が出力される。",
     "pseudoCode": [
