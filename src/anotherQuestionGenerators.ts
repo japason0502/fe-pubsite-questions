@@ -1045,7 +1045,7 @@ const anotherQuestionGenerators: Record<string, AnotherQuestionGenerator> = {
   q45: generateQ45Sparse,
   q58: generateQ58,
   q60: generateQ60,
-  q61: generateQ61,
+  q63: generateQ61,
   q70: generateQ70,
   q71: generateQ71,
   q76: generateQ76,

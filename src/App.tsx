@@ -6,6 +6,8 @@ import mogiQuestionsData from "./data/mogiQuestions.json";
 import r4ExtraData from "./data/r4Extra.json";
 import { BodyBlock, BodyTable, BodyTableCell, ExamState, Question } from "./types";
 import { generateAnotherQuestion } from "./anotherQuestionGenerators";
+import { PseudoCodeReference } from "./PseudoCodeReference";
+import { ExamDayNotes } from "./ExamDayNotes";
 
 const STORAGE_KEY = "exam-state";
 const MOGI_STORAGE_KEY = "exam-state-mogi"; // 模擬試験は保存キーを分けて通常演習の状態を汚さない
@@ -14,8 +16,8 @@ const REVIEW_MODE_KEY = "review-mode-mogi"; // 模試の復習モード（今す
 // R4サンプル模試: 令和4年度12月サンプル問題の20問を本試験の順（問1〜20）で出題。
 // バンク(questions.json)のidを本試験順に並べたもの。問17のみバンク未収録のためr4Extra.jsonで補完。
 const R4_SAMPLE_ORDER = [
-  "q0", "q49", "q23", "q82", "q79", "q63", "q56", "q74", "q58", "q78",
-  "q88", "q51", "q89", "q42", "q87", "q65", "r4x17", "q92", "q93", "q94"
+  "q0", "q49", "q23", "q82", "q79", "q65", "q56", "q74", "q58", "q78",
+  "q88", "q51", "q89", "q42", "q87", "q62", "r4x17", "q92", "q93", "q94"
 ];
 const DEFAULT_TIME = 30 * 60; // 30 分
 const MOGI_TIME = 100 * 60; // 模擬試験 100 分（本番と同じ計測）
@@ -209,7 +211,13 @@ const initialState: ExamState = {
 };
 
 function loadState(key: string): ExamState {
-  const raw = localStorage.getItem(key);
+  // iframe埋め込み(クロスサイト)では localStorage アクセス自体が例外になる環境があるため防御
+  let raw: string | null = null;
+  try {
+    raw = localStorage.getItem(key);
+  } catch {
+    return initialState;
+  }
   if (!raw) return initialState;
   try {
     const parsed = JSON.parse(raw) as Partial<ExamState>;
@@ -220,7 +228,11 @@ function loadState(key: string): ExamState {
 }
 
 function saveState(key: string, state: ExamState) {
-  localStorage.setItem(key, JSON.stringify(state));
+  try {
+    localStorage.setItem(key, JSON.stringify(state));
+  } catch {
+    /* 埋め込み等で localStorage 不可でも動作は継続 */
+  }
 }
 
 function secondsToClock(sec: number) {
@@ -245,6 +257,9 @@ export default function App() {
   // ?mock=1（模試1回目）／?mock=r4（R4サンプル20問）。それ以外の値は通常演習扱い
   const mogiSet = mockParam === "1" || mockParam === "r4" ? mockParam : null;
   const isMogi = mogiSet !== null;
+  // ?lock=1: 埋め込み用ロック。指定した模試から他モードへ移動できない
+  // （ガイダンスの「モード選択に戻る」を非表示にする。採点・復習モード等はそのまま使える）
+  const lock = urlParams.get("lock") === "1";
 
   const questions = useMemo<Question[]>(() => {
     if (mogiSet === "1") return mogiQuestionsData as Question[];
@@ -825,16 +840,15 @@ export default function App() {
       )}
 
       {showGuidance && (
-        <div className="overlay">
+        <div className="overlay overlay--mask">
           <div className="overlay-content">
             <h3>ガイダンス</h3>
             <p>これから模擬試験{mogiSet === "r4" ? "（R4サンプル問題）" : "（1回目）"}を開始します。</p>
             <ul className="guidance-list" style={{ textAlign: "left", lineHeight: 1.8 }}>
-              <li>問題数は{mogiSet === "r4" ? "20問（アルゴリズム16問＋情報セキュリティ4問）" : "アルゴリズム16問"}です。</li>
+              <li>問題数は全20問です。</li>
               <li>「試験開始」を押すと100分の計測が始まります。</li>
               <li>画面下の「一覧へ」で問題間を移動できます。迷った問題は「あとで見返す」に登録できます。</li>
               <li>解き終えたら右上の「終了」を押してください。採点結果が表示されます。</li>
-              <li>途中でブラウザを閉じても、解答状況は保存されます。</li>
             </ul>
             <label
               style={{ display: "block", margin: "8px 0 16px", cursor: "pointer", fontSize: "0.9em" }}
@@ -847,22 +861,24 @@ export default function App() {
               復習モード（各問に「今すぐ採点」「解説へ」ボタンを表示）
             </label>
             <button onClick={() => setShowGuidance(false)}>試験開始</button>
-            <button
-              className="outline"
-              onClick={() => {
-                // 通常ページ（モード選択）へ戻る。開始前なので保存状態も残さない
-                localStorage.removeItem(storageKey);
-                window.location.href = window.location.pathname;
-              }}
-            >
-              モード選択に戻る
-            </button>
+            {!lock && (
+              <button
+                className="outline"
+                onClick={() => {
+                  // 通常ページ（モード選択）へ戻る。開始前なので保存状態も残さない
+                  try { localStorage.removeItem(storageKey); } catch { /* noop */ }
+                  window.location.href = window.location.pathname;
+                }}
+              >
+                モード選択に戻る
+              </button>
+            )}
           </div>
         </div>
       )}
 
       {showResumePrompt && (
-        <div className="overlay">
+        <div className="overlay overlay--mask">
           <div className="overlay-content">
             <h3>前回の続きがあります</h3>
             <p>前回の模擬試験の解答状況が保存されています。続きから再開しますか？</p>
@@ -1165,7 +1181,7 @@ export default function App() {
 
       {showReference && (
         <div className="overlay">
-          <div className="overlay-content">
+          <div className="overlay-content overlay-content--reference">
             <div className="overlay-header">
               <h3>参考資料</h3>
               <button className="outline" onClick={() => setShowReference(false)}>
@@ -1193,7 +1209,7 @@ export default function App() {
               </button>
             </div>
             <div className="tab-panel" role="tabpanel">
-              {/* 中身は後で追加 */}
+              {referenceTab === "materials" ? <PseudoCodeReference /> : <ExamDayNotes />}
             </div>
           </div>
         </div>
@@ -1486,4 +1502,3 @@ function ModePicker({ isMogi = false, onStart }: ModePickerProps) {
     </div>
   );
 }
-

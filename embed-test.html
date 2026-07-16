@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>模擬試験① iframe埋め込みテスト</title>
+<style>
+  body { font-family: sans-serif; max-width: 900px; margin: 24px auto; padding: 0 16px; }
+  .note { color: #555; font-size: 14px; }
+</style>
+</head>
+<body>
+<h1>模擬試験① 埋め込みテスト</h1>
+<p class="note">記事に入れるのと同じ形のiframe。npm run dev を起動した状態でこのファイルをブラウザで開く。</p>
+
+<!-- ↓記事に入れるブロックと同じ構成（srcは本番URLに差し替え） -->
+<iframe
+  src="http://localhost:5173/?mock=1&lock=1"
+  width="100%"
+  height="900"
+  style="border:1px solid #ddd;border-radius:8px;"
+  loading="lazy"
+  title="基本情報 科目B 模擬試験①（演習サイト）"></iframe>
+
+<p><a href="http://localhost:5173/?mock=1&lock=1" target="_blank" rel="noopener noreferrer">うまく表示されない場合は、新しいタブで開く</a></p>
+
+<h2>チェックリスト</h2>
+<ul>
+  <li>ガイダンス → 試験開始でタイマーが動く</li>
+  <li>一覧へ／前へ次へ／あとで見返すが操作できる</li>
+  <li>ズームスライダーが効く（Ctrl+ホイールはiframe内にフォーカスがある時のみ）</li>
+  <li>終了 → confirm → 採点結果が出る</li>
+  <li>リロードしても解答状況が復元される（localStorage）</li>
+  <li>復習モードON時の「今すぐ採点」「解説へ」</li>
+</ul>
+</body>
+</html>

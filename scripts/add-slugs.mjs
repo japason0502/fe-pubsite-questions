@@ -20,8 +20,8 @@ const QPATH = join(__dirname, "..", "src", "data", "questions.json");
 
 // title にサンプル問題ラベルが無いが本物のサンプル問題（videoId で補完）
 const VID_FALLBACK = {
-  "srXR_nf2ZQo": "r4-mon6",   // 令和4 問6（2進数）
-  "HBJcpbO0KUw": "r4-mon16",  // 令和4 問16（ビット）
+  "6h67a02qKwI": "r4-mon6",   // 令和4 問6（2進数）
+  "psz33vjcahs": "r4-mon16",  // 令和4 問16（ビット）
   "z6ckOGIKntg": "r7-mon4",   // 令和7 問4（FORネスト）
 };
 

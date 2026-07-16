@@ -2282,12 +2282,32 @@
       }
     ],
     "choiceTable": {
-      "headers": ["a", "b", "c"],
+      "headers": [
+        "a",
+        "b",
+        "c"
+      ],
       "rows": [
-        ["1，2，2，3，3，4，5", "1，2，3，4，5，4，5", "3，2，2，1，2，3，1"],
-        ["1，2，2，3，3，4，5", "1，2，3，4，5，4，5", "3，2，2，1，3，2，1"],
-        ["1，2，3，4，5，4，5", "1，2，2，3，3，4，5", "3，2，2，1，2，3，1"],
-        ["1，2，3，4，5，4，5", "1，2，2，3，3，4，5", "3，2，2，1，3，2，1"]
+        [
+          "1，2，2，3，3，4，5",
+          "1，2，3，4，5，4，5",
+          "3，2，2，1，2，3，1"
+        ],
+        [
+          "1，2，2，3，3，4，5",
+          "1，2，3，4，5，4，5",
+          "3，2，2，1，3，2，1"
+        ],
+        [
+          "1，2，3，4，5，4，5",
+          "1，2，2，3，3，4，5",
+          "3，2，2，1，2，3，1"
+        ],
+        [
+          "1，2，3，4，5，4，5",
+          "1，2，2，3，3，4，5",
+          "3，2，2，1，3，2，1"
+        ]
       ]
     },
     "videoUrl": "https://www.youtube.com/watch?v=taayUZu2n9Y&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=34&t=59s",
@@ -3346,136 +3366,6 @@
   {
     "id": "q61",
     "number": 61,
-    "title": "論理積と論理和-練習問題",
-    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。",
-    "bodyText": "関数 getLower4Bits は 8 ビット型の引数 byte を受け取り，下位4ビットを返す。例えば，getLower4Bits(01001011) を呼び出すと，戻り値は 00001011 となる。\n\nなお，演算子 ∧ はビット単位の論理積，演算子 ∨ はビット単位の論理和，演算子 >> は論理右シフト，演算子 << は論理左シフトを表す。例えば，value >> n は value の値を n ビットだけ右に論理シフトし，value << n は value の値を n ビットだけ左に論理シフトする。",
-    "pseudoCode": [
-      "○ 8ビット型: getLower4Bits(8ビット型: byte)",
-      "    8ビット型: r ← 00000000",
-      "        【　】",
-      "    return r"
-    ],
-    "choices": [
-      {
-        "id": "a",
-        "text": "r ← (rbyte ∧ 00001111)"
-      },
-      {
-        "id": "b",
-        "text": "r ← (rbyte ∨ 00001111)"
-      },
-      {
-        "id": "c",
-        "text": "r ← (rbyte >> 4)"
-      },
-      {
-        "id": "d",
-        "text": "r ← (rbyte << 4)"
-      }
-    ],
-    "videoUrl": "https://www.youtube.com/watch?v=p294AvRiLmY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=53&pp=iAQBsAQBsAgC",
-    "correctChoiceId": "a",
-    "hitokoto": "講義の後に､自力で解こう!",
-    "hintVideoUrl": "",
-    "lessonUrl": "https://www.youtube.com/watch?v=SYfUvcNigrQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=52&pp=iAQBsAQBsAgC",
-    "another": 1
-  },
-  {
-    "id": "q62",
-    "number": 62,
-    "title": "ビット操作",
-    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。",
-    "bodyText": "関数 countBits は，8ビット型の引数 byte を受け取り，ビットが1になっている数を返す。例えば，関数 countBits を countBits(01001001) として呼び出すと，戻り値は 3 となる。\n\nなお，演算子 ∧ はビット単位の論理積，演算子 ∨ はビット単位の論理和，演算子 >> は論理右シフト，演算子 << は論理左シフトを表す。例えば，value >> n は value の値を n ビットだけ右に論理シフトし，value << n は value の値を n ビットだけ左に論理シフトする。",
-    "pseudoCode": [
-      "○ 整数型: countBits(8ビット型: byte)",
-      "    8ビット型: rbyte ← byte",
-      "    整数型: i, count ← 0",
-      "    for (i を 1 から 8 まで 1 ずつ増やす)",
-      "        if ((rbyte ∧ 00000001) が 00000001 と等しい)",
-      "            count ← count + 1",
-      "        endif",
-      "        【　】",
-      "    endfor",
-      "    return count"
-    ],
-    "choices": [
-      {
-        "id": "a",
-        "text": "rbyte ← rbyte << 1"
-      },
-      {
-        "id": "b",
-        "text": "rbyte ← rbyte << 7"
-      },
-      {
-        "id": "c",
-        "text": "rbyte ← rbyte >> 1"
-      },
-      {
-        "id": "d",
-        "text": "rbyte ← rbyte >> 7"
-      },
-      {
-        "id": "e",
-        "text": "rbyte ← rbyte ∧ 00000001"
-      },
-      {
-        "id": "f",
-        "text": "rbyte ← rbyte ∨ 00000001"
-      }
-    ],
-    "videoUrl": "https://www.youtube.com/watch?v=pVlL-Fv6K5g&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=54&t=57s",
-    "correctChoiceId": "c",
-    "hitokoto": "自力で解こう!",
-    "hintVideoUrl": "https://www.youtube.com/watch?v=pVlL-Fv6K5g&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=54&t=11s",
-    "lessonUrl": "",
-    "another": 0
-  },
-  {
-    "id": "q63",
-    "number": 63,
-    "title": "令和4サンプル問題問6",
-    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。",
-    "bodyText": "関数 rev は 8 ビット型の引数 byte を受け取り，ビットの並びを逆にした値を返す。例えば，関数 rev を rev(01001011) として呼び出すと，戻り値は 11010010 となる。\n\nなお，演算子 ∧ はビット単位の論理積，演算子 ∨ はビット単位の論理和，演算子 >> は論理右シフト，演算子 << は論理左シフトを表す。例えば，value >> n は value の値を n ビットだけ右に論理シフトし，value << n は value の値を n ビットだけ左に論理シフトする。",
-    "pseudoCode": [
-      "○ 8ビット型: rev(8ビット型: byte)",
-      "    8ビット型: rbyte ← byte",
-      "    8ビット型: r ← 00000000",
-      "    整数型: i",
-      "    for (i を 1 から 8 まで 1 ずつ増やす)",
-      "        【　】",
-      "    endfor",
-      "    return r"
-    ],
-    "choices": [
-      {
-        "id": "a",
-        "text": "r ← (r << 1) ∨ (rbyte ∧ 00000001)\nrbyte ← rbyte >> 1"
-      },
-      {
-        "id": "b",
-        "text": "r ← (r << 7) ∨ (rbyte ∧ 00000001)\nrbyte ← rbyte >> 7"
-      },
-      {
-        "id": "c",
-        "text": "r ← (rbyte << 1) ∨ (rbyte >> 7)\nrbyte ← r"
-      },
-      {
-        "id": "d",
-        "text": "r ← (rbyte >> 1) ∨ (rbyte << 7)\nrbyte ← r"
-      }
-    ],
-    "videoUrl": "https://www.youtube.com/watch?v=srXR_nf2ZQo&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=55",
-    "correctChoiceId": "a",
-    "hitokoto": "自力で解こう!",
-    "hintVideoUrl": "",
-    "lessonUrl": "",
-    "another": 0,
-    "slug": "r4-mon6"
-  },
-  {
-    "id": "q64",
-    "number": 64,
     "title": "整数でのビット演算",
     "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。複数の【　】には同じ答えが入る。",
     "bodyText": "関数 swapNibbles は，引数として与えられた整数値を，符号なし 8 ビットの 2 進数として表現したときの上位 4 ビットと下位 4 ビットとを入れ替え，その結果得られる 8 ビットの列を，再び符号なし 8 ビットの 2 進数とみなして整数値として返す。本問で数値の後ろに “(10)” と記載した場合は，その数値が 10 進数であることを表す。\n\n例えば，18(10) を符号なし 8 ビットの 2 進数で表すと，00010010となる。ここで，上位 4 ビット 0001 と下位 4 ビット 0010 とを入れ替えると，00100001となる。この値を符号なし 8 ビットの 2 進数とみなして整数値に変換すると，33(10) となる。したがって，swapNibbles(18) を呼び出したとき，戻り値は 33 である。\n\n関数 swapNibbles には，引数 byteValue に 0(10)以上 255(10)以下の整数値だけが与えられるものとする。",
@@ -3509,16 +3399,16 @@
         "text": "256"
       }
     ],
-    "videoUrl": "https://www.youtube.com/watch?v=K14m5rc0UqU&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=56&t=57s",
+    "videoUrl": "https://www.youtube.com/watch?v=u-aCGCyf4hY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=52&t=36s",
     "correctChoiceId": "c",
     "hitokoto": "自力で解こう!",
-    "hintVideoUrl": "https://www.youtube.com/watch?v=K14m5rc0UqU&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=56&t=23s",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=u-aCGCyf4hY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=52&t=3s",
     "lessonUrl": "",
     "another": 0
   },
   {
-    "id": "q65",
-    "number": 65,
+    "id": "q62",
+    "number": 62,
     "title": "令和4サンプル問題問16（UTF-8）",
     "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。二つの【　】には，同じ答えが入る。ここで，配列の要素番号は 1 から始まる。",
     "bodyBlocks": [
@@ -3577,13 +3467,143 @@
         "text": "256"
       }
     ],
-    "videoUrl": "https://www.youtube.com/watch?v=HBJcpbO0KUw&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=57&t=107s",
+    "videoUrl": "https://www.youtube.com/watch?v=psz33vjcahs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=53&t=106s",
     "correctChoiceId": "h",
     "hitokoto": "自力で解こう!",
-    "hintVideoUrl": "https://www.youtube.com/watch?v=HBJcpbO0KUw&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=57&t=26s",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=psz33vjcahs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=53&t=24s",
     "lessonUrl": "",
     "another": 0,
     "slug": "r4-mon16"
+  },
+  {
+    "id": "q63",
+    "number": 63,
+    "title": "論理積と論理和-練習問題",
+    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyText": "関数 getLower4Bits は 8 ビット型の引数 byte を受け取り，下位4ビットを返す。例えば，getLower4Bits(01001011) を呼び出すと，戻り値は 00001011 となる。\n\nなお，演算子 ∧ はビット単位の論理積，演算子 ∨ はビット単位の論理和，演算子 >> は論理右シフト，演算子 << は論理左シフトを表す。例えば，value >> n は value の値を n ビットだけ右に論理シフトし，value << n は value の値を n ビットだけ左に論理シフトする。",
+    "pseudoCode": [
+      "○ 8ビット型: getLower4Bits(8ビット型: byte)",
+      "    8ビット型: r ← 00000000",
+      "        【　】",
+      "    return r"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "r ← (rbyte ∧ 00001111)"
+      },
+      {
+        "id": "b",
+        "text": "r ← (rbyte ∨ 00001111)"
+      },
+      {
+        "id": "c",
+        "text": "r ← (rbyte >> 4)"
+      },
+      {
+        "id": "d",
+        "text": "r ← (rbyte << 4)"
+      }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=72soSneE7V4&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=55",
+    "correctChoiceId": "a",
+    "hitokoto": "講義の後に､自力で解こう!",
+    "hintVideoUrl": "",
+    "lessonUrl": "https://www.youtube.com/watch?v=jhZ4d8VuW0Q&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=54",
+    "another": 1
+  },
+  {
+    "id": "q64",
+    "number": 64,
+    "title": "ビット操作",
+    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyText": "関数 countBits は，8ビット型の引数 byte を受け取り，ビットが1になっている数を返す。例えば，関数 countBits を countBits(01001001) として呼び出すと，戻り値は 3 となる。\n\nなお，演算子 ∧ はビット単位の論理積，演算子 ∨ はビット単位の論理和，演算子 >> は論理右シフト，演算子 << は論理左シフトを表す。例えば，value >> n は value の値を n ビットだけ右に論理シフトし，value << n は value の値を n ビットだけ左に論理シフトする。",
+    "pseudoCode": [
+      "○ 整数型: countBits(8ビット型: byte)",
+      "    8ビット型: rbyte ← byte",
+      "    整数型: i, count ← 0",
+      "    for (i を 1 から 8 まで 1 ずつ増やす)",
+      "        if ((rbyte ∧ 00000001) が 00000001 と等しい)",
+      "            count ← count + 1",
+      "        endif",
+      "        【　】",
+      "    endfor",
+      "    return count"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "rbyte ← rbyte << 1"
+      },
+      {
+        "id": "b",
+        "text": "rbyte ← rbyte << 7"
+      },
+      {
+        "id": "c",
+        "text": "rbyte ← rbyte >> 1"
+      },
+      {
+        "id": "d",
+        "text": "rbyte ← rbyte >> 7"
+      },
+      {
+        "id": "e",
+        "text": "rbyte ← rbyte ∧ 00000001"
+      },
+      {
+        "id": "f",
+        "text": "rbyte ← rbyte ∨ 00000001"
+      }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=MLQtPyD8Bqg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=56&t=58s",
+    "correctChoiceId": "c",
+    "hitokoto": "自力で解こう!",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=MLQtPyD8Bqg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=56&t=12s",
+    "lessonUrl": "",
+    "another": 0
+  },
+  {
+    "id": "q65",
+    "number": 65,
+    "title": "令和4サンプル問題問6",
+    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyText": "関数 rev は 8 ビット型の引数 byte を受け取り，ビットの並びを逆にした値を返す。例えば，関数 rev を rev(01001011) として呼び出すと，戻り値は 11010010 となる。\n\nなお，演算子 ∧ はビット単位の論理積，演算子 ∨ はビット単位の論理和，演算子 >> は論理右シフト，演算子 << は論理左シフトを表す。例えば，value >> n は value の値を n ビットだけ右に論理シフトし，value << n は value の値を n ビットだけ左に論理シフトする。",
+    "pseudoCode": [
+      "○ 8ビット型: rev(8ビット型: byte)",
+      "    8ビット型: rbyte ← byte",
+      "    8ビット型: r ← 00000000",
+      "    整数型: i",
+      "    for (i を 1 から 8 まで 1 ずつ増やす)",
+      "        【　】",
+      "    endfor",
+      "    return r"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "r ← (r << 1) ∨ (rbyte ∧ 00000001)\nrbyte ← rbyte >> 1"
+      },
+      {
+        "id": "b",
+        "text": "r ← (r << 7) ∨ (rbyte ∧ 00000001)\nrbyte ← rbyte >> 7"
+      },
+      {
+        "id": "c",
+        "text": "r ← (rbyte << 1) ∨ (rbyte >> 7)\nrbyte ← r"
+      },
+      {
+        "id": "d",
+        "text": "r ← (rbyte >> 1) ∨ (rbyte << 7)\nrbyte ← r"
+      }
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=6h67a02qKwI&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=57",
+    "correctChoiceId": "a",
+    "hitokoto": "自力で解こう!",
+    "hintVideoUrl": "",
+    "lessonUrl": "",
+    "another": 0,
+    "slug": "r4-mon6"
   },
   {
     "id": "q66",
@@ -3920,10 +3940,10 @@
         "text": "words.freq(s1 + s2) ÷ (words.freq(s2) − words.freqE(s2))"
       }
     ],
-    "videoUrl": "https://www.youtube.com/watch?v=W7yrjXnd8Yg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=66&t=52s",
+    "videoUrl": "https://www.youtube.com/watch?v=zVUIe2-YSsg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=36s",
     "correctChoiceId": "c",
     "hitokoto": "",
-    "hintVideoUrl": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=zVUIe2-YSsg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
     "lessonUrl": "",
     "another": 0,
     "slug": "r404-mon5"
