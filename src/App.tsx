@@ -3,6 +3,7 @@ import katex from "katex";
 import "katex/dist/katex.min.css";
 import questionsData from "./data/questions.json";
 import mogiQuestionsData from "./data/mogiQuestions.json";
+import mogi2QuestionsData from "./data/mogi2Questions.json";
 import r4ExtraData from "./data/r4Extra.json";
 import { BodyBlock, BodyTable, BodyTableCell, ExamState, Question } from "./types";
 import { generateAnotherQuestion } from "./anotherQuestionGenerators";
@@ -11,6 +12,7 @@ import { ExamDayNotes } from "./ExamDayNotes";
 
 const STORAGE_KEY = "exam-state";
 const MOGI_STORAGE_KEY = "exam-state-mogi"; // 模擬試験は保存キーを分けて通常演習の状態を汚さない
+const MOGI2_STORAGE_KEY = "exam-state-mogi-2"; // 模試2回目用
 const MOGI_R4_STORAGE_KEY = "exam-state-mogi-r4"; // R4サンプル模試用
 const REVIEW_MODE_KEY = "review-mode-mogi"; // 模試の復習モード（今すぐ採点・解説動画ボタン表示）ON/OFF
 // R4サンプル模試: 令和4年度12月サンプル問題の20問を本試験の順（問1〜20）で出題。
@@ -254,8 +256,8 @@ export default function App() {
   const qParam = urlParams.get("q");
   const embed = urlParams.get("embed") === "1";
   const mockParam = urlParams.get("mock");
-  // ?mock=1（模試1回目）／?mock=r4（R4サンプル20問）。それ以外の値は通常演習扱い
-  const mogiSet = mockParam === "1" || mockParam === "r4" ? mockParam : null;
+  // ?mock=1（模試1回目）／?mock=2（模試2回目）／?mock=r4（R4サンプル20問）。それ以外の値は通常演習扱い
+  const mogiSet = mockParam === "1" || mockParam === "2" || mockParam === "r4" ? mockParam : null;
   const isMogi = mogiSet !== null;
   // ?lock=1: 埋め込み用ロック。指定した模試から他モードへ移動できない
   // （ガイダンスの「モード選択に戻る」を非表示にする。採点・復習モード等はそのまま使える）
@@ -263,6 +265,7 @@ export default function App() {
 
   const questions = useMemo<Question[]>(() => {
     if (mogiSet === "1") return mogiQuestionsData as Question[];
+    if (mogiSet === "2") return mogi2QuestionsData as Question[];
     if (mogiSet === "r4") {
       const byId = new Map<string, Question>();
       (questionsData as Question[]).forEach((q) => byId.set(q.id, q));
@@ -276,7 +279,8 @@ export default function App() {
     }
     return questionsData as Question[];
   }, [mogiSet]);
-  const storageKey = mogiSet === "r4" ? MOGI_R4_STORAGE_KEY : isMogi ? MOGI_STORAGE_KEY : STORAGE_KEY;
+  const storageKey =
+    mogiSet === "r4" ? MOGI_R4_STORAGE_KEY : mogiSet === "2" ? MOGI2_STORAGE_KEY : isMogi ? MOGI_STORAGE_KEY : STORAGE_KEY;
   const examDefaultTime = isMogi ? MOGI_TIME : DEFAULT_TIME;
   const deepLinkIndex = useMemo(() => {
     if (!qParam) return -1;
@@ -843,7 +847,7 @@ export default function App() {
         <div className="overlay overlay--mask">
           <div className="overlay-content">
             <h3>ガイダンス</h3>
-            <p>これから模擬試験{mogiSet === "r4" ? "" : "（1回目）"}を開始します。</p>
+            <p>これから模擬試験{mogiSet === "r4" ? "" : mogiSet === "2" ? "（2回目）" : "（1回目）"}を開始します。</p>
             <ul className="guidance-list" style={{ textAlign: "left", lineHeight: 1.8 }}>
               <li>問題数は全20問です。</li>
               <li>「試験開始」を押すと100分の計測が始まります。</li>
@@ -1416,8 +1420,8 @@ function ModePicker({ isMogi = false, onStart }: ModePickerProps) {
           <button className="outline" onClick={() => goMogi("1")}>
             1回目
           </button>
-          <button className="outline" disabled title="準備中">
-            2回目(準備中)
+          <button className="outline" onClick={() => goMogi("2")}>
+            2回目
           </button>
         </div>
       )}
