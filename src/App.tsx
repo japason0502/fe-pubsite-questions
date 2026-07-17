@@ -673,7 +673,7 @@ export default function App() {
       setGradeNowResult({
         questionId: q.id,
         questionNumber: q.number,
-        questionTitle: q.title,
+        questionTitle: isMogi && !state.instructorMode ? "" : q.title,
         status: "unanswered",
         correctLabel: CHOICE_LABELS[q.choices.findIndex((c) => c.id === correctId)] ?? "",
         correctText: q.choices.find((c) => c.id === correctId)?.text ?? "",
@@ -693,7 +693,7 @@ export default function App() {
     setGradeNowResult({
       questionId: q.id,
       questionNumber: q.number,
-      questionTitle: q.title,
+      questionTitle: isMogi && !state.instructorMode ? "" : q.title,
       status,
       correctLabel,
       correctText,
@@ -843,7 +843,7 @@ export default function App() {
         <div className="overlay overlay--mask">
           <div className="overlay-content">
             <h3>ガイダンス</h3>
-            <p>これから模擬試験{mogiSet === "r4" ? "（R4サンプル問題）" : "（1回目）"}を開始します。</p>
+            <p>これから模擬試験{mogiSet === "r4" ? "" : "（1回目）"}を開始します。</p>
             <ul className="guidance-list" style={{ textAlign: "left", lineHeight: 1.8 }}>
               <li>問題数は全20問です。</li>
               <li>「試験開始」を押すと100分の計測が始まります。</li>
@@ -1313,7 +1313,8 @@ export default function App() {
           <div className="overlay-content">
             <h3>この問題の結果</h3>
             <p className="grade-now-question">
-              {formatQuestionNumber(gradeNowResult.questionNumber)}: {gradeNowResult.questionTitle}
+              {formatQuestionNumber(gradeNowResult.questionNumber)}
+              {gradeNowResult.questionTitle ? `: ${gradeNowResult.questionTitle}` : ""}
             </p>
             <div className="grade-now-image">
               {!gradeNowImageError ? (
