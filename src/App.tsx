@@ -46,6 +46,30 @@ type StartOptions = {
   randomCount?: number | null;
 };
 
+/** 模擬試験の受け方 動画 */
+const MOGI_HOWTO_URL = "https://www.youtube.com/watch?v=mhVYsuS7n6I";
+
+/** 模擬試験を受ける前の注意事項。モード選択の模試メニューとガイダンス画面の両方で表示する */
+function MogiCautions() {
+  return (
+    <div
+      className="mogi-note"
+      style={{ fontSize: "0.9em", fontWeight: 700, margin: "0.75em 0", textAlign: "left" }}
+    >
+      <p style={{ margin: "0 0 0.5em" }}>
+        ※問題演習の「ランダムに出題」を使って、「時間以内に最低7割以上を安定的に正解」できるようになってから受験ください。一度解いている問題で7割取れないようだと、まだ基礎が固まっておらず模擬試験を受けるには早いです。
+      </p>
+      <p style={{ margin: 0 }}>
+        ※
+        <a href={MOGI_HOWTO_URL} target="_blank" rel="noreferrer">
+          「模擬試験の受け方」
+        </a>
+        動画を見てから受験ください。
+      </p>
+    </div>
+  );
+}
+
 const DEFAULT_TIME = 30 * 60; // 30 分
 const MOGI_TIME = 100 * 60; // 模擬試験 100 分（本番と同じ計測）
 const PER_QUESTION_TIME = 5 * 60; // 5 分
@@ -912,6 +936,7 @@ export default function App() {
               <li>画面下の「一覧へ」で問題間を移動できます。迷った問題は「あとで見返す」に登録できます。</li>
               <li>解き終えたら右上の「終了」を押してください。採点結果が表示されます。</li>
             </ul>
+            <MogiCautions />
             <label
               style={{ display: "block", margin: "8px 0 16px", cursor: "pointer", fontSize: "0.9em" }}
             >
@@ -1424,7 +1449,8 @@ type ModePickerProps = {
   onStart: (options: StartOptions) => void;
 };
 
-const RANDOM_COUNTS = [5, 10, 20];
+// 16問＝本番20問から情報セキュリティ4問を引いたアルゴリズム部分と同数（16×5分＝80分）
+const RANDOM_COUNTS = [5, 10, 16];
 
 function ModePicker({ isMogi = false, onStart }: ModePickerProps) {
   const [mode, setMode] = useState<"practice" | "exam">(isMogi ? "exam" : "practice");
@@ -1456,7 +1482,7 @@ function ModePicker({ isMogi = false, onStart }: ModePickerProps) {
     <div className="mode-picker">
       <div className="mode-buttons">
         <button
-          className={!isMogi && mode === "practice" ? "" : "outline"}
+          className={!isMogi && !showMogiMenu && mode === "practice" ? "" : "outline"}
           onClick={() => {
             if (isMogi) {
               goPractice();
@@ -1475,6 +1501,7 @@ function ModePicker({ isMogi = false, onStart }: ModePickerProps) {
           模擬試験
         </button>
       </div>
+      {(isMogi || showMogiMenu) && <MogiCautions />}
       {!isMogi && showMogiMenu && (
         <div className="mode-buttons mogi-set-buttons" style={{ marginTop: "0.5em" }}>
           <button className="outline" onClick={() => goMogi("r4")}>
@@ -1538,7 +1565,7 @@ function ModePicker({ isMogi = false, onStart }: ModePickerProps) {
                 </label>
               ))}
               <p style={{ fontSize: "0.85em", margin: "0.25em 0 0", opacity: 0.8 }}>
-                基礎問題を除いて､ランダムに出題します
+                基礎･情報セキュリティを除いて､ランダムに出題します
               </p>
             </div>
           )}
