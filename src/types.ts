@@ -64,6 +64,10 @@ export type Question = {
   hintVideoUrl?: string;
   /** 値を変えてもう一度ボタン表示フラグ（1:表示, 0:非表示） */
   another?: number;
+  /** 基礎練習問題（1:基礎）。ランダム出題の対象から除外される */
+  basic?: number;
+  /** 出題分野。未設定はアルゴリズム。"security" はランダム出題の対象外 */
+  field?: "security";
   /** another再生成時に表示する補助トレース */
   anotherTraceLines?: string[];
   correctChoiceId?: string;
@@ -86,5 +90,7 @@ export type ExamState = {
   perQuestionRemainingSeconds: Record<string, number>;
   perQuestionTimerPaused: boolean;
   instructorMode: boolean;
+  /** ランダム出題で選ばれた問題ID（順番どおりに出題）。null なら通常出題 */
+  randomIds?: string[] | null;
 };
 

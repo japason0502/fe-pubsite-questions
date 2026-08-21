@@ -21,6 +21,31 @@ const R4_SAMPLE_ORDER = [
   "q0", "q49", "q23", "q82", "q79", "q65", "q56", "q74", "q58", "q78",
   "q88", "q51", "q89", "q42", "q87", "q62", "r4x17", "q92", "q93", "q94"
 ];
+/** ランダム出題の母集団。基礎練習問題(basic)と情報セキュリティ(field)を除いた問題のid */
+const RANDOM_POOL_IDS = (questionsData as Question[])
+  .filter((q) => !q.basic && q.field !== "security")
+  .map((q) => q.id);
+/** 母集団から count 問をシャッフルして取り出す（出題順もシャッフルのまま） */
+function pickRandomIds(count: number): string[] {
+  const pool = [...RANDOM_POOL_IDS];
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, Math.min(count, pool.length));
+}
+/** モード選択から開始するときのオプション */
+type StartOptions = {
+  mode: "practice" | "exam";
+  hideTimer: boolean;
+  perQuestionGrading: boolean;
+  perQuestionTimer: boolean;
+  perQuestionTimerAlert: boolean;
+  instructorMode: boolean;
+  /** ランダム出題の問題数。null / 未指定なら通常出題 */
+  randomCount?: number | null;
+};
+
 const DEFAULT_TIME = 30 * 60; // 30 分
 const MOGI_TIME = 100 * 60; // 模擬試験 100 分（本番と同じ計測）
 const PER_QUESTION_TIME = 5 * 60; // 5 分
@@ -209,7 +234,8 @@ const initialState: ExamState = {
   perQuestionTimerAlert: false,
   perQuestionRemainingSeconds: {},
   perQuestionTimerPaused: false,
-  instructorMode: false
+  instructorMode: false,
+  randomIds: null
 };
 
 function loadState(key: string): ExamState {
@@ -263,7 +289,7 @@ export default function App() {
   // （ガイダンスの「モード選択に戻る」を非表示にする。採点・復習モード等はそのまま使える）
   const lock = urlParams.get("lock") === "1";
 
-  const questions = useMemo<Question[]>(() => {
+  const allQuestions = useMemo<Question[]>(() => {
     if (mogiSet === "1") return mogiQuestionsData as Question[];
     if (mogiSet === "2") return mogi2QuestionsData as Question[];
     if (mogiSet === "r4") {
@@ -285,11 +311,11 @@ export default function App() {
   const deepLinkIndex = useMemo(() => {
     if (!qParam) return -1;
     // slug 優先（?q=r6-mon1）→ id（?q=q49）→ number（?q=49）の順でマッチ
-    let i = questions.findIndex((x) => x.slug === qParam);
-    if (i < 0) i = questions.findIndex((x) => x.id === qParam);
-    if (i < 0) i = questions.findIndex((x) => String(x.number) === qParam);
+    let i = allQuestions.findIndex((x) => x.slug === qParam);
+    if (i < 0) i = allQuestions.findIndex((x) => x.id === qParam);
+    if (i < 0) i = allQuestions.findIndex((x) => String(x.number) === qParam);
     return i;
-  }, [questions, qParam]);
+  }, [allQuestions, qParam]);
 
   // 模擬試験ページではタブタイトルを変える
   useEffect(() => {
@@ -319,9 +345,23 @@ export default function App() {
       next.remainingSeconds = MOGI_TIME;
       next.instructorMode = urlParams.get("instructor") === "1";
     }
+    // ディープリンク/埋め込みは「その1問を見る」用途。
+    // 前回のランダム出題が残っていると deepLinkIndex が範囲外になるので解除する
+    if (embed || qParam) next.randomIds = null;
     if (deepLinkIndex >= 0) next.currentIndex = deepLinkIndex;
     return next;
   });
+
+  // ランダム出題中は選ばれたidの順に並べ替えるだけ。
+  // 問番号は振り直さない（解説画像が question-images/{number}.png で引かれているため、
+  // 振り直すと別の問題の画像を指してしまう）
+  const questions = useMemo<Question[]>(() => {
+    const ids = state.randomIds;
+    if (!ids || ids.length === 0) return allQuestions;
+    const byId = new Map(allQuestions.map((q) => [q.id, q] as const));
+    return ids.map((id) => byId.get(id)).filter((q): q is Question => Boolean(q));
+  }, [allQuestions, state.randomIds]);
+
   const [showList, setShowList] = useState(false);
   const [showTimeUp, setShowTimeUp] = useState(false);
   // 模擬試験のガイダンス画面（表示中はタイマーを動かさない）
@@ -385,7 +425,7 @@ export default function App() {
     saveState(storageKey, state);
   }, [state, embed, storageKey]);
 
-  // タイマー（全体）※100分数えないのときは計測しない。ガイダンス・再開確認の表示中も計測しない
+  // タイマー（全体）※hideTimer(演習モード/埋め込み)のときは計測しない。ガイダンス・再開確認の表示中も計測しない
   useEffect(() => {
     if (showGuidance || showResumePrompt) return;
     if (state.hideTimer) return;
@@ -607,34 +647,52 @@ export default function App() {
     gradeExam();
   };
 
-  const startMode = (mode: "practice" | "exam", hideTimer: boolean, perQuestionGrading: boolean, perQuestionTimer: boolean, perQuestionTimerAlert: boolean, instructorMode: boolean) => {
+  const startMode = ({
+    mode,
+    hideTimer,
+    perQuestionGrading,
+    perQuestionTimer,
+    perQuestionTimerAlert,
+    instructorMode,
+    randomCount
+  }: StartOptions) => {
     setQuestionOverrides({});
     // 模擬試験は開始前にガイダンス画面を挟む（閉じるまでタイマーは動かない）
     if (isMogi) setShowGuidance(true);
+    // 抽選はここで1回だけ行う（以後は state.randomIds を使うので、画面遷移で引き直されない）
+    const randomIds = randomCount ? pickRandomIds(randomCount) : null;
     setState((prev) => {
-      const newState = {
+      const newState: ExamState = {
         ...initialState,
         ...prev,
         mode,
         hideTimer,
         practiceMode: false,
-        remainingSeconds: examDefaultTime,
+        // ランダム出題は「5分 × 出題数」を制限時間にする（本番と同じ1問5分ペース）
+        remainingSeconds: randomIds ? PER_QUESTION_TIME * randomIds.length : examDefaultTime,
         perQuestionGrading,
         perQuestionTimer,
         perQuestionTimerAlert,
         perQuestionRemainingSeconds: {},
         perQuestionTimerPaused: false,
-        instructorMode
+        instructorMode,
+        randomIds
       };
-      
+
+      // ランダム出題は毎回まっさらな状態から始める（前回の解答が残っていると混乱するため）
+      if (randomIds) {
+        newState.answers = {};
+        newState.reviewFlags = {};
+        newState.currentIndex = 0;
+      }
+
       // 問題ごとのタイマーが有効な場合、最初の問題のタイマーを初期化
-      if (perQuestionTimer && questions.length > 0) {
-        const firstQuestionId = questions[0]?.id;
-        if (firstQuestionId) {
-          newState.perQuestionRemainingSeconds = {
-            [firstQuestionId]: PER_QUESTION_TIME
-          };
-        }
+      // （ランダム出題では questions がまだ更新前なので、抽選結果の先頭を使う）
+      const firstQuestionId = randomIds ? randomIds[0] : questions[0]?.id;
+      if (perQuestionTimer && firstQuestionId) {
+        newState.perQuestionRemainingSeconds = {
+          [firstQuestionId]: PER_QUESTION_TIME
+        };
       }
       
       return newState;
@@ -1363,19 +1421,24 @@ export default function App() {
 type ModePickerProps = {
   /** 模擬試験ページ（?mock=1）かどうか */
   isMogi?: boolean;
-  onStart: (mode: "practice" | "exam", hideTimer: boolean, perQuestionGrading: boolean, perQuestionTimer: boolean, perQuestionTimerAlert: boolean, instructorMode: boolean) => void;
+  onStart: (options: StartOptions) => void;
 };
+
+const RANDOM_COUNTS = [5, 10, 20];
 
 function ModePicker({ isMogi = false, onStart }: ModePickerProps) {
   const [mode, setMode] = useState<"practice" | "exam">(isMogi ? "exam" : "practice");
-  const [hideTimer, setHideTimer] = useState(false);
   const [perQuestionGrading, setPerQuestionGrading] = useState(!isMogi);
   const [perQuestionTimer, setPerQuestionTimer] = useState(!isMogi);
   const [perQuestionTimerAlert, setPerQuestionTimerAlert] = useState(false);
   const [instructorMode, setInstructorMode] = useState(false);
+  const [randomOn, setRandomOn] = useState(false);
+  const [randomCount, setRandomCount] = useState(10);
 
   const isPractice = mode === "practice";
-  const effectiveHideTimer = isPractice ? true : hideTimer;
+  // 演習モードは時間を計らない。試験モードは計る（手動切り替えは廃止）
+  // ただしランダム出題は「5分 × 問題数」で計るので、演習モードでもタイマーを出す
+  const effectiveHideTimer = randomOn ? false : isPractice;
   const effectivePerQuestionGrading = perQuestionGrading;
   const effectivePerQuestionTimer = perQuestionTimer;
 
@@ -1427,15 +1490,6 @@ function ModePicker({ isMogi = false, onStart }: ModePickerProps) {
       )}
       {!isMogi && !showMogiMenu ? (
         <div className="mode-options">
-          <label className={isPractice ? "mode-option-fixed" : ""}>
-            <input
-              type="checkbox"
-              checked={effectiveHideTimer}
-              onChange={(e) => setHideTimer(e.target.checked)}
-              disabled={isPractice}
-            />{" "}
-            100分数えない
-          </label>
           <label>
             <input
               type="checkbox"
@@ -1465,6 +1519,32 @@ function ModePicker({ isMogi = false, onStart }: ModePickerProps) {
           <label>
             <input
               type="checkbox"
+              checked={randomOn}
+              onChange={(e) => setRandomOn(e.target.checked)}
+            />{" "}
+            ランダムに出題
+          </label>
+          {randomOn && (
+            <div className="mode-option-indent">
+              {RANDOM_COUNTS.map((n) => (
+                <label key={n} style={{ display: "inline-block", marginRight: "1em" }}>
+                  <input
+                    type="radio"
+                    name="random-count"
+                    checked={randomCount === n}
+                    onChange={() => setRandomCount(n)}
+                  />{" "}
+                  {n}問（{n * 5}分）
+                </label>
+              ))}
+              <p style={{ fontSize: "0.85em", margin: "0.25em 0 0", opacity: 0.8 }}>
+                基礎問題を除いて､ランダムに出題します
+              </p>
+            </div>
+          )}
+          <label>
+            <input
+              type="checkbox"
               checked={instructorMode}
               onChange={(e) => setInstructorMode(e.target.checked)}
             />{" "}
@@ -1486,14 +1566,15 @@ function ModePicker({ isMogi = false, onStart }: ModePickerProps) {
       {!(showMogiMenu && !isMogi) && (
         <button
           onClick={() =>
-            onStart(
-              isMogi ? "exam" : mode,
-              isMogi ? false : effectiveHideTimer,
-              isMogi ? false : effectivePerQuestionGrading,
-              isMogi ? false : effectivePerQuestionTimer,
-              isMogi ? false : perQuestionTimerAlert,
-              instructorMode
-            )
+            onStart({
+              mode: isMogi ? "exam" : mode,
+              hideTimer: isMogi ? false : effectiveHideTimer,
+              perQuestionGrading: isMogi ? false : effectivePerQuestionGrading,
+              perQuestionTimer: isMogi ? false : effectivePerQuestionTimer,
+              perQuestionTimerAlert: isMogi ? false : perQuestionTimerAlert,
+              instructorMode,
+              randomCount: isMogi || !randomOn ? null : randomCount
+            })
           }
         >
           開始

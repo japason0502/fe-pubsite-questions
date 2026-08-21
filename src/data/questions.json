@@ -3,7 +3,7 @@
     "id": "q0",
     "number": 0,
     "videoUrl": "https://www.youtube.com/watch?v=qi-kazNRYjk&t=38s",
-    "title": "サンプル問題",
+    "title": "R4(12)問1",
     "questionText": "次の記述中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
     "bodyText": "プログラムを実行すると，【　　　】と出力される。",
     "pseudoCode": [
@@ -93,7 +93,8 @@
     "correctChoiceId": "c",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q2",
@@ -141,7 +142,8 @@
     "correctChoiceId": "b",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q3",
@@ -188,7 +190,8 @@
     "correctChoiceId": "c",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q4",
@@ -230,7 +233,8 @@
     "correctChoiceId": "c",
     "hitokoto": "解説を聞いてから解こう!",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q4_5",
@@ -276,7 +280,8 @@
     "correctChoiceId": "d",
     "hitokoto": "自力で解こう!",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q5",
@@ -319,7 +324,8 @@
     "hitokoto": "講義を聞いてから解こう!",
     "hintVideoUrl": "",
     "lessonUrl": "https://www.youtube.com/watch?v=jlxuTEvV1zQ&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=7&t=0s",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q6",
@@ -361,7 +367,8 @@
     "correctChoiceId": "b",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q7",
@@ -404,7 +411,8 @@
     "correctChoiceId": "a",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q8",
@@ -447,7 +455,8 @@
     "correctChoiceId": "b",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q9",
@@ -489,7 +498,8 @@
     "correctChoiceId": "b",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q10",
@@ -532,7 +542,8 @@
     "correctChoiceId": "b",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q11",
@@ -572,7 +583,8 @@
     "correctChoiceId": "c",
     "hitokoto": "解説を聞いてから解こう!",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q12",
@@ -613,7 +625,8 @@
     "correctChoiceId": "d",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q13",
@@ -654,7 +667,8 @@
     "correctChoiceId": "e",
     "hitokoto": "解説を聞いてから解こう!",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q14",
@@ -695,7 +709,8 @@
     "correctChoiceId": "a",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q15",
@@ -749,7 +764,8 @@
     "correctChoiceId": "a",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q16",
@@ -792,7 +808,8 @@
     "correctChoiceId": "b",
     "hitokoto": "解説を聞いてから解こう!",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q16_5",
@@ -829,7 +846,8 @@
     "hitokoto": "講義を聞いてから解こう!",
     "hintVideoUrl": "",
     "lessonUrl": "https://www.youtube.com/watch?v=uZtuNcCZZXA&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=9&t=0s",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q17",
@@ -873,7 +891,8 @@
     "hitokoto": "講義を聞いてから解こう!",
     "hintVideoUrl": "",
     "lessonUrl": "https://www.youtube.com/watch?v=YYcAzjqQfiY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=9&t=0s",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q18",
@@ -916,7 +935,8 @@
     "correctChoiceId": "e",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q19",
@@ -959,7 +979,8 @@
     "correctChoiceId": "c",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q20",
@@ -999,7 +1020,8 @@
     "correctChoiceId": "a",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q21",
@@ -1039,7 +1061,8 @@
     "correctChoiceId": "b",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q22",
@@ -1087,12 +1110,13 @@
     "correctChoiceId": "e",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q23",
     "number": 23,
-    "title": "繰り返し内の処理が二行(令和4年度12月 サンプル問題問3 )",
+    "title": "R4(12)問3 繰り返し内の処理が二行",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyText": "関数 makeNewArray をmakeNewArray({3, 2, 1, 6, 5, 4})として呼び出したとき，戻り値の配列の要素番号 5 の値は【　】となる。",
     "pseudoCode": [
@@ -1182,12 +1206,13 @@
     "correctChoiceId": "b",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q25",
     "number": 25,
-    "title": "要素番号に配列(令和4年度12月 サンプル問題問11 著者による改変)",
+    "title": "R4(12)問11(著者改編) 要素番号に配列",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyText": "関数 binSort をbinSort({2, 6, 3, 1, 4, 5})として呼び出すと，戻り値は【　】である。",
     "pseudoCode": [
@@ -1267,7 +1292,8 @@
     "hitokoto": "講義を聞いてから解こう!",
     "hintVideoUrl": "",
     "lessonUrl": "https://www.youtube.com/watch?v=d4v5nO0yjy8&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=15&t=0s",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q27",
@@ -1364,7 +1390,8 @@
     "correctChoiceId": "c",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q29",
@@ -1416,7 +1443,8 @@
     "hitokoto": "",
     "hintVideoUrl": "",
     "lessonUrl": "https://www.youtube.com/watch?v=iLQN9P4O47U&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=18&t=0s",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q30",
@@ -1488,7 +1516,8 @@
     "correctChoiceId": "c",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q31",
@@ -1536,7 +1565,8 @@
     "correctChoiceId": "a",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q32",
@@ -1588,12 +1618,13 @@
     "correctChoiceId": "b",
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=uVtvyWRLo_A&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=21",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q33",
     "number": 33,
-    "title": "Forのネスト&分岐のネスト令和7年度 サンプル問題R7問4)",
+    "title": "R7問4 Forのネスト&分岐のネスト",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyText": "関数 search は，二つの文字型の配列を引数 data 及び key で受け取り，data から key の並びと同じ並びを全て探し，その先頭の要素番号を格納した配列を返す。関数 search を search({\"a\",\"b\",\"a\",\"b\",\"c\",\"a\",\"b\",\"c\"}, {\"a\",\"b\",\"c\"}) として呼び出すと，β の行の条件式が真となる回数は【　】回である。",
     "pseudoCode": [
@@ -1708,7 +1739,8 @@
     "correctChoiceId": "a",
     "hitokoto": "解説を聞きながら解こう!",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q35",
@@ -1755,12 +1787,13 @@
     "correctChoiceId": "c",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q36",
     "number": 36,
-    "title": "複数のWhile-令和6年度サンプル問題問4",
+    "title": "R6問4 複数のWhile",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyText": "関数 merge は，昇順に整列された整数型の配列 data1 及び data2 を受け取り，これらを併合してできる昇順に整列された整数型の配列を返す。関数 merge を merge({2, 3}, {1, 4}) として呼び出すと，αの行は【　】。",
     "pseudoCode": [
@@ -1825,7 +1858,7 @@
   {
     "id": "q37",
     "number": 37,
-    "title": "whileのネスト-令和5年度サンプル問題問3",
+    "title": "R5問3 whileのネスト",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyText": "次の手続 sort は，大域の整数型の配列 data の，引数 first で与えられた要素番号から引数 last で与えられた要素番号までの要素を昇順に整列する。ここで，first < last とする。手続 sort を sort(1, 5) として呼び出すと，/*** α ***/ の行を最初に実行したときの出力は「【　】」となる。",
     "pseudoCode": [
@@ -1886,7 +1919,7 @@
   {
     "id": "q38",
     "number": 38,
-    "title": "令和5年度サンプル問題問2",
+    "title": "R5問2",
     "questionText": "次の記述中の【　　　】に入れる正しい答えを､解答群の中から選べ。",
     "bodyText": "次のプログラムにおいて､手続 proc2 を呼び出すと､【　　　】の順に出力される。",
     "pseudoCode": [
@@ -1980,7 +2013,8 @@
     "correctChoiceId": "c",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q40",
@@ -2075,12 +2109,13 @@
     "correctChoiceId": "a",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q42",
     "number": 42,
-    "title": "令和4年度サンプル問題問14",
+    "title": "R4(12)問14",
     "questionText": "次の記述中の〔　　　〕に入れる正しい答えを，解答群の中から選べ。ここで､配列の要素番号は 1 から始まる。",
     "bodyText": "要素数が 1 以上で，昇順に整列済みの配列を基に，配列を特徴づける五つの値を返すプログラムである。関数 summarize を summarize({0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1}) として呼び出すと，戻り値は〔　　　〕である。",
     "pseudoCode": [
@@ -2142,7 +2177,7 @@
   {
     "id": "q43",
     "number": 43,
-    "title": "令和5年度サンプル問題問4-mod",
+    "title": "R5問4 mod",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyText": "関数 add は，引数で指定された正の整数 value を大域の整数型の配列 hashArray に格納する。格納できた場合は true を返し，格納できなかった場合は false を返す。手続 test は，関数 add を呼び出して，hashArray に正の整数を格納する。手続 test の処理が終了した直後の hashArray の内容は，【　】である。",
     "pseudoCode": [
@@ -2239,12 +2274,13 @@
     "correctChoiceId": "b",
     "hitokoto": "matrix[i，j] は i 行目・j 列目の要素。",
     "hintVideoUrl": "https://www.youtube.com/watch?v=QlQ6CYC_eXs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=33&t=1s",
-    "another": 1
+    "another": 1,
+    "basic": 1
   },
   {
     "id": "q45",
     "number": 45,
-    "title": "令和4年度4月サンプル問題問4",
+    "title": "R4(04)問4",
     "questionText": "次の記述中の【 a 】〜【 c 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyText": "要素の多くが 0 の行列を疎行列という。次のプログラムは，二次元配列に格納された行列のデータ量を削減するために，疎行列の格納に適したデータ構造に変換する。関数 transformSparseMatrix は，引数 matrix で二次元配列として与えられた行列を，整数型配列の配列に変換して返す。関数 transformSparseMatrix を transformSparseMatrix({{3，0，0，0，0}，{0，2，2，0，0}，{0，0，0，1，3}，{0，0，0，2，0}，{0，0，0，0，1}}) として呼び出したときの戻り値は，{{【 a 】}，{【 b 】}，{【 c 】}} である。",
     "pseudoCode": [
@@ -2353,12 +2389,13 @@
     "correctChoiceId": "a",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q47",
     "number": 47,
-    "title": "令和6年度サンプル問題問1",
+    "title": "R6問1",
     "questionText": "次のプログラムの空欄【】に入れる正しい答えを､解答群から選べ。",
     "bodyText": "関数maximumは異なる3つの整数を引数で受け取り､そのうちの最大値を返す。",
     "pseudoCode": [
@@ -2408,7 +2445,7 @@
   {
     "id": "q48",
     "number": 48,
-    "title": "令和4年度4月サンプル問題問1-以上/以下",
+    "title": "R4(04)問1 以上/以下",
     "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
     "bodyText": "ある施設の入場料は､0歳から3歳までは100円､4歳から9歳までは300円､10歳以上は500円である。関数 fee は､年齢を表す0以上の整数を引数として受け取り､入場料を返す。",
     "pseudoCode": [
@@ -2463,7 +2500,7 @@
   {
     "id": "q49",
     "number": 49,
-    "title": "令和4年度サンプル問題問2-fizzBuzz",
+    "title": "R4(12)問2 fizzBuzz",
     "questionText": "次のプログラム中の【a】～【c】に入れる正しい答えの組合せを、解答群の中から選べ。",
     "bodyText": "関数fizzBuzzは、引数で与えられた値が、3で割り切れて5で割り切れない場合は「3で割り切れる」を、5で割り切れて3で割り切れない場合は「5で割り切れる」を、3と5で割り切れる場合は「3と5で割り切れる」を返す。それ以外の場合は「3でも5でも割り切れない」を返す。",
     "pseudoCode": [
@@ -2599,12 +2636,13 @@
     "correctChoiceId": "c",
     "hitokoto": "解説を先に聞こう!",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q51",
     "number": 51,
-    "title": "令和4年度サンプル問題問12-分岐",
+    "title": "R4(12)問12 分岐",
     "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。ここで､配列の要素番号は1から始まる。",
     "bodyText": "関数simRatioは，引数として与えられた要素数1以上の二つの文字型の配列s1とs2を比較し，要素数が等しい場合は，配列の並びがどの程度似ているかを示す指標として，（要素番号が同じ要素の文字同士が一致する要素の組の個数 ÷ s1の要素数）を返す。すべて一致すれば戻り値は1，一致しなければ0，要素数が異なる場合は−1を返す。",
     "bodyTable": {
@@ -2678,7 +2716,7 @@
   {
     "id": "q52",
     "number": 52,
-    "title": "令和6年度サンプル問題問5-商品データ",
+    "title": "R6問5 商品データ",
     "questionText": "次のプログラム中の【 a 】～【 c 】に入れる正しい答えの組合せを，解答群の中から選べ。\nここで，配列の要素番号は1から始まる。",
     "bodyBlocks": [
       {
@@ -2932,7 +2970,7 @@
   {
     "id": "q53",
     "number": 53,
-    "title": "令和5年度サンプル問題問5-コサイン類似度",
+    "title": "R5問5 コサイン類似度",
     "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は1から始まる。",
     "bodyBlocks": [
       {
@@ -3093,7 +3131,8 @@
     "correctChoiceId": "a",
     "hitokoto": "解説を見ながら解こう!",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q55",
@@ -3139,12 +3178,13 @@
     "correctChoiceId": "f",
     "hitokoto": "解説を見ながら解こう!",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q56",
     "number": 56,
-    "title": "令和4年度サンプル問題問7",
+    "title": "R4(12)問7",
     "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
     "bodyText": "関数 factorial は非負の整数 n を引数にとり，その階乗を返す関数である。非負の整数 n の階乗は n が 0 のときに 1 になり，それ以外の場合は 1 から n までの整数を全て掛け合わせた数となる。",
     "pseudoCode": [
@@ -3226,12 +3266,13 @@
     "correctChoiceId": "a",
     "hitokoto": "解説を見ながら解こう!",
     "hintVideoUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q58",
     "number": 58,
-    "title": "再帰(2分木)-令和4年度サンプル問題問9",
+    "title": "R4(12)問9 再帰(2分木)",
     "questionText": "次の記述中の【　　　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyBlocks": [
       {
@@ -3298,7 +3339,7 @@
   {
     "id": "q59",
     "number": 59,
-    "title": "令和6年度サンプル問題問2",
+    "title": "R6問2",
     "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。",
     "bodyText": "関数 convDecimal は，引数として与えられた，“0” と “1” だけから成る，1文字以上の文字列を，符号なしの2進数と解釈したときの整数値を返す。例えば，引数として “10010” を与えると 18 が返る。関数 convDecimal が利用する関数 int は，引数で与えられた文字が “0” なら整数値 0 を返し，“1” なら整数値 1 を返す。",
     "pseudoCode": [
@@ -3361,7 +3402,8 @@
     "hitokoto": "講義のあとに､値を変えながら何度も解こう!",
     "hintVideoUrl": "",
     "lessonUrl": "https://www.youtube.com/watch?v=ZxfPWYOptSE&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=51&pp=iAQBsAQBsAgC",
-    "another": 1
+    "another": 1,
+    "basic": 1
   },
   {
     "id": "q61",
@@ -3409,7 +3451,7 @@
   {
     "id": "q62",
     "number": 62,
-    "title": "令和4サンプル問題問16（UTF-8）",
+    "title": "R4(12)問16 UTF-8",
     "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。二つの【　】には，同じ答えが入る。ここで，配列の要素番号は 1 から始まる。",
     "bodyBlocks": [
       {
@@ -3510,7 +3552,8 @@
     "hitokoto": "講義の後に､自力で解こう!",
     "hintVideoUrl": "",
     "lessonUrl": "https://www.youtube.com/watch?v=jhZ4d8VuW0Q&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=54",
-    "another": 1
+    "another": 1,
+    "basic": 1
   },
   {
     "id": "q64",
@@ -3561,12 +3604,13 @@
     "hitokoto": "自力で解こう!",
     "hintVideoUrl": "https://www.youtube.com/watch?v=MLQtPyD8Bqg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=56&t=12s",
     "lessonUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q65",
     "number": 65,
-    "title": "令和4サンプル問題問6",
+    "title": "R4(12)問6",
     "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。",
     "bodyText": "関数 rev は 8 ビット型の引数 byte を受け取り，ビットの並びを逆にした値を返す。例えば，関数 rev を rev(01001011) として呼び出すと，戻り値は 11010010 となる。\n\nなお，演算子 ∧ はビット単位の論理積，演算子 ∨ はビット単位の論理和，演算子 >> は論理右シフト，演算子 << は論理左シフトを表す。例えば，value >> n は value の値を n ビットだけ右に論理シフトし，value << n は value の値を n ビットだけ左に論理シフトする。",
     "pseudoCode": [
@@ -3666,7 +3710,8 @@
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=Pa7x5t7GQAI&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=58&t=295s",
     "lessonUrl": "https://www.youtube.com/watch?v=Pa7x5t7GQAI&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=58&t=1s",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q67",
@@ -3766,7 +3811,8 @@
     "hitokoto": "",
     "hintVideoUrl": "",
     "lessonUrl": "https://www.youtube.com/watch?v=100wGrJfFAA&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=59&t=1s",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q68",
@@ -3866,12 +3912,13 @@
     "hitokoto": "",
     "hintVideoUrl": "",
     "lessonUrl": "https://www.youtube.com/watch?v=WTyD_DnlqVk&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q69",
     "number": 69,
-    "title": "オブジェクト指向・読解(令和4年度4月サンプル問題問5)",
+    "title": "R4(04)問5 オブジェクト指向・読解",
     "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
     "bodyBlocks": [
       {
@@ -3951,7 +3998,7 @@
   {
     "id": "q70",
     "number": 70,
-    "title": "スタック(非オブジェクト指向)（令和7年度サンプル問題問3）",
+    "title": "R7問3 スタック(非オブジェクト指向)",
     "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyBlocks": [
       {
@@ -4210,7 +4257,8 @@
     "hitokoto": "",
     "hintVideoUrl": "",
     "lessonUrl": "https://www.youtube.com/watch?v=v9O6OdA7WfE&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=63&t=1s",
-    "another": 1
+    "another": 1,
+    "basic": 1
   },
   {
     "id": "q72",
@@ -4562,7 +4610,7 @@
   {
     "id": "q74",
     "number": 74,
-    "title": "優先度付きキュー(令和4年度サンプル問題問8)",
+    "title": "R4(12)問8 優先度付きキュー",
     "questionText": "次のプログラムを実行すると，【　　　】の順に出力される。",
     "bodyBlocks": [
       {
@@ -4892,12 +4940,13 @@
     "hitokoto": "講義を聴きながら解こう!",
     "hintVideoUrl": "",
     "lessonUrl": "",
-    "another": 0
+    "another": 0,
+    "basic": 1
   },
   {
     "id": "q77",
     "number": 77,
-    "title": "単方向リスト(オブジェクト指向)(令和4年度4月サンプル問題問3)",
+    "title": "R4(04)問3 単方向リスト(オブジェクト指向)",
     "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。",
     "bodyBlocks": [
       {
@@ -5025,7 +5074,7 @@
   {
     "id": "q78",
     "number": 78,
-    "title": "単方向リスト(令和4年度サンプル問題問10)",
+    "title": "R4(12)問10 単方向リスト",
     "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
     "bodyBlocks": [
       {
@@ -5110,7 +5159,7 @@
   {
     "id": "q79",
     "number": 79,
-    "title": "ルートと平方根(令和4年度12月サンプル問題問5)",
+    "title": "R4(12)問5 ルートと平方根",
     "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
     "bodyBlocks": [
       {
@@ -5163,7 +5212,7 @@
   {
     "id": "q80",
     "number": 80,
-    "title": "素数(令和5年度サンプル問題問1)",
+    "title": "R5問1 素数",
     "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は1から始まる。",
     "bodyText": "関数findPrimeNumbersは，引数で与えられた整数以下の，全ての素数だけを格納した配列を返す関数である。ここで，引数に与える整数は2以上である。",
     "pseudoCode": [
@@ -5292,7 +5341,7 @@
   {
     "id": "q82",
     "number": 82,
-    "title": "令和4年度サンプル問題問4(最大公約数: while/ifの条件)",
+    "title": "R4(12)問4 最大公約数(while/ifの条件)",
     "questionText": "次のプログラム中の【a】〜【c】に入れる正しい答えの組合せを，解答群の中から選べ。",
     "bodyText": "関数 gcd は，引数で与えられた二つの正の整数 num1 と num2 の最大公約数を，\n次の (1)〜(3) の性質を利用して求める。\n\n(1)num1 と num2 が等しいとき，num1 と num2 の最大公約数は num1 である。\n(2)num1 が num2 より大きいとき，num1 と num2 の最大公約数は，(num1 − num2) と num2 の最大公約数と等しい。\n(3)num2 が num1 より大きいとき，num1 と num2 の最大公約数は，(num2 − num1) と num1 の最大公約数と等しい。",
     "pseudoCode": [
@@ -5370,7 +5419,7 @@
   {
     "id": "q83",
     "number": 83,
-    "title": "予防接種・理論度数(令和7年度サンプル問題問5)",
+    "title": "R7問5 予防接種・理論度数",
     "questionText": "次の記述中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyBlocks": [
       {
@@ -5521,7 +5570,7 @@
   {
     "id": "q84",
     "number": 84,
-    "title": "配列&繰り返し(令和4年度4月 サンプル問題問2)",
+    "title": "R4(04)問2 配列&繰り返し",
     "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyText": "次のプログラムは，整数型の配列 array の要素の並びを逆順にする。",
     "pseudoCode": [
@@ -5589,7 +5638,7 @@
   {
     "id": "q85",
     "number": 85,
-    "title": "function1・function2(令和7年度サンプル問題問1)",
+    "title": "R7問1 function1・function2",
     "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。",
     "bodyBlocks": [
       {
@@ -5695,7 +5744,7 @@
   {
     "id": "q86",
     "number": 86,
-    "title": "100円玉(令和7年度サンプル問題問2)",
+    "title": "R7問2 100円玉",
     "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
     "bodyBlocks": [
       {
@@ -5750,7 +5799,7 @@
   {
     "id": "q87",
     "number": 87,
-    "title": "三目並べ(令和4年度サンプル問題問15)",
+    "title": "R4(12)問15 三目並べ",
     "questionText": "次の記述中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。",
     "bodyBlocks": [
       {
@@ -5821,7 +5870,7 @@
   {
     "id": "q88",
     "number": 88,
-    "title": "binSort(令和4年度サンプル問題問11)",
+    "title": "R4(12)問11 binSort",
     "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyText": "関数 binSort を binSort(【　】) として呼び出すと，戻り値の配列には未定義の要素は含まれておらず，値は昇順に並んでいる。",
     "pseudoCode": [
@@ -5865,7 +5914,7 @@
   {
     "id": "q89",
     "number": 89,
-    "title": "令和4年度サンプル問題問13(無限ループ)",
+    "title": "R4(12)問13 無限ループ",
     "questionText": "次の記述中の【　　　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyText": "関数 search は，引数 data で指定された配列に，引数 target で指定された値が含まれていればその要素番号を返し，含まれていなければ −1 を返す。data は昇順に整列されており，値に重複はない。\n\n関数 search には不具合がある。例えば，data の【　　　】場合は，無限ループになる。",
     "pseudoCode": [
@@ -5917,7 +5966,7 @@
   {
     "id": "q90",
     "number": 90,
-    "title": "隣接行列(令和6年度サンプル問題問3)",
+    "title": "R6問3 隣接行列",
     "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
     "bodyBlocks": [
       {
@@ -6005,7 +6054,7 @@
   {
     "id": "q91",
     "number": 91,
-    "title": "R4年度4月サンプル問題問6",
+    "title": "R4(04)問6 情報セキュリティ",
     "bodyBlocks": [
       {
         "type": "text",
@@ -6137,12 +6186,13 @@
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=YXoltMuVY5I&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=18s",
     "lessonUrl": "https://www.youtube.com/watch?v=F1xOYHsUIQY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
-    "another": 0
+    "another": 0,
+    "field": "security"
   },
   {
     "id": "q92",
     "number": 92,
-    "title": "R4年度12月サンプル問題問18",
+    "title": "R4(12)問18 情報セキュリティ",
     "bodyBlocks": [
       {
         "type": "text",
@@ -6260,12 +6310,13 @@
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=TTAKRYsdRc8&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=0s",
     "lessonUrl": "https://www.youtube.com/watch?v=F1xOYHsUIQY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
-    "another": 0
+    "another": 0,
+    "field": "security"
   },
   {
     "id": "q93",
     "number": 93,
-    "title": "R4年度12月サンプル問題問19",
+    "title": "R4(12)問19 情報セキュリティ",
     "bodyBlocks": [
       {
         "type": "text",
@@ -6390,12 +6441,13 @@
     "hitokoto": "",
     "hintVideoUrl": "",
     "lessonUrl": "https://www.youtube.com/watch?v=F1xOYHsUIQY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
-    "another": 0
+    "another": 0,
+    "field": "security"
   },
   {
     "id": "q94",
     "number": 94,
-    "title": "R4年度12月サンプル問題問20",
+    "title": "R4(12)問20 情報セキュリティ",
     "bodyBlocks": [
       {
         "type": "text",
@@ -6486,12 +6538,13 @@
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=pw80o8BGDPU&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=26s",
     "lessonUrl": "https://www.youtube.com/watch?v=F1xOYHsUIQY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
-    "another": 0
+    "another": 0,
+    "field": "security"
   },
   {
     "id": "q95",
     "number": 95,
-    "title": "R5年度公開問題問6",
+    "title": "R5問6 情報セキュリティ",
     "bodyBlocks": [
       {
         "type": "text",
@@ -6582,12 +6635,13 @@
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=FFf6IfOI4Y0&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=0s",
     "lessonUrl": "https://www.youtube.com/watch?v=F1xOYHsUIQY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
-    "another": 0
+    "another": 0,
+    "field": "security"
   },
   {
     "id": "q96",
     "number": 96,
-    "title": "R6年度公開問題問6",
+    "title": "R6問6 情報セキュリティ",
     "bodyBlocks": [
       {
         "type": "text",
@@ -6644,12 +6698,13 @@
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=Xry4WyXdyb4&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=0s",
     "lessonUrl": "https://www.youtube.com/watch?v=F1xOYHsUIQY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
-    "another": 0
+    "another": 0,
+    "field": "security"
   },
   {
     "id": "q97",
     "number": 97,
-    "title": "R7年度公開問題問6",
+    "title": "R7問6 情報セキュリティ",
     "bodyBlocks": [
       {
         "type": "text",
@@ -6827,6 +6882,7 @@
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=CeWTl0Ks5jo&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=0s",
     "lessonUrl": "https://www.youtube.com/watch?v=F1xOYHsUIQY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
-    "another": 0
+    "another": 0,
+    "field": "security"
   }
 ]
