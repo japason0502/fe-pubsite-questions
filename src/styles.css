@@ -606,6 +606,13 @@ button:disabled {
 }
 
 /* 問題一覧：グリッドが画面からはみ出すときだけ中身をスクロール */
+/* 採点結果: ノートPC等で縦に収まらないときは中身をスクロール */
+.overlay-content--result {
+  max-height: min(90vh, calc(100dvh - 32px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
 .overlay-content--question-list {
   display: flex;
   flex-direction: column;
@@ -759,6 +766,30 @@ button:disabled {
 .result-detail {
   margin: 12px 0 6px;
   font-weight: 600;
+  display: grid;
+  grid-template-columns: repeat(5, max-content);
+  gap: 4px 14px;
+  justify-content: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.result-cell {
+  white-space: nowrap;
+}
+
+.result-cell--incorrect {
+  color: #dc2626;
+}
+
+.result-cell--unanswered {
+  color: #6b7280;
+}
+
+@media (max-width: 380px) {
+  .result-detail {
+    gap: 4px 8px;
+    font-size: 0.9em;
+  }
 }
 
 .result-note {

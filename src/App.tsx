@@ -9,6 +9,7 @@ import { BodyBlock, BodyTable, BodyTableCell, ExamState, Question } from "./type
 import { generateAnotherQuestion } from "./anotherQuestionGenerators";
 import { PseudoCodeReference } from "./PseudoCodeReference";
 import { ExamDayNotes } from "./ExamDayNotes";
+import { buildExamReport, ExamReport } from "./examReport";
 
 const STORAGE_KEY = "exam-state";
 const MOGI_STORAGE_KEY = "exam-state-mogi"; // 模擬試験は保存キーを分けて通常演習の状態を汚さない
@@ -21,6 +22,97 @@ const R4_SAMPLE_ORDER = [
   "q0", "q49", "q23", "q82", "q79", "q65", "q56", "q74", "q58", "q78",
   "q88", "q51", "q89", "q42", "q87", "q62", "r4x17", "q92", "q93", "q94"
 ];
+/* ==================== 模擬試験の匿名集計 ====================
+   Cloudflare Worker へ送りっぱなしにする。個人情報は一切送らない。
+   復習モード中は送信しない。STATS_ENDPOINT が空なら機能ごと無効。 */
+const STATS_ENDPOINT = "https://fe-mogi-stats.s-tanaka0502.workers.dev";
+const STATS_SECRET = "cucpux-CLn1HwmnBsaYuMm0iv6r1pu_D"; // ← wrangler secret put POST_SECRET と一致
+const STATS_V = 1;
+const CLIENT_ID_KEY = "stats-client-id";
+const ATTEMPT_KEY_PREFIX = "stats-attempt-";
+const SESSION_KEY_PREFIX = "stats-session-";
+/** 紛らわしい文字(0 O 1 I L)を除いた32文字 */
+const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+
+type StatsSession = { sid: string; startedAt: string; attempt: number };
+
+function lsGet(k: string) { try { return localStorage.getItem(k); } catch { return null; } }
+function lsSet(k: string, v: string) { try { localStorage.setItem(k, v); } catch { /* noop */ } }
+function lsDel(k: string) { try { localStorage.removeItem(k); } catch { /* noop */ } }
+
+/** 8桁のランダムコード。session_id（内部キー）と client_id の生成に使う */
+function makeSessionCode() {
+  const n = 8;
+  const buf = new Uint32Array(n);
+  try {
+    crypto.getRandomValues(buf);
+  } catch {
+    for (let i = 0; i < n; i++) buf[i] = Math.floor(Math.random() * 4294967296);
+  }
+  let out = "";
+  for (let i = 0; i < n; i++) out += CODE_ALPHABET[buf[i] % CODE_ALPHABET.length];
+  return out;
+}
+
+function getClientId() {
+  let id = lsGet(CLIENT_ID_KEY);
+  if (!id) {
+    id = makeSessionCode() + makeSessionCode();
+    lsSet(CLIENT_ID_KEY, id);
+  }
+  return id;
+}
+
+/** 表示用の受験コード。端末IDの先頭8桁＝同じブラウザなら何回受けても同じ。
+    合格報告フォームとの突合は client_id 前方一致 + attempt=1 で行う */
+function getExamCode() {
+  return getClientId().slice(0, 8);
+}
+
+/** UA全文は送らず3値に丸める（本番と同じPC環境で解いているかを見る用） */
+function detectDevice(): "pc" | "mobile" | "tablet" {
+  const ua = navigator.userAgent;
+  if (/iPad|Tablet/i.test(ua) || (/Android/i.test(ua) && !/Mobile/i.test(ua))) return "tablet";
+  if (/Mobi|Android|iPhone|iPod/i.test(ua)) return "mobile";
+  return "pc";
+}
+
+/**
+ * 自分のテスト実行かどうか。localhost はWorker側でもOriginから判定しているが、
+ * 本番ドメインで動作確認したいときのために ?testrun=1 も逃げ道として用意しておく。
+ */
+function isTestRun(): boolean {
+  try {
+    const h = location.hostname;
+    if (h === "localhost" || h === "127.0.0.1" || h === "::1" || h.endsWith(".local")) return true;
+    const p = new URLSearchParams(location.search);
+    // 講師モード(?instructor=1)は授業デモなので集計から除外する（is_test=1 で保存される）
+    return p.get("testrun") === "1" || p.get("instructor") === "1";
+  } catch {
+    return false;
+  }
+}
+
+/** 送りっぱなし。Worker 側で CORS を許可しているので通常のJSONでよい */
+function postStats(payload: Record<string, unknown>) {
+  if (!STATS_ENDPOINT) return;
+  try {
+    void fetch(STATS_ENDPOINT, {
+      method: "POST",
+      keepalive: true,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...payload,
+        secret: STATS_SECRET,
+        v: STATS_V,
+        ...(isTestRun() ? { test: true } : {})
+      })
+    }).catch(() => { /* 失敗しても学習体験に影響させない */ });
+  } catch {
+    /* noop */
+  }
+}
+
 /** ランダム出題の母集団。基礎練習問題(basic)と情報セキュリティ(field)を除いた問題のid */
 const RANDOM_POOL_IDS = (questionsData as Question[])
   .filter((q) => !q.basic && q.field !== "security")
@@ -441,6 +533,9 @@ export default function App() {
       /* localStorage 不可でも無視 */
     }
   }, [reviewMode]);
+  /** 採点画面に出す8桁の受験コード（合格報告フォームとの突き合わせ用） */
+  const [resultCode, setResultCode] = useState<string | null>(null);
+  const [resultReport, setResultReport] = useState<ExamReport | null>(null);
   const dividerRef = useRef<HTMLDivElement | null>(null);
 
   // state 永続化（埋め込みモードでは保存しない＝通常サイトの state を汚さない）
@@ -633,27 +728,154 @@ export default function App() {
     setState((prev) => ({ ...prev, practiceMode: true, remainingSeconds: 0 }));
   };
 
+  // ===== 模擬試験の匿名集計 =====
+  const statsKey = SESSION_KEY_PREFIX + storageKey;
+  const statsRef = useRef<StatsSession | null>(null);
+  /** 問題ごとの滞在秒。currentIndex が変わるたびに積む */
+  const dwellRef = useRef<{ id: string | null; at: number; acc: Record<string, number> }>({
+    id: null,
+    at: 0,
+    acc: {}
+  });
+  const statsEnabled = isMogi && !embed && !qParam && !reviewMode;
+
+  // 再開時に備えて保存済みセッションを復元
+  useEffect(() => {
+    if (!statsEnabled) return;
+    try {
+      const raw = lsGet(statsKey);
+      if (raw) statsRef.current = JSON.parse(raw) as StatsSession;
+    } catch {
+      /* noop */
+    }
+  }, [statsEnabled, statsKey]);
+
+  const dwellActive = statsEnabled && state.mode === "exam" && !showGuidance && !showResumePrompt;
+  useEffect(() => {
+    const d = dwellRef.current;
+    if (d.id && d.at) {
+      d.acc[d.id] = (d.acc[d.id] || 0) + Math.round((Date.now() - d.at) / 1000);
+    }
+    const nextId = dwellActive ? questions[state.currentIndex]?.id ?? null : null;
+    d.id = nextId;
+    d.at = nextId ? Date.now() : 0;
+  }, [dwellActive, state.currentIndex, questions]);
+
+  /** ガイダンスの「試験開始」で1回だけ発行する */
+  const startStatsSession = () => {
+    if (!statsEnabled) return;
+    const set = mogiSet || "";
+    const aKey = ATTEMPT_KEY_PREFIX + set;
+    const attempt = Number(lsGet(aKey) || "0") + 1;
+    lsSet(aKey, String(attempt));
+    const session: StatsSession = { sid: makeSessionCode(), startedAt: new Date().toISOString(), attempt };
+    statsRef.current = session;
+    lsSet(statsKey, JSON.stringify(session));
+    dwellRef.current = { id: null, at: 0, acc: {} };
+    setResultCode(null);
+    setResultReport(null);
+    postStats({
+      type: "start",
+      sessionId: session.sid,
+      clientId: getClientId(),
+      set,
+      attempt: session.attempt,
+      startedAt: session.startedAt,
+      device: detectDevice()
+    });
+  };
+
+  /** 採点時に1回だけ送る。answers がリセットされる前に呼ぶこと */
+  const sendStatsFinish = (
+    rows: { id: string; n: number; sel: string; cor: string; ok: number; rev: number; ovr: number }[],
+    correct: number,
+    unanswered: number
+  ) => {
+    const session = statsRef.current;
+    if (!statsEnabled || !session) return;
+    // 表示中の問題の滞在時間を確定させる
+    const d = dwellRef.current;
+    if (d.id && d.at) {
+      d.acc[d.id] = (d.acc[d.id] || 0) + Math.round((Date.now() - d.at) / 1000);
+      d.id = null;
+      d.at = 0;
+    }
+    postStats({
+      type: "finish",
+      sessionId: session.sid,
+      clientId: getClientId(),
+      set: mogiSet || "",
+      attempt: session.attempt,
+      startedAt: session.startedAt,
+      finishedAt: new Date().toISOString(),
+      elapsedSec: Math.max(0, MOGI_TIME - state.remainingSeconds),
+      correct,
+      unanswered,
+      reviewCount: rows.filter((r) => r.rev === 1).length,
+      device: detectDevice(),
+      answers: rows.map((r, i) => ({
+        i: i + 1,
+        id: r.id,
+        n: r.n,
+        sel: r.sel,
+        cor: r.cor,
+        ok: r.ok,
+        sec: d.acc[r.id] || 0,
+        rev: r.rev,
+        ovr: r.ovr
+      }))
+    });
+    setResultCode(getExamCode());
+    lsDel(statsKey);
+    statsRef.current = null;
+  };
+
   const gradeExam = () => {
     const total = questions.length;
     let correct = 0;
     let unanswered = 0;
     const details: { number: number; status: "correct" | "incorrect" | "unanswered" }[] = [];
+    const statsRows: {
+      id: string; n: number; sel: string; cor: string; ok: number; rev: number; ovr: number;
+    }[] = [];
     questions.forEach((baseQuestion) => {
       const override = questionOverrides[baseQuestion.id];
       const q = override ? { ...baseQuestion, ...override } : baseQuestion;
       const ans = state.answers[q.id];
+      const ok = Boolean(ans && q.correctChoiceId && ans === q.correctChoiceId);
+      statsRows.push({
+        id: q.id,
+        n: q.number,
+        sel: ans || "",
+        cor: q.correctChoiceId || "",
+        ok: ok ? 1 : 0,
+        rev: state.reviewFlags[q.id] ? 1 : 0,
+        ovr: override ? 1 : 0
+      });
       if (!ans) {
         unanswered += 1;
         details.push({ number: q.number, status: "unanswered" });
         return;
       }
-      if (q.correctChoiceId && ans === q.correctChoiceId) {
+      if (ok) {
         correct += 1;
         details.push({ number: q.number, status: "correct" });
       } else {
         details.push({ number: q.number, status: "incorrect" });
       }
     });
+    sendStatsFinish(statsRows, correct, unanswered);
+    setResultReport(
+      buildExamReport(
+        mogiSet,
+        statsRows.map((r) => ({
+          n: r.n,
+          ok: r.ok === 1,
+          answered: r.sel !== "",
+          sec: dwellRef.current.acc[r.id] || 0
+        }))
+      )
+    );
     setResultSummary({ correct, total, unanswered });
     setResultDetails(details.sort((a, b) => a.number - b.number));
     setShowResult(true);
@@ -947,7 +1169,21 @@ export default function App() {
               />{" "}
               復習モード（各問に「今すぐ採点」「解説へ」ボタンを表示）
             </label>
-            <button onClick={() => setShowGuidance(false)}>試験開始</button>
+            <p style={{ fontSize: "0.78em", opacity: 0.75, margin: "0 0 12px", textAlign: "left" }}>
+              ※受験結果は匿名の統計データとして集計します（個人を特定する情報は取得しません）。
+              <br />
+              あなたの受験コード:{" "}
+              <strong style={{ fontFamily: "monospace", letterSpacing: "0.12em" }}>{getExamCode()}</strong>
+              （このブラウザで固定です）
+            </p>
+            <button
+              onClick={() => {
+                setShowGuidance(false);
+                startStatsSession();
+              }}
+            >
+              試験開始
+            </button>
             {!lock && (
               <button
                 className="outline"
@@ -1324,7 +1560,7 @@ export default function App() {
 
       {showResult && (
         <div className="overlay">
-          <div className="overlay-content">
+          <div className="overlay-content overlay-content--result">
             <h3>採点結果</h3>
             {isMogi && (
               <p
@@ -1340,24 +1576,105 @@ export default function App() {
             </p>
             <p>未回答 {resultSummary.unanswered}</p>
             <div className="result-detail">
-              {Array.from({ length: Math.ceil(resultDetails.length / 10) }, (_, row) => (
-                <div
-                  key={row}
-                  className="result-row"
-                  style={{ whiteSpace: "nowrap", lineHeight: 1.9 }}
-                >
-                  {resultDetails
-                    .slice(row * 10, row * 10 + 10)
-                    .map((d) => {
-                      const mark =
-                        d.status === "correct" ? "○" : d.status === "incorrect" ? "×" : "－";
-                      return `問${d.number}${mark}`;
-                    })
-                    .join("　")}
-                </div>
-              ))}
+              {resultDetails.map((d) => {
+                const mark = d.status === "correct" ? "○" : d.status === "incorrect" ? "×" : "－";
+                return (
+                  <span
+                    key={d.number}
+                    className={`result-cell result-cell--${d.status}`}
+                  >
+                    問{String(d.number).padStart(2, "0")}
+                    {mark}
+                  </span>
+                );
+              })}
             </div>
+            {resultReport && (
+              <div
+                className="result-report"
+                style={{ textAlign: "left", margin: "16px 0", fontSize: "0.92em", lineHeight: 1.75 }}
+              >
+                {resultReport.time.length > 0 && (
+                  <>
+                    <h4 style={{ margin: "0 0 6px" }}>時間の使い方</h4>
+                    <ul style={{ margin: "0 0 12px", paddingLeft: "1.3em" }}>
+                      {resultReport.time.map((l, i) => (
+                        <li key={i}>{l.text}</li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+                <h4 style={{ margin: "0 0 6px" }}>
+                  診断
+                  <span style={{ fontWeight: "normal", fontSize: "0.8em", color: "#6b7280", marginLeft: "0.6em" }}>
+                    ※ベータ版です
+                  </span>
+                </h4>
+                {resultReport.summary.map((l, i) => (
+                  <p key={i} style={{ margin: "0 0 10px" }}>
+                    {l.tone === "good" ? "◎ " : l.tone === "warn" ? "△ " : "・ "}
+                    {l.text}
+                  </p>
+                ))}
+                <div>
+                  {resultReport.zones.map((z) => (
+                    <div key={z.name} style={{ marginBottom: "8px" }}>
+                      <div
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "1.4em 1fr auto auto",
+                          columnGap: "10px",
+                          alignItems: "baseline",
+                          color: z.met ? undefined : "#dc2626",
+                          fontWeight: 600
+                        }}
+                      >
+                        <span>{z.met ? "◎" : "△"}</span>
+                        <span>
+                          {z.name}
+                          <span style={{ color: "#6b7280", fontSize: "0.85em", fontWeight: "normal" }}>
+                            （{z.range}）
+                          </span>
+                        </span>
+                        <span style={{ textAlign: "right", fontVariantNumeric: "tabular-nums" }}>
+                          {z.got}/{z.total}
+                        </span>
+                        <span style={{ color: "#6b7280", fontSize: "0.9em", fontWeight: "normal" }}>
+                          ノルマ{z.quota}
+                        </span>
+                      </div>
+                      {z.comments.map((l, i) => (
+                        <div key={i} style={{ margin: "1px 0 0 1.9em", fontSize: "0.95em" }}>
+                          {l.text}
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             <p className="result-note">※採点結果は記録されません。スクリーンショット等で保存してください（例: Windows+Shift+S）。</p>
+            {resultCode && (
+              <div
+                className="result-code"
+                style={{
+                  margin: "12px 0",
+                  padding: "10px 12px",
+                  border: "1px dashed currentColor",
+                  borderRadius: 4,
+                  fontSize: "0.9em",
+                  textAlign: "left",
+                  opacity: 0.9
+                }}
+              >
+                受験コード:{" "}
+                <strong style={{ fontFamily: "monospace", fontSize: "1.25em", letterSpacing: "0.12em" }}>
+                  {resultCode}
+                </strong>
+                <br />
+                このコードはお使いのブラウザごとに固定で､ガイダンス画面からいつでも確認できます｡合格報告フォームにこのコードを書いていただけると､模擬試験と本番の点数を突き合わせた分析ができます｡
+              </div>
+            )}
             {mogiSet === "1" && (
               <div className="result-review">
                 <a
