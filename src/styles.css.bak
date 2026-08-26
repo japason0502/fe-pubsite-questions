@@ -366,20 +366,6 @@ button.small {
   min-width: 0;
 }
 
-/* 「自力で解こう」: 解説を聞く前に自分で解いてほしい問題に出す */
-.self-solve {
-  flex: 0 0 auto;
-  margin: 0;
-  padding: 3px 10px;
-  border-radius: 999px;
-  background: #fff7ed;
-  border: 1px solid #f59e0b;
-  color: #b45309;
-  font-size: 0.8em;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
 .question-title-row .hitokoto {
   flex: 0 1 auto;
   margin: 0 0 0 auto;
@@ -469,34 +455,6 @@ button.small {
   align-items: center;
   gap: 8px;
   margin-bottom: 8px;
-}
-
-.hint-text-panel {
-  margin: 0 0 10px;
-  padding: 10px 12px;
-  border-left: 4px solid #f59e0b;
-  border-radius: 4px;
-  background-color: #fffbeb;
-  color: #92400e;
-  font-size: 0.9em;
-  line-height: 1.6;
-}
-
-/* ヒント内の段落・表。パネルの色に合わせて余白だけ整える */
-.hint-text-panel > *:first-child { margin-top: 0; }
-.hint-text-panel > *:last-child { margin-bottom: 0; }
-
-.hint-text-line {
-  margin: 0 0 8px;
-}
-
-.hint-text-panel .body-table-caption {
-  margin: 6px 0 2px;
-  font-weight: 700;
-}
-
-.hint-text-panel .choice-table-wrap {
-  margin: 0;
 }
 
 .choices-list {
@@ -627,9 +585,6 @@ button:disabled {
   position: fixed;
   inset: 0;
   background: rgba(15, 23, 42, 0.45);
-  /* フッター(.bottom-bar は z-index:50)より前に出す。
-     これが無いとオーバーレイ下部の凡例などがフッターに隠れる */
-  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -661,44 +616,8 @@ button:disabled {
 .overlay-content--question-list {
   display: flex;
   flex-direction: column;
-  max-height: min(94vh, calc(100dvh - 24px));
+  max-height: min(88vh, calc(100dvh - 32px));
   min-height: 0;
-  overflow: hidden; /* 凡例が枠外にはみ出さないようにする */
-}
-
-/* 上部の余白を詰めて、凡例のぶんの高さを確保する */
-.overlay-content--question-list .overlay-header {
-  margin-bottom: 8px;
-}
-
-.overlay-content--question-list .tabs--fields {
-  flex-shrink: 0;
-  margin-bottom: 8px;
-  padding-bottom: 6px;
-  flex-wrap: wrap;
-}
-
-/* 見出しの右にタブを並べる（縦を1行ぶん節約する） */
-.overlay-header--list {
-  flex-wrap: wrap;
-  gap: 6px 12px;
-  justify-content: flex-start;
-}
-
-.overlay-header--list h3 {
-  flex: none;
-  margin: 0;
-}
-
-.overlay-header--list > .outline {
-  margin-left: auto;
-  flex: none;
-}
-
-/* ヘッダに入れたオプションボタンは、下マージンを持たせない */
-.overlay-header--list .list-view-switch {
-  flex: 0 1 auto;
-  margin-bottom: 0;
 }
 
 .overlay-content--question-list .overlay-header {
@@ -717,38 +636,9 @@ button:disabled {
 
 .overlay-content--question-list .legend {
   flex-shrink: 0;
-  margin-top: 8px;
-  padding-top: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
   border-top: 1px solid #e5e7eb;
-  gap: 10px;
-}
-
-.overlay-content--question-list .legend-item {
-  font-size: 0.85rem;
-}
-
-/* 画面の縦が狭いとき: 余白をさらに削って一覧の表示領域を稼ぐ */
-@media (max-height: 720px) {
-  .overlay {
-    padding: 8px;
-  }
-  .overlay-content--question-list {
-    max-height: calc(100dvh - 16px);
-    padding: 14px;
-  }
-  .overlay-content--question-list .overlay-header {
-    margin-bottom: 6px;
-  }
-  .overlay-content--question-list .overlay-header h3 {
-    font-size: 1.05rem;
-  }
-  .overlay-content--question-list .qgroup {
-    padding: 6px 8px 9px;
-    margin-bottom: 8px;
-  }
-  .overlay-content--question-list .legend-item {
-    font-size: 0.8rem;
-  }
 }
 
 .overlay-content--mode-select {
@@ -824,252 +714,6 @@ button:disabled {
   color: #1e40af;
 }
 
-/* 問題一覧の分野タブ: 数が多いので折り返して小さめに */
-.tabs--fields {
-  flex-wrap: wrap;
-  gap: 6px;
-  padding-bottom: 8px;
-  margin-bottom: 10px;
-}
-
-.tabs--fields .tab {
-  font-size: 0.85rem;
-  padding: 5px 10px;
-}
-
-/* 問題一覧の表示切替（分野別 / スケジュール別） */
-.list-view-switch {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  flex-shrink: 0;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #374151;
-  margin-bottom: 8px;
-}
-
-.list-view-switch label {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
-}
-
-.list-view-switch input {
-  margin: 0;
-  flex: none;
-  cursor: pointer;
-}
-
-/* 週タブの達成数バッジ */
-.tab-count {
-  margin-left: 5px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #6b7280;
-  font-variant-numeric: tabular-nums;
-}
-
-.tab.active .tab-count {
-  color: #1e40af;
-}
-
-/* 全問終わった週は色を変えて達成感を出す */
-.tab--done {
-  border-color: #34a853;
-  color: #1b7a37;
-  background: #f0faf2;
-}
-
-.tab--done .tab-count {
-  color: #1b7a37;
-}
-
-.tab--done.active {
-  border-color: #1b7a37;
-  background: #dcf3e2;
-}
-
-/* 週の見出し */
-.week-head {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 4px 12px;
-  border-left: 4px solid #4a7ebc;
-  background: #f3f6fb;
-  border-radius: 0 8px 8px 0;
-  padding: 7px 12px;
-  margin-bottom: 10px;
-}
-
-.week-pace {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #4a7ebc;
-}
-
-.week-note {
-  margin-left: 8px;
-  font-size: 0.8rem;
-  font-weight: 400;
-  color: #6b7280;
-}
-
-.week-done {
-  margin-left: auto;
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #1e40af;
-  font-variant-numeric: tabular-nums;
-}
-
-/* 縦が狭いとき: 週見出しの余白も詰める */
-@media (max-height: 720px) {
-  .overlay-content--question-list .week-head {
-    padding: 6px 10px;
-    margin-bottom: 8px;
-  }
-  .overlay-content--question-list .list-view-switch {
-    margin-bottom: 6px;
-  }
-}
-
-/* 分野内のグループ（囲い） */
-/* グループの並び。小さいグループ(3問以下)は半分の幅にして2つ並べる */
-.qgroups {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: flex-start;
-}
-
-.qgroup {
-  border: 1px solid #dbe1e8;
-  border-radius: 10px;
-  padding: 8px 10px 12px;
-  background: #fafbfc;
-  flex: 1 1 100%;
-  min-width: 0;
-}
-
-/* 3問以下: 3問ぶんの幅で足りるので、2グループで1行を分け合う */
-.qgroup--small {
-  flex: 1 1 calc(50% - 5px);
-  max-width: calc(50% - 5px);
-}
-
-@media (max-width: 380px) {
-  .qgroup--small {
-    flex-basis: 100%;
-    max-width: 100%;
-  }
-}
-
-.qgroup-title {
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #4b5563;
-  margin-bottom: 8px;
-}
-
-/* サンプル問題(IPA公開のサンプル問題)であることを示すバッジ */
-.q-badge {
-  position: absolute;
-  top: 2px;
-  right: 3px;
-  font-size: 0.6rem;
-  font-weight: 700;
-  line-height: 1;
-  padding: 2px 3px;
-  border-radius: 3px;
-  background: #e2e8f0;
-  color: #475569;
-  letter-spacing: 0;
-}
-
-.grid-item.answered .q-badge,
-.grid-item.current .q-badge {
-  background: rgba(255, 255, 255, 0.85);
-}
-
-/* ヘッダの歯車ボタン */
-.icon-btn {
-  padding-left: 10px;
-  padding-right: 10px;
-  font-size: 1.05rem;
-  line-height: 1;
-}
-
-/* サンプル順で出題するコントロール */
-.sample-order {
-  border: 1px solid #cbd5e1;
-  border-radius: 10px;
-  padding: 10px 12px;
-  margin-bottom: 12px;
-  background: #f3f6fb;
-}
-
-.sample-order-main {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  font-size: 0.88rem;
-  font-weight: 700;
-  line-height: 1.5;
-  cursor: pointer;
-}
-
-.sample-order-main input {
-  margin-top: 2px;
-  flex: none;
-}
-
-.sample-order-years {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 10px;
-}
-
-.chip-btn {
-  font-size: 0.8rem;
-  padding: 4px 10px;
-  border-radius: 999px;
-  border: 1px solid #93b4dc;
-  background: #fff;
-  color: #1e40af;
-  cursor: pointer;
-}
-
-.chip-btn.on {
-  background: #4a7ebc;
-  border-color: #4a7ebc;
-  color: #fff;
-  font-weight: 700;
-}
-
-/* サンプル問題タブ: ラベルが「問1(48)」と長いので枠を広めに */
-.grid--sample {
-  grid-template-columns: repeat(auto-fill, minmax(86px, 1fr));
-}
-
-.grid--sample .grid-item {
-  font-size: 0.9rem;
-}
-
-.qgroup-count {
-  font-weight: 400;
-  color: #9ca3af;
-  margin-left: 8px;
-}
-
-.qgroup .grid {
-  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
-  gap: 8px;
-}
-
 .tab-panel {
   min-height: 160px; /* 中身を後で入れる前提で最低限の高さ */
 }
@@ -1081,7 +725,6 @@ button:disabled {
 }
 
 .grid-item {
-  position: relative;
   padding: 12px 0;
   border-radius: 10px;
   border: 1px solid #d4d4d8;
@@ -1101,34 +744,8 @@ button:disabled {
   background: #ffffff;
 }
 
-/* 学習済み(自己申告): 回答済みより濃いグレーで塗りつぶす */
-.grid-item.studied {
-  background: #6b7280;
-  border-color: #6b7280;
-  color: #ffffff;
-}
-
-.grid-item.studied .q-badge {
-  background: rgba(255, 255, 255, 0.85);
-}
-
-.grid-item.studied.current {
-  border-color: #2563eb;
-}
-
 .grid-item.review {
   border-color: #ef4444;
-}
-
-.grid-item.studied.review {
-  border-color: #ef4444;
-}
-
-/* フッターの学習済みトグル。ONで濃いグレーに反転させて一覧の色と揃える */
-.studied-btn.on {
-  background: #6b7280;
-  border-color: #6b7280;
-  color: #ffffff;
 }
 
 .legend {
@@ -1217,22 +834,9 @@ button:disabled {
   background: #e5e7eb;
 }
 
-.chip.studied {
-  background: #6b7280;
-  border-color: #6b7280;
-}
-
 .chip.review {
   background: #fee2e2;
   border-color: #ef4444;
-}
-
-/* モード選択の末尾に常時出す注意書き（控えめなグレー） */
-.share-note {
-  margin: 0.9em 0 0;
-  font-size: 0.85em;
-  color: #6b7280;
-  text-align: left;
 }
 
 .mode-picker {

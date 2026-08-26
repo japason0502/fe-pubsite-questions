@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { ReactNode } from "react";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 import questionsData from "./data/questions.json";
@@ -11,13 +10,11 @@ import { generateAnotherQuestion } from "./anotherQuestionGenerators";
 import { PseudoCodeReference } from "./PseudoCodeReference";
 import { ExamDayNotes } from "./ExamDayNotes";
 import { buildExamReport, ExamReport } from "./examReport";
-import { CATEGORIES, categoryOf, sampleNumberOf, buildSampleOrder, isSampleQuestion, SAMPLE_BADGE, WEEKS } from "./questionGroups";
 
 const STORAGE_KEY = "exam-state";
 const MOGI_STORAGE_KEY = "exam-state-mogi"; // 模擬試験は保存キーを分けて通常演習の状態を汚さない
 const MOGI2_STORAGE_KEY = "exam-state-mogi-2"; // 模試2回目用
 const MOGI_R4_STORAGE_KEY = "exam-state-mogi-r4"; // R4サンプル模試用
-const STUDIED_KEY = "study-done"; // 学習済み(自己申告)。回答済みとは別で、採点しても消えない
 const REVIEW_MODE_KEY = "review-mode-mogi"; // 模試の復習モード（今すぐ採点・解説動画ボタン表示）ON/OFF
 // R4サンプル模試: 令和4年度12月サンプル問題の20問を本試験の順（問1〜20）で出題。
 // バンク(questions.json)のidを本試験順に並べたもの。問17のみバンク未収録のためr4Extra.jsonで補完。
@@ -31,8 +28,6 @@ const R4_SAMPLE_ORDER = [
 const STATS_ENDPOINT = "https://fe-mogi-stats.s-tanaka0502.workers.dev";
 const STATS_SECRET = "cucpux-CLn1HwmnBsaYuMm0iv6r1pu_D"; // ← wrangler secret put POST_SECRET と一致
 const STATS_V = 1;
-/** 所要時間がこれ未満の受験は連打・冷やかしとみなし、finish自体を送信しない（Worker側でも同値で除外している） */
-const STATS_MIN_ELAPSED_SEC = 1200; // 20分
 const CLIENT_ID_KEY = "stats-client-id";
 const ATTEMPT_KEY_PREFIX = "stats-attempt-";
 const SESSION_KEY_PREFIX = "stats-session-";
@@ -118,40 +113,6 @@ function postStats(payload: Record<string, unknown>) {
   }
 }
 
-/** サンプル問題を「年度→本番の問番号」順に並べたリスト。中身が固定なので1回だけ作る */
-const SAMPLE_ORDER = buildSampleOrder(questionsData as Question[]);
-const SAMPLE_ORDER_IDS = SAMPLE_ORDER.map((x) => x.id);
-/** 年度ごとのid配列（その年度だけ順に解く用） */
-const SAMPLE_ORDER_BY_YEAR: Record<string, string[]> = SAMPLE_ORDER.reduce((acc, x) => {
-  (acc[x.year] ||= []).push(x.id);
-  return acc;
-}, {} as Record<string, string[]>);
-/** サンプル順で出題するかの保存キー（並びは固定なので真偽値だけ持てばよい） */
-const SAMPLE_ORDER_KEY = "sample-order";
-
-/**
- * 問題演習の進捗を送る（「解説へ」を開いたとき）。
- * 模試・埋込・復習モードでは呼ばない。失敗は無視（学習体験に影響させない）。
- */
-function postLessonOpen(payload: Record<string, unknown>) {
-  if (!STATS_ENDPOINT) return;
-  try {
-    void fetch(STATS_ENDPOINT + "/lesson", {
-      method: "POST",
-      keepalive: true,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...payload,
-        secret: STATS_SECRET,
-        v: STATS_V,
-        ...(isTestRun() ? { test: true } : {})
-      })
-    }).catch(() => { /* noop */ });
-  } catch {
-    /* noop */
-  }
-}
-
 /** ランダム出題の母集団。基礎練習問題(basic)と情報セキュリティ(field)を除いた問題のid */
 const RANDOM_POOL_IDS = (questionsData as Question[])
   .filter((q) => !q.basic && q.field !== "security")
@@ -173,7 +134,6 @@ type StartOptions = {
   perQuestionTimer: boolean;
   perQuestionTimerAlert: boolean;
   instructorMode: boolean;
-  showQuestionNumber: boolean;
   /** ランダム出題の問題数。null / 未指定なら通常出題 */
   randomCount?: number | null;
 };
@@ -391,7 +351,6 @@ const initialState: ExamState = {
   perQuestionRemainingSeconds: {},
   perQuestionTimerPaused: false,
   instructorMode: false,
-  showQuestionNumber: true,
   randomIds: null
 };
 
@@ -509,46 +468,16 @@ export default function App() {
     return next;
   });
 
-  /** サンプル順で出題: null=OFF / "all"=全44問 / 年度名=その年度だけ。並びは固定なので選択だけ保存する */
-  const [sampleOrder, setSampleOrder] = useState<string | null>(() => {
-    if (isMogi || embed || qParam) return null;
-    return lsGet(SAMPLE_ORDER_KEY);
-  });
-
   // ランダム出題中は選ばれたidの順に並べ替えるだけ。
   // 問番号は振り直さない（解説画像が question-images/{number}.png で引かれているため、
   // 振り直すと別の問題の画像を指してしまう）
   const questions = useMemo<Question[]>(() => {
-    // 出題順を差し替えるidリストを決める（ランダム抽選 > サンプル順 > 通常）
-    const ids =
-      state.randomIds && state.randomIds.length > 0
-        ? state.randomIds
-        : sampleOrder
-          ? sampleOrder === "all"
-            ? SAMPLE_ORDER_IDS
-            : SAMPLE_ORDER_BY_YEAR[sampleOrder]
-          : null;
+    const ids = state.randomIds;
     if (!ids || ids.length === 0) return allQuestions;
     const byId = new Map(allQuestions.map((q) => [q.id, q] as const));
     return ids.map((id) => byId.get(id)).filter((q): q is Question => Boolean(q));
-  }, [allQuestions, state.randomIds, sampleOrder]);
+  }, [allQuestions, state.randomIds]);
 
-  /** サンプル順の切替。並びが変わっても「いま見ている問題」を保つ */
-  const changeSampleOrder = (next: string | null) => {
-    const currentId = questions[state.currentIndex]?.id;
-    setSampleOrder(next);
-    if (next) lsSet(SAMPLE_ORDER_KEY, next);
-    else lsDel(SAMPLE_ORDER_KEY);
-    const nextIds = !next
-      ? allQuestions.map((q) => q.id)
-      : next === "all"
-        ? SAMPLE_ORDER_IDS
-        : SAMPLE_ORDER_BY_YEAR[next] ?? [];
-    const idx = currentId ? nextIds.indexOf(currentId) : -1;
-    setState((prev) => ({ ...prev, currentIndex: idx >= 0 ? idx : 0 }));
-  };
-
-  const [showSettings, setShowSettings] = useState(false);
   const [showList, setShowList] = useState(false);
   const [showTimeUp, setShowTimeUp] = useState(false);
   // 模擬試験のガイダンス画面（表示中はタイマーを動かさない）
@@ -564,8 +493,6 @@ export default function App() {
   });
   const [showPerQuestionTimeUp, setShowPerQuestionTimeUp] = useState(false);
   const [showReference, setShowReference] = useState(false);
-  // テキストヒントを開いている問題のid（問題を移ると自動的に閉じる）
-  const [hintTextShownFor, setHintTextShownFor] = useState<string | null>(null);
   const [referenceTab, setReferenceTab] = useState<"notes" | "materials">("notes");
   const [paneRatio, setPaneRatio] = useState(0.55); // 左ペイン幅割合
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 769);
@@ -609,21 +536,6 @@ export default function App() {
   /** 採点画面に出す8桁の受験コード（合格報告フォームとの突き合わせ用） */
   const [resultCode, setResultCode] = useState<string | null>(null);
   const [resultReport, setResultReport] = useState<ExamReport | null>(null);
-  /** 学習済み(自己申告)。問題IDごとに保存し、採点や「終了」では消さない＝学習の履歴として残る */
-  const [studied, setStudied] = useState<Record<string, 1>>(() => {
-    try {
-      const v = JSON.parse(lsGet(STUDIED_KEY) || "{}");
-      return v && typeof v === "object" ? v : {};
-    } catch {
-      return {};
-    }
-  });
-  /** 問題一覧の分野タブ（問題演習モードでのみ使用。null=現在の問題の分野を自動選択） */
-  const [listTab, setListTab] = useState<string | null>(null);
-  /** 問題一覧の表示切替: 分野別 / スケジュール別 */
-  const [listView, setListView] = useState<"field" | "week">("field");
-  /** スケジュール別で開いている週（null=今やっている問題の週） */
-  const [listWeek, setListWeek] = useState<number | null>(null);
   const dividerRef = useRef<HTMLDivElement | null>(null);
 
   // state 永続化（埋め込みモードでは保存しない＝通常サイトの state を汚さない）
@@ -754,29 +666,12 @@ export default function App() {
   const hitokotoDisplay = isMogi ? "" : currentQuestion?.hitokoto?.trim() ?? "";
   const lessonUrlDisplay = currentQuestion?.lessonUrl?.trim() ?? "";
   const hintVideoUrlDisplay = currentQuestion?.hintVideoUrl?.trim() ?? "";
-  const hintTextDisplay = currentQuestion?.hintText?.trim() ?? "";
-  /** 表つきのヒント（hintText の代わり）。ヒントボタンの表示条件にも使う */
-  const hintBlocksDisplay = currentQuestion?.hintBlocks ?? [];
-  const hasHintText = hintTextDisplay !== "" || hintBlocksDisplay.length > 0;
 
   const handleAnswer = (choiceId: string) => {
     setState((prev) => ({
       ...prev,
       answers: { ...prev.answers, [currentQuestion.id]: choiceId }
     }));
-  };
-
-  /** 学習済みを使うのは通常の問題演習だけ。模試・埋込・ランダム出題では出さない */
-  const studiedEnabled = !isMogi && !embed && !state.randomIds;
-  /** 学習済みフラグの手動トグル。埋め込み・模試では使わない */
-  const toggleStudied = () => {
-    setStudied((prev) => {
-      const next = { ...prev };
-      if (next[currentQuestion.id]) delete next[currentQuestion.id];
-      else next[currentQuestion.id] = 1;
-      lsSet(STUDIED_KEY, JSON.stringify(next));
-      return next;
-    });
   };
 
   const handleReviewToggle = () => {
@@ -905,8 +800,7 @@ export default function App() {
       d.id = null;
       d.at = 0;
     }
-    const elapsedSec = Math.max(0, MOGI_TIME - state.remainingSeconds);
-    if (elapsedSec >= STATS_MIN_ELAPSED_SEC) postStats({
+    postStats({
       type: "finish",
       sessionId: session.sid,
       clientId: getClientId(),
@@ -914,7 +808,7 @@ export default function App() {
       attempt: session.attempt,
       startedAt: session.startedAt,
       finishedAt: new Date().toISOString(),
-      elapsedSec,
+      elapsedSec: Math.max(0, MOGI_TIME - state.remainingSeconds),
       correct,
       unanswered,
       reviewCount: rows.filter((r) => r.rev === 1).length,
@@ -988,19 +882,13 @@ export default function App() {
     setState((prev) => ({
       ...prev,
       answers: {},
-      // 問題演習では「あとで見返す」は学習の記録なので採点しても残す。
-      // 模試とランダム出題はその場限りの出題なのでクリアする
-      reviewFlags: isMogi || prev.randomIds ? {} : prev.reviewFlags,
+      reviewFlags: {},
       currentIndex: 0
     }));
   };
 
   const handleFinish = () => {
-    // 問題演習では回答だけがクリアされる。学習の記録が消えないことを明示しておく
-    const msg = studiedEnabled
-      ? "終了して採点しますか？\n（「あとで見返す」と「学習済み」は、クリアされずに残ります）"
-      : "終了して採点しますか？";
-    const ok = window.confirm(msg);
+    const ok = window.confirm("終了して採点しますか？");
     if (!ok) return;
     gradeExam();
   };
@@ -1012,7 +900,6 @@ export default function App() {
     perQuestionTimer,
     perQuestionTimerAlert,
     instructorMode,
-    showQuestionNumber,
     randomCount
   }: StartOptions) => {
     setQuestionOverrides({});
@@ -1035,7 +922,6 @@ export default function App() {
         perQuestionRemainingSeconds: {},
         perQuestionTimerPaused: false,
         instructorMode,
-        showQuestionNumber,
         randomIds
       };
 
@@ -1246,14 +1132,6 @@ export default function App() {
             <button className="outline" onClick={handleFinish}>
               終了
             </button>
-            <button
-              className="outline icon-btn"
-              onClick={() => setShowSettings(true)}
-              aria-label="設定"
-              title="設定"
-            >
-              ⚙
-            </button>
           </div>
         </div>
       </header>
@@ -1378,10 +1256,7 @@ export default function App() {
           }}
         >
           <div className="question-title-row">
-            <h2>{isMogi && !state.instructorMode ? formatQuestionNumber(currentQuestion.number) : state.instructorMode ? currentQuestion.title : !state.showQuestionNumber ? currentQuestion.title : (Number.isInteger(currentQuestion.number) ? `${currentQuestion.number}問: ${currentQuestion.title}` : `${Math.floor(currentQuestion.number)}#問: ${currentQuestion.title}`)}</h2>
-            {!isMogi && currentQuestion.selfSolve === 1 ? (
-              <p className="self-solve">自力で解こう</p>
-            ) : null}
+            <h2>{isMogi && !state.instructorMode ? formatQuestionNumber(currentQuestion.number) : state.instructorMode ? currentQuestion.title : (Number.isInteger(currentQuestion.number) ? `${currentQuestion.number}問: ${currentQuestion.title}` : `${Math.floor(currentQuestion.number)}#問: ${currentQuestion.title}`)}</h2>
             {hitokotoDisplay ? <p className="hitokoto">{hitokotoDisplay}</p> : null}
           </div>
           {currentQuestion.questionText && <p>{currentQuestion.questionText}</p>}
@@ -1486,19 +1361,11 @@ export default function App() {
                     講義
                   </button>
                 )}
-                {(hintVideoUrlDisplay || hasHintText) && (
+                {hintVideoUrlDisplay && (
                   <button
                     type="button"
                     className="outline"
-                    aria-expanded={!hintVideoUrlDisplay ? hintTextShownFor === currentQuestion.id : undefined}
-                    onClick={() => {
-                      // 動画優先: hintVideoUrl があれば動画を開く。無いときだけテキストを開閉する
-                      if (hintVideoUrlDisplay) {
-                        window.open(hintVideoUrlDisplay, "_blank", "noopener,noreferrer");
-                      } else {
-                        setHintTextShownFor((prev) => (prev === currentQuestion.id ? null : currentQuestion.id));
-                      }
-                    }}
+                    onClick={() => window.open(hintVideoUrlDisplay, "_blank", "noopener,noreferrer")}
                   >
                     ヒント
                   </button>
@@ -1516,17 +1383,6 @@ export default function App() {
                   className="outline"
                   disabled={!(currentQuestion.videoUrl || currentQuestion.explanationUrl)}
                   onClick={() => {
-                    // 進捗集計: 問題演習で「解説へ」を開いた記録を送る（模試・埋込は対象外）
-                    if (!isMogi && !embed) {
-                      const sel = state.answers[currentQuestion.id];
-                      postLessonOpen({
-                        clientId: getClientId(),
-                        qId: currentQuestion.id,
-                        qNumber: currentQuestion.number,
-                        ok: sel ? (sel === currentQuestion.correctChoiceId ? 1 : 0) : null,
-                        device: detectDevice()
-                      });
-                    }
                     // 動画ファースト: videoUrl があれば動画、無ければ解説記事へ
                     const url = currentQuestion.videoUrl || currentQuestion.explanationUrl;
                     if (url) window.open(url, "_blank", "noopener,noreferrer");
@@ -1547,12 +1403,6 @@ export default function App() {
               </>
             )}
           </div>
-          {!hintVideoUrlDisplay && hasHintText && hintTextShownFor === currentQuestion.id && (
-            <div className="hint-text-panel">
-              {hintTextDisplay ? <p className="hint-text-line">{hintTextDisplay}</p> : null}
-              {hintBlocksDisplay.map((block, idx) => renderBodyBlock(block, idx))}
-            </div>
-          )}
           <div className={`choices-list ${state.reviewFlags[currentQuestion.id] ? "review-on" : ""}`}>
             {currentQuestion.choices.map((c, idx) => {
               const selected = state.answers[currentQuestion.id] === c.id;
@@ -1576,7 +1426,7 @@ export default function App() {
 
       <footer className="bottom-bar" aria-label="操作ボタン">
         <div className="bottom-bar-inner">
-          <button type="button" className="outline" onClick={() => { setListTab(null); setShowList(true); }}>
+          <button type="button" className="outline" onClick={() => setShowList(true)}>
             一覧へ
           </button>
           <button
@@ -1586,16 +1436,6 @@ export default function App() {
           >
             あとで見返す
           </button>
-          {studiedEnabled && (
-            <button
-              type="button"
-              onClick={toggleStudied}
-              className={`outline studied-btn ${studied[currentQuestion.id] ? "on" : ""}`}
-              aria-pressed={Boolean(studied[currentQuestion.id])}
-            >
-              {studied[currentQuestion.id] ? "✓ 学習済み" : "学習済み"}
-            </button>
-          )}
           <div className="nav-buttons">
             <button
               type="button"
@@ -1616,352 +1456,34 @@ export default function App() {
         </div>
       </footer>
 
-      {showSettings && (
-        <div className="overlay">
-          <div className="overlay-content">
-            <div className="overlay-header">
-              <h3>設定</h3>
-              <button className="outline" onClick={() => setShowSettings(false)}>
-                閉じる
-              </button>
-            </div>
-            <div className="mode-options" style={{ textAlign: "left" }}>
-              {!isMogi && (
-                <>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={state.perQuestionGrading}
-                      onChange={(e) =>
-                        setState((prev) => ({ ...prev, perQuestionGrading: e.target.checked }))
-                      }
-                    />{" "}
-                    問題ごとに採点
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={state.perQuestionTimer}
-                      onChange={(e) =>
-                        setState((prev) => {
-                          const next = { ...prev, perQuestionTimer: e.target.checked };
-                          // 途中でONにした場合、今の問題の残り時間が無いとタイマーが動かないので初期化する
-                          const qid = questions[prev.currentIndex]?.id;
-                          if (e.target.checked && qid && prev.perQuestionRemainingSeconds[qid] === undefined) {
-                            next.perQuestionRemainingSeconds = {
-                              ...prev.perQuestionRemainingSeconds,
-                              [qid]: PER_QUESTION_TIME
-                            };
-                          }
-                          return next;
-                        })
-                      }
-                    />{" "}
-                    問題ごとに5分計る
-                  </label>
-                  {state.perQuestionTimer && (
-                    <label className="mode-option-indent">
-                      <input
-                        type="checkbox"
-                        checked={state.perQuestionTimerAlert}
-                        onChange={(e) =>
-                          setState((prev) => ({ ...prev, perQuestionTimerAlert: e.target.checked }))
-                        }
-                      />{" "}
-                      5分経過をウィンドウで知らせる
-                    </label>
-                  )}
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={state.showQuestionNumber}
-                      onChange={(e) =>
-                        setState((prev) => ({ ...prev, showQuestionNumber: e.target.checked }))
-                      }
-                    />{" "}
-                    問題番号を表示
-                  </label>
-                </>
-              )}
-              <label>
-                <input
-                  type="checkbox"
-                  checked={state.instructorMode}
-                  onChange={(e) =>
-                    setState((prev) => ({ ...prev, instructorMode: e.target.checked }))
-                  }
-                />{" "}
-                講師モード
-              </label>
-            </div>
-            <p style={{ fontSize: "0.8em", opacity: 0.75, textAlign: "left", marginTop: "0.8em" }}>
-              ここでの変更はすぐに反映され､次回以降も保持されます｡
-            </p>
-          </div>
-        </div>
-      )}
-
       {showList && (
         <div className="overlay">
           <div className="overlay-content overlay-content--question-list">
-            {(() => {
-              // 分野タブ表示は問題演習モードのみ。模試/R4/埋込/ランダム出題は従来どおりのフラット表示
-              const grouped = !isMogi && !embed && !state.randomIds;
-              // 見出しとタブは同じ行に置く（縦を1行ぶん節約する）
-              const header = (tabs?: ReactNode) => (
-                <div className="overlay-header overlay-header--list">
-                  <h3>問題一覧</h3>
-                  {tabs}
-                  <button className="outline" onClick={() => setShowList(false)}>
-                    閉じる
-                  </button>
-                </div>
-              );
-              const cell = (q: (typeof questions)[number], idx: number, label?: string) => {
-                const answered = Boolean(state.answers[q.id]);
-                const review = Boolean(state.reviewFlags[q.id]);
-                const done = studiedEnabled && Boolean(studied[q.id]);
-                return (
-                  <button
-                    key={q.id}
-                    onClick={() => jumpTo(idx)}
-                    className={`grid-item ${idx === state.currentIndex ? "current" : ""} ${
-                      answered ? "answered" : "unanswered"
-                    } ${done ? "studied" : ""} ${review ? "review" : ""}`}
-                  >
-                    {label ?? (Number.isInteger(q.number) ? `問${q.number}` : `問${Math.floor(q.number)}#`)}
-                    {/* サンプル問題(本試験の公開問題)であることを年度バッジで示す。
-                        サンプルタブは年度別に並んでいるので付けない（label指定あり＝サンプルタブ） */}
-                    {!label && isSampleQuestion(q.title ?? "") && (
-                      <span className="q-badge">{SAMPLE_BADGE}</span>
-                    )}
-                  </button>
-                );
-              };
-
-              if (!grouped) {
-                return (
-                  <>
-                    {header()}
-                    <div className="question-list-scroll" role="region" aria-label="問題番号一覧">
-                      <div className="grid">{questions.map((q, idx) => cell(q, idx))}</div>
-                    </div>
-                  </>
-                );
-              }
-
-              // サンプル順で出題中は、開いたときにサンプルタブを出す（今の出題順と一覧が一致するように）
-              const defaultTab = sampleOrder
-                ? "sample"
-                : categoryOf(questions[state.currentIndex]?.number ?? 0);
-              const activeTab = listTab ?? defaultTab;
-              const cat = CATEGORIES.find((c) => c.key === activeTab) ?? CATEGORIES[0];
-              // スケジュール別: 今やっている問題が属する週を既定で開く
-              const curNum = questions[state.currentIndex]?.number ?? 0;
-              const defaultWeek = (WEEKS.find((w) => curNum >= w.from && curNum <= w.to) ?? WEEKS[0]).week;
-              const activeWeek = listWeek ?? defaultWeek;
-              const wk = WEEKS.find((w) => w.week === activeWeek) ?? WEEKS[0];
-
-              const viewSwitch = (
-                <div className="list-view-switch" role="radiogroup" aria-label="表示切替">
-                  <label>
-                    <input
-                      type="radio"
-                      name="list-view"
-                      checked={listView === "field"}
-                      onChange={() => setListView("field")}
-                    />{" "}
-                    分野別
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="list-view"
-                      checked={listView === "week"}
-                      onChange={() => setListView("week")}
-                    />{" "}
-                    スケジュール別
-                  </label>
-                </div>
-              );
-
-              if (listView === "week") {
-                const inWeek = questions
-                  .map((q, idx) => ({ q, idx }))
-                  .filter(({ q }) => q.number >= wk.from && q.number <= wk.to);
-                const doneCount = inWeek.filter(({ q }) => Boolean(studied[q.id])).length;
-                const weekTabs = (
-                  <div className="tabs tabs--fields" role="tablist" aria-label="週タブ">
-                      {WEEKS.map((w) => {
-                        const items = questions.filter((q) => q.number >= w.from && q.number <= w.to);
-                        const done = items.filter((q) => Boolean(studied[q.id])).length;
-                        return (
-                          <button
-                            key={w.week}
-                            type="button"
-                            role="tab"
-                            aria-selected={w.week === activeWeek}
-                            className={`tab ${w.week === activeWeek ? "active" : ""} ${
-                              items.length > 0 && done === items.length ? "tab--done" : ""
-                            }`}
-                            onClick={() => setListWeek(w.week)}
-                          >
-                            {w.week}週目
-                            {items.length > 0 && (
-                              <span className="tab-count">
-                                {done}/{items.length}
-                              </span>
-                            )}
-                          </button>
-                        );
-                      })}
-                  </div>
-                );
-                return (
-                  <>
-                    {header(viewSwitch)}
-                    {weekTabs}
-                    <div className="question-list-scroll" role="region" aria-label="問題番号一覧">
-                      <div className="week-head">
-                        <div className="week-pace">
-                          {wk.pace}
-                          {wk.note && <span className="week-note">{wk.note}</span>}
-                        </div>
-                        <div className="week-done">
-                          {doneCount}/{inWeek.length} 完了
-                        </div>
-                      </div>
-                      <div className="qgroups">
-                        {CATEGORIES.filter((c) => c.key !== "sample").map((c) =>
-                          c.groups.map((g) => {
-                            const items = questions
-                              .map((q, idx) => ({ q, idx }))
-                              .filter(
-                                ({ q }) =>
-                                  q.number >= g.from &&
-                                  q.number <= g.to &&
-                                  q.number >= wk.from &&
-                                  q.number <= wk.to
-                              );
-                            if (items.length === 0) return null;
-                            return (
-                              <div
-                                className={`qgroup ${items.length <= 3 ? "qgroup--small" : ""}`}
-                                key={`${c.key}-${g.name}`}
-                              >
-                                <div className="qgroup-title">{g.name}</div>
-                                <div className="grid">{items.map(({ q, idx }) => cell(q, idx))}</div>
-                              </div>
-                            );
-                          })
-                        )}
-                      </div>
-                    </div>
-                  </>
-                );
-              }
-
-              const fieldTabs = (
-                <div className="tabs tabs--fields" role="tablist" aria-label="分野タブ">
-                    {CATEGORIES.map((c) => (
-                      <button
-                        key={c.key}
-                        type="button"
-                        role="tab"
-                        aria-selected={c.key === activeTab}
-                        className={`tab ${c.key === activeTab ? "active" : ""}`}
-                        onClick={() => {
-                          setListTab(c.key);
-                          // サンプル順で出題中に他の分野へ移ったら、出題順は通常に戻す
-                          if (c.key !== "sample" && sampleOrder) changeSampleOrder(null);
-                        }}
-                      >
-                        {c.label}
-                      </button>
-                    ))}
-                </div>
-              );
-              return (
-                <>
-                  {header(viewSwitch)}
-                  {fieldTabs}
-                  <div className="question-list-scroll" role="region" aria-label="問題番号一覧">
-                    {cat.sampleGroups && (
-                      <div className="sample-order">
-                        <label className="sample-order-main">
-                          <input
-                            type="checkbox"
-                            checked={sampleOrder !== null}
-                            onChange={(e) => changeSampleOrder(e.target.checked ? "all" : null)}
-                          />
-                          この順番で出題する（サンプル問題{SAMPLE_ORDER_IDS.length}問だけを年度順に）
-                        </label>
-                        {sampleOrder !== null && (
-                          <div className="sample-order-years">
-                            <button
-                              type="button"
-                              className={`chip-btn ${sampleOrder === "all" ? "on" : ""}`}
-                              onClick={() => changeSampleOrder("all")}
-                            >
-                              全年度
-                            </button>
-                            {cat.sampleGroups.map((g) => (
-                              <button
-                                key={g.name}
-                                type="button"
-                                className={`chip-btn ${sampleOrder === g.name ? "on" : ""}`}
-                                onClick={() => changeSampleOrder(g.name)}
-                              >
-                                {g.name}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                    <div className="qgroups">
-                    {cat.sampleGroups?.map((g) => {
-                      // 年度でまとめ、年度内は本来の問番号順に並べる
-                      const items = questions
-                        .map((q, idx) => ({ q, idx, n: sampleNumberOf(q.title ?? "", g.prefix) }))
-                        .filter((x) => x.n !== null)
-                        .sort((a, b) => (a.n as number) - (b.n as number));
-                      if (items.length === 0) return null;
-                      return (
-                        <div className={`qgroup ${items.length <= 3 ? "qgroup--small" : ""}`} key={g.name}>
-                          <div className="qgroup-title">
-                            {g.name}
-                            <span className="qgroup-count">全{items.length}問</span>
-                          </div>
-                          <div className="grid grid--sample">
-                            {items.map(({ q, idx, n }) =>
-                              cell(
-                                q,
-                                idx,
-                                `問${n}(${Number.isInteger(q.number) ? q.number : `${Math.floor(q.number)}#`})`
-                              )
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                    {cat.groups.map((g) => {
-                      const items = questions
-                        .map((q, idx) => ({ q, idx }))
-                        .filter(({ q }) => q.number >= g.from && q.number <= g.to);
-                      if (items.length === 0) return null;
-                      return (
-                        <div className={`qgroup ${items.length <= 3 ? "qgroup--small" : ""}`} key={g.name}>
-                          <div className="qgroup-title">{g.name}</div>
-                          <div className="grid">{items.map(({ q, idx }) => cell(q, idx))}</div>
-                        </div>
-                      );
-                    })}
-                    </div>
-                  </div>
-                </>
-              );
-            })()}
+            <div className="overlay-header">
+              <h3>問題一覧</h3>
+              <button className="outline" onClick={() => setShowList(false)}>
+                閉じる
+              </button>
+            </div>
+            <div className="question-list-scroll" role="region" aria-label="問題番号一覧">
+              <div className="grid">
+                {questions.map((q, idx) => {
+                  const answered = Boolean(state.answers[q.id]);
+                  const review = Boolean(state.reviewFlags[q.id]);
+                  return (
+                    <button
+                      key={q.id}
+                      onClick={() => jumpTo(idx)}
+                      className={`grid-item ${idx === state.currentIndex ? "current" : ""} ${
+                        answered ? "answered" : "unanswered"
+                      } ${review ? "review" : ""}`}
+                    >
+                      {Number.isInteger(q.number) ? `問${q.number}` : `問${Math.floor(q.number)}#`}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
             <div className="legend">
               <div className="legend-item">
                 <span className="chip unanswered" />
@@ -1971,12 +1493,6 @@ export default function App() {
                 <span className="chip answered" />
                 <span>回答済み</span>
               </div>
-              {studiedEnabled && (
-                <div className="legend-item">
-                  <span className="chip studied" />
-                  <span>学習済み</span>
-                </div>
-              )}
               <div className="legend-item">
                 <span className="chip review" />
                 <span>あとで見返す</span>
@@ -2259,7 +1775,6 @@ function ModePicker({ isMogi = false, onStart }: ModePickerProps) {
   const [perQuestionTimer, setPerQuestionTimer] = useState(!isMogi);
   const [perQuestionTimerAlert, setPerQuestionTimerAlert] = useState(false);
   const [instructorMode, setInstructorMode] = useState(false);
-  const [showQuestionNumber, setShowQuestionNumber] = useState(true);
   const [randomOn, setRandomOn] = useState(false);
   const [randomCount, setRandomCount] = useState(10);
 
@@ -2374,14 +1889,6 @@ function ModePicker({ isMogi = false, onStart }: ModePickerProps) {
           <label>
             <input
               type="checkbox"
-              checked={showQuestionNumber}
-              onChange={(e) => setShowQuestionNumber(e.target.checked)}
-            />{" "}
-            問題番号を表示
-          </label>
-          <label>
-            <input
-              type="checkbox"
               checked={instructorMode}
               onChange={(e) => setInstructorMode(e.target.checked)}
             />{" "}
@@ -2410,7 +1917,6 @@ function ModePicker({ isMogi = false, onStart }: ModePickerProps) {
               perQuestionTimer: isMogi ? false : effectivePerQuestionTimer,
               perQuestionTimerAlert: isMogi ? false : perQuestionTimerAlert,
               instructorMode,
-              showQuestionNumber,
               randomCount: isMogi || !randomOn ? null : randomCount
             })
           }
@@ -2423,8 +1929,6 @@ function ModePicker({ isMogi = false, onStart }: ModePickerProps) {
           ※最初にガイダンス画面が表示されます｡試験開始ボタンを押した後､試験が開始され､100分の計測が始まります｡
         </p>
       )}
-      {/* 共有NGの注意。モード選択を開くたびに毎回目に入るよう、常時表示する */}
-      <p className="share-note">※こちらのサイトは､共有NGです｡</p>
     </div>
   );
 }

@@ -62,12 +62,6 @@ export type Question = {
   lessonUrl?: string;
   /** ヒント動画URL（記載がある場合のみボタン表示） */
   hintVideoUrl?: string;
-  /** テキストのヒント。hintVideoUrl が無いときだけ、ヒントボタンで開閉表示する（動画優先） */
-  hintText?: string;
-  /** 表を含むヒント。hintText の代わりに使う（本文と同じ BodyBlock 形式） */
-  hintBlocks?: BodyBlock[];
-  /** 自力で解こう（1:表示）。解説を聞く前に自分で解いてほしい問題に付ける */
-  selfSolve?: number;
   /** 値を変えてもう一度ボタン表示フラグ（1:表示, 0:非表示） */
   another?: number;
   /** 基礎練習問題（1:基礎）。ランダム出題の対象から除外される */
@@ -96,8 +90,6 @@ export type ExamState = {
   perQuestionRemainingSeconds: Record<string, number>;
   perQuestionTimerPaused: boolean;
   instructorMode: boolean;
-  /** 問題番号を表示するか（問題演習のみ。模擬試験は常に番号表示） */
-  showQuestionNumber: boolean;
   /** ランダム出題で選ばれた問題ID（順番どおりに出題）。null なら通常出題 */
   randomIds?: string[] | null;
 };
