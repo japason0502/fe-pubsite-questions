@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment } from "react";
 import type { ReactNode } from "react";
 import katex from "katex";
 import "katex/dist/katex.min.css";
@@ -17,7 +18,8 @@ const STORAGE_KEY = "exam-state";
 const MOGI_STORAGE_KEY = "exam-state-mogi"; // 模擬試験は保存キーを分けて通常演習の状態を汚さない
 const MOGI2_STORAGE_KEY = "exam-state-mogi-2"; // 模試2回目用
 const MOGI_R4_STORAGE_KEY = "exam-state-mogi-r4"; // R4サンプル模試用
-const STUDIED_KEY = "study-done"; // 学習済み(自己申告)。回答済みとは別で、採点しても消えない
+const STUDIED_KEY = "study-done";
+const SURVEY_COURSE_KEY = "survey-course"; // 受講有無だけは次回もプリセットする（回数・前回点は毎回聞く） // 学習済み(自己申告)。回答済みとは別で、採点しても消えない
 const REVIEW_MODE_KEY = "review-mode-mogi"; // 模試の復習モード（今すぐ採点・解説動画ボタン表示）ON/OFF
 // R4サンプル模試: 令和4年度12月サンプル問題の20問を本試験の順（問1〜20）で出題。
 // バンク(questions.json)のidを本試験順に並べたもの。問17のみバンク未収録のためr4Extra.jsonで補完。
@@ -130,6 +132,13 @@ const SAMPLE_ORDER_BY_YEAR: Record<string, string[]> = SAMPLE_ORDER.reduce((acc,
 const SAMPLE_ORDER_KEY = "sample-order";
 
 /**
+ * お試し版（?sp=1）で出題する上限の問番号。
+ * お試しの範囲を決めるのはここ1箇所だけ。将来サンプルを別ビルドに切り出すとき
+ * （scripts/make-sample.mjs 等）も、この定数をそのまま読めるようにしてある。
+ */
+export const TRIAL_MAX_NUMBER = 23;
+
+/**
  * 問題演習の進捗を送る（「解説へ」を開いたとき）。
  * 模試・埋込・復習モードでは呼ばない。失敗は無視（学習体験に影響させない）。
  */
@@ -153,12 +162,17 @@ function postLessonOpen(payload: Record<string, unknown>) {
 }
 
 /** ランダム出題の母集団。基礎練習問題(basic)と情報セキュリティ(field)を除いた問題のid */
-const RANDOM_POOL_IDS = (questionsData as Question[])
-  .filter((q) => !q.basic && q.field !== "security")
-  .map((q) => q.id);
+const RANDOM_POOL_SOURCE = (questionsData as Question[]).filter(
+  (q) => !q.basic && q.field !== "security"
+);
+const RANDOM_POOL_IDS = RANDOM_POOL_SOURCE.map((q) => q.id);
+/** トレース系だけに絞った母集団（分野タブの「トレース系」と同じ範囲） */
+const RANDOM_POOL_TRACE_IDS = RANDOM_POOL_SOURCE.filter(
+  (q) => categoryOf(q.number) === "trace"
+).map((q) => q.id);
 /** 母集団から count 問をシャッフルして取り出す（出題順もシャッフルのまま） */
-function pickRandomIds(count: number): string[] {
-  const pool = [...RANDOM_POOL_IDS];
+function pickRandomIds(count: number, traceOnly = false): string[] {
+  const pool = [...(traceOnly ? RANDOM_POOL_TRACE_IDS : RANDOM_POOL_IDS)];
   for (let i = pool.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [pool[i], pool[j]] = [pool[j], pool[i]];
@@ -176,6 +190,10 @@ type StartOptions = {
   showQuestionNumber: boolean;
   /** ランダム出題の問題数。null / 未指定なら通常出題 */
   randomCount?: number | null;
+  /** ランダム出題をトレース系だけに絞る */
+  randomTraceOnly?: boolean;
+  /** ランダム出題の時点で「値を変えてもう一度」を自動適用する */
+  randomAnother?: boolean;
 };
 
 /** 模擬試験の受け方 動画 */
@@ -445,6 +463,9 @@ export default function App() {
   // ?lock=1: 埋め込み用ロック。指定した模試から他モードへ移動できない
   // （ガイダンスの「モード選択に戻る」を非表示にする。採点・復習モード等はそのまま使える）
   const lock = urlParams.get("lock") === "1";
+  // ?sp=1: お試し版。出題を TRIAL_MAX_NUMBER までに絞り、模試・ランダム出題・サンプル順出題を隠す。
+  // 保存キーは本番と共有する（お試しで解いた進捗を、有料版へそのまま引き継げるようにするため）。
+  const isTrial = urlParams.get("sp") === "1" && !isMogi;
 
   const allQuestions = useMemo<Question[]>(() => {
     if (mogiSet === "1") return mogiQuestionsData as Question[];
@@ -460,8 +481,10 @@ export default function App() {
         return { ...q, number: i + 1 };
       });
     }
-    return questionsData as Question[];
-  }, [mogiSet]);
+    const all = questionsData as Question[];
+    // お試し版は先頭〜TRIAL_MAX_NUMBER のみ（枝番 4.1 / 16.1 も範囲内なら含む）
+    return isTrial ? all.filter((q) => q.number <= TRIAL_MAX_NUMBER) : all;
+  }, [mogiSet, isTrial]);
   const storageKey =
     mogiSet === "r4" ? MOGI_R4_STORAGE_KEY : mogiSet === "2" ? MOGI2_STORAGE_KEY : isMogi ? MOGI_STORAGE_KEY : STORAGE_KEY;
   const examDefaultTime = isMogi ? MOGI_TIME : DEFAULT_TIME;
@@ -477,7 +500,8 @@ export default function App() {
   // 模擬試験ページではタブタイトルを変える
   useEffect(() => {
     if (isMogi) document.title = "科目B 模擬試験";
-  }, [isMogi]);
+    else if (isTrial) document.title = "科目B 演習サイト（お試し版）";
+  }, [isMogi, isTrial]);
 
   const [questionOverrides, setQuestionOverrides] = useState<Record<string, Partial<Question>>>({});
   const [state, setState] = useState<ExamState>(() => {
@@ -506,12 +530,20 @@ export default function App() {
     // 前回のランダム出題が残っていると deepLinkIndex が範囲外になるので解除する
     if (embed || qParam) next.randomIds = null;
     if (deepLinkIndex >= 0) next.currentIndex = deepLinkIndex;
+    // お試し版は本番と localStorage を共有しているため、
+    // 本番の続き（範囲外の問番号）やランダム出題の並びを持ち込まないようにする
+    if (isTrial) {
+      next.randomIds = null;
+      const lastIndex = allQuestions.length - 1;
+      if (next.currentIndex > lastIndex) next.currentIndex = lastIndex;
+      if (next.currentIndex < 0) next.currentIndex = 0;
+    }
     return next;
   });
 
   /** サンプル順で出題: null=OFF / "all"=全44問 / 年度名=その年度だけ。並びは固定なので選択だけ保存する */
   const [sampleOrder, setSampleOrder] = useState<string | null>(() => {
-    if (isMogi || embed || qParam) return null;
+    if (isMogi || isTrial || embed || qParam) return null;
     return lsGet(SAMPLE_ORDER_KEY);
   });
 
@@ -608,6 +640,13 @@ export default function App() {
   }, [reviewMode]);
   /** 採点画面に出す8桁の受験コード（合格報告フォームとの突き合わせ用） */
   const [resultCode, setResultCode] = useState<string | null>(null);
+  // ===== 受験前アンケート（任意）。集計にのみ使う =====
+  /** 97問講座の受講有無: "yes" | "no" | "" */
+  const [svCourse, setSvCourse] = useState<string>(() => lsGet(SURVEY_COURSE_KEY) || "");
+  /** 次で何回目の本番挑戦か: "1" | "2" | "3plus" | "" */
+  const [svTries, setSvTries] = useState<string>("");
+  /** 前回の科目B評価点（帯）: "unknown" | "lt400" | "400" | "500" | "600plus" | "" */
+  const [svPrev, setSvPrev] = useState<string>("");
   const [resultReport, setResultReport] = useState<ExamReport | null>(null);
   /** 学習済み(自己申告)。問題IDごとに保存し、採点や「終了」では消さない＝学習の履歴として残る */
   const [studied, setStudied] = useState<Record<string, 1>>(() => {
@@ -886,7 +925,13 @@ export default function App() {
       set,
       attempt: session.attempt,
       startedAt: session.startedAt,
-      device: detectDevice()
+      device: detectDevice(),
+      // 任意アンケート。未回答は空文字で送り、Worker 側で捨てる
+      survey: {
+        course: svCourse,
+        tries: svTries,
+        prevScore: svTries === "1" ? "" : svPrev
+      }
     });
   };
 
@@ -1013,13 +1058,26 @@ export default function App() {
     perQuestionTimerAlert,
     instructorMode,
     showQuestionNumber,
-    randomCount
+    randomCount,
+    randomTraceOnly,
+    randomAnother
   }: StartOptions) => {
     setQuestionOverrides({});
     // 模擬試験は開始前にガイダンス画面を挟む（閉じるまでタイマーは動かない）
     if (isMogi) setShowGuidance(true);
     // 抽選はここで1回だけ行う（以後は state.randomIds を使うので、画面遷移で引き直されない）
-    const randomIds = randomCount ? pickRandomIds(randomCount) : null;
+    const randomIds = randomCount ? pickRandomIds(randomCount, randomTraceOnly) : null;
+    // 「値を変える」がONなら、抽選した問題のうち対応しているものを開始時点で作り直す
+    if (randomIds && randomAnother) {
+      const overrides: Record<string, Partial<Question>> = {};
+      randomIds.forEach((id) => {
+        const base = (questionsData as Question[]).find((q) => q.id === id);
+        if (!base || base.another !== 1) return;
+        const generated = generateAnotherQuestion(base);
+        if (generated) overrides[id] = generated;
+      });
+      if (Object.keys(overrides).length > 0) setQuestionOverrides(overrides);
+    }
     setState((prev) => {
       const newState: ExamState = {
         ...initialState,
@@ -1263,7 +1321,7 @@ export default function App() {
           <div className="overlay-content overlay-content--mode-select">
             <h3>{isMogi ? "模擬試験" : "モード選択"}</h3>
             <p>{isMogi ? "本番形式の模擬試験です。" : "開始するモードとオプションを選んでください。"}</p>
-            <ModePicker isMogi={isMogi} onStart={startMode} />
+            <ModePicker isMogi={isMogi} isTrial={isTrial} onStart={startMode} />
             <a href="https://docs.google.com/document/d/1ZeSTp8iQiQnJuN79rt70V2k_TZDqRG-LwSipn162PPo/edit?usp=sharing" target="_blank" className="usage-link">サイトの使い方はこちら</a>
           </div>
         </div>
@@ -1291,6 +1349,78 @@ export default function App() {
               />{" "}
               復習モード（各問に「今すぐ採点」「解説へ」ボタンを表示）
             </label>
+            {statsEnabled && (
+              <div className="survey">
+                <p className="survey-head">アンケート（任意･ご協力ありがとうございます!）</p>
+                <div className="survey-q">
+                  <span className="survey-label">じゃぱそんの97問講座は受講しましたか?</span>
+                  <div className="survey-opts">
+                    {[
+                      { v: "yes", label: "はい" },
+                      { v: "no", label: "いいえ" }
+                    ].map((o) => (
+                      <label key={o.v} className="survey-opt">
+                        <input
+                          type="radio"
+                          name="sv-course"
+                          checked={svCourse === o.v}
+                          onChange={() => {
+                            setSvCourse(o.v);
+                            lsSet(SURVEY_COURSE_KEY, o.v);
+                          }}
+                        />{" "}
+                        {o.label}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                <div className="survey-q">
+                  <span className="survey-label">基本情報の本番は、次で何回目の挑戦ですか?</span>
+                  <div className="survey-opts">
+                    {[
+                      { v: "1", label: "初めて" },
+                      { v: "2", label: "2回目" },
+                      { v: "3plus", label: "3回目以上" }
+                    ].map((o) => (
+                      <label key={o.v} className="survey-opt">
+                        <input
+                          type="radio"
+                          name="sv-tries"
+                          checked={svTries === o.v}
+                          onChange={() => setSvTries(o.v)}
+                        />{" "}
+                        {o.label}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                {/* 前回の点数は再挑戦の人にだけ聞く（初受験の人には出さない） */}
+                {(svTries === "2" || svTries === "3plus") && (
+                  <div className="survey-q">
+                    <span className="survey-label">前回の「科目B」の評価点は?（覚えている範囲で）</span>
+                    <div className="survey-opts">
+                      {[
+                        { v: "unknown", label: "覚えていない" },
+                        { v: "lt400", label: "400点未満" },
+                        { v: "400", label: "400〜499点" },
+                        { v: "500", label: "500〜599点" },
+                        { v: "600plus", label: "600点以上（科目Bは合格）" }
+                      ].map((o) => (
+                        <label key={o.v} className="survey-opt">
+                          <input
+                            type="radio"
+                            name="sv-prev"
+                            checked={svPrev === o.v}
+                            onChange={() => setSvPrev(o.v)}
+                          />{" "}
+                          {o.label}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
             <p style={{ fontSize: "0.78em", opacity: 0.75, margin: "0 0 12px", textAlign: "left" }}>
               ※受験結果は匿名の統計データとして集計します（個人を特定する情報は取得しません）。
               <br />
@@ -1616,6 +1746,30 @@ export default function App() {
         </div>
       </footer>
 
+      {isTrial && state.currentIndex >= questions.length - 1 && (
+        <div
+          className="trial-cta"
+          style={{
+            margin: "1em auto",
+            maxWidth: "42em",
+            padding: "1em 1.25em",
+            border: "2px solid #f0a500",
+            borderRadius: "8px",
+            background: "rgba(240,165,0,0.08)",
+            textAlign: "left",
+            lineHeight: 1.7
+          }}
+        >
+          <p style={{ margin: "0 0 0.5em", fontWeight: 700 }}>
+            お試し版はここまでです（全{questions.length}問）
+          </p>
+          <p style={{ margin: 0 }}>
+            この先の条件分岐･関数･探索･整列から情報セキュリティまで､
+            全問の演習と模擬試験2回は有料版でご利用いただけます｡
+          </p>
+        </div>
+      )}
+
       {showSettings && (
         <div className="overlay">
           <div className="overlay-content">
@@ -1706,7 +1860,7 @@ export default function App() {
           <div className="overlay-content overlay-content--question-list">
             {(() => {
               // 分野タブ表示は問題演習モードのみ。模試/R4/埋込/ランダム出題は従来どおりのフラット表示
-              const grouped = !isMogi && !embed && !state.randomIds;
+              const grouped = !isMogi && !embed && !isTrial && !state.randomIds;
               // 見出しとタブは同じ行に置く（縦を1行ぶん節約する）
               const header = (tabs?: ReactNode) => (
                 <div className="overlay-header overlay-header--list">
@@ -1806,7 +1960,7 @@ export default function App() {
                             }`}
                             onClick={() => setListWeek(w.week)}
                           >
-                            {w.week}週目
+                            {w.label ?? `${w.week}週目`}
                             {items.length > 0 && (
                               <span className="tab-count">
                                 {done}/{items.length}
@@ -1823,10 +1977,12 @@ export default function App() {
                     {weekTabs}
                     <div className="question-list-scroll" role="region" aria-label="問題番号一覧">
                       <div className="week-head">
-                        <div className="week-pace">
-                          {wk.pace}
-                          {wk.note && <span className="week-note">{wk.note}</span>}
-                        </div>
+                        {(wk.pace || wk.note) && (
+                          <div className="week-pace">
+                            {wk.pace}
+                            {wk.note && <span className="week-note">{wk.note}</span>}
+                          </div>
+                        )}
                         <div className="week-done">
                           {doneCount}/{inWeek.length} 完了
                         </div>
@@ -1845,13 +2001,14 @@ export default function App() {
                               );
                             if (items.length === 0) return null;
                             return (
-                              <div
-                                className={`qgroup ${items.length <= 3 ? "qgroup--small" : ""}`}
-                                key={`${c.key}-${g.name}`}
-                              >
-                                <div className="qgroup-title">{g.name}</div>
-                                <div className="grid">{items.map(({ q, idx }) => cell(q, idx))}</div>
-                              </div>
+                              <Fragment key={`${c.key}-${g.name}`}>
+                                {/* 説明文は囲いの外・上に出す（中に入れると窮屈なので） */}
+                                {g.desc && <p className="qgroup-desc">{g.desc}</p>}
+                                <div className={`qgroup ${items.length <= 3 ? "qgroup--small" : ""}`}>
+                                  <div className="qgroup-title">{g.name}</div>
+                                  <div className="grid">{items.map(({ q, idx }) => cell(q, idx))}</div>
+                                </div>
+                              </Fragment>
                             );
                           })
                         )}
@@ -1886,7 +2043,7 @@ export default function App() {
                   {header(viewSwitch)}
                   {fieldTabs}
                   <div className="question-list-scroll" role="region" aria-label="問題番号一覧">
-                    {cat.sampleGroups && (
+                    {cat.sampleGroups && !isTrial && (
                       <div className="sample-order">
                         <label className="sample-order-main">
                           <input
@@ -1951,10 +2108,13 @@ export default function App() {
                         .filter(({ q }) => q.number >= g.from && q.number <= g.to);
                       if (items.length === 0) return null;
                       return (
-                        <div className={`qgroup ${items.length <= 3 ? "qgroup--small" : ""}`} key={g.name}>
-                          <div className="qgroup-title">{g.name}</div>
-                          <div className="grid">{items.map(({ q, idx }) => cell(q, idx))}</div>
-                        </div>
+                        <Fragment key={g.name}>
+                          {g.desc && <p className="qgroup-desc">{g.desc}</p>}
+                          <div className={`qgroup ${items.length <= 3 ? "qgroup--small" : ""}`}>
+                            <div className="qgroup-title">{g.name}</div>
+                            <div className="grid">{items.map(({ q, idx }) => cell(q, idx))}</div>
+                          </div>
+                        </Fragment>
                       );
                     })}
                     </div>
@@ -2247,13 +2407,15 @@ export default function App() {
 type ModePickerProps = {
   /** 模擬試験ページ（?mock=1）かどうか */
   isMogi?: boolean;
+  /** お試し版（?sp=1）かどうか。模擬試験メニューとランダム出題を隠す */
+  isTrial?: boolean;
   onStart: (options: StartOptions) => void;
 };
 
 // 16問＝本番20問から情報セキュリティ4問を引いたアルゴリズム部分と同数（16×5分＝80分）
 const RANDOM_COUNTS = [5, 10, 16];
 
-function ModePicker({ isMogi = false, onStart }: ModePickerProps) {
+function ModePicker({ isMogi = false, isTrial = false, onStart }: ModePickerProps) {
   const [mode, setMode] = useState<"practice" | "exam">(isMogi ? "exam" : "practice");
   const [perQuestionGrading, setPerQuestionGrading] = useState(!isMogi);
   const [perQuestionTimer, setPerQuestionTimer] = useState(!isMogi);
@@ -2262,6 +2424,10 @@ function ModePicker({ isMogi = false, onStart }: ModePickerProps) {
   const [showQuestionNumber, setShowQuestionNumber] = useState(true);
   const [randomOn, setRandomOn] = useState(false);
   const [randomCount, setRandomCount] = useState(10);
+  const [randomTraceOnly, setRandomTraceOnly] = useState(false);
+  // 値を変える方が練習になるので既定でON
+  const [randomAnother, setRandomAnother] = useState(true);
+  const randomPoolSize = randomTraceOnly ? RANDOM_POOL_TRACE_IDS.length : RANDOM_POOL_IDS.length;
 
   const isPractice = mode === "practice";
   // 演習モードは時間を計らない。試験モードは計る（手動切り替えは廃止）
@@ -2296,12 +2462,14 @@ function ModePicker({ isMogi = false, onStart }: ModePickerProps) {
         >
           問題演習
         </button>
-        <button
-          className={isMogi || showMogiMenu ? "" : "outline"}
-          onClick={() => (isMogi ? undefined : setShowMogiMenu((v) => !v))}
-        >
-          模擬試験
-        </button>
+        {!isTrial && (
+          <button
+            className={isMogi || showMogiMenu ? "" : "outline"}
+            onClick={() => (isMogi ? undefined : setShowMogiMenu((v) => !v))}
+          >
+            模擬試験
+          </button>
+        )}
       </div>
       {(isMogi || showMogiMenu) && <MogiCautions />}
       {!isMogi && showMogiMenu && (
@@ -2348,32 +2516,6 @@ function ModePicker({ isMogi = false, onStart }: ModePickerProps) {
           <label>
             <input
               type="checkbox"
-              checked={randomOn}
-              onChange={(e) => setRandomOn(e.target.checked)}
-            />{" "}
-            ランダムに出題
-          </label>
-          {randomOn && (
-            <div className="mode-option-indent">
-              {RANDOM_COUNTS.map((n) => (
-                <label key={n} style={{ display: "inline-block", marginRight: "1em" }}>
-                  <input
-                    type="radio"
-                    name="random-count"
-                    checked={randomCount === n}
-                    onChange={() => setRandomCount(n)}
-                  />{" "}
-                  {n}問（{n * 5}分）
-                </label>
-              ))}
-              <p style={{ fontSize: "0.85em", margin: "0.25em 0 0", opacity: 0.8 }}>
-                基礎･情報セキュリティを除いて､ランダムに出題します
-              </p>
-            </div>
-          )}
-          <label>
-            <input
-              type="checkbox"
               checked={showQuestionNumber}
               onChange={(e) => setShowQuestionNumber(e.target.checked)}
             />{" "}
@@ -2400,6 +2542,67 @@ function ModePicker({ isMogi = false, onStart }: ModePickerProps) {
           </label>
         </div>
       )}
+      {/* ランダム出題は他のオプションと毛色が違う（母集団を選ぶ機能）ので、枠で分けて開始ボタンの直前に置く */}
+      {!isMogi && !showMogiMenu && !isTrial && (
+        <div className={`random-box ${randomOn ? "on" : ""}`}>
+          <label className="random-box-main">
+            <input
+              type="checkbox"
+              checked={randomOn}
+              onChange={(e) => setRandomOn(e.target.checked)}
+            />{" "}
+            ランダムに出題
+          </label>
+          {randomOn && (
+            <div className="random-box-body">
+              <div className="random-counts">
+                {RANDOM_COUNTS.map((n) => {
+                  // 母集団より多い数は選べない（トレース系のみは対象が少ない）
+                  const over = n > randomPoolSize;
+                  return (
+                    <label key={n} className={over ? "is-disabled" : ""}>
+                      <input
+                        type="radio"
+                        name="random-count"
+                        checked={randomCount === n}
+                        disabled={over}
+                        onChange={() => setRandomCount(n)}
+                      />{" "}
+                      {n}問（{n * 5}分）
+                    </label>
+                  );
+                })}
+              </div>
+              <label className="random-opt">
+                <input
+                  type="checkbox"
+                  checked={randomTraceOnly}
+                  onChange={(e) => {
+                    const on = e.target.checked;
+                    setRandomTraceOnly(on);
+                    const size = on ? RANDOM_POOL_TRACE_IDS.length : RANDOM_POOL_IDS.length;
+                    // 選べなくなる数を選んだままにしない
+                    if (randomCount > size) {
+                      const fallback = [...RANDOM_COUNTS].reverse().find((n) => n <= size);
+                      if (fallback) setRandomCount(fallback);
+                    }
+                  }}
+                />{" "}
+                トレース系のみ（{RANDOM_POOL_TRACE_IDS.length}問から出題）
+              </label>
+              <label className="random-opt">
+                <input
+                  type="checkbox"
+                  checked={randomAnother}
+                  onChange={(e) => setRandomAnother(e.target.checked)}
+                />{" "}
+                値を変えられる問題は､値を変える
+              </label>
+              <p className="random-note">基礎･情報セキュリティを除いて､ランダムに出題します</p>
+            </div>
+          )}
+        </div>
+      )}
       {!(showMogiMenu && !isMogi) && (
         <button
           onClick={() =>
@@ -2411,7 +2614,9 @@ function ModePicker({ isMogi = false, onStart }: ModePickerProps) {
               perQuestionTimerAlert: isMogi ? false : perQuestionTimerAlert,
               instructorMode,
               showQuestionNumber,
-              randomCount: isMogi || !randomOn ? null : randomCount
+              randomCount: isMogi || !randomOn ? null : randomCount,
+              randomTraceOnly: randomOn && randomTraceOnly,
+              randomAnother: randomOn && randomAnother
             })
           }
         >

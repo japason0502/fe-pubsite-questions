@@ -8,6 +8,7 @@ export type GeneratedQuestionPatch = Pick<
   | "correctChoiceId"
   | "anotherTraceLines"
   | "bodyBlocks"
+  | "bodyTable"
   | "choiceTable"
 >;
 type AnotherQuestionGenerator = (baseQuestion: Question) => GeneratedQuestionPatch;
@@ -490,7 +491,7 @@ function generateQ60(_baseQuestion: Question): GeneratedQuestionPatch {
     const upperPacked = toBin8Byte(byteVal >> k);
     const upperBitsStr = bits.slice(0, n);
     const pow2k = 1 << k;
-    const questionLine = `${bits} から上位${n}ビットを取得して ${upperPacked} とするには【　】を行う。`;
+    const questionLine = `${bits} から上位${n}ビットを取り出し，右詰めにして ${upperPacked} とするには【　】を行う。`;
     const bodyText = buildQ60Body(questionLine);
     const wrongShift = `<< ${k}`;
     const wrongMod = `÷${pow2k}の余りを取得`;
@@ -643,7 +644,7 @@ function generateQ61(_baseQuestion: Question): GeneratedQuestionPatch {
   );
   const byteBin = toBin8Byte(byteVal);
   const resultBin = toBin8Byte(resultVal);
-  const bodyText = `関数 getUpperBitsPacked は 8 ビット型の引数 byte を受け取り，上位${n}ビットを取得して返す。例えば，getUpperBitsPacked(${byteBin}) の戻り値は ${resultBin} となる。\n\n${intro}`;
+  const bodyText = `関数 getUpperBitsPacked は 8 ビット型の引数 byte を受け取り，上位${n}ビットを取り出し，右詰めにして返す。例えば，getUpperBitsPacked(${byteBin}) の戻り値は ${resultBin} となる。\n\n${intro}`;
 
   const correct = `r ← (byte >> ${k})`;
   const four = shuffleFourChoices(
@@ -1036,19 +1037,579 @@ function generateQ86(_baseQuestion: Question): GeneratedQuestionPatch {
   };
 }
 
+/** 問42(R4(12)問14): 丸め方と要素数を変えて出題する。
+ *  ① 小数点以下を「切り上げ」/「切り捨て」  ② sortedData の要素数(6/8/10)
+ *  要素数が4や5だと p×(要素数−1) が割り切れて丸めが起きないので使わない。 */
+let lastQ42Key: string | null = null;
+
+function q42Format(v: number): string {
+  return v === 1 ? "1" : v.toFixed(1);
+}
+
+/** p = 0, 0.25, 0.5, 0.75, 1 を「4分の1」の整数比で扱い、誤差なしで丸める */
+function q42Ranks(span: number, roundUp: boolean): number[] {
+  return [0, 1, 2, 3, 4].map((num) => {
+    const total = num * span;
+    const q = Math.floor(total / 4);
+    return roundUp && total % 4 !== 0 ? q + 1 : q;
+  });
+}
+
+/** ranks(=i) から戻り値の配列表記を作る。offset=1 が本来の sortedData[i + 1] */
+function q42Answer(n: number, ranks: number[], offset: number): string {
+  const values = ranks.map((i) => q42Format(Math.min(Math.max(i + offset, 1), n) / 10));
+  return `{${values.join(", ")}}`;
+}
+
+/** 要素番号が端で頭打ちして同じ値が並ぶか（誤答としては不自然なので優先度を下げる） */
+function q42HasDuplicate(n: number, ranks: number[], offset: number): boolean {
+  const idx = ranks.map((i) => Math.min(Math.max(i + offset, 1), n));
+  return new Set(idx).size !== idx.length;
+}
+
+function generateQ42(baseQuestion: Question): GeneratedQuestionPatch {
+  let n = 10;
+  let roundUp = true;
+  do {
+    n = [6, 8, 10][randomInt(0, 2)];
+    roundUp = randomInt(0, 1) === 1;
+  } while (`${n}-${roundUp}` === lastQ42Key);
+  lastQ42Key = `${n}-${roundUp}`;
+
+  const ranks = q42Ranks(n - 1, roundUp);
+  const correct = q42Answer(n, ranks, 1);
+
+  // 誤答は実際にやりがちな取り違えから作る。
+  // 端で頭打ちして同じ値が並んだものは見た目で浮くので、後回しにする。
+  const candidates: { ranks: number[]; offset: number }[] = [
+    { ranks: q42Ranks(n - 1, !roundUp), offset: 1 },  // 丸め方が逆
+    { ranks, offset: 0 },                             // sortedData[i + 1] の +1 を忘れた
+    { ranks: q42Ranks(n, roundUp), offset: 1 },       // 要素数 − 1 の −1 を忘れた
+    { ranks: q42Ranks(n - 1, !roundUp), offset: 0 },  // 丸めも +1 も取り違えた
+    { ranks, offset: 2 },                             // 1つ後ろへずれた
+    { ranks: ranks.map((i) => i - 1), offset: 1 }     // 1つ前へずれた
+  ];
+  const clean: string[] = [];
+  const clamped: string[] = [];
+  candidates.forEach((c) => {
+    const text = q42Answer(n, c.ranks, c.offset);
+    if (text === correct || clean.includes(text) || clamped.includes(text)) return;
+    (q42HasDuplicate(n, c.ranks, c.offset) ? clamped : clean).push(text);
+  });
+  const wrongs = [...clean, ...clamped];
+
+  const { choices, correctChoiceId } = shuffleFourChoices(correct, wrongs[0], wrongs[1], wrongs[2]);
+  const data = Array.from({ length: n }, (_, k) => q42Format((k + 1) / 10));
+  const roundLabel = roundUp ? "切り上げた" : "切り捨てた";
+
+  return {
+    bodyText: `要素数が 1 以上で，昇順に整列済みの配列を基に，配列を特徴づける五つの値を返すプログラムである。関数 summarize を summarize({${data.join(", ")}}) として呼び出すと，戻り値は〔　　　〕である。`,
+    pseudoCode: (baseQuestion.pseudoCode ?? []).map((line) =>
+      line.replace("切り上げた値", `${roundLabel}値`)
+    ),
+    choices,
+    correctChoiceId,
+    anotherTraceLines: [
+      `sortedData の要素数 = ${n}（要素数 − 1 = ${n - 1}）`,
+      `小数点以下は${roundUp ? "切り上げ" : "切り捨て"}`,
+      `i = ${ranks.join(", ")}  →  参照する要素番号 = ${ranks.map((i) => i + 1).join(", ")}`
+    ]
+  };
+}
+
+/** 問43(R5問4 mod): test() が add に渡す3つの値を変えて出題する。
+ *  mode 0 … 3つとも格納できる（原問と同じ形）
+ *  mode 1 … 1つが calcHash1 も calcHash2 も埋まっていて格納できず、配列に現れない
+ *  どちらも「calcHash2 に救われる add」を最低1回含める。含まないと衝突の練習にならない。 */
+const Q43_SIZE = 5;
+const Q43_MINUS = "\u2212";
+let lastQ43Mode: 0 | 1 | null = null;
+
+type Q43Step = { value: number; first: number; second: number | null; stored: number | null };
+
+function q43Hash1(value: number): number {
+  return (value % Q43_SIZE) + 1;
+}
+
+function q43Hash2(value: number, offset: number): number {
+  return ((value + offset) % Q43_SIZE) + 1;
+}
+
+/** 1回分の test() を回す。overwrite/offset を変えると誤答用の「間違った解き方」になる */
+function q43Run(
+  values: number[],
+  opts: { overwrite?: boolean; offset?: number } = {}
+): { slots: number[]; steps: Q43Step[]; rescued: number; failed: number } {
+  const slots = new Array<number>(Q43_SIZE).fill(-1);
+  const steps: Q43Step[] = [];
+  let rescued = 0;
+  let failed = 0;
+  values.forEach((value) => {
+    const first = q43Hash1(value);
+    if (slots[first - 1] === -1) {
+      slots[first - 1] = value;
+      steps.push({ value, first, second: null, stored: first });
+      return;
+    }
+    if (opts.overwrite) {
+      slots[first - 1] = value;
+      steps.push({ value, first, second: null, stored: first });
+      return;
+    }
+    const second = q43Hash2(value, opts.offset ?? 3);
+    if (slots[second - 1] === -1) {
+      slots[second - 1] = value;
+      rescued += 1;
+      steps.push({ value, first, second, stored: second });
+    } else {
+      failed += 1;
+      steps.push({ value, first, second, stored: null });
+    }
+  });
+  return { slots, steps, rescued, failed };
+}
+
+function q43Format(slots: number[]): string {
+  return `{${slots.map((v) => (v === -1 ? `${Q43_MINUS}1` : String(v))).join(", ")}}`;
+}
+
+function q43TraceLine(step: Q43Step): string {
+  const head = `add(${step.value}): calcHash1 → 要素番号${step.first}`;
+  if (step.second === null) return `${head} が空き → ${step.value} を格納`;
+  if (step.stored === null) {
+    return `${head} は使用中 → calcHash2 → 要素番号${step.second} も使用中 → 格納できず false`;
+  }
+  return `${head} は使用中 → calcHash2 → 要素番号${step.second} が空き → ${step.value} を格納`;
+}
+
+function generateQ43(baseQuestion: Question): GeneratedQuestionPatch {
+  const mode: 0 | 1 = lastQ43Mode === 0 ? 1 : lastQ43Mode === 1 ? 0 : (randomInt(0, 1) as 0 | 1);
+  lastQ43Mode = mode;
+
+  let values: number[] = [];
+  let result = q43Run([]);
+  let wrongs: string[] = [];
+  for (let attempt = 0; attempt < 400; attempt += 1) {
+    values = [randomInt(2, 30), randomInt(2, 30), randomInt(2, 30)];
+    if (new Set(values).size < 3) continue;
+    // 2桁を2つ以上入れる。1桁ばかりだと mod の計算が自明になってしまう
+    if (values.filter((v) => v >= 10).length < 2) continue;
+    result = q43Run(values);
+    if (result.rescued < 1) continue;                       // 衝突なしはただの代入練習
+    if (mode === 0 ? result.failed !== 0 : result.failed !== 1) continue;
+
+    const correctText = q43Format(result.slots);
+    const shifted = [...result.slots.slice(1), result.slots[0]];  // 要素番号が1つずれた
+    const candidates = [
+      q43Format(shifted),
+      q43Format(q43Run(values, { overwrite: true }).slots),        // 衝突しても上書きした
+      q43Format(q43Run([...values].reverse()).slots),              // 呼び出し順を取り違えた
+      q43Format(q43Run(values, { offset: Q43_SIZE - 3 }).slots)    // calcHash2 の +3 を −3 と読んだ
+    ];
+    wrongs = [];
+    candidates.forEach((text) => {
+      if (text !== correctText && !wrongs.includes(text)) wrongs.push(text);
+    });
+    if (wrongs.length >= 4) break;
+  }
+
+  // 抽選が続けて外れたとき用の保険（条件を満たすことを確認済みの組）
+  if (wrongs.length < 4) {
+    values = mode === 0 ? [9, 23, 19] : [11, 21, 6];
+    result = q43Run(values);
+    const fallbackText = q43Format(result.slots);
+    const shifted = [...result.slots.slice(1), result.slots[0]];
+    wrongs = [];
+    [
+      q43Format(shifted),
+      q43Format(q43Run(values, { overwrite: true }).slots),
+      q43Format(q43Run([...values].reverse()).slots),
+      q43Format(q43Run(values, { offset: Q43_SIZE - 3 }).slots)
+    ].forEach((text) => {
+      if (text !== fallbackText && !wrongs.includes(text)) wrongs.push(text);
+    });
+  }
+
+  const correctText = q43Format(result.slots);
+  const items = shuffle([
+    { text: correctText, correct: true },
+    ...wrongs.slice(0, 4).map((text) => ({ text, correct: false }))
+  ]);
+  const choices: Choice[] = items.map((item, index) => ({
+    id: CHOICE_IDS[index] ?? "a",
+    text: item.text
+  }));
+  const correctChoiceId = CHOICE_IDS[items.findIndex((x) => x.correct)] ?? "a";
+
+  let addIndex = 0;
+  const pseudoCode = (baseQuestion.pseudoCode ?? []).map((line) => {
+    const matched = line.match(/^(\s*)add\(\d+\)$/);
+    if (!matched) return line;
+    const value = values[addIndex] ?? 0;
+    addIndex += 1;
+    return `${matched[1]}add(${value})`;
+  });
+
+  return {
+    pseudoCode,
+    choices,
+    correctChoiceId,
+    anotherTraceLines: [
+      `calcHash1(value) = (value mod ${Q43_SIZE}) + 1 ／ calcHash2(value) = ((value + 3) mod ${Q43_SIZE}) + 1`,
+      ...result.steps.map(q43TraceLine)
+    ]
+  };
+}
+
+/** 問48(R4(04)問1 以上/以下): 境界の年齢と、穴埋めの位置を変えて出題する。
+ *  mode 0 … 原問と同じく elseif が穴。直前の if で下限は済んでいる、が論点
+ *  mode 1 … 最初の if が穴。引数が「0以上の整数」と保証されている、が論点
+ *  料金(100/300/500)は変えない。トレースに影響せず、変えても練習にならないため。 */
+let lastQ48Key: string | null = null;
+
+/** 解答群は原問の並びを踏襲する（複合条件3つ → 単純条件4つ）。
+ *  単純条件のほうだけ並びを入れ替え、正解の位置を覚えられないようにする。 */
+function q48Choices(compound: string[], simple: string[], correctText: string) {
+  const items = [...compound, ...shuffle(simple)];
+  const choices: Choice[] = items.map((text, index) => ({
+    id: CHOICE_IDS[index] ?? "a",
+    text
+  }));
+  const correctChoiceId = CHOICE_IDS[items.indexOf(correctText)] ?? "a";
+  return { choices, correctChoiceId };
+}
+
+function generateQ48(_baseQuestion: Question): GeneratedQuestionPatch {
+  let b1 = 3;
+  let b2 = 9;
+  let mode: 0 | 1 = 0;
+  do {
+    b1 = randomInt(2, 5);                 // 第1区分の上限
+    b2 = b1 + randomInt(3, 8);            // 第2区分の上限（区間が狭すぎないように）
+    mode = randomInt(0, 1) as 0 | 1;
+  } while (`${b1}-${b2}-${mode}` === lastQ48Key || (b1 === 3 && b2 === 9));
+  lastQ48Key = `${b1}-${b2}-${mode}`;
+
+  const bodyText =
+    `ある施設の入場料は､0歳から${b1}歳までは100円､${b1 + 1}歳から${b2}歳までは300円､` +
+    `${b2 + 1}歳以上は500円である。関数 fee は､年齢を表す0以上の整数を引数として受け取り､入場料を返す。`;
+
+  const head = "○ 整数型: fee(整数型: age)";
+  const blank = "【　　　　】";
+  const pseudoCode =
+    mode === 0
+      ? [
+          head, "  整数型: ret",
+          `  if (age が ${b1} 以下)`, "    ret ← 100",
+          `  elseif (${blank})`, "    ret ← 300",
+          "  else", "    ret ← 500", "  endif", "  return ret"
+        ]
+      : [
+          head, "  整数型: ret",
+          `  if (${blank})`, "    ret ← 100",
+          `  elseif (age が ${b2} 以下)`, "    ret ← 300",
+          "  else", "    ret ← 500", "  endif", "  return ret"
+        ];
+
+  let compound: string[];
+  let simple: string[];
+  let correctText: string;
+  let why: string;
+
+  if (mode === 0) {
+    const lo = b1 + 1;
+    correctText = `age が ${b2} 以下`;
+    compound = [
+      `(age が ${lo} 以上) and (age が ${b2} より小さい)`,
+      `(age が ${lo} と等しい) or (age が ${b2} と等しい)`,
+      `(age が ${lo} より大きい) and (age が ${b2} 以下)`
+    ];
+    simple = [`age が ${lo} 以上`, `age が ${lo} より大きい`, correctText, `age が ${b2} より小さい`];
+    why =
+      `直前の if で ${b1} 以下は 100 円になっているので、elseif に来る時点で age は ${lo} 以上が確定している。` +
+      `下限を書く必要はなく、上限の「${b2} 以下」だけでよい。`;
+  } else {
+    correctText = `age が ${b1} 以下`;
+    compound = [
+      `(age が 0 より大きい) and (age が ${b1} 以下)`,
+      `(age が 0 と等しい) or (age が ${b1} と等しい)`,
+      `(age が 0 以上) and (age が ${b1} より小さい)`
+    ];
+    simple = [correctText, `age が ${b1} より小さい`, `age が ${b1} と等しい`, `age が ${b1 + 1} 以下`];
+    why =
+      `age は「0以上の整数」と問題文で保証されているので、下限を書く必要はない。` +
+      `0歳から${b1}歳までが 100 円なので「${b1} 以下」。${b1} も含むので「より小さい」は誤り。`;
+  }
+
+  const picked = q48Choices(compound, simple, correctText);
+  return {
+    bodyText,
+    pseudoCode,
+    choices: picked.choices,
+    correctChoiceId: picked.correctChoiceId,
+    anotherTraceLines: [
+      `区分: 0〜${b1}歳=100円 ／ ${b1 + 1}〜${b2}歳=300円 ／ ${b2 + 1}歳以上=500円`,
+      `穴埋めの位置: ${mode === 0 ? "elseif（2番目の分岐）" : "if（最初の分岐）"}`,
+      `正解: ${correctText}`,
+      why
+    ]
+  };
+}
+
+/** 問84(R4(04)問2 配列&繰り返し): 配列の中身と、swap の書き方の向きを変えて出題する。
+ *  mode 0 … 原問と同じ tmp ← array[right] から始める形（【b】= array[left]）
+ *  mode 1 … tmp ← array[left] から始める形（【b】= array[right]）
+ *  解答群は原問のまま。同じ4択で正解だけが入れ替わるので、答えを覚えていると外す。 */
+let lastQ84Key: string | null = null;
+
+function generateQ84(baseQuestion: Question): GeneratedQuestionPatch {
+  let n = 5;
+  let mode: 0 | 1 = 0;
+  do {
+    n = randomInt(5, 7);
+    mode = randomInt(0, 1) as 0 | 1;
+  } while (`${n}-${mode}` === lastQ84Key);
+  lastQ84Key = `${n}-${mode}`;
+
+  // 入れ替わったことが目で見て分かるよう、重複しない値を散らす
+  const values: number[] = [];
+  while (values.length < n) {
+    const v = randomInt(1, 30);
+    if (!values.includes(v)) values.push(v);
+  }
+  const reversed = [...values].reverse();
+  const loops = Math.floor(n / 2);
+
+  const swapLines =
+    mode === 0
+      ? ["  tmp ← array[right]", "  array[right] ← array[left]", "  【 b 】 ← tmp"]
+      : ["  tmp ← array[left]", "  array[left] ← array[right]", "  【 b 】 ← tmp"];
+
+  const pseudoCode = [
+    `整数型の配列：array ← {${values.join(", ")}}`,
+    "整数型：right, left",
+    "整数型：tmp",
+    "",
+    "for（left を 1 から（array の要素数 ÷ 2 の商）まで 1 ずつ増やす）",
+    "  right ← 【 a 】",
+    ...swapLines,
+    "endfor"
+  ];
+
+  // a=要素数−left+1 は共通。b は tmp を最初にどちらから退避したかで決まる
+  const correctChoiceId = mode === 0 ? "c" : "d";
+
+  return {
+    pseudoCode,
+    choices: baseQuestion.choices,
+    correctChoiceId,
+    anotherTraceLines: [
+      `array = {${values.join(", ")}}（要素数 ${n}）`,
+      `繰り返し回数 = ${n} ÷ 2 の商 = ${loops} 回` + (n % 2 === 1 ? "（真ん中の1つは動かさなくてよい）" : ""),
+      `tmp に先に退避するのは array[${mode === 0 ? "right" : "left"}] → 最後に tmp を入れる先は array[${mode === 0 ? "left" : "right"}]`,
+      `結果 = {${reversed.join(", ")}}`
+    ]
+  };
+}
+
+/** 問51(R4(12)問12 分岐): 例に使う単語と、数える対象（一致 / 一致しない）を変えて出題する。
+ *  mode 0 … 一致する組を数える simRatio（正解は s1[i] = s2[i]）
+ *  mode 1 … 一致しない組を数える diffRatio（正解は s1[i] ≠ s2[i]）
+ *  解答群は原問のまま。本文の「一致する / 一致しない」を読み飛ばすと必ず外す。 */
+const Q51_WORDS = [
+  { base: "apple", partial: "april", zero: "melon", short: "pen" },
+  { base: "water", partial: "wafer", zero: "bingo", short: "cat" },
+  { base: "music", partial: "magic", zero: "tenth", short: "sun" },
+  { base: "stone", partial: "store", zero: "plaid", short: "cup" },
+  { base: "green", partial: "greed", zero: "black", short: "ink" }
+];
+let lastQ51Key: string | null = null;
+
+/** 要素番号が同じ位置で文字が一致した個数 */
+function q51Matches(a: string, b: string): number {
+  let n = 0;
+  for (let i = 0; i < a.length && i < b.length; i++) if (a[i] === b[i]) n += 1;
+  return n;
+}
+
+/** 配列リテラル { "a", "p", ... } の形にする */
+function q51Literal(word: string): string {
+  return `{ ${word.split("").map((c) => `"${c}"`).join(", ")} }`;
+}
+
+/** 0.4 のような値は小数1桁、割り切れる値は整数で書く */
+function q51Num(v: number): string {
+  return Number.isInteger(v) ? String(v) : v.toFixed(1);
+}
+
+function generateQ51(baseQuestion: Question): GeneratedQuestionPatch {
+  let idx = 0;
+  let mode: 0 | 1 = 0;
+  do {
+    idx = randomInt(0, Q51_WORDS.length - 1);
+    mode = randomInt(0, 1) as 0 | 1;
+  } while (`${idx}-${mode}` === lastQ51Key || (idx === 0 && mode === 0));
+  lastQ51Key = `${idx}-${mode}`;
+
+  const w = Q51_WORDS[idx];
+  const n = w.base.length;
+  const fn = mode === 0 ? "simRatio" : "diffRatio";
+  const count = (other: string) => {
+    const m = q51Matches(w.base, other);
+    return mode === 0 ? m / n : (n - m) / n;
+  };
+
+  const bodyText =
+    mode === 0
+      ? `関数${fn}は，引数として与えられた要素数1以上の二つの文字型の配列s1とs2を比較し，要素数が等しい場合は，配列の並びがどの程度似ているかを示す指標として，（要素番号が同じ要素の文字同士が一致する要素の組の個数 ÷ s1の要素数）を返す。すべて一致すれば戻り値は1，一致しなければ0，要素数が異なる場合は−1を返す。`
+      : `関数${fn}は，引数として与えられた要素数1以上の二つの文字型の配列s1とs2を比較し，要素数が等しい場合は，配列の並びがどの程度違っているかを示す指標として，（要素番号が同じ要素の文字同士が一致しない要素の組の個数 ÷ s1の要素数）を返す。すべて一致すれば戻り値は0，一致しなければ1，要素数が異なる場合は−1を返す。`;
+
+  const bodyTable = {
+    caption: `表 関数 ${fn} に与える s1，s2 及び戻り値の例`,
+    headers: ["s1", "s2", "戻り値"],
+    rows: [
+      [q51Literal(w.base), q51Literal(w.base), q51Num(count(w.base))],
+      [q51Literal(w.base), q51Literal(w.partial), q51Num(count(w.partial))],
+      [q51Literal(w.base), q51Literal(w.zero), q51Num(count(w.zero))],
+      [q51Literal(w.base), q51Literal(w.short), "−1"]
+    ]
+  };
+
+  const pseudoCode = (baseQuestion.pseudoCode ?? []).map((line) =>
+    line.replace("simRatio", fn)
+  );
+
+  const matched = q51Matches(w.base, w.partial);
+  return {
+    bodyText,
+    bodyTable,
+    pseudoCode,
+    choices: baseQuestion.choices,
+    correctChoiceId: mode === 0 ? "d" : "b",
+    anotherTraceLines: [
+      `数える対象: ${mode === 0 ? "一致する組（= で数える）" : "一致しない組（≠ で数える）"}`,
+      `${w.base} と ${w.partial}: 同じ位置で一致したのは ${matched} 文字 → 一致しないのは ${n - matched} 文字`,
+      `戻り値 = ${mode === 0 ? matched : n - matched} ÷ ${n} = ${q51Num(count(w.partial))}`,
+      `cnt は「数えたい組の個数」。何を数えるかは本文の1行で決まる`
+    ]
+  };
+}
+
+/** 問83(R7問5 予防接種・理論度数): 表1の集計結果だけを差し替える。
+ *  理論度数 a,b が整数になり、誤答7つが重複しない組合せをあらかじめ検証して持っている。
+ *  （行和×列和÷総和 が割り切れる表は多くないため、乱数で作らず固定の候補から選ぶ） */
+const Q83_TABLES: number[][] = [
+  // [受けた・かからなかった, 受けた・かかった, 受けていない・かからなかった, 受けていない・かかった]
+  [89, 13, 61, 17],
+  [118, 8, 64, 6],
+  [114, 14, 54, 10],
+  [78, 2, 42, 6],
+  [101, 11, 55, 15],
+  [119, 7, 41, 13],
+  [109, 11, 45, 11],
+  [117, 11, 79, 17]
+];
+let lastQ83Index: number | null = null;
+
+function generateQ83(_baseQuestion: Question): GeneratedQuestionPatch {
+  let idx = 0;
+  do {
+    idx = randomInt(0, Q83_TABLES.length - 1);
+  } while (idx === lastQ83Index);
+  lastQ83Index = idx;
+
+  const [d11, d12, d21, d22] = Q83_TABLES[idx];
+  const t = d11 + d12 + d21 + d22;
+  const r1 = d11 + d12;
+  const r2 = d21 + d22;
+  const c1 = d11 + d21;
+  const c2 = d12 + d22;
+  const a = (r1 * c1) / t; // 理論度数（1行1列）
+  const b = (r2 * c2) / t; // 理論度数（2行2列）
+
+  // 誤答は実際にやりがちな取り違えから作る
+  const pairs: number[][] = [
+    [a, b],                  // 正解
+    [a, d22],                // b を集計結果の生値のままにした
+    [d11, b],                // a を集計結果の生値のままにした
+    [d21, d22],              // 2行目をそのまま書き写した
+    [r1 / 2, r2 / 2],        // 行の和を列数で割った（行平均）
+    [c1 / 2, c2 / 2],        // 列の和を行数で割った（列平均）
+    [(r2 * c1) / t, b]       // a で行を取り違えた
+  ];
+  pairs.sort((x, y) => (x[0] - y[0]) || (x[1] - y[1]));
+  const choices: Choice[] = pairs.map((pv, i) => ({
+    id: CHOICE_IDS[i] ?? "a",
+    text: `a=${pv[0]}, b=${pv[1]}`
+  }));
+  const correctChoiceId = CHOICE_IDS[pairs.findIndex((pv) => pv[0] === a && pv[1] === b)] ?? "a";
+  // この問題は解答群を表で出すので choiceTable も一緒に差し替える（choices だけだと表が元のまま残る）
+  const choiceTable = {
+    headers: ["a", "b"],
+    rows: pairs.map((pv) => [String(pv[0]), String(pv[1])])
+  };
+
+  const shaded = { text: "", shaded: true };
+  const bodyBlocks: BodyBlock[] = [
+    {
+      type: "text",
+      text: "予防接種の病気 X に対する予防効果を調査するために集めたデータの集計結果を基に，病気 X にかかるかどうかが，予防接種の有無に影響されないと仮定した場合の人数を計算する。この人数を理論度数という。表 1 に集計結果の例を示し，表 2 に表 1 を基に計算した理論度数を示す。関数 f は，引数 data で受け取った集計結果を基に計算した理論度数を返す。引数と戻り値は二次元配列で，その行が表の行，その列が表の列に対応する。"
+    },
+    {
+      type: "table",
+      caption: "表1　集計結果の例（単位　人）",
+      headers: ["", "病気Xにかからなかった", "病気Xにかかった"],
+      rows: [
+        ["予防接種を受けた", String(d11), String(d12)],
+        ["予防接種を受けていない", String(d21), String(d22)]
+      ]
+    },
+    {
+      type: "table",
+      caption: "表2　表1を基に計算した理論度数（単位　人）",
+      headers: ["", "病気Xにかからなかった", "病気Xにかかった"],
+      rows: [
+        ["予防接種を受けた", "a", shaded],
+        ["予防接種を受けていない", shaded, "b"]
+      ]
+    },
+    { type: "text", text: "注記　網掛けの部分は数値を表示していない。" }
+  ];
+
+  return {
+    bodyBlocks,
+    choices,
+    choiceTable,
+    correctChoiceId,
+    anotherTraceLines: [
+      `総和 t = ${t}`,
+      `行の和: 1行目 = ${r1} ／ 2行目 = ${r2}`,
+      `列の和: 1列目 = ${c1} ／ 2列目 = ${c2}`,
+      `a = ${r1} × ${c1} ÷ ${t} = ${a}`,
+      `b = ${r2} × ${c2} ÷ ${t} = ${b}`
+    ]
+  };
+}
+
 const anotherQuestionGenerators: Record<string, AnotherQuestionGenerator> = {
   q23: generateQ23,
   q33: generateQ33,
   q36: generateQ36,
   q37: generateQ37,
+  q42: generateQ42,
+  q43: generateQ43,
   q44: generateQ44MatrixAccess,
   q45: generateQ45Sparse,
+  q48: generateQ48,
+  q51: generateQ51,
   q58: generateQ58,
   q60: generateQ60,
   q63: generateQ61,
   q70: generateQ70,
   q71: generateQ71,
   q76: generateQ76,
+  q83: generateQ83,
+  q84: generateQ84,
   q81: generateQ86
 };
 

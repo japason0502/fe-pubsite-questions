@@ -8,7 +8,8 @@
  * 問題を増減したときはこの表だけ直せばよい。
  */
 
-export type Group = { name: string; from: number; to: number };
+/** desc: グループ名の下に出す説明文（任意） */
+export type Group = { name: string; from: number; to: number; desc?: string };
 /** サンプル問題タブ用: タイトル先頭の年度表記でグループ分けする */
 export type SampleGroup = { name: string; prefix: string };
 export type Category = {
@@ -68,7 +69,16 @@ export const CATEGORIES: Category[] = [
     key: "security",
     label: "情報セキュリティ",
     groups: [
-      { name: "情報セキュリティ", from: 91, to: 97 }
+      { name: "情報セキュリティ", from: 91, to: 97 },
+      {
+        name: "追加演習",
+        from: 98,
+        to: 120,
+        desc:
+          "情報セキュリティマネジメント試験の問題です｡追加演習にご利用ください｡\n" +
+          "※ ここに載せていない問題(R5問13〜15､R6問13･問15､R7問13〜15)は､" +
+          "模擬試験で使用しています｡他の教材や公式サイトから解いてしまうと正確な点数が出ないのでご注意ください｡"
+      }
     ]
   }
   ,
@@ -91,7 +101,7 @@ export const CATEGORIES: Category[] = [
  * 例: "R4(12)問11(著者改編) 要素番号に配列" → 11 / 該当しなければ null
  */
 export function sampleNumberOf(title: string, prefix: string): number | null {
-  if (!title.startsWith(prefix)) return null;
+  if (!title.startsWith(prefix) || isModified(title)) return null;
   const m = title.slice(prefix.length).match(/^\d+/);
   return m ? Number(m[0]) : null;
 }
@@ -124,7 +134,8 @@ export function buildSampleOrder<T extends { id: string; title?: string }>(
  *   - 5〜7週目は再帰・ビット演算・データ構造・数学系で重いので土日を減らす
  *   - 8週目は模擬試験①のぶん問題数を抑える
  */
-export type Week = { week: number; from: number; to: number; pace: string; note?: string };
+/** label: タブに出す名前（未指定なら「N週目」）。pace が空の週はペース表示を出さない */
+export type Week = { week: number; from: number; to: number; pace: string; note?: string; label?: string };
 
 export const WEEKS: Week[] = [
   { week: 1, from: 0,  to: 18, pace: "平日2問・土日4問", note: "内容が軽いので倍速で進めます" },
@@ -134,14 +145,22 @@ export const WEEKS: Week[] = [
   { week: 5, from: 58, to: 68, pace: "平日1問・土日3問" },
   { week: 6, from: 69, to: 79, pace: "平日1問・土日3問" },
   { week: 7, from: 80, to: 90, pace: "平日1問・土日3問" },
-  { week: 8, from: 91, to: 97, pace: "平日1問・土日4問", note: "最後に模擬試験①を受けましょう" }
+  { week: 8, from: 91, to: 97, pace: "平日1問・土日4問", note: "最後に模擬試験①を受けましょう" },
+  // 8週の計画には含めない、余力のある人向けの追加ぶん
+  { week: 9, from: 98, to: 120, pace: "", label: "追加演習" }
 ];
 
 /** 一覧のボタンに出すバッジ文言（サンプル問題であることだけを示す） */
 export const SAMPLE_BADGE = "公開";
 
-/** サンプル問題（IPA公開のサンプル問題）かどうか */
+/** 出題内容に手を入れた問題（タイトルに「改編」と入れる約束）。公開問題そのものではない */
+export function isModified(title: string): boolean {
+  return title.includes("改編");
+}
+
+/** サンプル問題（IPA公開のサンプル問題）かどうか。改編したものは含めない */
 export function isSampleQuestion(title: string): boolean {
+  if (isModified(title)) return false;
   const sample = CATEGORIES.find((c) => c.key === "sample");
   return (sample?.sampleGroups ?? []).some((g) => title.startsWith(g.prefix));
 }

@@ -1674,7 +1674,8 @@
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=uVtvyWRLo_A&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=21",
     "another": 0,
-    "basic": 1
+    "basic": 1,
+    "selfSolve": 1
   },
   {
     "id": "q33",
@@ -1750,7 +1751,8 @@
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=z6ckOGIKntg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=22&t=15s",
     "another": 1,
-    "slug": "r7-mon4"
+    "slug": "r7-mon4",
+    "selfSolve": 1
   },
   {
     "id": "q34",
@@ -2033,7 +2035,17 @@
     "hintVideoUrl": "",
     "another": 0,
     "slug": "r5-mon2",
-    "selfSolve": 1
+    "selfSolve": 1,
+    "hintBlocks": [
+      {
+        "type": "text",
+        "text": "まだお伝えしてませんが､｢多分こうじゃないかな･･｣と推測して､トレースしてみましょう"
+      },
+      {
+        "type": "text",
+        "text": "(知らない内容でも推測で解けると､合格が近づきます)"
+      }
+    ]
   },
   {
     "id": "q39",
@@ -2074,7 +2086,17 @@
     "hintVideoUrl": "",
     "another": 0,
     "basic": 1,
-    "selfSolve": 1
+    "selfSolve": 1,
+    "hintBlocks": [
+      {
+        "type": "text",
+        "text": "どちらも引数はxです｡この2つが区別できるよう､変数名を工夫してトレースしましょう｡"
+      },
+      {
+        "type": "text",
+        "text": "(A-x B-x とするなど)"
+      }
+    ]
   },
   {
     "id": "q40",
@@ -2232,8 +2254,9 @@
     "correctChoiceId": "h",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0,
-    "slug": "r4-mon14"
+    "another": 1,
+    "slug": "r4-mon14",
+    "selfSolve": 1
   },
   {
     "id": "q43",
@@ -2292,11 +2315,13 @@
       }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=u2Mv24jWhYM&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=32&t=229s",
+    "lessonUrl": "https://www.youtube.com/watch?v=u2Mv24jWhYM&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=32&t=1s",
     "correctChoiceId": "d",
     "hitokoto": "modは余りを求める演算子(例)3 mod 10 = 3､10 mod 3 = 1",
-    "hintVideoUrl": "https://www.youtube.com/watch?v=u2Mv24jWhYM&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=32&t=1s",
-    "another": 0,
-    "slug": "r5-mon4"
+    "hintVideoUrl": "https://www.youtube.com/watch?v=u2Mv24jWhYM&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=32&t=168s",
+    "another": 1,
+    "slug": "r5-mon4",
+    "selfSolve": 1
   },
   {
     "id": "q44",
@@ -2332,9 +2357,10 @@
       }
     ],
     "videoUrl": "https://www.youtube.com/watch?v=QlQ6CYC_eXs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=33&t=245s",
+    "lessonUrl": "https://www.youtube.com/watch?v=QlQ6CYC_eXs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=33&t=1s",
     "correctChoiceId": "b",
     "hitokoto": "matrix[i，j] は i 行目・j 列目の要素。",
-    "hintVideoUrl": "https://www.youtube.com/watch?v=QlQ6CYC_eXs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=33&t=1s",
+    "hintVideoUrl": "",
     "another": 1,
     "basic": 1
   },
@@ -2412,7 +2438,8 @@
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=taayUZu2n9Y&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=34&t=16s",
     "another": 1,
-    "slug": "r404-mon4"
+    "slug": "r404-mon4",
+    "selfSolve": 1
   },
   {
     "id": "q46",
@@ -2451,8 +2478,7 @@
     "hitokoto": "",
     "hintVideoUrl": "",
     "another": 0,
-    "basic": 1,
-    "selfSolve": 1
+    "basic": 1
   },
   {
     "id": "q47",
@@ -2499,7 +2525,7 @@
     "videoUrl": "https://www.youtube.com/watch?v=FioA83WLqMA&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=37&pp=iAQBsAgC",
     "correctChoiceId": "b",
     "hitokoto": "",
-    "hintVideoUrl": "https://www.youtube.com/watch?v=wTkSMohhDNY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=36&pp=iAQBsAgC",
+    "hintVideoUrl": "",
     "lessonUrl": "https://www.youtube.com/watch?v=wTkSMohhDNY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=36&t=0s",
     "another": 0,
     "slug": "r6-mon1",
@@ -2557,7 +2583,7 @@
     "correctChoiceId": "f",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "another": 0,
+    "another": 1,
     "slug": "r404-mon1",
     "selfSolve": 1
   },
@@ -2775,7 +2801,7 @@
     "correctChoiceId": "d",
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=JRoLu68Bqb8&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=41&t=1s",
-    "another": 0,
+    "another": 1,
     "slug": "r4-mon12",
     "selfSolve": 1
   },
@@ -3161,7 +3187,8 @@
     "hitokoto": "",
     "hintVideoUrl": "https://youtu.be/zf7rqNQ52rc?si=PmwwbqOc0FuA7Adu&t=1",
     "another": 0,
-    "slug": "r5-mon5"
+    "slug": "r5-mon5",
+    "selfSolve": 1
   },
   {
     "id": "q54",
@@ -4068,7 +4095,8 @@
     "hintVideoUrl": "https://www.youtube.com/watch?v=zVUIe2-YSsg&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
     "lessonUrl": "",
     "another": 0,
-    "slug": "r404-mon5"
+    "slug": "r404-mon5",
+    "selfSolve": 1
   },
   {
     "id": "q70",
@@ -4192,7 +4220,8 @@
     "hintVideoUrl": "https://www.youtube.com/watch?v=zVvceUsfPic&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=62&t=183s",
     "lessonUrl": "https://www.youtube.com/watch?v=SNIRvtXYYBs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=61&pp=iAQBsAQBsAgC",
     "another": 1,
-    "slug": "r7-mon3"
+    "slug": "r7-mon3",
+    "selfSolve": 1
   },
   {
     "id": "q71",
@@ -4333,7 +4362,8 @@
     "hintVideoUrl": "",
     "lessonUrl": "https://www.youtube.com/watch?v=v9O6OdA7WfE&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=63&t=1s",
     "another": 1,
-    "basic": 1
+    "basic": 1,
+    "selfSolve": 1
   },
   {
     "id": "q72",
@@ -4503,7 +4533,8 @@
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=jZA7m2-iY1A&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=68&t=768s",
     "lessonUrl": "https://www.youtube.com/watch?v=jZA7m2-iY1A&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=68&t=1s",
-    "another": 0
+    "another": 0,
+    "selfSolve": 1
   },
   {
     "id": "q73",
@@ -4680,7 +4711,8 @@
     "correctChoiceId": "a",
     "hitokoto": "",
     "lessonUrl": "https://www.youtube.com/watch?v=4y4dPUlB3jM&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=69&t=1s",
-    "another": 0
+    "another": 0,
+    "selfSolve": 1
   },
   {
     "id": "q74",
@@ -4774,7 +4806,8 @@
     "correctChoiceId": "d",
     "hitokoto": "",
     "another": 0,
-    "slug": "r4-mon8"
+    "slug": "r4-mon8",
+    "selfSolve": 1
   },
   {
     "id": "q75",
@@ -5283,7 +5316,8 @@
     "hintVideoUrl": "https://www.youtube.com/watch?v=Wce9bbEuEMk&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=64&t=55s",
     "lessonUrl": "",
     "another": 0,
-    "slug": "r4-mon5"
+    "slug": "r4-mon5",
+    "selfSolve": 1
   },
   {
     "id": "q80",
@@ -5363,7 +5397,8 @@
     "hintVideoUrl": "https://www.youtube.com/watch?v=7yV0bV2wHGs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=65&t=8s",
     "lessonUrl": "",
     "another": 0,
-    "slug": "r5-mon1"
+    "slug": "r5-mon1",
+    "selfSolve": 1
   },
   {
     "id": "q81",
@@ -5412,7 +5447,8 @@
     "hitokoto": "",
     "hintVideoUrl": "",
     "lessonUrl": "",
-    "another": 1
+    "another": 1,
+    "selfSolve": 1
   },
   {
     "id": "q82",
@@ -5490,7 +5526,8 @@
     "hintVideoUrl": "https://www.youtube.com/watch?v=XJ3S-3MTV80&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=67",
     "lessonUrl": "",
     "another": 0,
-    "slug": "r4-mon4"
+    "slug": "r4-mon4",
+    "selfSolve": 1
   },
   {
     "id": "q83",
@@ -5640,8 +5677,9 @@
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=wjzr4aKqoq4&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=67&t=31s",
     "lessonUrl": "",
-    "another": 0,
-    "slug": "r7-mon5"
+    "another": 1,
+    "slug": "r7-mon5",
+    "selfSolve": 1
   },
   {
     "id": "q84",
@@ -5708,8 +5746,9 @@
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=ryH90Ocp58k&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=68&t=3s",
     "lessonUrl": "",
-    "another": 0,
-    "slug": "r404-mon2"
+    "another": 1,
+    "slug": "r404-mon2",
+    "selfSolve": 1
   },
   {
     "id": "q85",
@@ -5812,10 +5851,11 @@
     "videoUrl": "https://www.youtube.com/watch?v=s3PPNghUEAU&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=69&t=34s",
     "correctChoiceId": "f",
     "hitokoto": "",
-    "hintVideoUrl": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=s3PPNghUEAU&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&index=69&t=1s",
     "lessonUrl": "",
     "another": 0,
-    "slug": "r7-mon1"
+    "slug": "r7-mon1",
+    "selfSolve": 1
   },
   {
     "id": "q86",
@@ -5870,7 +5910,8 @@
     "hintVideoUrl": "https://www.youtube.com/watch?v=Okg7SVLwVgs&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=63s",
     "lessonUrl": "",
     "another": 0,
-    "slug": "r7-mon2"
+    "slug": "r7-mon2",
+    "selfSolve": 1
   },
   {
     "id": "q87",
@@ -5986,7 +6027,8 @@
     "hintVideoUrl": "",
     "lessonUrl": "",
     "another": 0,
-    "slug": "r4-mon11"
+    "slug": "r4-mon11",
+    "selfSolve": 1
   },
   {
     "id": "q89",
@@ -6035,10 +6077,11 @@
     "videoUrl": "https://www.youtube.com/watch?v=vel-YlCl1BI&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=26s",
     "correctChoiceId": "c",
     "hitokoto": "",
-    "hintVideoUrl": "",
+    "hintVideoUrl": "https://www.youtube.com/watch?v=vel-YlCl1BI&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=1s",
     "lessonUrl": "",
     "another": 0,
-    "slug": "r4-mon13"
+    "slug": "r4-mon13",
+    "selfSolve": 1
   },
   {
     "id": "q90",
@@ -6126,7 +6169,8 @@
     "hintVideoUrl": "https://www.youtube.com/watch?v=WFcQO6RmJsY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=15s",
     "lessonUrl": "",
     "another": 0,
-    "slug": "r6-mon3"
+    "slug": "r6-mon3",
+    "selfSolve": 1
   },
   {
     "id": "q91",
@@ -6264,7 +6308,8 @@
     "hintVideoUrl": "https://www.youtube.com/watch?v=YXoltMuVY5I&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=18s",
     "lessonUrl": "https://www.youtube.com/watch?v=F1xOYHsUIQY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
     "another": 0,
-    "field": "security"
+    "field": "security",
+    "selfSolve": 1
   },
   {
     "id": "q92",
@@ -6386,9 +6431,10 @@
     "videoUrl": "https://www.youtube.com/watch?v=TTAKRYsdRc8&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=13s",
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=TTAKRYsdRc8&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=0s",
-    "lessonUrl": "https://www.youtube.com/watch?v=F1xOYHsUIQY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
+    "lessonUrl": "",
     "another": 0,
-    "field": "security"
+    "field": "security",
+    "selfSolve": 1
   },
   {
     "id": "q93",
@@ -6517,9 +6563,10 @@
     "videoUrl": "https://www.youtube.com/watch?v=NNGzCIwCL_o&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=0s",
     "hitokoto": "",
     "hintVideoUrl": "",
-    "lessonUrl": "https://www.youtube.com/watch?v=F1xOYHsUIQY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
+    "lessonUrl": "",
     "another": 0,
-    "field": "security"
+    "field": "security",
+    "selfSolve": 1
   },
   {
     "id": "q94",
@@ -6614,9 +6661,10 @@
     "videoUrl": "https://www.youtube.com/watch?v=pw80o8BGDPU&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=54s",
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=pw80o8BGDPU&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=26s",
-    "lessonUrl": "https://www.youtube.com/watch?v=F1xOYHsUIQY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
+    "lessonUrl": "",
     "another": 0,
-    "field": "security"
+    "field": "security",
+    "selfSolve": 1
   },
   {
     "id": "q95",
@@ -6711,9 +6759,10 @@
     "videoUrl": "https://www.youtube.com/watch?v=FFf6IfOI4Y0&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=18s",
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=FFf6IfOI4Y0&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=0s",
-    "lessonUrl": "https://www.youtube.com/watch?v=F1xOYHsUIQY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
+    "lessonUrl": "",
     "another": 0,
-    "field": "security"
+    "field": "security",
+    "selfSolve": 1
   },
   {
     "id": "q96",
@@ -6774,9 +6823,10 @@
     "videoUrl": "https://www.youtube.com/watch?v=Xry4WyXdyb4&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=24s",
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=Xry4WyXdyb4&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=0s",
-    "lessonUrl": "https://www.youtube.com/watch?v=F1xOYHsUIQY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
+    "lessonUrl": "",
     "another": 0,
-    "field": "security"
+    "field": "security",
+    "selfSolve": 1
   },
   {
     "id": "q97",
@@ -6958,8 +7008,329 @@
     "videoUrl": "https://www.youtube.com/watch?v=CeWTl0Ks5jo&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=25s",
     "hitokoto": "",
     "hintVideoUrl": "https://www.youtube.com/watch?v=CeWTl0Ks5jo&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi&t=0s",
-    "lessonUrl": "https://www.youtube.com/watch?v=F1xOYHsUIQY&list=PLOrJMC_Nq6xrsYvceZmn6W6g5JyJkBfzi",
+    "lessonUrl": "",
     "another": 0,
-    "field": "security"
+    "field": "security",
+    "selfSolve": 1
+  },
+  {
+    "id": "q98",
+    "number": 98,
+    "title": "SG R8問13 入退館管理",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "A社は，従業員300名の専門商社であり，機密性の高い情報も取り扱っている。最近，A社は，駅前のBビルの6階に移転した。6階にはA社だけが入居している。\n　Bビルの2階から最上階の17階には多数の企業が入居しており，通常時はエレベーターを使用して各階に移動することができる。Bビルのビル管理業務はB社が行っている。B社はビルの入退館と入居企業の執務エリアの入退室を管理するシステム（以下，Cシステムという）を導入している。各入居企業は，Cシステムが発行するICカード（以下，Bカードという）を従業員に貸与している。各入居企業の執務エリアの出入口のドアは，当該企業が従業員に貸与したBカードをドア横のICカードリーダーにかざすことによって解錠できる。\n　Bビルのエントランスホールは1階にあり，エレベーターホールとの境界には，フラッパーゲートが設置されている。フラッパーゲートを通過するには，フラッパーゲートのリーダーにBカード又は入館用に一時的に発行されたQRコードをかざす必要がある。フラッパーゲートを通過すれば，平日の昼間はエレベーターの行先階ボタンを押すことで各階に自由に移動ができる。夜間と休日は，行先階の入居企業が従業員に貸与したBカードをエレベーター内のICカードリーダーにかざす必要がある。\n　フラッパーゲートのすぐ外には階段室に入るための階段口があり，階段口にある非常ドアは通常時，エントランスホールには出られるが，階段室には入れない仕組みになっている。ほかの階の階段口にある非常ドアは通常時，各フロアには出られないが，階段室には入れる仕組みになっている。ただし，どの階の非常ドアも清掃時などに一時的に出入り可能になることがある。また，非常時は自動的に出入り可能になる。フラッパーゲートの脇にはごみ箱が設置されている。"
+      },
+      {
+        "type": "text",
+        "text": "〔来訪者管理〕\n　Bビルへの来訪者は，Cシステムで管理している。入居企業がCシステムに，来訪者氏名，所属，来訪日，来訪者メールアドレスを登録すると，来訪日にだけ有効なゲスト入館用のQRコード付き入館証（以下，ゲスト入館証という）の画像ファイルが添付された電子メールが来訪者メールアドレスに送付される。来訪者は，来訪日当日に有効なゲスト入館証のQRコードを自身のスマートフォンの画面に表示するか又は印刷してフラッパーゲートのリーダーにかざすことによってフラッパーゲートを通過できる。当日に限り，同じ入館証で繰り返し入退館が可能なようにCシステムは設定されている。"
+      },
+      {
+        "type": "text",
+        "text": "〔Bビルの物理的セキュリティにおける課題とB社への依頼〕\n　ある日，突然，取引先のD社のE氏が予約なしに，A社の情報セキュリティリーダーのF部長を訪ねて6階の受付エリアにやって来た。驚いたF部長は，E氏が来たことをきっかけにBビルの物理的セキュリティについて調査し，複数の課題があることを発見した。そして，F部長はその課題とB社への依頼を表1にまとめた。"
+      },
+      {
+        "type": "table",
+        "caption": "表1　Bビルの物理的セキュリティにおける課題とB社への依頼（抜粋）",
+        "headers": [
+          "項番",
+          "課題",
+          "B社への依頼"
+        ],
+        "rows": [
+          [
+            "1",
+            "フラッパーゲート脇に設置されたごみ箱から印刷された使用済のゲスト入館証を拾えば，1階のフラッパーゲートを通過し入館できてしまう。",
+            "【a1】"
+          ],
+          [
+            "2",
+            "6階以外への来訪者が，ゲスト入館証で1階のフラッパーゲートを通過すれば，平日の昼間はエレベーターで6階に移動できてしまう。",
+            "【a2】"
+          ]
+        ]
+      },
+      {
+        "type": "text",
+        "text": "設問　次の依頼のうち，表1中の【a1】，【a2】に入れるものの組合せはどれか。aに関する解答群のうち，最も適切なものを選べ。\n（一）Cシステムの設定を変更し，ゲスト入館証のQRコードの誤り訂正レベルの設定を高くする。\n（二）Cシステムの設定を変更し，ゲスト入館証は1回限り入館可能にする。\n（三）エレベーターで行先階に移動するためには，平日の昼間もICカードリーダーにBカードをかざすことを必要とする。そのため，各入居企業には，当該企業の従業員が1階のエレベーター前から当該企業まで来訪者をアテンドするよう要請する。\n（四）警備員を1階のフラッパーゲート脇に配置し，不正に入館しようとしている者がいないかどうかを監視する。"
+      }
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "（一），（二）"
+      },
+      {
+        "id": "b",
+        "text": "（一），（三）"
+      },
+      {
+        "id": "c",
+        "text": "（二），（一）"
+      },
+      {
+        "id": "d",
+        "text": "（二），（三）"
+      },
+      {
+        "id": "e",
+        "text": "（二），（四）"
+      },
+      {
+        "id": "f",
+        "text": "（三），（一）"
+      },
+      {
+        "id": "g",
+        "text": "（三），（二）"
+      },
+      {
+        "id": "h",
+        "text": "（三），（四）"
+      },
+      {
+        "id": "i",
+        "text": "（四），（一）"
+      },
+      {
+        "id": "j",
+        "text": "（四），（二）"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "a1",
+        "a2"
+      ],
+      "rows": [
+        [
+          "（一）",
+          "（二）"
+        ],
+        [
+          "（一）",
+          "（三）"
+        ],
+        [
+          "（二）",
+          "（一）"
+        ],
+        [
+          "（二）",
+          "（三）"
+        ],
+        [
+          "（二）",
+          "（四）"
+        ],
+        [
+          "（三）",
+          "（一）"
+        ],
+        [
+          "（三）",
+          "（二）"
+        ],
+        [
+          "（三）",
+          "（四）"
+        ],
+        [
+          "（四）",
+          "（一）"
+        ],
+        [
+          "（四）",
+          "（二）"
+        ]
+      ]
+    },
+    "correctChoiceId": "d",
+    "videoUrl": "",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "lessonUrl": "",
+    "another": 0,
+    "field": "security",
+    "selfSolve": 1
+  },
+  {
+    "id": "q99",
+    "number": 99,
+    "title": "SG R8問15 文書管理",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "A社は従業員300名の商社である。総務部が定めたA社の文書管理ルールを図1に示す。"
+      },
+      {
+        "type": "table",
+        "headers": [
+          ""
+        ],
+        "rows": [
+          [
+            "〔文書の機密区分〕\n　極秘　　　　：経営に関する重要な文書であり，経営企画に関わる者だけに開示する。経営企画書など。\n　関係者外秘　：特定の関係者だけに開示する。議事メモ，顧客情報など。\n　社外秘　　　：社内だけに開示する。クレーム情報，社内報など。\n　公開　　　　：社外に公開可能なもの。商品カタログなど。\n\n〔機密区分のラベリング〕\n・文書を作成した部署の責任者が，機密区分を判断する。\n・“極秘”，“関係者外秘”及び“社外秘”の文書は，機密区分をその文書のヘッダー部に明記する。\n・“極秘”と“関係者外秘”に関しては開示範囲を明示するため，“役員だけ 極秘”や“○○部だけ 関係者外秘”という形式で明記する。\n\n〔文書の保管〕\n・“極秘”及び“関係者外秘”の紙の文書は，使わないときや利用中に離席するときはキャビネットに保管する。キャビネットは常時施錠し，関係者だけが解錠できるようにする。\n\n〔文書の廃棄〕\n・“極秘”，“関係者外秘”及び“社外秘”の紙の文書を廃棄する際は，シュレッダーで細断する。"
+          ]
+        ]
+      },
+      {
+        "type": "textCenter",
+        "text": "図1　文書管理ルール（抜粋）"
+      },
+      {
+        "type": "text",
+        "text": "　総務部の情報セキュリティリーダーであるSさんは，各部に対し年次の自己点検を指示した。その結果を基に，図1のルールに沿って文書を取り扱っているかを確認するために，A社の一部の従業員にヒアリングしたところ，図2に示す事例が得られた。"
+      },
+      {
+        "type": "table",
+        "headers": [
+          ""
+        ],
+        "rows": [
+          [
+            "（1）営業部のBさんの大学の後輩であるCさんは，A社の入社試験を受ける予定なので，BさんはCさんに社内報を見せた。\n（2）“営業部だけ 関係者外秘”の議事メモは，営業部員だけが解錠できるキャビネットに保管している。不要となったものは毎週水曜日に，シュレッダーで細断して廃棄している。\n（3）昨年営業部に異動した元人事部のDさんが，営業部の事業計画の参考にするため，人事部のEさんから“人事部だけ 関係者外秘”の来年度の採用計画を見せてもらった。\n（4）経営企画部のGさんは，来期の経営企画書のうち一部の作成を指示されていたが，机の上の本立てに最終原稿を差し込んで会議に向かった。\n（5）人事部のIさんは就職セミナーで，営業部から借りた商品カタログを参加者に見せながら会社紹介をした。"
+          ]
+        ]
+      },
+      {
+        "type": "textCenter",
+        "text": "図2　SさんがA社の従業員へのヒアリングによって得た事例"
+      },
+      {
+        "type": "text",
+        "text": "　Sさんは図2の事例について，図1に沿っているかどうかを評価し，表1のとおりまとめた。"
+      },
+      {
+        "type": "table",
+        "caption": "表1　ヒアリングで得た事例に対する評価",
+        "headers": [
+          "図2の項番",
+          "評価"
+        ],
+        "rows": [
+          [
+            "（1）",
+            "（省略）"
+          ],
+          [
+            "（2）",
+            "【a1】"
+          ],
+          [
+            "（3）",
+            "【a2】"
+          ],
+          [
+            "（4）",
+            "【a3】"
+          ],
+          [
+            "（5）",
+            "（省略）"
+          ]
+        ]
+      },
+      {
+        "type": "text",
+        "text": "注記　評価は，図1に沿っていれば“○”，沿っていなければ“×”とする。"
+      },
+      {
+        "type": "text",
+        "text": "設問　表1中の【a1】～【a3】に入れる評価の適切な組合せを解答群の中から選べ。"
+      }
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "○，○，○"
+      },
+      {
+        "id": "b",
+        "text": "○，○，×"
+      },
+      {
+        "id": "c",
+        "text": "○，×，○"
+      },
+      {
+        "id": "d",
+        "text": "○，×，×"
+      },
+      {
+        "id": "e",
+        "text": "×，○，○"
+      },
+      {
+        "id": "f",
+        "text": "×，○，×"
+      },
+      {
+        "id": "g",
+        "text": "×，×，○"
+      },
+      {
+        "id": "h",
+        "text": "×，×，×"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "a1",
+        "a2",
+        "a3"
+      ],
+      "rows": [
+        [
+          "○",
+          "○",
+          "○"
+        ],
+        [
+          "○",
+          "○",
+          "×"
+        ],
+        [
+          "○",
+          "×",
+          "○"
+        ],
+        [
+          "○",
+          "×",
+          "×"
+        ],
+        [
+          "×",
+          "○",
+          "○"
+        ],
+        [
+          "×",
+          "○",
+          "×"
+        ],
+        [
+          "×",
+          "×",
+          "○"
+        ],
+        [
+          "×",
+          "×",
+          "×"
+        ]
+      ]
+    },
+    "correctChoiceId": "d",
+    "videoUrl": "",
+    "hitokoto": "",
+    "hintVideoUrl": "",
+    "lessonUrl": "",
+    "another": 0,
+    "field": "security",
+    "selfSolve": 1
   }
 ]

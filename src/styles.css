@@ -974,6 +974,16 @@ button:disabled {
   margin-bottom: 8px;
 }
 
+/* グループの説明文（追加演習など、注意書きが要るグループ用） */
+.qgroup-desc {
+  flex: 1 1 100%;      /* .qgroups は flex なので1行まるごと使う */
+  margin: 2px 0 -4px;  /* 直下の囲いに寄せる */
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: #6b7280;
+  white-space: pre-line; /* desc の改行をそのまま出す */
+}
+
 /* サンプル問題(IPA公開のサンプル問題)であることを示すバッジ */
 .q-badge {
   position: absolute;
@@ -1225,6 +1235,130 @@ button:disabled {
 .chip.review {
   background: #fee2e2;
   border-color: #ef4444;
+}
+
+/* 受験前アンケート（ガイダンス画面・任意回答） */
+.survey {
+  text-align: left;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 0 0 14px;
+  background: #f8fafc;
+}
+
+.survey-head {
+  margin: 0 0 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+.survey-q + .survey-q {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.survey-label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+
+.survey-opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+}
+
+.survey-opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.86rem;
+  cursor: pointer;
+}
+
+.survey-opt input {
+  margin: 0;
+  flex: none;
+  cursor: pointer;
+}
+
+/* ランダム出題。他のオプションと毛色が違うので、色つきの枠で分ける */
+.random-box {
+  text-align: left;
+  border: 2px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin: 14px 0 12px;
+  background: #f8fafc;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.random-box.on {
+  border-color: #4a7ebc;
+  background: #eef4fb;
+}
+
+.random-box-main {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.random-box-main input {
+  margin: 0;
+  flex: none;
+  cursor: pointer;
+}
+
+.random-box-body {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #d5e0ec;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.random-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+}
+
+.random-counts label,
+.random-opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.random-counts input,
+.random-opt input {
+  margin: 0;
+  flex: none;
+  cursor: pointer;
+}
+
+.random-counts label.is-disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.random-note {
+  margin: 2px 0 0;
+  font-size: 0.8rem;
+  color: #5a6672;
 }
 
 /* モード選択の末尾に常時出す注意書き（控えめなグレー） */
