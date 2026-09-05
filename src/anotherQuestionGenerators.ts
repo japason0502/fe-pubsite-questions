@@ -1371,12 +1371,10 @@ function generateQ84(baseQuestion: Question): GeneratedQuestionPatch {
   } while (`${n}-${mode}` === lastQ84Key);
   lastQ84Key = `${n}-${mode}`;
 
-  // 入れ替わったことが目で見て分かるよう、重複しない値を散らす
+  // 中身は原問と同じく 1,2,3… の連番のまま。
+  // この問題で問われるのは right の式と tmp の退避先なので、値を散らしても意味がない
   const values: number[] = [];
-  while (values.length < n) {
-    const v = randomInt(1, 30);
-    if (!values.includes(v)) values.push(v);
-  }
+  for (let i = 1; i <= n; i++) values.push(i);
   const reversed = [...values].reverse();
   const loops = Math.floor(n / 2);
 

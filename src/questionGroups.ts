@@ -11,7 +11,8 @@
 /** desc: グループ名の下に出す説明文（任意） */
 export type Group = { name: string; from: number; to: number; desc?: string };
 /** サンプル問題タブ用: タイトル先頭の年度表記でグループ分けする */
-export type SampleGroup = { name: string; prefix: string };
+/** noOrder: 「この順番で出題する」の対象外にする（表示だけしたいグループ用） */
+export type SampleGroup = { name: string; prefix: string; noOrder?: boolean };
 export type Category = {
   key: string;
   label: string;
@@ -73,12 +74,18 @@ export const CATEGORIES: Category[] = [
       {
         name: "追加演習",
         from: 98,
-        to: 120,
+        to: 99,
+        desc: "情報セキュリティマネジメント試験の問題です｡追加演習にご利用ください｡"
+      },
+      {
+        name: "模擬試験①",
+        from: 100,
+        to: 103,
         desc:
-          "情報セキュリティマネジメント試験の問題です｡追加演習にご利用ください｡\n" +
-          "※ ここに載せていない問題(R5問13〜15､R6問13･問15､R7問13〜15)は､" +
-          "模擬試験で使用しています｡他の教材や公式サイトから解いてしまうと正確な点数が出ないのでご注意ください｡"
-      }
+          "ここから下は模擬試験で出題している問題です｡\n" +
+          "先に解いてしまうと模擬試験の点数が正確に出ないので､模試を受けてから見てください｡"
+      },
+      { name: "模擬試験②", from: 104, to: 107 }
     ]
   }
   ,
@@ -91,7 +98,11 @@ export const CATEGORIES: Category[] = [
       { name: "令和4年度 12月", prefix: "R4(12)問" },
       { name: "令和5年度", prefix: "R5問" },
       { name: "令和6年度", prefix: "R6問" },
-      { name: "令和7年度", prefix: "R7問" }
+      { name: "令和7年度", prefix: "R7問" },
+      { name: "情報セキュリティマネジメント R5", prefix: "SG R5問", noOrder: true },
+      { name: "情報セキュリティマネジメント R6", prefix: "SG R6問", noOrder: true },
+      { name: "情報セキュリティマネジメント R7", prefix: "SG R7問", noOrder: true },
+      { name: "情報セキュリティマネジメント R8", prefix: "SG R8問", noOrder: true }
     ]
   }
 ];
@@ -116,6 +127,7 @@ export function buildSampleOrder<T extends { id: string; title?: string }>(
   const sample = CATEGORIES.find((c) => c.key === "sample");
   const out: { id: string; year: string; qno: number }[] = [];
   for (const g of sample?.sampleGroups ?? []) {
+    if (g.noOrder) continue; // 情報セキュリティマネジメントは「この順番で出題する」の対象外
     const items: { id: string; year: string; qno: number }[] = [];
     for (const q of all) {
       const n = sampleNumberOf(q.title ?? "", g.prefix);

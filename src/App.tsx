@@ -18,6 +18,7 @@ const STORAGE_KEY = "exam-state";
 const MOGI_STORAGE_KEY = "exam-state-mogi"; // 模擬試験は保存キーを分けて通常演習の状態を汚さない
 const MOGI2_STORAGE_KEY = "exam-state-mogi-2"; // 模試2回目用
 const MOGI_R4_STORAGE_KEY = "exam-state-mogi-r4"; // R4サンプル模試用
+const SHOW_MOGI_KEY = "show-mogi-used"; // 模擬試験で使用中の問題も一覧に出すか（既定OFF）
 const STUDIED_KEY = "study-done";
 const SURVEY_COURSE_KEY = "survey-course"; // 受講有無だけは次回もプリセットする（回数・前回点は毎回聞く） // 学習済み(自己申告)。回答済みとは別で、採点しても消えない
 const REVIEW_MODE_KEY = "review-mode-mogi"; // 模試の復習モード（今すぐ採点・解説動画ボタン表示）ON/OFF
@@ -30,7 +31,7 @@ const R4_SAMPLE_ORDER = [
 /* ==================== 模擬試験の匿名集計 ====================
    Cloudflare Worker へ送りっぱなしにする。個人情報は一切送らない。
    復習モード中は送信しない。STATS_ENDPOINT が空なら機能ごと無効。 */
-const STATS_ENDPOINT = "https://fe-mogi-stats.s-tanaka0502.workers.dev";
+const STATS_ENDPOINT = "https://fe-mogi-stats.japason.workers.dev";
 const STATS_SECRET = "cucpux-CLn1HwmnBsaYuMm0iv6r1pu_D"; // ← wrangler secret put POST_SECRET と一致
 const STATS_V = 1;
 /** 所要時間がこれ未満の受験は連打・冷やかしとみなし、finish自体を送信しない（Worker側でも同値で除外している） */
@@ -660,7 +661,9 @@ export default function App() {
   /** 問題一覧の分野タブ（問題演習モードでのみ使用。null=現在の問題の分野を自動選択） */
   const [listTab, setListTab] = useState<string | null>(null);
   /** 問題一覧の表示切替: 分野別 / スケジュール別 */
-  const [listView, setListView] = useState<"field" | "week">("field");
+  const [listView, setListView] = useState<"field" | "week" | "all" | "sample">("field");
+  // 模擬試験で使っている問題も一覧に出す（既定OFF）。先に解かれると模試の点が正しく出ないため
+  const [showMogiUsed, setShowMogiUsed] = useState<boolean>(() => lsGet(SHOW_MOGI_KEY) === "1");
   /** スケジュール別で開いている週（null=今やっている問題の週） */
   const [listWeek, setListWeek] = useState<number | null>(null);
   const dividerRef = useRef<HTMLDivElement | null>(null);
@@ -828,9 +831,23 @@ export default function App() {
     }));
   };
 
+  /** 「模擬試験で使用している問題は非表示」がONのとき、その問題は一覧にも出さず「次へ」でも飛ばす */
+  const isHiddenQuestion = (q?: { mogiUsed?: number }) =>
+    Boolean(!showMogiUsed && q && q.mogiUsed === 1);
+  /** from から step 方向へ、最初に表示できる問題の位置を返す（無ければ -1） */
+  const findVisibleIndex = (from: number, step: number) => {
+    let i = from;
+    while (i >= 0 && i < questions.length) {
+      if (!isHiddenQuestion(questions[i])) return i;
+      i += step;
+    }
+    return -1;
+  };
+
   const navigate = (offset: number) => {
     setState((prev) => {
-      const nextIndex = prev.currentIndex + offset;
+      const step = offset >= 0 ? 1 : -1;
+      const nextIndex = findVisibleIndex(prev.currentIndex + offset, step);
       if (nextIndex < 0 || nextIndex >= questions.length) return prev;
       const nextQuestionId = questions[nextIndex]?.id;
       const updated = { ...prev, currentIndex: nextIndex, perQuestionTimerPaused: false };
@@ -874,6 +891,9 @@ export default function App() {
 
   // ===== 模擬試験の匿名集計 =====
   const statsKey = SESSION_KEY_PREFIX + storageKey;
+  // 問題ごとの滞在秒も保存する。ここを保存しないと、中断→再開したとき
+  // 再開前に解いた問題の秒が全部 0 になってしまう
+  const dwellKey = statsKey + "-dwell";
   const statsRef = useRef<StatsSession | null>(null);
   /** 問題ごとの滞在秒。currentIndex が変わるたびに積む */
   const dwellRef = useRef<{ id: string | null; at: number; acc: Record<string, number> }>({
@@ -889,21 +909,45 @@ export default function App() {
     try {
       const raw = lsGet(statsKey);
       if (raw) statsRef.current = JSON.parse(raw) as StatsSession;
+      const rawDwell = lsGet(dwellKey);
+      if (rawDwell) dwellRef.current.acc = JSON.parse(rawDwell) as Record<string, number>;
     } catch {
       /* noop */
     }
-  }, [statsEnabled, statsKey]);
+  }, [statsEnabled, statsKey, dwellKey]);
 
   const dwellActive = statsEnabled && state.mode === "exam" && !showGuidance && !showResumePrompt;
   useEffect(() => {
     const d = dwellRef.current;
     if (d.id && d.at) {
       d.acc[d.id] = (d.acc[d.id] || 0) + Math.round((Date.now() - d.at) / 1000);
+      // 問題を移るたびに書き出す（タブを閉じられても直前までは残る）
+      if (statsEnabled) lsSet(dwellKey, JSON.stringify(d.acc));
     }
     const nextId = dwellActive ? questions[state.currentIndex]?.id ?? null : null;
     d.id = nextId;
     d.at = nextId ? Date.now() : 0;
-  }, [dwellActive, state.currentIndex, questions]);
+  }, [dwellActive, state.currentIndex, questions, statsEnabled, dwellKey]);
+
+  // タブを閉じる/バックグラウンドへ回るときも、表示中の問題の秒を確定して保存する
+  useEffect(() => {
+    if (!statsEnabled) return;
+    const flush = () => {
+      const d = dwellRef.current;
+      if (d.id && d.at) {
+        d.acc[d.id] = (d.acc[d.id] || 0) + Math.round((Date.now() - d.at) / 1000);
+        d.at = Date.now(); // 二重計上しないよう起点を今にずらす
+        lsSet(dwellKey, JSON.stringify(d.acc));
+      }
+    };
+    const onHide = () => { if (document.visibilityState === "hidden") flush(); };
+    window.addEventListener("pagehide", flush);
+    document.addEventListener("visibilitychange", onHide);
+    return () => {
+      window.removeEventListener("pagehide", flush);
+      document.removeEventListener("visibilitychange", onHide);
+    };
+  }, [statsEnabled, dwellKey]);
 
   /** ガイダンスの「試験開始」で1回だけ発行する */
   const startStatsSession = () => {
@@ -916,6 +960,7 @@ export default function App() {
     statsRef.current = session;
     lsSet(statsKey, JSON.stringify(session));
     dwellRef.current = { id: null, at: 0, acc: {} };
+    lsDel(dwellKey);
     setResultCode(null);
     setResultReport(null);
     postStats({
@@ -978,6 +1023,7 @@ export default function App() {
     });
     setResultCode(getExamCode());
     lsDel(statsKey);
+    lsDel(dwellKey);
     statsRef.current = null;
   };
 
@@ -1508,7 +1554,17 @@ export default function App() {
           }}
         >
           <div className="question-title-row">
-            <h2>{isMogi && !state.instructorMode ? formatQuestionNumber(currentQuestion.number) : state.instructorMode ? currentQuestion.title : !state.showQuestionNumber ? currentQuestion.title : (Number.isInteger(currentQuestion.number) ? `${currentQuestion.number}問: ${currentQuestion.title}` : `${Math.floor(currentQuestion.number)}#問: ${currentQuestion.title}`)}</h2>
+            {/* 見出し: 模試(講師モード以外)は番号だけ。それ以外は「問番号の表示」設定に従う。
+                講師モードでも番号は隠さない（収録時に何問目か分かるようにするため） */}
+            <h2>
+              {isMogi && !state.instructorMode
+                ? formatQuestionNumber(currentQuestion.number)
+                : !state.showQuestionNumber
+                  ? currentQuestion.title
+                  : Number.isInteger(currentQuestion.number)
+                    ? `${currentQuestion.number}問: ${currentQuestion.title}`
+                    : `${Math.floor(currentQuestion.number)}#問: ${currentQuestion.title}`}
+            </h2>
             {!isMogi && currentQuestion.selfSolve === 1 ? (
               <p className="self-solve">自力で解こう</p>
             ) : null}
@@ -1731,14 +1787,14 @@ export default function App() {
               type="button"
               onClick={() => navigate(-1)}
               className="outline"
-              disabled={state.currentIndex <= 0}
+              disabled={findVisibleIndex(state.currentIndex - 1, -1) < 0}
             >
               前へ
             </button>
             <button
               type="button"
               onClick={() => navigate(1)}
-              disabled={state.currentIndex >= questions.length - 1}
+              disabled={findVisibleIndex(state.currentIndex + 1, 1) < 0}
             >
               次へ
             </button>
@@ -1904,17 +1960,43 @@ export default function App() {
                 );
               }
 
-              // サンプル順で出題中は、開いたときにサンプルタブを出す（今の出題順と一覧が一致するように）
-              const defaultTab = sampleOrder
-                ? "sample"
-                : categoryOf(questions[state.currentIndex]?.number ?? 0);
+              const defaultTab = categoryOf(questions[state.currentIndex]?.number ?? 0);
               const activeTab = listTab ?? defaultTab;
               const cat = CATEGORIES.find((c) => c.key === activeTab) ?? CATEGORIES[0];
+              // 公開のみ（旧「サンプル問題」タブ）。分野の実体ではなく年度順の並べ替えビューなので、
+              // タブではなく表示切替の側に置いている
+              const sampleCat = CATEGORIES.find((c) => c.key === "sample");
+              const leaveSampleView = (v: "field" | "week" | "all") => {
+                setListView(v);
+                if (sampleOrder) changeSampleOrder(null);
+              };
               // スケジュール別: 今やっている問題が属する週を既定で開く
               const curNum = questions[state.currentIndex]?.number ?? 0;
               const defaultWeek = (WEEKS.find((w) => curNum >= w.from && curNum <= w.to) ?? WEEKS[0]).week;
               const activeWeek = listWeek ?? defaultWeek;
               const wk = WEEKS.find((w) => w.week === activeWeek) ?? WEEKS[0];
+
+              // 模擬試験で使用中の問題を一覧から外す（「次へ」のスキップと同じ判定を使う）
+              const visible = (q: { mogiUsed?: number }) => !isHiddenQuestion(q);
+              const changeShowMogi = (v: boolean) => {
+                setShowMogiUsed(v);
+                lsSet(SHOW_MOGI_KEY, v ? "1" : "0");
+              };
+              const mogiToggle = (
+                <label className="mogi-toggle">
+                  <input
+                    type="checkbox"
+                    checked={showMogiUsed}
+                    onChange={(e) => changeShowMogi(e.target.checked)}
+                  />
+                  模擬試験で使用している問題も表示する
+                </label>
+              );
+              // トグルは「模試で使っている問題を含む最初のグループ」の上に1つだけ出す
+              const firstMogiNumber = Math.min(
+                ...questions.filter((q) => q.mogiUsed === 1).map((q) => q.number),
+                Number.POSITIVE_INFINITY
+              );
 
               const viewSwitch = (
                 <div className="list-view-switch" role="radiogroup" aria-label="表示切替">
@@ -1923,7 +2005,7 @@ export default function App() {
                       type="radio"
                       name="list-view"
                       checked={listView === "field"}
-                      onChange={() => setListView("field")}
+                      onChange={() => leaveSampleView("field")}
                     />{" "}
                     分野別
                   </label>
@@ -1932,22 +2014,147 @@ export default function App() {
                       type="radio"
                       name="list-view"
                       checked={listView === "week"}
-                      onChange={() => setListView("week")}
+                      onChange={() => leaveSampleView("week")}
                     />{" "}
-                    スケジュール別
+                    週別
                   </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="list-view"
+                      checked={listView === "all"}
+                      onChange={() => leaveSampleView("all")}
+                    />{" "}
+                    通し
+                  </label>
+                  {sampleCat && !isTrial && (
+                    <label>
+                      <input
+                        type="radio"
+                        name="list-view"
+                        checked={listView === "sample"}
+                        onChange={() => setListView("sample")}
+                      />{" "}
+                      公開のみ
+                    </label>
+                  )}
                 </div>
               );
+
+              // 公開のみ: 本試験の公開問題だけを年度順に並べ替えて見せる（実体は各分野タブ側）
+              if (listView === "sample" && sampleCat) {
+                const cat = sampleCat;
+                return (
+                  <>
+                    {header(viewSwitch)}
+                    <div className="question-list-scroll" role="region" aria-label="問題番号一覧">
+                    {cat.sampleGroups && !isTrial && (
+                      <div className="sample-order">
+                        <label className="sample-order-main">
+                          <input
+                            type="checkbox"
+                            checked={sampleOrder !== null}
+                            onChange={(e) => changeSampleOrder(e.target.checked ? "all" : null)}
+                          />
+                          この順番で出題する（サンプル問題{SAMPLE_ORDER_IDS.length}問だけを年度順に）
+                        </label>
+                        {sampleOrder !== null && (
+                          <div className="sample-order-years">
+                            <button
+                              type="button"
+                              className={`chip-btn ${sampleOrder === "all" ? "on" : ""}`}
+                              onClick={() => changeSampleOrder("all")}
+                            >
+                              全年度
+                            </button>
+                            {cat.sampleGroups.filter((g) => !g.noOrder).map((g) => (
+                              <button
+                                key={g.name}
+                                type="button"
+                                className={`chip-btn ${sampleOrder === g.name ? "on" : ""}`}
+                                onClick={() => changeSampleOrder(g.name)}
+                              >
+                                {g.name}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    <div className="qgroups">
+                    {cat.sampleGroups?.map((g, gi) => {
+                      // 年度でまとめ、年度内は本来の問番号順に並べる
+                      const all = questions
+                        .map((q, idx) => ({ q, idx, n: sampleNumberOf(q.title ?? "", g.prefix) }))
+                        .filter((x) => x.n !== null)
+                        .sort((a, b) => (a.n as number) - (b.n as number));
+                      const items = all.filter(({ q }) => visible(q));
+                      if (all.length === 0) return null;
+                      // 情報セキュリティマネジメント(SG)の先頭グループにだけトグルを出す
+                      const isFirstSg =
+                        g.prefix.startsWith("SG ") &&
+                        !(cat.sampleGroups ?? []).slice(0, gi).some((x) => x.prefix.startsWith("SG "));
+                      if (items.length === 0) {
+                        return <Fragment key={g.name}>{isFirstSg && mogiToggle}</Fragment>;
+                      }
+                      return (
+                        <Fragment key={g.name}>
+                        {isFirstSg && mogiToggle}
+                        <div className={`qgroup ${items.length <= 3 ? "qgroup--small" : ""}`}>
+                          <div className="qgroup-title">
+                            {g.name}
+                            <span className="qgroup-count">全{items.length}問</span>
+                          </div>
+                          <div className="grid grid--sample">
+                            {items.map(({ q, idx, n }) =>
+                              cell(
+                                q,
+                                idx,
+                                `問${n}(${Number.isInteger(q.number) ? q.number : `${Math.floor(q.number)}#`})`
+                              )
+                            )}
+                          </div>
+                        </div>
+                        </Fragment>
+                      );
+                    })}
+                    </div>
+                    </div>
+                  </>
+                );
+              }
+
+              // 通し番号: タブもグループ分けもなし。全問を番号順に並べるだけ
+              if (listView === "all") {
+                const allItems = questions
+                  .map((q, idx) => ({ q, idx }))
+                  .filter(({ q }) => visible(q))
+                  .sort((a, b) => a.q.number - b.q.number);
+                const allDone = allItems.filter(({ q }) => Boolean(studied[q.id])).length;
+                return (
+                  <>
+                    {header(viewSwitch)}
+                    <div className="question-list-scroll" role="region" aria-label="問題番号一覧">
+                      <div className="week-head">
+                        <div className="week-done">
+                          {allDone}/{allItems.length} 完了
+                        </div>
+                      </div>
+                      <div className="grid">{allItems.map(({ q, idx }) => cell(q, idx))}</div>
+                    </div>
+                  </>
+                );
+              }
 
               if (listView === "week") {
                 const inWeek = questions
                   .map((q, idx) => ({ q, idx }))
-                  .filter(({ q }) => q.number >= wk.from && q.number <= wk.to);
+                  .filter(({ q }) => visible(q) && q.number >= wk.from && q.number <= wk.to);
                 const doneCount = inWeek.filter(({ q }) => Boolean(studied[q.id])).length;
                 const weekTabs = (
                   <div className="tabs tabs--fields" role="tablist" aria-label="週タブ">
                       {WEEKS.map((w) => {
-                        const items = questions.filter((q) => q.number >= w.from && q.number <= w.to);
+                        const items = questions.filter((q) => visible(q) && q.number >= w.from && q.number <= w.to);
                         const done = items.filter((q) => Boolean(studied[q.id])).length;
                         return (
                           <button
@@ -1994,6 +2201,7 @@ export default function App() {
                               .map((q, idx) => ({ q, idx }))
                               .filter(
                                 ({ q }) =>
+                                  visible(q) &&
                                   q.number >= g.from &&
                                   q.number <= g.to &&
                                   q.number >= wk.from &&
@@ -2020,7 +2228,7 @@ export default function App() {
 
               const fieldTabs = (
                 <div className="tabs tabs--fields" role="tablist" aria-label="分野タブ">
-                    {CATEGORIES.map((c) => (
+                    {CATEGORIES.filter((c) => c.key !== "sample").map((c) => (
                       <button
                         key={c.key}
                         type="button"
@@ -2029,8 +2237,8 @@ export default function App() {
                         className={`tab ${c.key === activeTab ? "active" : ""}`}
                         onClick={() => {
                           setListTab(c.key);
-                          // サンプル順で出題中に他の分野へ移ったら、出題順は通常に戻す
-                          if (c.key !== "sample" && sampleOrder) changeSampleOrder(null);
+                          // 公開順で出題中に分野へ移ったら、出題順は通常に戻す
+                          if (sampleOrder) changeSampleOrder(null);
                         }}
                       >
                         {c.label}
@@ -2043,77 +2251,28 @@ export default function App() {
                   {header(viewSwitch)}
                   {fieldTabs}
                   <div className="question-list-scroll" role="region" aria-label="問題番号一覧">
-                    {cat.sampleGroups && !isTrial && (
-                      <div className="sample-order">
-                        <label className="sample-order-main">
-                          <input
-                            type="checkbox"
-                            checked={sampleOrder !== null}
-                            onChange={(e) => changeSampleOrder(e.target.checked ? "all" : null)}
-                          />
-                          この順番で出題する（サンプル問題{SAMPLE_ORDER_IDS.length}問だけを年度順に）
-                        </label>
-                        {sampleOrder !== null && (
-                          <div className="sample-order-years">
-                            <button
-                              type="button"
-                              className={`chip-btn ${sampleOrder === "all" ? "on" : ""}`}
-                              onClick={() => changeSampleOrder("all")}
-                            >
-                              全年度
-                            </button>
-                            {cat.sampleGroups.map((g) => (
-                              <button
-                                key={g.name}
-                                type="button"
-                                className={`chip-btn ${sampleOrder === g.name ? "on" : ""}`}
-                                onClick={() => changeSampleOrder(g.name)}
-                              >
-                                {g.name}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    )}
                     <div className="qgroups">
-                    {cat.sampleGroups?.map((g) => {
-                      // 年度でまとめ、年度内は本来の問番号順に並べる
-                      const items = questions
-                        .map((q, idx) => ({ q, idx, n: sampleNumberOf(q.title ?? "", g.prefix) }))
-                        .filter((x) => x.n !== null)
-                        .sort((a, b) => (a.n as number) - (b.n as number));
-                      if (items.length === 0) return null;
-                      return (
-                        <div className={`qgroup ${items.length <= 3 ? "qgroup--small" : ""}`} key={g.name}>
-                          <div className="qgroup-title">
-                            {g.name}
-                            <span className="qgroup-count">全{items.length}問</span>
-                          </div>
-                          <div className="grid grid--sample">
-                            {items.map(({ q, idx, n }) =>
-                              cell(
-                                q,
-                                idx,
-                                `問${n}(${Number.isInteger(q.number) ? q.number : `${Math.floor(q.number)}#`})`
-                              )
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
                     {cat.groups.map((g) => {
-                      const items = questions
+                      const inGroup = questions
                         .map((q, idx) => ({ q, idx }))
                         .filter(({ q }) => q.number >= g.from && q.number <= g.to);
-                      if (items.length === 0) return null;
+                      const items = inGroup.filter(({ q }) => visible(q));
+                      if (inGroup.length === 0) return null;
+                      // 模試で使っている問題を含む最初のグループ = ここにトグルを置く
+                      const isFirstMogiGroup =
+                        firstMogiNumber >= g.from && firstMogiNumber <= g.to;
                       return (
                         <Fragment key={g.name}>
-                          {g.desc && <p className="qgroup-desc">{g.desc}</p>}
-                          <div className={`qgroup ${items.length <= 3 ? "qgroup--small" : ""}`}>
-                            <div className="qgroup-title">{g.name}</div>
-                            <div className="grid">{items.map(({ q, idx }) => cell(q, idx))}</div>
-                          </div>
+                          {isFirstMogiGroup && mogiToggle}
+                          {items.length > 0 && (
+                            <>
+                              {g.desc && <p className="qgroup-desc">{g.desc}</p>}
+                              <div className={`qgroup ${items.length <= 3 ? "qgroup--small" : ""}`}>
+                                <div className="qgroup-title">{g.name}</div>
+                                <div className="grid">{items.map(({ q, idx }) => cell(q, idx))}</div>
+                              </div>
+                            </>
+                          )}
                         </Fragment>
                       );
                     })}

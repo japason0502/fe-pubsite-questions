@@ -270,13 +270,15 @@ button.small {
 
 .choice-table {
   border-collapse: collapse;
-  font-size: 0.95rem;
+  /* rem だと親（問題ペイン）のズームが効かないので em にする */
+  font-size: 0.95em;
 }
 
 .choice-table th,
 .choice-table td {
   border: 1px solid var(--border, #ccc);
-  padding: 6px 10px;
+  /* 文字と一緒に余白も広がるよう em で持つ（6px/10px 相当） */
+  padding: 0.375em 0.625em;
   text-align: center;
 }
 
@@ -1553,3 +1555,16 @@ button:disabled {
   font-size: 0.9rem;
   line-height: 1.75;
 }
+
+/* 模擬試験で使用中の問題を隠すトグル（追加演習グループ / 公開のみビューのSGの上に出る） */
+.mogi-toggle {
+  flex: 1 1 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 2px 0 8px;
+  font-size: 0.82em;
+  color: #374151;
+  cursor: pointer;
+}
+.mogi-toggle input { margin: 0; }
