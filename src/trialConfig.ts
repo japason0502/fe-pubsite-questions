@@ -31,10 +31,27 @@ export const LP_URL = "https://example.com/fe-kamokub/";
 
 /**
  * ルート（既存URL）に移行のお知らせを出すか。
- * false なら新URLの埋め込みごと無くなる（JSに1個目のパスも入らない）。
- * 手順: false で push → 各URLの動作確認 → true にして push
+ * false の間は誰にも出ないが、**?notice=preview を付けて開くと自分だけ見られる**。
+ * 手順: false のまま push → 本番URLに ?notice=preview を付けて見え方を確認 → true にして push
  */
 export const ANNOUNCE_ENABLED = false;
 /** ルートに出す移行のお知らせの文面に使う日付 */
 export const ANNOUNCE_SWITCH_DATE = "9月末";
 export const ANNOUNCE_VALID_UNTIL = "2026/12/31";
+/** URL変更のお知らせを出した日（お知らせ一覧に表示する） */
+export const ANNOUNCE_POSTED_DATE = "2026/9/8";
+
+/**
+ * お知らせ一覧に出す一般のお知らせ。**新しいものを配列の先頭に足す**。
+ * body は改行がそのまま画面の改行になる。
+ * URL変更のお知らせはここには書かない（ANNOUNCE_ENABLED が true の間、自動で一覧の先頭に入る）。
+ */
+export const NOTICES: { id: string; date: string; title: string; body: string }[] = [
+  // 例:
+  // {
+  //   id: "2026-10-01-mogi3",
+  //   date: "2026/10/1",
+  //   title: "模擬試験3回目を追加しました",
+  //   body: "モード選択の「模擬試験」から受験できます｡\n所要100分です｡",
+  // },
+];

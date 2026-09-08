@@ -1375,19 +1375,87 @@ button:disabled {
   margin-top: 0;
 }
 
-/* URL変更のお知らせ（ルートのみ） */
-.overlay-content.announce .announce-url a {
+/* URL変更のお知らせ（自動ポップアップ／お知らせ一覧の両方で使う） */
+.announce-url a {
   font-weight: 700;
   word-break: break-all;
   font-size: 1.05em;
 }
-.overlay-content.announce .announce-note {
+.announce-note {
   font-size: 0.85em;
   color: #555;
 }
-.overlay-content.announce .announce-warn {
+.announce-warn {
   font-size: 0.85em;
   color: #b00020;
+}
+
+/* モード選択のお知らせベル（右上） */
+.notice-bell {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 8px;
+  font-size: 0.95rem;
+  line-height: 1;
+}
+.notice-bell-count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  background: #d93025;
+  border-radius: 999px;
+  min-width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+.notice-preview-badge {
+  display: inline-block;
+  margin: 0 0 0.8em;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #92400e;
+  background: #fef3c7;
+  border-radius: 4px;
+}
+
+/* お知らせ一覧 */
+.notice-modal {
+  max-width: 34em;
+  text-align: left;
+}
+.notice-list {
+  max-height: 60vh;
+  overflow-y: auto;
+  text-align: left;
+}
+.notice-item + .notice-item {
+  border-top: 1px solid #e2e8f0;
+  margin-top: 1.2em;
+  padding-top: 1.2em;
+}
+.notice-date {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+.notice-title {
+  margin: 0.2em 0 0.6em;
+  font-size: 1.05rem;
+}
+.notice-body {
+  line-height: 1.7;
+}
+.notice-body p {
+  margin: 0 0 0.6em;
 }
 
 .random-note {

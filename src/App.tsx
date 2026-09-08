@@ -13,7 +13,7 @@ import { PseudoCodeReference } from "./PseudoCodeReference";
 import { ExamDayNotes } from "./ExamDayNotes";
 import { buildExamReport, ExamReport } from "./examReport";
 import { CATEGORIES, categoryOf, sampleNumberOf, buildSampleOrder, isSampleQuestion, SAMPLE_BADGE, WEEKS } from "./questionGroups";
-import { TRIAL_MAX_NUMBER, TRIAL_PATHS, ROOT_IS_TRIAL, LP_URL, ANNOUNCE_SWITCH_DATE, ANNOUNCE_VALID_UNTIL } from "./trialConfig";
+import { TRIAL_MAX_NUMBER, TRIAL_PATHS, ROOT_IS_TRIAL, LP_URL, ANNOUNCE_SWITCH_DATE, ANNOUNCE_VALID_UNTIL, ANNOUNCE_POSTED_DATE, ANNOUNCE_ENABLED, NOTICES } from "./trialConfig";
 
 const STORAGE_KEY = "exam-state";
 const MOGI_STORAGE_KEY = "exam-state-mogi"; // 模擬試験は保存キーを分けて通常演習の状態を汚さない
@@ -163,6 +163,61 @@ const ANNOUNCE_URL: string = (() => {
   if (!p) return "";
   return `${window.location.origin}/${p}/`;
 })();
+
+/**
+ * ?notice=preview: 公開前に、本番URLでお知らせの見え方を確認するための強制表示。
+ * ANNOUNCE_ENABLED が false でも、このパラメータを付けた人にだけお知らせが出る。
+ */
+const NOTICE_PREVIEW: boolean = (() => {
+  try {
+    return new URLSearchParams(window.location.search).get("notice") === "preview";
+  } catch {
+    return false;
+  }
+})();
+/** URL変更のお知らせを表示してよいか */
+const ANNOUNCE_VISIBLE = !!ANNOUNCE_URL && (ANNOUNCE_ENABLED || NOTICE_PREVIEW);
+
+/** URL変更のお知らせの本文。自動ポップアップとお知らせ一覧の両方で使い回す */
+const urlNoticeBody = (
+  <>
+    <p>
+      こちらのURLは､{ANNOUNCE_SWITCH_DATE}から体験版用に変更されます｡
+      <br />
+      引き続きご利用される場合は､ブックマークの登録し直しをお願いします｡
+    </p>
+    <p className="announce-url">
+      新URL:
+      <br />
+      <a href={ANNOUNCE_URL}>{ANNOUNCE_URL}</a>
+      <br />
+      <span className="announce-note">（{ANNOUNCE_VALID_UNTIL}まで利用可能）</span>
+    </p>
+    <p className="announce-warn">
+      ※{ANNOUNCE_SWITCH_DATE}からフルverの無料配布を辞め､有料販売に切り替えます｡
+      {ANNOUNCE_SWITCH_DATE}を過ぎてからフルverのURLをお問い合わせいただいても､対応できません｡
+    </p>
+  </>
+);
+
+/**
+ * お知らせ一覧（新しいものが上）。
+ * URL変更のお知らせは ANNOUNCE_URL があるときだけ先頭に入る（10/1以降は自動で消える）。
+ * それ以外は src/trialConfig.ts の NOTICES に足す。
+ */
+const NOTICE_LIST: { id: string; date: string; title: string; body: ReactNode }[] = [
+  // ブックマークの取り直しが要るのはルート（既存URL）を開いている人だけ。
+  // 移行先や体験版のパスで開いている人には出さない
+  ...(ANNOUNCE_VISIBLE && normalizePath() === "/"
+    ? [{ id: "url-change", date: ANNOUNCE_POSTED_DATE, title: "URL変更のお知らせ", body: urlNoticeBody }]
+    : []),
+  ...NOTICES.map((n) => ({
+    id: n.id,
+    date: n.date,
+    title: n.title,
+    body: <p style={{ whiteSpace: "pre-line" }}>{n.body}</p>,
+  })),
+];
 
 /**
  * 問題演習の進捗を送る（「解説へ」を開いたとき）。
@@ -499,8 +554,10 @@ export default function App() {
   const [trialLock, setTrialLock] = useState<null | "locked" | "next">(null);
   // ルート（既存URL）を開くたびに出す移行のお知らせ。埋込と記事からの1問リンク（?q=）は除外
   const [announceOpen, setAnnounceOpen] = useState<boolean>(
-    () => !!ANNOUNCE_URL && !isTrial && normalizePath() === "/" && !embed && !qParam
+    () => ANNOUNCE_VISIBLE && !isTrial && normalizePath() === "/" && !embed && !qParam
   );
+  /** お知らせ一覧（モード選択のベルアイコンから開く） */
+  const [showNotices, setShowNotices] = useState(false);
 
   const allQuestions = useMemo<Question[]>(() => {
     if (mogiSet === "1") return mogiQuestionsData as Question[];
@@ -1414,6 +1471,16 @@ export default function App() {
       {!state.mode && (
         <div className="overlay">
           <div className="overlay-content overlay-content--mode-select">
+            {NOTICE_LIST.length > 0 && (
+              <button
+                className="outline notice-bell"
+                onClick={() => setShowNotices(true)}
+                aria-label="お知らせ"
+                title="お知らせ"
+              >
+                🔔<span className="notice-bell-count">{NOTICE_LIST.length}</span>
+              </button>
+            )}
             <h3>{isMogi ? "模擬試験" : "モード選択"}</h3>
             <p>{isMogi ? "本番形式の模擬試験です。" : "開始するモードとオプションを選んでください。"}</p>
             <ModePicker isMogi={isMogi} isTrial={isTrial} onStart={startMode} onTrialLock={() => setTrialLock("locked")} />
@@ -2643,26 +2710,35 @@ export default function App() {
         <div className="overlay">
           <div className="overlay-content trial-lock announce">
             <h3>URL変更のお知らせ</h3>
-            <p>
-              こちらのURLは､{ANNOUNCE_SWITCH_DATE}から体験版用に変更されます｡
-              <br />
-              引き続きご利用される場合は､ブックマークの登録し直しをお願いします｡
-            </p>
-            <p className="announce-url">
-              新URL:
-              <br />
-              <a href={ANNOUNCE_URL}>{ANNOUNCE_URL}</a>
-              <br />
-              <span className="announce-note">（{ANNOUNCE_VALID_UNTIL}まで利用可能）</span>
-            </p>
-            <p className="announce-warn">
-              ※{ANNOUNCE_SWITCH_DATE}からフルverの無料配布を辞め､有料販売に切り替えます｡
-              {ANNOUNCE_SWITCH_DATE}を過ぎてからフルverのURLをお問い合わせいただいても､対応できません｡
-            </p>
+            {!ANNOUNCE_ENABLED && <p className="notice-preview-badge">プレビュー表示（まだ公開されていません）</p>}
+            {urlNoticeBody}
             <div className="mode-buttons" style={{ marginTop: "1em" }}>
               <button className="outline" onClick={() => setAnnounceOpen(false)}>
                 閉じて続ける
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* お知らせ一覧。モード選択のベルアイコンから開く */}
+      {showNotices && (
+        <div className="overlay">
+          <div className="overlay-content notice-modal">
+            <div className="overlay-header">
+              <h3>お知らせ</h3>
+              <button className="outline" onClick={() => setShowNotices(false)}>
+                閉じる
+              </button>
+            </div>
+            <div className="notice-list">
+              {NOTICE_LIST.map((n) => (
+                <article key={n.id} className="notice-item">
+                  <p className="notice-date">{n.date}</p>
+                  <h4 className="notice-title">{n.title}</h4>
+                  <div className="notice-body">{n.body}</div>
+                </article>
+              ))}
             </div>
           </div>
         </div>
