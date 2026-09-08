@@ -13,6 +13,7 @@ import { PseudoCodeReference } from "./PseudoCodeReference";
 import { ExamDayNotes } from "./ExamDayNotes";
 import { buildExamReport, ExamReport } from "./examReport";
 import { CATEGORIES, categoryOf, sampleNumberOf, buildSampleOrder, isSampleQuestion, SAMPLE_BADGE, WEEKS } from "./questionGroups";
+import { TRIAL_MAX_NUMBER, TRIAL_PATHS, ROOT_IS_TRIAL, LP_URL, ANNOUNCE_SWITCH_DATE, ANNOUNCE_VALID_UNTIL } from "./trialConfig";
 
 const STORAGE_KEY = "exam-state";
 const MOGI_STORAGE_KEY = "exam-state-mogi"; // 模擬試験は保存キーを分けて通常演習の状態を汚さない
@@ -104,6 +105,7 @@ function isTestRun(): boolean {
 /** 送りっぱなし。Worker 側で CORS を許可しているので通常のJSONでよい */
 function postStats(payload: Record<string, unknown>) {
   if (!STATS_ENDPOINT) return;
+  if (IS_TRIAL) return; // 体験版は集計に混ぜない
   try {
     void fetch(STATS_ENDPOINT, {
       method: "POST",
@@ -132,12 +134,35 @@ const SAMPLE_ORDER_BY_YEAR: Record<string, string[]> = SAMPLE_ORDER.reduce((acc,
 /** サンプル順で出題するかの保存キー（並びは固定なので真偽値だけ持てばよい） */
 const SAMPLE_ORDER_KEY = "sample-order";
 
+/** 体験版の設定は src/trialConfig.ts にまとめてある（vite.config.ts からも読むため） */
+function normalizePath(): string {
+  const raw = window.location.pathname;
+  return raw.endsWith("/") ? raw : raw + "/";
+}
 /**
- * お試し版（?sp=1）で出題する上限の問番号。
- * お試しの範囲を決めるのはここ1箇所だけ。将来サンプルを別ビルドに切り出すとき
- * （scripts/make-sample.mjs 等）も、この定数をそのまま読めるようにしてある。
+ * 体験版かどうかをパスで判定する。
+ * - TRIAL_PATHS のどれかで始まる → 体験版
+ * - ルート("/") → ROOT_IS_TRIAL に従う
+ * - それ以外（フル版の秘密パス。pages.yml が dist/index.html をコピーして作る）→ フル版
+ * 秘密パスの値は JS に埋め込まない（埋め込むと体験版のJSから読めてしまう）。
  */
-export const TRIAL_MAX_NUMBER = 23;
+function detectTrial(): boolean {
+  const path = normalizePath();
+  if (TRIAL_PATHS.some((t) => path.startsWith(t))) return true;
+  if (path === "/") return ROOT_IS_TRIAL;
+  return false;
+}
+const IS_TRIAL = detectTrial();
+/**
+ * ルート（既存URL）に出す「新URLへ移ってね」のお知らせ先。
+ * vite.config.ts が FULL_PATHS の1個目から組み立てて注入する（ROOT_IS_TRIAL=true なら空）。
+ * 空ならお知らせは出さない。
+ */
+const ANNOUNCE_URL: string = (() => {
+  const p = String(import.meta.env.VITE_ANNOUNCE_PATH ?? "").replace(/^\/+|\/+$/g, "");
+  if (!p) return "";
+  return `${window.location.origin}/${p}/`;
+})();
 
 /**
  * 問題演習の進捗を送る（「解説へ」を開いたとき）。
@@ -145,6 +170,7 @@ export const TRIAL_MAX_NUMBER = 23;
  */
 function postLessonOpen(payload: Record<string, unknown>) {
   if (!STATS_ENDPOINT) return;
+  if (IS_TRIAL) return; // 体験版は集計に混ぜない
   try {
     void fetch(STATS_ENDPOINT + "/lesson", {
       method: "POST",
@@ -464,9 +490,17 @@ export default function App() {
   // ?lock=1: 埋め込み用ロック。指定した模試から他モードへ移動できない
   // （ガイダンスの「モード選択に戻る」を非表示にする。採点・復習モード等はそのまま使える）
   const lock = urlParams.get("lock") === "1";
-  // ?sp=1: お試し版。出題を TRIAL_MAX_NUMBER までに絞り、模試・ランダム出題・サンプル順出題を隠す。
-  // 保存キーは本番と共有する（お試しで解いた進捗を、有料版へそのまま引き継げるようにするため）。
-  const isTrial = urlParams.get("sp") === "1" && !isMogi;
+  // 体験版（パスで判定。詳細は detectTrial）。メニューは全問見せて、上限より先の問題と模試をロックする。
+  // 保存キーは本番と共有する（体験版で解いた進捗を、有料版へそのまま引き継げるようにするため）。
+  const isTrial = IS_TRIAL;
+  /** 体験版でロックされる問題か。判定はここ1箇所だけ（上限は TRIAL_MAX_NUMBER） */
+  const isLocked = (q?: { number: number } | null) => isTrial && !!q && q.number > TRIAL_MAX_NUMBER;
+  /** 体験版のロック案内。"locked"=対象外の問題/模試を開いた, "next"=上限の問題で「次へ」 */
+  const [trialLock, setTrialLock] = useState<null | "locked" | "next">(null);
+  // ルート（既存URL）を開くたびに出す移行のお知らせ。埋込と記事からの1問リンク（?q=）は除外
+  const [announceOpen, setAnnounceOpen] = useState<boolean>(
+    () => !!ANNOUNCE_URL && !isTrial && normalizePath() === "/" && !embed && !qParam
+  );
 
   const allQuestions = useMemo<Question[]>(() => {
     if (mogiSet === "1") return mogiQuestionsData as Question[];
@@ -482,10 +516,9 @@ export default function App() {
         return { ...q, number: i + 1 };
       });
     }
-    const all = questionsData as Question[];
-    // お試し版は先頭〜TRIAL_MAX_NUMBER のみ（枝番 4.1 / 16.1 も範囲内なら含む）
-    return isTrial ? all.filter((q) => q.number <= TRIAL_MAX_NUMBER) : all;
-  }, [mogiSet, isTrial]);
+    // 体験版でも絞らない（メニューは全問見せる。上限より先は isLocked で止める）
+    return questionsData as Question[];
+  }, [mogiSet]);
   const storageKey =
     mogiSet === "r4" ? MOGI_R4_STORAGE_KEY : mogiSet === "2" ? MOGI2_STORAGE_KEY : isMogi ? MOGI_STORAGE_KEY : STORAGE_KEY;
   const examDefaultTime = isMogi ? MOGI_TIME : DEFAULT_TIME;
@@ -501,7 +534,7 @@ export default function App() {
   // 模擬試験ページではタブタイトルを変える
   useEffect(() => {
     if (isMogi) document.title = "科目B 模擬試験";
-    else if (isTrial) document.title = "科目B 演習サイト（お試し版）";
+    else if (isTrial) document.title = "科目B 演習サイト（体験版）";
   }, [isMogi, isTrial]);
 
   const [questionOverrides, setQuestionOverrides] = useState<Record<string, Partial<Question>>>({});
@@ -531,13 +564,15 @@ export default function App() {
     // 前回のランダム出題が残っていると deepLinkIndex が範囲外になるので解除する
     if (embed || qParam) next.randomIds = null;
     if (deepLinkIndex >= 0) next.currentIndex = deepLinkIndex;
-    // お試し版は本番と localStorage を共有しているため、
-    // 本番の続き（範囲外の問番号）やランダム出題の並びを持ち込まないようにする
-    if (isTrial) {
+    // 体験版は本番と localStorage を共有しているため、
+    // 本番の続き（ロックされた問番号）やランダム出題の並びを持ち込まないようにする
+    if (isTrial && !isMogi) {
       next.randomIds = null;
-      const lastIndex = allQuestions.length - 1;
-      if (next.currentIndex > lastIndex) next.currentIndex = lastIndex;
       if (next.currentIndex < 0) next.currentIndex = 0;
+      if (isLocked(allQuestions[next.currentIndex])) {
+        // 解ける範囲の最後の問題に戻す
+        next.currentIndex = allQuestions.reduce((acc, q, i) => (isLocked(q) ? acc : i), 0);
+      }
     }
     return next;
   });
@@ -845,6 +880,15 @@ export default function App() {
   };
 
   const navigate = (offset: number) => {
+    // 体験版: 移動先がロックなら移動せず案内を出す（「次へ」は有料版の案内、それ以外は対象外の案内）
+    {
+      const step = offset >= 0 ? 1 : -1;
+      const target = findVisibleIndex(state.currentIndex + offset, step);
+      if (target >= 0 && isLocked(questions[target])) {
+        setTrialLock(step > 0 ? "next" : "locked");
+        return;
+      }
+    }
     setState((prev) => {
       const step = offset >= 0 ? 1 : -1;
       const nextIndex = findVisibleIndex(prev.currentIndex + offset, step);
@@ -865,6 +909,11 @@ export default function App() {
   };
 
   const jumpTo = (index: number) => {
+    // 体験版: ロックされた問題は開かず案内を出す（一覧は開いたままにする）
+    if (isLocked(questions[index])) {
+      setTrialLock("locked");
+      return;
+    }
     setState((prev) => {
       const nextQuestionId = questions[index]?.id;
       const updated = { ...prev, currentIndex: index, perQuestionTimerPaused: false };
@@ -1367,7 +1416,7 @@ export default function App() {
           <div className="overlay-content overlay-content--mode-select">
             <h3>{isMogi ? "模擬試験" : "モード選択"}</h3>
             <p>{isMogi ? "本番形式の模擬試験です。" : "開始するモードとオプションを選んでください。"}</p>
-            <ModePicker isMogi={isMogi} isTrial={isTrial} onStart={startMode} />
+            <ModePicker isMogi={isMogi} isTrial={isTrial} onStart={startMode} onTrialLock={() => setTrialLock("locked")} />
             <a href="https://docs.google.com/document/d/1ZeSTp8iQiQnJuN79rt70V2k_TZDqRG-LwSipn162PPo/edit?usp=sharing" target="_blank" className="usage-link">サイトの使い方はこちら</a>
           </div>
         </div>
@@ -1802,30 +1851,6 @@ export default function App() {
         </div>
       </footer>
 
-      {isTrial && state.currentIndex >= questions.length - 1 && (
-        <div
-          className="trial-cta"
-          style={{
-            margin: "1em auto",
-            maxWidth: "42em",
-            padding: "1em 1.25em",
-            border: "2px solid #f0a500",
-            borderRadius: "8px",
-            background: "rgba(240,165,0,0.08)",
-            textAlign: "left",
-            lineHeight: 1.7
-          }}
-        >
-          <p style={{ margin: "0 0 0.5em", fontWeight: 700 }}>
-            お試し版はここまでです（全{questions.length}問）
-          </p>
-          <p style={{ margin: 0 }}>
-            この先の条件分岐･関数･探索･整列から情報セキュリティまで､
-            全問の演習と模擬試験2回は有料版でご利用いただけます｡
-          </p>
-        </div>
-      )}
-
       {showSettings && (
         <div className="overlay">
           <div className="overlay-content">
@@ -1916,7 +1941,7 @@ export default function App() {
           <div className="overlay-content overlay-content--question-list">
             {(() => {
               // 分野タブ表示は問題演習モードのみ。模試/R4/埋込/ランダム出題は従来どおりのフラット表示
-              const grouped = !isMogi && !embed && !isTrial && !state.randomIds;
+              const grouped = !isMogi && !embed && !state.randomIds;
               // 見出しとタブは同じ行に置く（縦を1行ぶん節約する）
               const header = (tabs?: ReactNode) => (
                 <div className="overlay-header overlay-header--list">
@@ -2559,6 +2584,89 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* 体験版: ロック案内（①対象外の問題/模試を開いた ②上限の問題で「次へ」）。
+          他のオーバーレイより後ろに置いて、常に最前面に出す */}
+      {trialLock && (
+        <div className="overlay">
+          <div className="overlay-content trial-lock">
+            {trialLock === "next" ? (
+              <>
+                <h3>体験版はここまでです</h3>
+                <p>
+                  問{TRIAL_MAX_NUMBER}までお疲れさまでした｡
+                  この先の問題から情報セキュリティまで､全問の演習と模擬試験は有料版でご利用いただけます｡
+                </p>
+              </>
+            ) : (
+              <>
+                <h3>体験版の対象外です</h3>
+                <p>
+                  体験版で解けるのは問{TRIAL_MAX_NUMBER}までです｡
+                  全問の演習と模擬試験は有料版でご利用いただけます｡
+                </p>
+              </>
+            )}
+            <div className="mode-buttons" style={{ marginTop: "1em" }}>
+              <button onClick={() => window.open(LP_URL, "_blank", "noopener")}>
+                有料版の案内を見る
+              </button>
+              <button className="outline" onClick={() => setTrialLock(null)}>
+                閉じる
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 体験版で模試URL（?mock=）を直接開いたとき。閉じられない（問題演習へ戻すだけ） */}
+      {isTrial && isMogi && (
+        <div className="overlay overlay--mask">
+          <div className="overlay-content trial-lock">
+            <h3>模擬試験は体験版の対象外です</h3>
+            <p>模擬試験は有料版でご利用いただけます｡</p>
+            <div className="mode-buttons" style={{ marginTop: "1em" }}>
+              <button onClick={() => window.open(LP_URL, "_blank", "noopener")}>
+                有料版の案内を見る
+              </button>
+              <button className="outline" onClick={() => { window.location.href = window.location.pathname; }}>
+                問題演習に戻る
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 既存URL（ルート）に出す移行のお知らせ。開くたびに出す。URLはタップで同じタブに遷移
+          （localStorage はオリジン単位なので、新URLでも進捗はそのまま続きから） */}
+      {announceOpen && (
+        <div className="overlay">
+          <div className="overlay-content trial-lock announce">
+            <h3>URL変更のお知らせ</h3>
+            <p>
+              こちらのURLは､{ANNOUNCE_SWITCH_DATE}から体験版用に変更されます｡
+              <br />
+              引き続きご利用される場合は､ブックマークの登録し直しをお願いします｡
+            </p>
+            <p className="announce-url">
+              新URL:
+              <br />
+              <a href={ANNOUNCE_URL}>{ANNOUNCE_URL}</a>
+              <br />
+              <span className="announce-note">（{ANNOUNCE_VALID_UNTIL}まで利用可能）</span>
+            </p>
+            <p className="announce-warn">
+              ※{ANNOUNCE_SWITCH_DATE}からフルverの無料配布を辞め､有料販売に切り替えます｡
+              {ANNOUNCE_SWITCH_DATE}を過ぎてからフルverのURLをお問い合わせいただいても､対応できません｡
+            </p>
+            <div className="mode-buttons" style={{ marginTop: "1em" }}>
+              <button className="outline" onClick={() => setAnnounceOpen(false)}>
+                閉じて続ける
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -2566,15 +2674,17 @@ export default function App() {
 type ModePickerProps = {
   /** 模擬試験ページ（?mock=1）かどうか */
   isMogi?: boolean;
-  /** お試し版（?sp=1）かどうか。模擬試験メニューとランダム出題を隠す */
+  /** 体験版かどうか。模擬試験ボタンはロック案内を出し、ランダム出題はグレーアウトする */
   isTrial?: boolean;
   onStart: (options: StartOptions) => void;
+  /** 体験版でロックされた機能（模試）を押したときの案内 */
+  onTrialLock?: () => void;
 };
 
 // 16問＝本番20問から情報セキュリティ4問を引いたアルゴリズム部分と同数（16×5分＝80分）
 const RANDOM_COUNTS = [5, 10, 16];
 
-function ModePicker({ isMogi = false, isTrial = false, onStart }: ModePickerProps) {
+function ModePicker({ isMogi = false, isTrial = false, onStart, onTrialLock }: ModePickerProps) {
   const [mode, setMode] = useState<"practice" | "exam">(isMogi ? "exam" : "practice");
   const [perQuestionGrading, setPerQuestionGrading] = useState(!isMogi);
   const [perQuestionTimer, setPerQuestionTimer] = useState(!isMogi);
@@ -2621,14 +2731,20 @@ function ModePicker({ isMogi = false, isTrial = false, onStart }: ModePickerProp
         >
           問題演習
         </button>
-        {!isTrial && (
-          <button
-            className={isMogi || showMogiMenu ? "" : "outline"}
-            onClick={() => (isMogi ? undefined : setShowMogiMenu((v) => !v))}
-          >
-            模擬試験
-          </button>
-        )}
+        <button
+          className={isMogi || showMogiMenu ? "" : "outline"}
+          onClick={() => {
+            if (isMogi) return;
+            // 体験版は模試メニューを開かず案内を出す（ボタン自体は本番と同じに見せる）
+            if (isTrial) {
+              onTrialLock?.();
+              return;
+            }
+            setShowMogiMenu((v) => !v);
+          }}
+        >
+          模擬試験
+        </button>
       </div>
       {(isMogi || showMogiMenu) && <MogiCautions />}
       {!isMogi && showMogiMenu && (
@@ -2702,15 +2818,17 @@ function ModePicker({ isMogi = false, isTrial = false, onStart }: ModePickerProp
         </div>
       )}
       {/* ランダム出題は他のオプションと毛色が違う（母集団を選ぶ機能）ので、枠で分けて開始ボタンの直前に置く */}
-      {!isMogi && !showMogiMenu && !isTrial && (
-        <div className={`random-box ${randomOn ? "on" : ""}`}>
+      {!isMogi && !showMogiMenu && (
+        <div className={`random-box ${randomOn ? "on" : ""} ${isTrial ? "is-disabled" : ""}`}>
           <label className="random-box-main">
             <input
               type="checkbox"
               checked={randomOn}
+              disabled={isTrial}
               onChange={(e) => setRandomOn(e.target.checked)}
             />{" "}
             ランダムに出題
+            {isTrial && <span className="random-note" style={{ marginLeft: "0.5em" }}>（有料版のみ）</span>}
           </label>
           {randomOn && (
             <div className="random-box-body">

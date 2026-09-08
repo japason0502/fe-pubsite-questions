@@ -1357,6 +1357,39 @@ button:disabled {
   cursor: not-allowed;
 }
 
+/* 体験版: ランダム出題はグレーアウト（枠ごと薄くし、押せないことを示す） */
+.random-box.is-disabled {
+  opacity: 0.5;
+}
+.random-box.is-disabled .random-box-main {
+  cursor: not-allowed;
+}
+
+/* 体験版のロック案内ポップアップ */
+.overlay-content.trial-lock {
+  max-width: 28em;
+  text-align: left;
+  line-height: 1.7;
+}
+.overlay-content.trial-lock h3 {
+  margin-top: 0;
+}
+
+/* URL変更のお知らせ（ルートのみ） */
+.overlay-content.announce .announce-url a {
+  font-weight: 700;
+  word-break: break-all;
+  font-size: 1.05em;
+}
+.overlay-content.announce .announce-note {
+  font-size: 0.85em;
+  color: #555;
+}
+.overlay-content.announce .announce-warn {
+  font-size: 0.85em;
+  color: #b00020;
+}
+
 .random-note {
   margin: 2px 0 0;
   font-size: 0.8rem;

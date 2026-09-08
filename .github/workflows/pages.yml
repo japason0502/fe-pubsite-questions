@@ -26,7 +26,24 @@ jobs:
           cache: "npm"
 
       - run: npm ci
+      # FULL_PATHS はビルドにも渡す（vite.config.ts が1個目だけをお知らせ用に埋め込む）
       - run: npm run build
+        env:
+          FULL_PATHS: ${{ secrets.FULL_PATHS }}
+
+      # 同じ index.html を複数のパスに置く（SPAは location.pathname で体験版/フル版を判定する）。
+      #   /trial/        … 体験版（テスト用、秘密ではない）
+      #   /<秘密パス>/   … フル版。GitHub Secrets の FULL_PATHS にカンマ区切りで登録する
+      #                    （例: abc123xyz,def456uvw）。1個目以外は JS に埋め込まないので、ここでしか使わない。
+      - name: Copy entry pages (trial / full)
+        env:
+          FULL_PATHS: ${{ secrets.FULL_PATHS }}
+        run: |
+          for p in trial $(echo "$FULL_PATHS" | tr ',' ' '); do
+            p="${p#/}"; p="${p%/}"
+            [ -z "$p" ] && continue
+            mkdir -p "dist/$p" && cp dist/index.html "dist/$p/index.html"
+          done
 
       - uses: actions/upload-pages-artifact@v3
         with:
