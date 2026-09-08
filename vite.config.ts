@@ -11,6 +11,15 @@ const announcePath = ROOT_IS_TRIAL
   ? ""
   : (process.env.FULL_PATHS ?? "").split(",")[0]?.trim().replace(/^\/+|\/+$/g, "") ?? "";
 
+// ビルドログに残す（Actions のログで Secret が届いているか確認できる）
+console.log(
+  announcePath
+    ? `[announce] お知らせの新URL用パスを埋め込みました（${announcePath.length}文字）`
+    : ROOT_IS_TRIAL
+      ? "[announce] ROOT_IS_TRIAL=true のため埋め込みなし"
+      : "[announce] FULL_PATHS が空です。お知らせは出ません（Secret が build step に届いていない可能性）"
+);
+
 export default defineConfig(() => ({
   plugins: [react()],
   base: "/",
