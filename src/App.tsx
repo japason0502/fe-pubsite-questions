@@ -606,12 +606,15 @@ export default function App() {
   const isTrial = IS_TRIAL;
   /**
    * 体験版でロックされる問題か。判定はここ1箇所だけ（上限は TRIAL_MAX_NUMBER）。
-   * 例外がひとつある。?q=<slug> で名指しされた問題は、体験版でもロックしない。
+   * 例外がひとつある。?q= で名指しされたサンプル問題は、体験版でもロックしない。
    * 解説動画の概要欄からその1問を解きに来た人を、いきなり壁で止めないため。
-   * slug が付いているのは IPA の公開問題だけなので、開放されるのもその問題に限られる。
+   * サンプル問題かどうかは slug の有無で見る（slug が付いているのは IPA の公開問題だけ）。
+   * 開放されるのは名指しされた1問だけで、一覧から他の問題へは行けない。
    */
-  const isLocked = (q?: { number: number; slug?: string | null } | null) =>
-    isTrial && !!q && q.number > TRIAL_MAX_NUMBER && !(!!qParam && !!q.slug && q.slug === qParam);
+  const matchesQParam = (q: { id?: string; number: number; slug?: string | null }) =>
+    !!qParam && (q.slug === qParam || q.id === qParam || String(q.number) === qParam);
+  const isLocked = (q?: { id?: string; number: number; slug?: string | null } | null) =>
+    isTrial && !!q && q.number > TRIAL_MAX_NUMBER && !(!!q.slug && matchesQParam(q));
   /** 体験版のロック案内。"locked"=対象外の問題/模試を開いた, "next"=上限の問題で「次へ」 */
   const [trialLock, setTrialLock] = useState<null | "locked" | "next">(null);
   // ルート（既存URL）を開くたびに出す移行のお知らせ。埋込と記事からの1問リンク（?q=）は除外
@@ -655,8 +658,10 @@ export default function App() {
    * この人は「その問題を解きに来た」のであって問題集を回しに来たわけではないので、
    * 一覧へ・前へ・次へ・終了を出さず、その1問に閉じる。
    * 採点は各問の「今すぐ採点」「解説へ」でできるので、終了を隠しても困らない。
+   * ただし体験版で対象外の問題を指してきた場合は単問モードにしない。
+   * その問題は開けず別の問題に差し替わるので、ナビまで消すと行き場が無くなる。
    */
-  const singleQuestion = !!qParam && deepLinkIndex >= 0;
+  const singleQuestion = deepLinkIndex >= 0 && !isLocked(allQuestions[deepLinkIndex]);
 
   /** 受験日を登録済みか（この端末で） */
   const [unlocked, setUnlocked] = useState<boolean>(() => !!getUnlock());
