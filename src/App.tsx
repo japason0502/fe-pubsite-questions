@@ -105,7 +105,6 @@ function isTestRun(): boolean {
 /** 送りっぱなし。Worker 側で CORS を許可しているので通常のJSONでよい */
 function postStats(payload: Record<string, unknown>) {
   if (!STATS_ENDPOINT) return;
-  if (IS_TRIAL) return; // 体験版は集計に混ぜない
   try {
     void fetch(STATS_ENDPOINT, {
       method: "POST",
@@ -115,6 +114,8 @@ function postStats(payload: Record<string, unknown>) {
         ...payload,
         secret: STATS_SECRET,
         v: STATS_V,
+        seg: PATH_SEG,
+        trial: IS_TRIAL,
         ...(isTestRun() ? { test: true } : {})
       })
     }).catch(() => { /* 失敗しても学習体験に影響させない */ });
@@ -153,6 +154,19 @@ function detectTrial(): boolean {
   return false;
 }
 const IS_TRIAL = detectTrial();
+
+/**
+ * 今いるURLの先頭セグメント（ルートなら ""）。集計で「どのURL経由か」を見分けるのに送る。
+ * 秘密のパスをここに書いてはいない＝ブラウザが自分の居場所を報告しているだけなので、
+ * JSにもDBにもパスは残らない。パス→free/paid の対応表は Worker の Secret が持つ。
+ */
+const PATH_SEG: string = (() => {
+  try {
+    return window.location.pathname.split("/")[1] ?? "";
+  } catch {
+    return "";
+  }
+})();
 /**
  * ルート（既存URL）に出す「新URLへ移ってね」のお知らせ先。
  * vite.config.ts が FULL_PATHS の1個目から組み立てて注入する（ROOT_IS_TRIAL=true なら空）。
@@ -195,7 +209,7 @@ const urlNoticeBody = (
     </p>
     <p className="announce-warn">
       ※{ANNOUNCE_SWITCH_DATE}からフルverの無料配布を辞め､有料販売に切り替えます｡
-      {ANNOUNCE_SWITCH_DATE}を過ぎてからフルverのURLをお問い合わせいただいても､対応できません｡
+      有料販売の開始後にフルverのURLをお問い合わせいただいても､対応は致しかねます｡
     </p>
   </>
 );
@@ -225,7 +239,6 @@ const NOTICE_LIST: { id: string; date: string; title: string; body: ReactNode }[
  */
 function postLessonOpen(payload: Record<string, unknown>) {
   if (!STATS_ENDPOINT) return;
-  if (IS_TRIAL) return; // 体験版は集計に混ぜない
   try {
     void fetch(STATS_ENDPOINT + "/lesson", {
       method: "POST",
@@ -235,6 +248,8 @@ function postLessonOpen(payload: Record<string, unknown>) {
         ...payload,
         secret: STATS_SECRET,
         v: STATS_V,
+        seg: PATH_SEG,
+        trial: IS_TRIAL,
         ...(isTestRun() ? { test: true } : {})
       })
     }).catch(() => { /* noop */ });

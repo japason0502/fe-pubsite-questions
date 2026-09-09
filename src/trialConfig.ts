@@ -34,7 +34,7 @@ export const LP_URL = "https://example.com/fe-kamokub/";
  * false の間は誰にも出ないが、**?notice=preview を付けて開くと自分だけ見られる**。
  * 手順: false のまま push → 本番URLに ?notice=preview を付けて見え方を確認 → true にして push
  */
-export const ANNOUNCE_ENABLED = false;
+export const ANNOUNCE_ENABLED = true;
 /** ルートに出す移行のお知らせの文面に使う日付 */
 export const ANNOUNCE_SWITCH_DATE = "9月末";
 export const ANNOUNCE_VALID_UNTIL = "2026/12/31";
