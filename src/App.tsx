@@ -617,9 +617,10 @@ export default function App() {
     isTrial && !!q && q.number > TRIAL_MAX_NUMBER && !(!!q.slug && matchesQParam(q));
   /** 体験版のロック案内。"locked"=対象外の問題/模試を開いた, "next"=上限の問題で「次へ」 */
   const [trialLock, setTrialLock] = useState<null | "locked" | "next">(null);
-  // ルート（既存URL）を開くたびに出す移行のお知らせ。埋込と記事からの1問リンク（?q=）は除外
+  // ルート（既存URL）を開くたびに出す移行のお知らせ。
+  // 埋込・記事からの1問リンク（?q=）・模擬試験は除外（試験の開始前に別の画面を挟まない）
   const [announceOpen, setAnnounceOpen] = useState<boolean>(
-    () => ANNOUNCE_VISIBLE && !isTrial && normalizePath() === "/" && !embed && !qParam
+    () => ANNOUNCE_VISIBLE && !isTrial && normalizePath() === "/" && !embed && !qParam && !isMogi
   );
   /** お知らせ一覧（モード選択のベルアイコンから開く） */
   const [showNotices, setShowNotices] = useState(false);
@@ -652,16 +653,6 @@ export default function App() {
     if (i < 0) i = allQuestions.findIndex((x) => String(x.number) === qParam);
     return i;
   }, [allQuestions, qParam]);
-
-  /**
-   * ?q= で1問だけ開いた状態（解説動画の概要欄などからの直リンク）。
-   * この人は「その問題を解きに来た」のであって問題集を回しに来たわけではないので、
-   * 一覧へ・前へ・次へ・終了を出さず、その1問に閉じる。
-   * 採点は各問の「今すぐ採点」「解説へ」でできるので、終了を隠しても困らない。
-   * ただし体験版で対象外の問題を指してきた場合は単問モードにしない。
-   * その問題は開けず別の問題に差し替わるので、ナビまで消すと行き場が無くなる。
-   */
-  const singleQuestion = deepLinkIndex >= 0 && !isLocked(allQuestions[deepLinkIndex]);
 
   /** 受験日を登録済みか（この端末で） */
   const [unlocked, setUnlocked] = useState<boolean>(() => !!getUnlock());
@@ -733,6 +724,22 @@ export default function App() {
     }
     return next;
   });
+
+  /**
+   * ?q= で1問だけ開いた状態（解説動画の概要欄などからの直リンク）。
+   * この人は「その問題を解きに来た」のであって問題集を回しに来たわけではないので、
+   * 一覧へ・前へ・次へ・終了を出さず、その1問に閉じる。
+   * 採点は各問の「今すぐ採点」「解説へ」でできるので、終了を隠しても困らない。
+   *
+   * 単問モードにしない場合が2つある。
+   * 1. 試験モード中。一覧で20問を行き来し、終了で採点する必要がある。
+   *    ?q= は mode が未設定のときだけ演習モードにするので、保存済みの試験が
+   *    残っている端末では exam のまま入ってくる（そこでナビを消すと詰む）。
+   * 2. 体験版で対象外の問題を指してきた場合。その問題は開けず別の問題に
+   *    差し替わるため、ナビまで消すと行き場が無くなる。
+   */
+  const singleQuestion =
+    state.mode !== "exam" && deepLinkIndex >= 0 && !isLocked(allQuestions[deepLinkIndex]);
 
   /** サンプル順で出題: null=OFF / "all"=全44問 / 年度名=その年度だけ。並びは固定なので選択だけ保存する */
   const [sampleOrder, setSampleOrder] = useState<string | null>(() => {
