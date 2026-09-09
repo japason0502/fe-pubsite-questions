@@ -13,7 +13,7 @@ import { PseudoCodeReference } from "./PseudoCodeReference";
 import { ExamDayNotes } from "./ExamDayNotes";
 import { buildExamReport, ExamReport } from "./examReport";
 import { CATEGORIES, categoryOf, sampleNumberOf, buildSampleOrder, isSampleQuestion, SAMPLE_BADGE, WEEKS } from "./questionGroups";
-import { TRIAL_MAX_NUMBER, TRIAL_PATHS, ROOT_IS_TRIAL, LP_URL, ANNOUNCE_SWITCH_DATE, ANNOUNCE_VALID_UNTIL, ANNOUNCE_POSTED_DATE, ANNOUNCE_ENABLED, NOTICES } from "./trialConfig";
+import { TRIAL_MAX_NUMBER, TRIAL_PATHS, ROOT_IS_TRIAL, LP_URL, ANNOUNCE_SWITCH_DATE, ANNOUNCE_VALID_UNTIL, ANNOUNCE_POSTED_DATE, ANNOUNCE_ENABLED, NOTICES, MOGI_REQUIRES_REGISTRATION, MAIL_ENDPOINT } from "./trialConfig";
 
 const STORAGE_KEY = "exam-state";
 const MOGI_STORAGE_KEY = "exam-state-mogi"; // 模擬試験は保存キーを分けて通常演習の状態を汚さない
@@ -232,6 +232,47 @@ const NOTICE_LIST: { id: string; date: string; title: string; body: ReactNode }[
     body: <p style={{ whiteSpace: "pre-line" }}>{n.body}</p>,
   })),
 ];
+
+/* ===== 受験日登録による模試のアンロック =====
+ * 「登録済みかどうか」だけを端末に持つ。メールアドレスは保存しない。
+ * 判定の実体は worker-mail の /verify で、こちらはその結果を覚えているだけ。 */
+const UNLOCK_KEY = "mogi-unlock";
+
+type UnlockInfo = { examDate: string; at: string };
+
+function getUnlock(): UnlockInfo | null {
+  try {
+    const raw = localStorage.getItem(UNLOCK_KEY);
+    return raw ? (JSON.parse(raw) as UnlockInfo) : null;
+  } catch {
+    return null;
+  }
+}
+
+function setUnlock(info: UnlockInfo) {
+  try {
+    localStorage.setItem(UNLOCK_KEY, JSON.stringify(info));
+  } catch {
+    /* プライベートモード等で保存できなくても、その回は使えるままにする */
+  }
+}
+
+/**
+ * この端末の受験コードで、受験日登録が済んでいるかを worker-mail に聞く。
+ *
+ * 受験コードは端末IDの先頭8桁で、模試を受けていなくても最初から持っている。
+ * だから「模試ボタンを押す → 自分のコードで照会 → 済んでいれば開く」で完結し、
+ * メールアドレスの入力もリンクの受け渡しも要らない。
+ */
+async function verifyByExamCode(code: string): Promise<{ ok: boolean; examDate: string }> {
+  try {
+    const res = await fetch(`${MAIL_ENDPOINT}/verify?code=${encodeURIComponent(code)}`);
+    const data = (await res.json()) as { ok?: boolean; exam_date?: string };
+    return { ok: !!data?.ok, examDate: String(data?.exam_date ?? "") };
+  } catch {
+    return { ok: false, examDate: "" };
+  }
+}
 
 /**
  * 問題演習の進捗を送る（「解説へ」を開いたとき）。
@@ -602,6 +643,31 @@ export default function App() {
     if (i < 0) i = allQuestions.findIndex((x) => String(x.number) === qParam);
     return i;
   }, [allQuestions, qParam]);
+
+  /** 受験日を登録済みか（この端末で） */
+  const [unlocked, setUnlocked] = useState<boolean>(() => !!getUnlock());
+  /** 模試に登録が必要なのに未登録のとき出す案内 */
+  const [needRegister, setNeedRegister] = useState(false);
+
+  /** 模試を開いてよいか。フラグが false の間は誰も締め出さない */
+  const mogiLocked = MOGI_REQUIRES_REGISTRATION && !unlocked;
+
+  /**
+   * 模試ボタンが押されたときの判定。
+   * この端末に記録が無ければ受験コードで照会し、確認済みならその場で開放する。
+   * @returns true=開いてよい
+   */
+  const tryUnlock = async (): Promise<boolean> => {
+    if (!MOGI_REQUIRES_REGISTRATION || unlocked) return true;
+    const { ok, examDate } = await verifyByExamCode(getExamCode());
+    if (ok) {
+      setUnlock({ examDate, at: new Date().toISOString() });
+      setUnlocked(true);
+      return true;
+    }
+    setNeedRegister(true);
+    return false;
+  };
 
   // 模擬試験ページではタブタイトルを変える
   useEffect(() => {
@@ -1498,7 +1564,14 @@ export default function App() {
             )}
             <h3>{isMogi ? "模擬試験" : "モード選択"}</h3>
             <p>{isMogi ? "本番形式の模擬試験です。" : "開始するモードとオプションを選んでください。"}</p>
-            <ModePicker isMogi={isMogi} isTrial={isTrial} onStart={startMode} onTrialLock={() => setTrialLock("locked")} />
+            <ModePicker
+              isMogi={isMogi}
+              isTrial={isTrial}
+              onStart={startMode}
+              onTrialLock={() => setTrialLock("locked")}
+              mogiLocked={mogiLocked}
+              onCheckUnlock={tryUnlock}
+            />
             <a href="https://docs.google.com/document/d/1ZeSTp8iQiQnJuN79rt70V2k_TZDqRG-LwSipn162PPo/edit?usp=sharing" target="_blank" className="usage-link">サイトの使い方はこちら</a>
           </div>
         </div>
@@ -2736,6 +2809,52 @@ export default function App() {
         </div>
       )}
 
+      {/* 受験日が未登録のまま模試を開こうとしたときの案内 */}
+      {needRegister && (
+        <div className="overlay">
+          <div className="overlay-content trial-lock">
+            <h3>模擬試験は受験日の登録が必要です</h3>
+            <p>
+              受験日を登録いただくと､模擬試験が使えるようになります｡
+              登録された受験日に合わせて､直前の持ち物や当日の流れもお送りします｡
+            </p>
+            <p style={{ fontSize: "0.85em", color: "#555" }}>
+              ご登録は30秒で終わります｡確認メールのリンクを開くと完了です｡
+              <br />
+              完了したらこの画面に戻って､もう一度<strong>模擬試験</strong>を押してください｡
+              <br />
+              すでに別の端末で登録された方は､同じメールアドレスと受験日をもう一度ご登録ください｡
+            </p>
+            <div className="mode-buttons" style={{ marginTop: "1em" }}>
+              <button onClick={() => window.open(`${MAIL_ENDPOINT}/?code=${encodeURIComponent(getExamCode())}`, "_blank", "noopener")}>
+                受験日を登録する
+              </button>
+              <button className="outline" onClick={() => setNeedRegister(false)}>
+                閉じる
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 模試URL（?mock=）を未登録のまま直接開いたとき */}
+      {MOGI_REQUIRES_REGISTRATION && !unlocked && isMogi && !isTrial && (
+        <div className="overlay overlay--mask">
+          <div className="overlay-content trial-lock">
+            <h3>模擬試験は受験日の登録が必要です</h3>
+            <p>受験日を登録いただくと､模擬試験が使えるようになります｡</p>
+            <div className="mode-buttons" style={{ marginTop: "1em" }}>
+              <button onClick={() => window.open(`${MAIL_ENDPOINT}/?code=${encodeURIComponent(getExamCode())}`, "_blank", "noopener")}>
+                受験日を登録する
+              </button>
+              <button className="outline" onClick={() => { window.location.href = window.location.pathname; }}>
+                問題演習に戻る
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* お知らせ一覧。モード選択のベルアイコンから開く */}
       {showNotices && (
         <div className="overlay">
@@ -2770,12 +2889,18 @@ type ModePickerProps = {
   onStart: (options: StartOptions) => void;
   /** 体験版でロックされた機能（模試）を押したときの案内 */
   onTrialLock?: () => void;
+  /** 受験日未登録で模試が開けない状態か */
+  mogiLocked?: boolean;
+  /** 模試を押したときの解除チェック。true が返れば模試メニューを開く */
+  onCheckUnlock?: () => Promise<boolean>;
 };
 
 // 16問＝本番20問から情報セキュリティ4問を引いたアルゴリズム部分と同数（16×5分＝80分）
 const RANDOM_COUNTS = [5, 10, 16];
 
-function ModePicker({ isMogi = false, isTrial = false, onStart, onTrialLock }: ModePickerProps) {
+function ModePicker({ isMogi = false, isTrial = false, onStart, onTrialLock, mogiLocked = false, onCheckUnlock }: ModePickerProps) {
+  /** 受験日登録の照会中（二重押し防止） */
+  const [checking, setChecking] = useState(false);
   const [mode, setMode] = useState<"practice" | "exam">(isMogi ? "exam" : "practice");
   const [perQuestionGrading, setPerQuestionGrading] = useState(!isMogi);
   const [perQuestionTimer, setPerQuestionTimer] = useState(!isMogi);
@@ -2831,10 +2956,20 @@ function ModePicker({ isMogi = false, isTrial = false, onStart, onTrialLock }: M
               onTrialLock?.();
               return;
             }
+            // 受験日が未登録なら、まず受験コードで照会する
+            if (mogiLocked) {
+              if (checking) return;
+              setChecking(true);
+              void onCheckUnlock?.().then((ok) => {
+                setChecking(false);
+                if (ok) setShowMogiMenu(true);
+              });
+              return;
+            }
             setShowMogiMenu((v) => !v);
           }}
         >
-          模擬試験
+          {checking ? "確認中..." : "模擬試験"}
         </button>
       </div>
       {(isMogi || showMogiMenu) && <MogiCautions />}

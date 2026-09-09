@@ -38,6 +38,22 @@ export const ANNOUNCE_ENABLED = true;
 /** ルートに出す移行のお知らせの文面に使う日付 */
 export const ANNOUNCE_SWITCH_DATE = "9月末";
 export const ANNOUNCE_VALID_UNTIL = "2026/12/31";
+/* ===== 受験日登録による模擬試験のアンロック =====
+ * worker-mail(fe-mail)で受験日を登録し、確認メールのリンクを踏んだ人に模試を開放する。
+ *
+ * 流れ:
+ *   確認メールのリンク → /confirm → 「模擬試験を開く」ボタン
+ *   → このサイトを ?unlock=<トークン> で開く
+ *   → /verify で有効性を確かめて localStorage に保存（以後はその端末で開いたまま）
+ *
+ * MOGI_REQUIRES_REGISTRATION が false の間は、アンロックの記録だけして誰も締め出さない。
+ * 10/1 に true にすると、未登録の人は模試を開くときに登録案内が出るようになる。
+ */
+/** 模試に受験日登録を必須にするか。10/1 に true へ */
+export const MOGI_REQUIRES_REGISTRATION = false;
+/** 受験日登録フォーム / 照合APIのURL（末尾スラッシュなし） */
+export const MAIL_ENDPOINT = "https://fe-mail.japason.workers.dev";
+
 /** URL変更のお知らせを出した日（お知らせ一覧に表示する） */
 export const ANNOUNCE_POSTED_DATE = "2026/9/8";
 
