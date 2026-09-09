@@ -586,6 +586,8 @@ button.small {
 .bottom-bar-inner .review-btn {
   margin-left: auto;
 }
+/* 単問モード(?q=)は「一覧へ」が無いので、右へ寄せずに左詰めのままにする */
+.bottom-bar-inner.is-single .review-btn { margin-left: 0; }
 
 button {
   padding: 10px 14px;
