@@ -4,12 +4,18 @@
  * 出典: 原稿 genko_kihon.md の章立て（## 見出し = タブ / ### 見出し = グループ）
  * 問題データ側は一切変更していない。ここは「見た目の分類」だけを持つ。
  *
- * from/to は問番号の範囲（小数の枝番 4.1 などは直前の整数のグループに入る）。
- * 問題を増減したときはこの表だけ直せばよい。
+ * どの問題がどのグループかは、問題データ側の group で持つ（questions.json の "group"）。
+ * ここが持つのは「どのタブに、どのグループを、どの順で並べるか」だけ。
+ *
+ * 以前は問番号の範囲（from/to）で分類していたが、number は解説画像のファイル名でもあり
+ * 変えられない一方、新しい問題を分類するには番号を範囲に合わせるしかなかった。
+ * 分類のたびに番号を動かす羽目になるので、分類はデータ側の属性に移した。
  */
 
 /** desc: グループ名の下に出す説明文（任意） */
-export type Group = { name: string; from: number; to: number; desc?: string };
+/** key: 全体で一意な識別子。name は表示名なので、分野をまたいで重複してよい
+ *  （例: 情報セキュリティと読解系の両方に「追加演習」を置ける） */
+export type Group = { key: string; name: string; desc?: string };
 /** サンプル問題タブ用: タイトル先頭の年度表記でグループ分けする */
 /** noOrder: 「この順番で出題する」の対象外にする（表示だけしたいグループ用） */
 export type SampleGroup = { name: string; prefix: string; noOrder?: boolean };
@@ -26,66 +32,58 @@ export const CATEGORIES: Category[] = [
     key: "trace",
     label: "トレース系",
     groups: [
-      { name: "変数", from: 0, to: 4.99 },
-      { name: "配列", from: 5, to: 16.09 },
-      { name: "関数の基本", from: 16.1, to: 16.99 },
-      { name: "繰り返し(for)", from: 17, to: 18 },
-      { name: "繰り返し(for)&配列", from: 19, to: 25 },
-      { name: "条件分岐", from: 26, to: 30 },
-      { name: "繰り返し(for)のネスト", from: 31, to: 33 },
-      { name: "繰り返し(while)", from: 34, to: 35 },
-      { name: "複数のwhile", from: 36, to: 37 },
-      { name: "複数の関数", from: 38, to: 43 },
-      { name: "二次元配列", from: 44, to: 45 }
+      { key: "trace-vars", name: "変数" },
+      { key: "trace-array", name: "配列" },
+      { key: "trace-func-basic", name: "関数の基本" },
+      { key: "trace-for", name: "繰り返し(for)" },
+      { key: "trace-for-array", name: "繰り返し(for)&配列" },
+      { key: "trace-branch", name: "条件分岐" },
+      { key: "trace-for-nest", name: "繰り返し(for)のネスト" },
+      { key: "trace-while", name: "繰り返し(while)" },
+      { key: "trace-while-multi", name: "複数のwhile" },
+      { key: "trace-funcs", name: "複数の関数" },
+      { key: "trace-array2d", name: "二次元配列" }
     ]
   },
   {
     key: "reading",
     label: "読解(穴埋め)系",
     groups: [
-      { name: "分岐読解", from: 46, to: 49 },
-      { name: "式読解", from: 50, to: 53 }
+      { key: "read-branch", name: "分岐読解" },
+      { key: "read-expr", name: "式読解" }
     ]
   },
   {
     key: "hard",
     label: "クセが強い系",
     groups: [
-      { name: "再帰", from: 54, to: 58 },
-      { name: "2進数･ビット演算", from: 59, to: 65 },
-      { name: "オブジェクト指向", from: 66, to: 69 },
-      { name: "スタックとキュー", from: 70, to: 74 },
-      { name: "単方向リスト", from: 75, to: 78 },
-      { name: "数学系", from: 79, to: 82 }
+      { key: "hard-recursion", name: "再帰" },
+      { key: "hard-binary", name: "2進数･ビット演算" },
+      { key: "hard-oop", name: "オブジェクト指向" },
+      { key: "hard-stack-queue", name: "スタックとキュー" },
+      { key: "hard-linked-list", name: "単方向リスト" },
+      { key: "hard-math", name: "数学系" }
     ]
   },
   {
     key: "mixed",
     label: "読解&トレース",
     groups: [
-      { name: "読解&トレース(その他の問題)", from: 83, to: 90 }
+      { key: "mixed-other", name: "読解&トレース(その他の問題)" }
     ]
   },
   {
     key: "security",
     label: "情報セキュリティ",
     groups: [
-      { name: "情報セキュリティ", from: 91, to: 97 },
+      { key: "sec-main", name: "情報セキュリティ" },
       {
+        key: "sec-extra",
         name: "追加演習",
-        from: 98,
-        to: 99,
         desc: "情報セキュリティマネジメント試験の問題です｡追加演習にご利用ください｡"
-      },
-      {
-        name: "模擬試験①",
-        from: 100,
-        to: 103,
-        desc:
-          "ここから下は模擬試験で出題している問題です｡\n" +
-          "先に解いてしまうと模擬試験の点数が正確に出ないので､模試を受けてから見てください｡"
-      },
-      { name: "模擬試験②", from: 104, to: 107 }
+      }
+      // 模擬試験で使っている問題も、模試のグループではなくここ（追加演習）に入れる。
+      // 模試で使っているかどうかは分野ではないので、グループにせずバッジで示す（mogiBadgeOf）
     ]
   }
   ,
@@ -159,11 +157,21 @@ export const WEEKS: Week[] = [
   { week: 7, from: 80, to: 90, pace: "平日1問・土日3問" },
   { week: 8, from: 91, to: 97, pace: "平日1問・土日4問", note: "最後に模擬試験①を受けましょう" },
   // 8週の計画には含めない、余力のある人向けの追加ぶん
-  { week: 9, from: 98, to: 120, pace: "", label: "追加演習" }
+  // 講座本体は 0〜97。901〜 は学習順に乗らない問題（追加演習・模試で使うもの）の置き場所で、
+  // 週の進行には含めないが、週別表示から消えないようこの受け皿に入れておく。
+  { week: 9, from: 800, to: 999, pace: "", label: "追加演習" }
 ];
 
 /** 一覧のボタンに出すバッジ文言（サンプル問題であることだけを示す） */
 export const SAMPLE_BADGE = "公開";
+
+/** 模擬試験で使っている問題に付けるバッジ。ref（模試側の slug。例: "mogi1-19"）から模試の回を読む */
+export function mogiBadgeOf(ref?: string): string | null {
+  if (!ref) return null;
+  if (ref.startsWith("mogi1-")) return "模試①";
+  if (ref.startsWith("mogi2-")) return "模試②";
+  return "模試";
+}
 
 /** 出題内容に手を入れた問題（タイトルに「改編」と入れる約束）。公開問題そのものではない */
 export function isModified(title: string): boolean {
@@ -177,12 +185,11 @@ export function isSampleQuestion(title: string): boolean {
   return (sample?.sampleGroups ?? []).some((g) => title.startsWith(g.prefix));
 }
 
-/** その問番号が属するタブのkeyを返す（該当なしは最初のタブ） */
-export function categoryOf(num: number): string {
+/** そのグループキーが属するタブのkeyを返す（該当なしは最初のタブ） */
+export function categoryOf(group?: string): string {
+  if (!group) return CATEGORIES[0].key;
   for (const c of CATEGORIES) {
-    for (const g of c.groups) {
-      if (num >= g.from && num <= g.to) return c.key;
-    }
+    if (c.groups.some((g) => g.key === group)) return c.key;
   }
   return CATEGORIES[0].key;
 }

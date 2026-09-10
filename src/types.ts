@@ -43,6 +43,8 @@ export type Question = {
   /** 埋め込み/ディープリンク用の安定キー（?q=slug）。例: "r6-mon1"。add-slugs.mjs で付与 */
   slug?: string;
   number: number;
+  /** 一覧の分野分けで属するグループのキー（questionGroups.ts の Group.key と対応） */
+  group?: string;
   title: string;
   body?: string; // 後方互換性のため残す
   questionText?: string; // ・問題文
@@ -68,8 +70,12 @@ export type Question = {
   hintBlocks?: BodyBlock[];
   /** 自力で解こう（1:表示）。解説を聞く前に自分で解いてほしい問題に付ける */
   selfSolve?: number;
-  /** 模擬試験で使っている問題（1）。一覧では既定で隠す（先に解くと模試の点が正しく出ないため） */
-  mogiUsed?: number;
+  /**
+   * 模擬試験で使っている問題は、本文を模試側（mogiQuestions.json / mogi2Questions.json）だけが持つ。
+   * 通常演習側は番号・slug・グループなどの見出し情報と、この参照（模試側の slug）だけを持ち、
+   * 読み込み時に本文を埋める。ref がある＝模試で使っている問題。
+   */
+  ref?: string;
   /** 値を変えてもう一度ボタン表示フラグ（1:表示, 0:非表示） */
   another?: number;
   /** 基礎練習問題（1:基礎）。ランダム出題の対象から除外される */

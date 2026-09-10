@@ -6,13 +6,40 @@ import "katex/dist/katex.min.css";
 import questionsData from "./data/questions.json";
 import mogiQuestionsData from "./data/mogiQuestions.json";
 import mogi2QuestionsData from "./data/mogi2Questions.json";
+
+/**
+ * questions.json の "ref" を模試側の本文で埋める。
+ * 模試で使っている問題の本文は模試側（mogiQuestions.json / mogi2Questions.json）だけが持ち、
+ * 通常演習側は番号・slug・グループなどの見出し情報と参照だけを持つ（本文を二重に持たない）。
+ * 参照先が無いのはデータの不整合なので、起動時に落として気づけるようにする。
+ */
+const REF_BODY_FIELDS = ["bodyBlocks", "choices", "choiceTable", "correctChoiceId"] as const;
+function resolveQuestionRefs(list: Question[], sources: Question[]): Question[] {
+  const bySlug = new Map(sources.map((q) => [q.slug, q] as const));
+  return list.map((q) => {
+    if (!q.ref) return q;
+    const src = bySlug.get(q.ref);
+    if (!src) throw new Error(`参照先の模試問題が見つかりません: ${q.ref}`);
+    // 模試側に存在する項目だけ写す（無い項目を undefined で足さない）
+    const body = Object.fromEntries(REF_BODY_FIELDS.filter((k) => k in src).map((k) => [k, src[k]]));
+    return { ...q, ...body };
+  });
+}
+/** 通常演習の問題（参照解決済み）。questions.json を直接読む代わりにこちらを使う */
+const NORMAL_QUESTIONS: Question[] = resolveQuestionRefs(
+  questionsData as Question[],
+  [...(mogiQuestionsData as Question[]), ...(mogi2QuestionsData as Question[])]
+);
 import r4ExtraData from "./data/r4Extra.json";
 import { BodyBlock, BodyTable, BodyTableCell, ExamState, Question } from "./types";
 import { generateAnotherQuestion } from "./anotherQuestionGenerators";
 import { PseudoCodeReference } from "./PseudoCodeReference";
 import { ExamDayNotes } from "./ExamDayNotes";
 import { buildExamReport, ExamReport } from "./examReport";
-import { CATEGORIES, categoryOf, sampleNumberOf, buildSampleOrder, isSampleQuestion, SAMPLE_BADGE, WEEKS } from "./questionGroups";
+import { buildReportModel, fetchPopulation, type ReportModel, type ReportQuestion } from "./reportEngine";
+import { REVIEW_NOTES } from "./reviewNotes";
+import { ResultReport, downloadReport, openReport } from "./ResultReport";
+import { CATEGORIES, categoryOf, sampleNumberOf, buildSampleOrder, isSampleQuestion, SAMPLE_BADGE, mogiBadgeOf, WEEKS } from "./questionGroups";
 import { TRIAL_MAX_NUMBER, TRIAL_PATHS, ROOT_IS_TRIAL, LP_URL, ANNOUNCE_SWITCH_DATE, ANNOUNCE_VALID_UNTIL, ANNOUNCE_POSTED_DATE, ANNOUNCE_ENABLED, NOTICES, MOGI_REQUIRES_REGISTRATION, MAIL_ENDPOINT } from "./trialConfig";
 
 const STORAGE_KEY = "exam-state";
@@ -125,7 +152,7 @@ function postStats(payload: Record<string, unknown>) {
 }
 
 /** サンプル問題を「年度→本番の問番号」順に並べたリスト。中身が固定なので1回だけ作る */
-const SAMPLE_ORDER = buildSampleOrder(questionsData as Question[]);
+const SAMPLE_ORDER = buildSampleOrder(NORMAL_QUESTIONS);
 const SAMPLE_ORDER_IDS = SAMPLE_ORDER.map((x) => x.id);
 /** 年度ごとのid配列（その年度だけ順に解く用） */
 const SAMPLE_ORDER_BY_YEAR: Record<string, string[]> = SAMPLE_ORDER.reduce((acc, x) => {
@@ -300,13 +327,13 @@ function postLessonOpen(payload: Record<string, unknown>) {
 }
 
 /** ランダム出題の母集団。基礎練習問題(basic)と情報セキュリティ(field)を除いた問題のid */
-const RANDOM_POOL_SOURCE = (questionsData as Question[]).filter(
+const RANDOM_POOL_SOURCE = NORMAL_QUESTIONS.filter(
   (q) => !q.basic && q.field !== "security"
 );
 const RANDOM_POOL_IDS = RANDOM_POOL_SOURCE.map((q) => q.id);
 /** トレース系だけに絞った母集団（分野タブの「トレース系」と同じ範囲） */
 const RANDOM_POOL_TRACE_IDS = RANDOM_POOL_SOURCE.filter(
-  (q) => categoryOf(q.number) === "trace"
+  (q) => categoryOf(q.group) === "trace"
 ).map((q) => q.id);
 /** 母集団から count 問をシャッフルして取り出す（出題順もシャッフルのまま） */
 function pickRandomIds(count: number, traceOnly = false): string[] {
@@ -367,16 +394,6 @@ const CHOICE_LABELS = ["ア", "イ", "ウ", "エ", "オ", "カ", "キ", "ク", "
 
 function formatQuestionNumber(n: number) {
   return Number.isInteger(n) ? `問${n}` : `問${Math.floor(n)}#`;
-}
-
-function questionNumberToImageKey(n: number) {
-  // 例: 4 -> "4", 4.1 -> "4_1"
-  return Number.isInteger(n) ? String(n) : String(n).replace(".", "_");
-}
-
-function getQuestionImageSrc(n: number) {
-  // GitHub Pages など base パス配下でも壊れないように BASE_URL を使う
-  return `${import.meta.env.BASE_URL}question-images/${questionNumberToImageKey(n)}.png`;
 }
 
 function bodyAssetSrc(src: string) {
@@ -630,7 +647,7 @@ export default function App() {
     if (mogiSet === "2") return mogi2QuestionsData as Question[];
     if (mogiSet === "r4") {
       const byId = new Map<string, Question>();
-      (questionsData as Question[]).forEach((q) => byId.set(q.id, q));
+      NORMAL_QUESTIONS.forEach((q) => byId.set(q.id, q));
       (r4ExtraData as Question[]).forEach((q) => byId.set(q.id, q));
       // 本試験の順に並べ、表示番号を問1〜20に振り直す（元データは変更しない）
       return R4_SAMPLE_ORDER.map((id, i) => {
@@ -640,7 +657,7 @@ export default function App() {
       });
     }
     // 体験版でも絞らない（メニューは全問見せる。上限より先は isLocked で止める）
-    return questionsData as Question[];
+    return NORMAL_QUESTIONS;
   }, [mogiSet]);
   const storageKey =
     mogiSet === "r4" ? MOGI_R4_STORAGE_KEY : mogiSet === "2" ? MOGI2_STORAGE_KEY : isMogi ? MOGI_STORAGE_KEY : STORAGE_KEY;
@@ -748,8 +765,8 @@ export default function App() {
   });
 
   // ランダム出題中は選ばれたidの順に並べ替えるだけ。
-  // 問番号は振り直さない（解説画像が question-images/{number}.png で引かれているため、
-  // 振り直すと別の問題の画像を指してしまう）
+  // 問番号は振り直さない（画面に出る「問17」がそのまま学習の目印になっており、
+  // 出題順が変わるたびに番号が動くと、講座本体の学習順と話が合わなくなるため）
   const questions = useMemo<Question[]>(() => {
     // 出題順を差し替えるidリストを決める（ランダム抽選 > サンプル順 > 通常）
     const ids =
@@ -819,10 +836,8 @@ export default function App() {
     selectedLabel?: string;
     selectedText?: string;
     videoUrl?: string;
-    imageSrc: string;
     traceLines?: string[];
   } | null>(null);
-  const [gradeNowImageError, setGradeNowImageError] = useState(false);
   // 模試の復習モード: ONで各問に「今すぐ採点」「解説へ」を表示。ページを閉じても保持。
   const [reviewMode, setReviewMode] = useState<boolean>(() => {
     try {
@@ -848,6 +863,8 @@ export default function App() {
   /** 前回の科目B評価点（帯）: "unknown" | "lt400" | "400" | "500" | "600plus" | "" */
   const [svPrev, setSvPrev] = useState<string>("");
   const [resultReport, setResultReport] = useState<ExamReport | null>(null);
+  // 模試のリッチな結果レポート（画面表示と HTML 保存の両方に使う）。模試以外は null
+  const [reportModel, setReportModel] = useState<ReportModel | null>(null);
   /** 学習済み(自己申告)。問題IDごとに保存し、採点や「終了」では消さない＝学習の履歴として残る */
   const [studied, setStudied] = useState<Record<string, 1>>(() => {
     try {
@@ -861,7 +878,8 @@ export default function App() {
   const [listTab, setListTab] = useState<string | null>(null);
   /** 問題一覧の表示切替: 分野別 / スケジュール別 */
   const [listView, setListView] = useState<"field" | "week" | "all" | "sample">("field");
-  // 模擬試験で使っている問題も一覧に出す（既定OFF）。先に解かれると模試の点が正しく出ないため
+  // 模擬試験で使っている問題も一覧に出す（既定OFF）。先に解かれると模試の点が正しく出ないため。
+  // 「通し」タブだけは例外で、この設定に関係なく模試使用問題を出さない
   const [showMogiUsed, setShowMogiUsed] = useState<boolean>(() => lsGet(SHOW_MOGI_KEY) === "1");
   /** スケジュール別で開いている週（null=今やっている問題の週） */
   const [listWeek, setListWeek] = useState<number | null>(null);
@@ -1030,9 +1048,10 @@ export default function App() {
     }));
   };
 
+  /** 模擬試験で使っている問題か（本文を模試側から参照している問題。模試側のデータには ref は無い） */
+  const isMogiUsedQuestion = (q?: { ref?: string }) => Boolean(q && q.ref);
   /** 「模擬試験で使用している問題は非表示」がONのとき、その問題は一覧にも出さず「次へ」でも飛ばす */
-  const isHiddenQuestion = (q?: { mogiUsed?: number }) =>
-    Boolean(!showMogiUsed && q && q.mogiUsed === 1);
+  const isHiddenQuestion = (q?: { ref?: string }) => !showMogiUsed && isMogiUsedQuestion(q);
   /** from から step 方向へ、最初に表示できる問題の位置を返す（無ければ -1） */
   const findVisibleIndex = (from: number, step: number) => {
     let i = from;
@@ -1115,36 +1134,40 @@ export default function App() {
     acc: {}
   });
   const statsEnabled = isMogi && !embed && !qParam && !reviewMode;
+  // 滞在秒の計測は集計（statsEnabled）とは独立。復習モードでも結果レポートの時間分析に使う
+  const dwellEnabled = isMogi && !embed && !qParam;
 
   // 再開時に備えて保存済みセッションを復元
   useEffect(() => {
-    if (!statsEnabled) return;
+    if (!dwellEnabled) return;
     try {
-      const raw = lsGet(statsKey);
-      if (raw) statsRef.current = JSON.parse(raw) as StatsSession;
+      if (statsEnabled) {
+        const raw = lsGet(statsKey);
+        if (raw) statsRef.current = JSON.parse(raw) as StatsSession;
+      }
       const rawDwell = lsGet(dwellKey);
       if (rawDwell) dwellRef.current.acc = JSON.parse(rawDwell) as Record<string, number>;
     } catch {
       /* noop */
     }
-  }, [statsEnabled, statsKey, dwellKey]);
+  }, [dwellEnabled, statsEnabled, statsKey, dwellKey]);
 
-  const dwellActive = statsEnabled && state.mode === "exam" && !showGuidance && !showResumePrompt;
+  const dwellActive = dwellEnabled && state.mode === "exam" && !showGuidance && !showResumePrompt;
   useEffect(() => {
     const d = dwellRef.current;
     if (d.id && d.at) {
       d.acc[d.id] = (d.acc[d.id] || 0) + Math.round((Date.now() - d.at) / 1000);
       // 問題を移るたびに書き出す（タブを閉じられても直前までは残る）
-      if (statsEnabled) lsSet(dwellKey, JSON.stringify(d.acc));
+      if (dwellEnabled) lsSet(dwellKey, JSON.stringify(d.acc));
     }
     const nextId = dwellActive ? questions[state.currentIndex]?.id ?? null : null;
     d.id = nextId;
     d.at = nextId ? Date.now() : 0;
-  }, [dwellActive, state.currentIndex, questions, statsEnabled, dwellKey]);
+  }, [dwellActive, state.currentIndex, questions, dwellEnabled, dwellKey]);
 
   // タブを閉じる/バックグラウンドへ回るときも、表示中の問題の秒を確定して保存する
   useEffect(() => {
-    if (!statsEnabled) return;
+    if (!dwellEnabled) return;
     const flush = () => {
       const d = dwellRef.current;
       if (d.id && d.at) {
@@ -1160,10 +1183,14 @@ export default function App() {
       window.removeEventListener("pagehide", flush);
       document.removeEventListener("visibilitychange", onHide);
     };
-  }, [statsEnabled, dwellKey]);
+  }, [dwellEnabled, dwellKey]);
 
   /** ガイダンスの「試験開始」で1回だけ発行する */
   const startStatsSession = () => {
+    // 滞在秒は集計の有無に関わらず、試験開始でリセットする
+    dwellRef.current = { id: null, at: 0, acc: {} };
+    lsDel(dwellKey);
+    setReportModel(null);
     if (!statsEnabled) return;
     const set = mogiSet || "";
     const aKey = ATTEMPT_KEY_PREFIX + set;
@@ -1176,6 +1203,7 @@ export default function App() {
     lsDel(dwellKey);
     setResultCode(null);
     setResultReport(null);
+    setReportModel(null);
     postStats({
       type: "start",
       sessionId: session.sid,
@@ -1199,15 +1227,15 @@ export default function App() {
     correct: number,
     unanswered: number
   ) => {
-    const session = statsRef.current;
-    if (!statsEnabled || !session) return;
-    // 表示中の問題の滞在時間を確定させる
+    // 表示中の問題の滞在時間を確定させる（集計しない場合もレポートで使う）
     const d = dwellRef.current;
     if (d.id && d.at) {
       d.acc[d.id] = (d.acc[d.id] || 0) + Math.round((Date.now() - d.at) / 1000);
       d.id = null;
       d.at = 0;
     }
+    const session = statsRef.current;
+    if (!statsEnabled || !session) return;
     const elapsedSec = Math.max(0, MOGI_TIME - state.remainingSeconds);
     if (elapsedSec >= STATS_MIN_ELAPSED_SEC) postStats({
       type: "finish",
@@ -1248,6 +1276,8 @@ export default function App() {
     const statsRows: {
       id: string; n: number; sel: string; cor: string; ok: number; rev: number; ovr: number;
     }[] = [];
+    // レポート用（見出し・解説リンク付き）。滞在秒は sendStatsFinish で確定してから入れる
+    const reportQuestions: ReportQuestion[] = [];
     questions.forEach((baseQuestion) => {
       const override = questionOverrides[baseQuestion.id];
       const q = override ? { ...baseQuestion, ...override } : baseQuestion;
@@ -1262,6 +1292,16 @@ export default function App() {
         rev: state.reviewFlags[q.id] ? 1 : 0,
         ovr: override ? 1 : 0
       });
+      reportQuestions.push({
+        id: q.id,
+        slug: q.slug,
+        n: q.number,
+        title: q.title,
+        ok,
+        answered: Boolean(ans),
+        sec: 0,
+        url: q.videoUrl || q.explanationUrl
+      });
       if (!ans) {
         unanswered += 1;
         details.push({ number: q.number, status: "unanswered" });
@@ -1275,17 +1315,37 @@ export default function App() {
       }
     });
     sendStatsFinish(statsRows, correct, unanswered);
-    setResultReport(
-      buildExamReport(
-        mogiSet,
-        statsRows.map((r) => ({
-          n: r.n,
-          ok: r.ok === 1,
-          answered: r.sel !== "",
-          sec: dwellRef.current.acc[r.id] || 0
-        }))
-      )
+    const examReport = buildExamReport(
+      mogiSet,
+      statsRows.map((r) => ({
+        n: r.n,
+        ok: r.ok === 1,
+        answered: r.sel !== "",
+        sec: dwellRef.current.acc[r.id] || 0
+      }))
     );
+    setResultReport(examReport);
+    if (mogiSet) {
+      for (const r of reportQuestions) r.sec = dwellRef.current.acc[r.id] || 0;
+      const input = {
+        set: mogiSet,
+        setLabel: mogiSet === "2" ? "模擬試験②" : mogiSet === "r4" ? "R4サンプル模試" : "模擬試験①",
+        date: new Date(),
+        elapsedSec: Math.max(0, MOGI_TIME - state.remainingSeconds),
+        totalSec: MOGI_TIME,
+        examCode: getExamCode(),
+        questions: reportQuestions,
+        report: examReport,
+        reviewNotes: REVIEW_NOTES
+      };
+      // まず母集団なしで出し、取れたら差し込む（取れなくてもレポートは成立する）
+      setReportModel(buildReportModel(input, null));
+      fetchPopulation(STATS_ENDPOINT, mogiSet).then((pop) => {
+        if (pop) setReportModel(buildReportModel(input, pop));
+      });
+    } else {
+      setReportModel(null);
+    }
     setResultSummary({ correct, total, unanswered });
     setResultDetails(details.sort((a, b) => a.number - b.number));
     setShowResult(true);
@@ -1330,7 +1390,7 @@ export default function App() {
     if (randomIds && randomAnother) {
       const overrides: Record<string, Partial<Question>> = {};
       randomIds.forEach((id) => {
-        const base = (questionsData as Question[]).find((q) => q.id === id);
+        const base = NORMAL_QUESTIONS.find((q) => q.id === id);
         if (!base || base.another !== 1) return;
         const generated = generateAnotherQuestion(base);
         if (generated) overrides[id] = generated;
@@ -1399,7 +1459,6 @@ export default function App() {
   };
 
   const handleGradeNow = () => {
-    setGradeNowImageError(false);
     const q = currentQuestion;
     const traceLines = q.anotherTraceLines?.length ? q.anotherTraceLines : undefined;
     const correctId = q.correctChoiceId;
@@ -1417,9 +1476,6 @@ export default function App() {
         correctLabel: CHOICE_LABELS[q.choices.findIndex((c) => c.id === correctId)] ?? "",
         correctText: q.choices.find((c) => c.id === correctId)?.text ?? "",
         videoUrl: q.videoUrl,
-        imageSrc: isMogi
-          ? `${import.meta.env.BASE_URL}question-images/mogi/${questionNumberToImageKey(q.number)}.png`
-          : getQuestionImageSrc(q.number),
         traceLines
       });
       return;
@@ -1439,9 +1495,6 @@ export default function App() {
       selectedLabel,
       selectedText,
       videoUrl: q.videoUrl,
-      imageSrc: isMogi
-        ? `${import.meta.env.BASE_URL}question-images/mogi/${questionNumberToImageKey(q.number)}.png`
-        : getQuestionImageSrc(q.number),
       traceLines
     });
   };
@@ -2154,9 +2207,11 @@ export default function App() {
                     {label ?? (Number.isInteger(q.number) ? `問${q.number}` : `問${Math.floor(q.number)}#`)}
                     {/* サンプル問題(本試験の公開問題)であることを年度バッジで示す。
                         サンプルタブは年度別に並んでいるので付けない（label指定あり＝サンプルタブ） */}
-                    {!label && isSampleQuestion(q.title ?? "") && (
+                    {!label && (mogiBadgeOf(q.ref) ? (
+                      <span className="q-badge">{mogiBadgeOf(q.ref)}</span>
+                    ) : isSampleQuestion(q.title ?? "") ? (
                       <span className="q-badge">{SAMPLE_BADGE}</span>
-                    )}
+                    ) : null)}
                   </button>
                 );
               };
@@ -2172,7 +2227,7 @@ export default function App() {
                 );
               }
 
-              const defaultTab = categoryOf(questions[state.currentIndex]?.number ?? 0);
+              const defaultTab = categoryOf(questions[state.currentIndex]?.group);
               const activeTab = listTab ?? defaultTab;
               const cat = CATEGORIES.find((c) => c.key === activeTab) ?? CATEGORIES[0];
               // 公開のみ（旧「サンプル問題」タブ）。分野の実体ではなく年度順の並べ替えビューなので、
@@ -2189,7 +2244,7 @@ export default function App() {
               const wk = WEEKS.find((w) => w.week === activeWeek) ?? WEEKS[0];
 
               // 模擬試験で使用中の問題を一覧から外す（「次へ」のスキップと同じ判定を使う）
-              const visible = (q: { mogiUsed?: number }) => !isHiddenQuestion(q);
+              const visible = (q: { ref?: string }) => !isHiddenQuestion(q);
               const changeShowMogi = (v: boolean) => {
                 setShowMogiUsed(v);
                 lsSet(SHOW_MOGI_KEY, v ? "1" : "0");
@@ -2202,13 +2257,15 @@ export default function App() {
                     onChange={(e) => changeShowMogi(e.target.checked)}
                   />
                   模擬試験で使用している問題も表示する
+                  <span className="mogi-toggle-note">
+                    （先に解いてしまうと模擬試験の点数が正確に出ないので､模試を受けてから見てください）
+                  </span>
                 </label>
               );
               // トグルは「模試で使っている問題を含む最初のグループ」の上に1つだけ出す
-              const firstMogiNumber = Math.min(
-                ...questions.filter((q) => q.mogiUsed === 1).map((q) => q.number),
-                Number.POSITIVE_INFINITY
-              );
+              const firstMogiGroup = cat.groups.find((g) =>
+                questions.some((q) => isMogiUsedQuestion(q) && q.group === g.key)
+              )?.key;
 
               const viewSwitch = (
                 <div className="list-view-switch" role="radiogroup" aria-label="表示切替">
@@ -2338,9 +2395,11 @@ export default function App() {
 
               // 通し番号: タブもグループ分けもなし。全問を番号順に並べるだけ
               if (listView === "all") {
+                // 「通し」は「こちらからやってほしい問題」を順に並べる場所。
+                // 模試で使う問題はここには置かない（トグルで表示ONにしていても出さない）
                 const allItems = questions
                   .map((q, idx) => ({ q, idx }))
-                  .filter(({ q }) => visible(q))
+                  .filter(({ q }) => !isMogiUsedQuestion(q))
                   .sort((a, b) => a.q.number - b.q.number);
                 const allDone = allItems.filter(({ q }) => Boolean(studied[q.id])).length;
                 return (
@@ -2414,14 +2473,13 @@ export default function App() {
                               .filter(
                                 ({ q }) =>
                                   visible(q) &&
-                                  q.number >= g.from &&
-                                  q.number <= g.to &&
+                                  q.group === g.key &&
                                   q.number >= wk.from &&
                                   q.number <= wk.to
                               );
                             if (items.length === 0) return null;
                             return (
-                              <Fragment key={`${c.key}-${g.name}`}>
+                              <Fragment key={`${c.key}-${g.key}`}>
                                 {/* 説明文は囲いの外・上に出す（中に入れると窮屈なので） */}
                                 {g.desc && <p className="qgroup-desc">{g.desc}</p>}
                                 <div className={`qgroup ${items.length <= 3 ? "qgroup--small" : ""}`}>
@@ -2467,14 +2525,13 @@ export default function App() {
                     {cat.groups.map((g) => {
                       const inGroup = questions
                         .map((q, idx) => ({ q, idx }))
-                        .filter(({ q }) => q.number >= g.from && q.number <= g.to);
+                        .filter(({ q }) => q.group === g.key);
                       const items = inGroup.filter(({ q }) => visible(q));
                       if (inGroup.length === 0) return null;
                       // 模試で使っている問題を含む最初のグループ = ここにトグルを置く
-                      const isFirstMogiGroup =
-                        firstMogiNumber >= g.from && firstMogiNumber <= g.to;
+                      const isFirstMogiGroup = g.key === firstMogiGroup;
                       return (
-                        <Fragment key={g.name}>
+                        <Fragment key={g.key}>
                           {isFirstMogiGroup && mogiToggle}
                           {items.length > 0 && (
                             <>
@@ -2575,8 +2632,21 @@ export default function App() {
 
       {showResult && (
         <div className="overlay">
-          <div className="overlay-content overlay-content--result">
+          <div className={`overlay-content overlay-content--result${reportModel ? " overlay-content--report" : ""}`}>
             <h3>採点結果</h3>
+            {reportModel ? (
+              <>
+                <ResultReport model={reportModel} />
+                <div className="result-actions">
+                  <button onClick={() => downloadReport(reportModel)}>レポートを保存（HTML）</button>
+                  <button className="outline" onClick={() => openReport(reportModel)}>
+                    別タブで開く
+                  </button>
+                </div>
+                <p className="result-note">※採点結果はサーバーに記録されません。「レポートを保存」でお手元に残してください。</p>
+              </>
+            ) : (
+              <>
             {isMogi && (
               <p
                 className="result-score"
@@ -2625,12 +2695,6 @@ export default function App() {
                     ※ベータ版です
                   </span>
                 </h4>
-                {resultReport.summary.map((l, i) => (
-                  <p key={i} style={{ margin: "0 0 10px" }}>
-                    {l.tone === "good" ? "◎ " : l.tone === "warn" ? "△ " : "・ "}
-                    {l.text}
-                  </p>
-                ))}
                 <div>
                   {resultReport.zones.map((z) => (
                     <div key={z.name} style={{ marginBottom: "8px" }}>
@@ -2668,7 +2732,11 @@ export default function App() {
                 </div>
               </div>
             )}
-            <p className="result-note">※採点結果は記録されません。スクリーンショット等で保存してください（例: Windows+Shift+S）。</p>
+              </>
+            )}
+            {!reportModel && (
+              <p className="result-note">※採点結果は記録されません。スクリーンショット等で保存してください（例: Windows+Shift+S）。</p>
+            )}
             {resultCode && (
               <div
                 className="result-code"
@@ -2735,18 +2803,6 @@ export default function App() {
               {formatQuestionNumber(gradeNowResult.questionNumber)}
               {gradeNowResult.questionTitle ? `: ${gradeNowResult.questionTitle}` : ""}
             </p>
-            <div className="grade-now-image">
-              {!gradeNowImageError ? (
-                <img
-                  src={gradeNowResult.imageSrc}
-                  alt={`${formatQuestionNumber(gradeNowResult.questionNumber)}の画像`}
-                  onError={() => setGradeNowImageError(true)}
-                  loading="lazy"
-                />
-              ) : (
-                <p className="grade-now-missing">（画像が見つかりません: {gradeNowResult.imageSrc}）</p>
-              )}
-            </div>
             {gradeNowResult.status === "correct" && <p>正解です！</p>}
             {gradeNowResult.status === "incorrect" && (
               <p>

@@ -662,6 +662,19 @@ button:disabled {
   overscroll-behavior: contain;
 }
 
+/* 模試のリッチレポート表示時は横幅を広げる（ResultReport.tsx の本体は 820px） */
+.overlay-content--report {
+  max-width: 900px;
+  width: min(96vw, 900px);
+}
+
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0 8px;
+}
+
 .overlay-content--question-list {
   display: flex;
   flex-direction: column;
@@ -776,30 +789,6 @@ button:disabled {
   margin: 6px 0 10px;
   color: #334155;
   font-weight: 600;
-}
-
-.grade-now-image {
-  margin: 10px 0 14px;
-}
-
-.grade-now-image img {
-  display: block;
-  /* 原寸（拡大しない）で表示し、はみ出るときだけ縮小する */
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  max-height: 45vh;
-  object-fit: contain;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  background: #f8fafc;
-}
-
-.grade-now-missing {
-  margin: 0;
-  font-size: 0.9rem;
-  color: #64748b;
-  word-break: break-all;
 }
 
 .overlay-header {
@@ -1669,5 +1658,9 @@ button:disabled {
   font-size: 0.82em;
   color: #374151;
   cursor: pointer;
+}
+.mogi-toggle-note {
+  color: #64748b;
+  font-size: 0.85em;
 }
 .mogi-toggle input { margin: 0; }
