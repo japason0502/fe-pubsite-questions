@@ -35,10 +35,10 @@ import { BodyBlock, BodyTable, BodyTableCell, ExamState, Question } from "./type
 import { generateAnotherQuestion } from "./anotherQuestionGenerators";
 import { PseudoCodeReference } from "./PseudoCodeReference";
 import { ExamDayNotes } from "./ExamDayNotes";
-import { buildExamReport, ExamReport } from "./examReport";
-import { buildReportModel, fetchPopulation, type ReportModel, type ReportQuestion } from "./reportEngine";
-import { REVIEW_NOTES } from "./reviewNotes";
-import { ResultReport, downloadReport, openReport } from "./ResultReport";
+import { buildExamReport, ExamReport } from "./report/zones";
+import { buildReportModel, fetchPopulation, type ReportModel, type ReportQuestion } from "./report/model";
+import { REVIEW_NOTES } from "./report/notes";
+import { ResultReport, downloadReport, openReport } from "./report/View";
 import { CATEGORIES, categoryOf, sampleNumberOf, buildSampleOrder, isSampleQuestion, SAMPLE_BADGE, mogiBadgeOf, WEEKS } from "./questionGroups";
 import { TRIAL_MAX_NUMBER, TRIAL_PATHS, ROOT_IS_TRIAL, LP_URL, ANNOUNCE_SWITCH_DATE, ANNOUNCE_VALID_UNTIL, ANNOUNCE_POSTED_DATE, ANNOUNCE_ENABLED, NOTICES, MOGI_REQUIRES_REGISTRATION, MAIL_ENDPOINT } from "./trialConfig";
 

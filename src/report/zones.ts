@@ -2,7 +2,7 @@
  * 模擬試験の結果レポート（ルールベース・完全ローカル）
  *
  * 採点済みの正誤と滞在秒だけから、時間の使い方と弱点を診断する。
- * 得点そのものへの総評は得点帯の一言（reportRules.ts の BAND_COMMENTS）が担当するので、
+ * 得点そのものへの総評は得点帯の一言（rules.ts の BAND_COMMENTS）が担当するので、
  * ここでは出さない（同じことを二度言わないため）。
  * AI・サーバー通信は使わない。問番号→ゾーン/ノルマのマッピングはセット別に
  * CONFIG に持ち、未定義のセットはレポート無し（null を返す）。
@@ -121,7 +121,9 @@ export function buildExamReport(set: string | null, rows: ReportRow[]): ExamRepo
         tone: r.ok ? "info" : "warn",
         text: r.ok
           ? `問${r.n}に${min(r.sec)}分かけています。正解できていますが、本番ではほかの問題を圧迫します｡より速く解く工夫をしましょう｡`
-          : `問${r.n}に${min(r.sec)}分かけて不正解です。5分を超えたら一旦離れて、解ける問題を先に取りましょう`
+          : !r.answered
+            ? `問${r.n}に${min(r.sec)}分かけた上で未回答です。5分を超えたら一旦離れて、解ける問題を先に取りましょう`
+            : `問${r.n}に${min(r.sec)}分かけて不正解です。5分を超えたら一旦離れて、解ける問題を先に取りましょう`
       });
     }
 
@@ -188,7 +190,7 @@ export function buildExamReport(set: string | null, rows: ReportRow[]): ExamRepo
       ? [{
           tone: "warn" as const,
           text: isRush(sMiss)
-            ? `${sMiss.length}問（${nums(sMiss)}）ミスしていますが、いずれも短時間で答えています。急ぎすぎです。本文を最後まで読んで、根拠を持って一択に絞りましょう`
+            ? `${sMiss.length}問（${nums(sMiss)}）ミスしていますが、いずれも短時間で答えています。急ぎすぎです。本文を最後まで読んで、根拠を持って一択に絞りましょう｡情報セキュリティは､5分たっぷり使って確実に1択に絞ることが重要です｡`
             : `${sMiss.length}問（${nums(sMiss)}）ミスしています。対策すれば確実に取れる分野なので、ここのノルマ${cfg.quotaSecurity}問は確保しましょう`
         }]
       : []);

@@ -2,19 +2,32 @@
  * 結果レポートの計算部分（表示なし・副作用なし）。
  *
  * 役割分担:
- *   examReport.ts  … ゾーン分け・ノルマ・ゾーンごとのコメント（従来どおり）
- *   reportRules.ts … 人レベルの診断ルール（文言はここだけ触る）
- *   reportEngine.ts… 上の2つと受験データから、レポートに載せる材料を組み立てる（このファイル）
- *   ResultReport.tsx… 材料を HTML にする
+ *   zones.ts … ゾーン分け・ノルマ・ゾーンごとのコメント
+ *   rules.ts … 診断ルールと得点帯の一言（文言はここだけ触る）
+ *   model.ts … 上の2つと受験データから、レポートに載せる材料を組み立てる（このファイル）
+ *   View.tsx … 材料を HTML にする
+ *   notes.ts … 問ごとの手書きコメント（data/reviewNotes.json）を読む
  *
  * 母集団（/population.json）は「あれば載せる」。取れなくてもレポートは成立する。
  */
 
-import type { ExamReport, ReportRow, ZoneReport } from "./examReport";
-import type { Rule, RuleWhen, Zone } from "./reportRules";
-import { BAND_COMMENTS, MAX_LINES, RULES } from "./reportRules";
+import type { ExamReport, ReportRow, ZoneReport } from "./zones";
+import type { Rule, RuleWhen, Zone } from "./rules";
+import { BAND_COMMENTS, MAX_LINES, RULES } from "./rules";
 
 /* ==================== 入力 ==================== */
+
+/** 動画・記事へのリンク（診断ルールと同じ形） */
+export type ReportLink = { label: string; url: string };
+
+/**
+ * 問ごとの手書きコメント（notes.ts に書く）。
+ * 文字列だけでもいいし、動画を添えたいときは { text, link } で書く。
+ */
+export type ReviewNote = string | { text: string; link?: ReportLink };
+
+/** 見るポイント1件ぶん */
+export type ReviewComment = { text: string; link?: ReportLink };
 
 /** 1問ぶんの受験結果＋見出し情報 */
 export type ReportQuestion = ReportRow & {
@@ -39,8 +52,8 @@ export type ReportInput = {
   questions: ReportQuestion[];
   /** buildExamReport の結果。セット未定義なら null（その場合ゾーン系の節は出ない） */
   report: ExamReport | null;
-  /** 問ごとの「見るポイント」の差し替え（キー: 問題の slug）。書かれていない問は自動文。中身は reviewNotes.json */
-  reviewNotes?: Record<string, string>;
+  /** 問ごとの「見るポイント」（キー: 問題の slug）。中身は notes.ts */
+  reviewNotes?: Record<string, ReviewNote>;
 };
 
 /* ==================== 母集団（/population.json） ==================== */
@@ -113,7 +126,7 @@ export const OPENING_NUMBERS = [1, 2, 16, 17, 18, 19, 20];
 export const OPENING_TARGET_SEC = 30 * 60;
 export const REST_TARGET_SEC = 70 * 60;
 
-/** examReport.ts と同じしきい値 */
+/** zones.ts と同じしきい値 */
 export const OVER_SEC = 480;      // かけすぎ（8分）
 export const UNTOUCHED_SEC = 45;  // 誤答かつこれ以下＝手つかず（ほぼ当てずっぽう）
 export const RUSH_SEC = 180;      // 誤答かつこれ未満＝急ぎすぎ
@@ -161,11 +174,13 @@ export type TimeLabel = "手つかず" | "急ぎすぎ" | "かけすぎ" | null;
 
 /**
  * 1問の時間の使い方。時間が計測できていない（sec=0）ときは null。
- * 未回答は時間で言い分けない（結果列で「未回答」と分かる。コメントは reviewComment で固定文）。
+ * 「かけすぎ」だけは未回答でも付く（粘った末に答えを出せていない＝一番もったいない使い方なので）。
+ * 「手つかず」「急ぎすぎ」は答えた上でのミスに対する評価なので、未回答には付けない。
  */
 export function timeLabelOf(q: ReportRow): TimeLabel {
-  if (q.sec <= 0 || !q.answered) return null;
+  if (q.sec <= 0) return null;
   if (q.sec >= OVER_SEC) return "かけすぎ";
+  if (!q.answered) return null;
   if (!q.ok && q.sec <= UNTOUCHED_SEC) return "手つかず";
   if (!q.ok && q.sec < RUSH_SEC) return "急ぎすぎ";
   return null;
@@ -274,7 +289,8 @@ export type ReviewItem = {
   zone?: string;
   result: "誤答" | "未回答" | "正解";
   timeLabel: TimeLabel;
-  comment: string;
+  /** 見るポイント。当てはまった分だけ入る（0件のこともある） */
+  comments: ReviewComment[];
 };
 
 /** ゾーンが未定義（セット未定義など）の問題は末尾へ */
@@ -283,41 +299,55 @@ const zoneOrder = (report: ExamReport | null, n: number) => {
   return i < 0 ? 99 : i;
 };
 
-const ZONE_ADVICE: Record<string, string> = {
-  "基礎トレース": "基礎ゾーンは全問正解がノルマです。最優先で解き直してください",
-  "基礎読解": "基礎ゾーンは全問正解がノルマです。最優先で解き直してください",
-  "情報セキュリティ": "知識で取れる分野。根拠を持って一択に絞る練習を",
-  "トレース": "トレース力がもう一歩。「値を変えてもう一度」で繰り返しましょう",
-  "読解": "設問の条件を1つずつ本文に当てて確認します",
-  "クセの強い問題": "クセ強ゾーン。合格だけなら深追い不要。余裕があれば"
-};
 
 export const UNANSWERED_COMMENT = "分からなくても、何かしら選ぶ癖を付けましょう";
 
-/** 見るポイント: 手書きコメント → 未回答の固定文 → 時間ラベル → ゾーンの定型文の順 */
-export function reviewComment(
+/**
+ * 見るポイント。当てはまるものを上から順に「全部」返す（1つを選ぶのではない）。
+ *   1. 手書きコメント（data/reviewNotes.json）
+ *   2. 未回答
+ *   3. 時間の使い方（手つかず・急ぎすぎ・かけすぎ）
+ * どれにも当てはまらなければ空。ゾーンごとの定型文は出さない（全員同じ文になって情報量が無いため）。
+ */
+export function reviewComments(
   q: ReportQuestion,
   zone: string | undefined,
   label: TimeLabel,
-  reviewNotes?: Record<string, string>
-): string {
-  const written = q.slug ? reviewNotes?.[q.slug] : undefined;
-  if (written) return written;
-  if (!q.answered) return UNANSWERED_COMMENT;
+  reviewNotes?: Record<string, ReviewNote>
+): ReviewComment[] {
+  const comments: ReviewComment[] = [];
+
+  // 手書きは文字列でも { text, link } でも書ける。どちらも同じ形に揃えてから積む
+  const note = q.slug ? reviewNotes?.[q.slug] : undefined;
+  const written = typeof note === "string" ? { text: note } : note;
+  if (written?.text) comments.push(written);
+
+  if (!q.answered) comments.push({ text: UNANSWERED_COMMENT });
+
   switch (label) {
     case "手つかず":
-      return `${fmtSec(q.sec)}で誤答。ほとんど手をつけずに答えています。復習では時間を気にせず解いてみてください`;
+      comments.push({ text: `${fmtSec(q.sec)}で誤答。ほとんど手をつけずに答えています。復習では時間を気にせず解いてみてください` });
+      break;
     case "急ぎすぎ":
-      return zone === "情報セキュリティ"
-        ? `${fmtSec(q.sec)}で誤答。急ぎすぎです。本文を最後まで読んで、根拠を持って一択に絞ってください`
-        : `${fmtSec(q.sec)}で誤答。急ぎすぎです。手を動かして値を追ってから選んでください`;
+      comments.push({
+        text:
+          zone === "情報セキュリティ"
+            ? `${fmtSec(q.sec)}で誤答。急ぎすぎです。本文を最後まで読んで、根拠を持って一択に絞ってください`
+            : `${fmtSec(q.sec)}で誤答。急ぎすぎです。手を動かして値を追ってから選んでください`
+      });
+      break;
     case "かけすぎ":
-      return q.ok
-        ? `${fmtSec(q.sec)}かけて正解。正解できていますが、本番ではほかの問題を圧迫します。8分を超えたら一度飛ばして、最後に戻る癖を`
-        : `${fmtSec(q.sec)}かけて誤答。8分を超えたら一度飛ばして、最後に戻る癖をつけましょう`;
-    default:
-      return (zone && ZONE_ADVICE[zone]) || "解説を見て、どこで判断を誤ったかを確認してください";
+      comments.push({
+        text: !q.answered
+          ? `${fmtSec(q.sec)}かけて未回答。8分を超えたら一度飛ばして、最後に戻る癖をつけましょう`
+          : q.ok
+            ? `${fmtSec(q.sec)}かけて正解。正解できていますが、本番ではほかの問題を圧迫します。8分を超えたら一度飛ばして、最後に戻る癖を`
+            : `${fmtSec(q.sec)}かけて誤答。8分を超えたら一度飛ばして、最後に戻る癖をつけましょう`
+      });
+      break;
   }
+
+  return comments;
 }
 
 /**
@@ -335,7 +365,7 @@ export function buildReviewList(input: ReportInput): ReviewItem[] {
       zone: zone?.name,
       result: q.ok ? "正解" : q.answered ? "誤答" : "未回答",
       timeLabel,
-      comment: reviewComment(q, zone?.name, timeLabel, reviewNotes)
+      comments: reviewComments(q, zone?.name, timeLabel, reviewNotes)
     };
   };
   const byZone = (a: ReviewItem, b: ReviewItem) =>
@@ -421,6 +451,8 @@ export type ReportModel = {
     restLabel: string;
     openingTargetSec: number;
     restTargetSec: number;
+    /** 「最初に解くべき○問」の○。OPENING_NUMBERS の増減に追従させるため */
+    openingCount: number;
   } | null;
   /** 得点帯の一言（冒頭） */
   bandComment: BandComment | null;
@@ -446,7 +478,8 @@ export function buildReportModel(input: ReportInput, pop?: PopulationSet | null)
           openingLabel: fmtQuestionNumbers(opening.map((q) => q.n)),
           restLabel: fmtQuestionNumbers(rest.map((q) => q.n)),
           openingTargetSec: OPENING_TARGET_SEC,
-          restTargetSec: REST_TARGET_SEC
+          restTargetSec: REST_TARGET_SEC,
+          openingCount: opening.length
         }
       : null;
   const band = bandComment(correct * POINTS_PER_QUESTION);

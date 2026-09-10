@@ -4,7 +4,7 @@
  * 1ルール＝1エントリ。文言を直すときも、ルールを足すときも、この表だけを触る。
  * 条件の語彙が足りなくなったときだけ reportEngine.ts を触る。
  *
- * ゾーン名は examReport.ts の zone("…") と同じ文字列を使う:
+ * ゾーン名は zones.ts の zone("…") と同じ文字列を使う:
  *   基礎トレース / 基礎読解 / 情報セキュリティ / トレース / 読解 / クセの強い問題
  *
  * 出しすぎ防止:
@@ -19,13 +19,13 @@ export type RuleWhen = {
   score?: [number, number];
   /** 所要時間（分） */
   elapsedMin?: { min?: number; max?: number };
-  /** このゾーンがノルマ未達（examReport の met=false）。配列なら「どれか1つでも未達」 */
+  /** このゾーンがノルマ未達（zones.ts の met=false）。配列なら「どれか1つでも未達」 */
   zoneUnder?: Zone | Zone[];
   /** 配列の「すべて」が未達。zoneUnder と組み合わせて「AかつBかC」を書ける */
   zoneUnderAll?: Zone | Zone[];
   /** このゾーンの正解数 */
   zoneCount?: { zone: Zone; min?: number; max?: number };
-  /** 未回答の数（現在この条件を使うルールは無し。未回答の指摘は examReport の「時間の使い方」が出す） */
+  /** 未回答の数（現在この条件を使うルールは無し。未回答の指摘は zones.ts の「時間の使い方」が出す） */
   unanswered?: { min?: number; max?: number };
 };
 
@@ -51,7 +51,7 @@ export const VIDEO = {
 /**
  * 得点帯ごとの一言（レポート冒頭・得点の直下に出す）＝このレポートの総評。
  * 上から順に、最初に当たった1つだけ出す。
- * （得点への総評はここだけで言う。examReport.ts 側では出さない）
+ * （得点への総評はここだけで言う。zones.ts 側では出さない）
  *
  * link を付けると、その動画へのリンクが一言の下に出る。
  * ここで出した動画URLは、下の診断（RULES）では重複して出さない（同じURLは1回だけ）。

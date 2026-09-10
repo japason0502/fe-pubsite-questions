@@ -4,17 +4,17 @@
  * 画面: <ResultReport model={...} /> を採点画面に置く
  * 保存: downloadReport(model) → 同じコンポーネントを renderToStaticMarkup して1枚の HTML に固める
  *
- * 計算は reportEngine.ts、文言のルールは reportRules.ts。ここは見た目だけ。
+ * 計算は model.ts、文言のルールは rules.ts。ここは見た目だけ。
  * CSS はクラス名を rr- で始めて、サイト側のスタイルと混ざらないようにしている。
  */
 
 import { renderToStaticMarkup } from "react-dom/server";
-import type { ReportLine, ZoneReport } from "./examReport";
+import type { ReportLine, ZoneReport } from "./zones";
 import {
   FULL_SCORE, GUIDE_SEC, OVER_SEC, PASS_SCORE,
   fmtDate, fmtDelta, fmtSec,
   type DiagnosisLine, type ReportModel, type ReviewItem, type PopulationTable
-} from "./reportEngine";
+} from "./model";
 
 /* ==================== スタイル ==================== */
 
@@ -75,6 +75,8 @@ export const REPORT_CSS = `
 .rr-diag li.warn::marker{content:"△ "}
 .rr-diag li.info::marker{content:"・ "}
 .rr-diag .link{display:block;font-size:.9em;margin-top:2px}
+.rr td.cm .link{display:block;font-size:.95em;margin-top:1px}
+.rr td.cm > div + div{margin-top:4px}
 .rr-next{background:var(--rr-soft);border:1px solid var(--rr-line);border-radius:12px;padding:14px 20px;margin-top:24px}
 .rr-next ol{margin:6px 0 0;padding-left:1.4em}
 .rr-footer{margin-top:32px;color:var(--rr-muted);font-size:.8rem;border-top:1px solid var(--rr-line);padding-top:12px}
@@ -239,7 +241,18 @@ function ReviewSection({ items, hasTime }: { items: ReviewItem[]; hasTime: boole
               </td>
               <td className="c">{it.result}</td>
               {hasTime && <td className={`c${it.q.sec >= OVER_SEC ? " over" : ""}`}>{it.q.sec > 0 ? fmtSec(it.q.sec) : "—"}</td>}
-              <td className="cm">{it.comment}</td>
+              <td className="cm">
+                {it.comments.map((c, i) => (
+                  <div key={i}>
+                    {c.text}
+                    {c.link && (
+                      <a className="link" href={c.link.url} target="_blank" rel="noopener noreferrer">
+                        ▶ 動画: {c.link.label}
+                      </a>
+                    )}
+                  </div>
+                ))}
+              </td>
               <td className="c">
                 {it.q.url ? (
                   <a href={it.q.url} target="_blank" rel="noopener noreferrer">
@@ -346,7 +359,7 @@ function TimeUsageSection({ m }: { m: ReportModel }) {
         ))}
         {split && (
           <li className="info">
-            序盤に取る問（{split.openingLabel}）に {fmtSec(split.openingSec)}
+            最初に解くべき{split.openingCount}問（{split.openingLabel}）に {fmtSec(split.openingSec)}
             （目安{fmtSec(split.openingTargetSec)}に対して {fmtDelta(split.openingSec - split.openingTargetSec)}）、
             その他（{split.restLabel}）に {fmtSec(split.restSec)}
             （目安{fmtSec(split.restTargetSec)}に対して {fmtDelta(split.restSec - split.restTargetSec)}）。
