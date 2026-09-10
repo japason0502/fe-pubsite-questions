@@ -11,7 +11,7 @@
  * 母集団（/population.json）は「あれば載せる」。取れなくてもレポートは成立する。
  */
 
-import type { ExamReport, ReportRow, ZoneReport } from "./zones";
+import { ZONE_SHORT, type ExamReport, type ReportRow, type ZoneReport } from "./zones";
 import type { Rule, RuleWhen, Zone } from "./rules";
 import { BAND_COMMENTS, MAX_LINES, RULES } from "./rules";
 
@@ -433,6 +433,22 @@ export function buildNextSteps(input: ReportInput, review: ReviewItem[], diagnos
   return steps.slice(0, 3);
 }
 
+/* ==================== シェア用テキスト ==================== */
+
+/**
+ * 動画のコメント欄などにそのまま貼れる短い文。
+ * 点数と「ノルマに届かなかったゾーン」だけを書く。URLは入れない（コメント欄では宣伝扱いされるため）。
+ */
+export function buildShareText(input: ReportInput, score: number): string {
+  // "1" → 模擬試験1回目 / それ以外（r4 など）は見出しの名前をそのまま使う
+  const title = /^\d+$/.test(input.set) ? `模擬試験${input.set}回目` : input.setLabel;
+  const under = (input.report?.zones ?? [])
+    .filter((z) => !z.met)
+    .map((z) => ZONE_SHORT[z.name] ?? z.name);
+  const zoneLine = under.length > 0 ? under.join("､") : "なし";
+  return `${title}:${score}点\n未達成ゾーン:${zoneLine}\nでした!`;
+}
+
 /* ==================== まとめて組み立て ==================== */
 
 export type ReportModel = {
@@ -456,6 +472,8 @@ export type ReportModel = {
   } | null;
   /** 得点帯の一言（冒頭） */
   bandComment: BandComment | null;
+  /** コメント欄などに貼るための短い文 */
+  shareText: string;
   diagnosis: DiagnosisLine[];
   review: ReviewItem[];
   population: PopulationTable | null;
@@ -495,6 +513,7 @@ export function buildReportModel(input: ReportInput, pop?: PopulationSet | null)
     hasTime,
     timeSplit,
     bandComment: band,
+    shareText: buildShareText(input, correct * POINTS_PER_QUESTION),
     diagnosis,
     review,
     population: buildPopulationTable(input, pop),

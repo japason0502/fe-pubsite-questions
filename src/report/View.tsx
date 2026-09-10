@@ -19,7 +19,7 @@ import {
 /* ==================== スタイル ==================== */
 
 export const REPORT_CSS = `
-.rr{--rr-ink:#1f2937;--rr-muted:#64748b;--rr-line:#e5e7eb;--rr-acc:#1f3864;--rr-blue:#2563eb;--rr-red:#dc2626;--rr-amber:#f59e0b;--rr-soft:#f8fafc;
+.rr{--rr-ink:#1f2937;--rr-muted:#64748b;--rr-line:#e5e7eb;--rr-acc:#1f3864;--rr-blue:#2563eb;--rr-red:#dc2626;--rr-amber:#f59e0b;--rr-soft:#f8fafc;--rr-tint:#eaf1fe;
   color:var(--rr-ink);font-size:15px;line-height:1.7;text-align:left;max-width:820px;margin:0 auto}
 .rr *{box-sizing:border-box}
 .rr-header{border-bottom:2px solid var(--rr-acc);padding-bottom:12px;margin-bottom:20px;display:flex;flex-wrap:wrap;gap:6px 24px;align-items:baseline}
@@ -36,7 +36,7 @@ export const REPORT_CSS = `
 .rr-line .f{position:absolute;left:0;top:0;bottom:0;background:var(--rr-blue);border-radius:7px}
 .rr-line .p{position:absolute;top:-5px;bottom:-5px;width:2px;background:var(--rr-red)}
 .rr-line .pl{position:absolute;top:16px;transform:translateX(-50%);font-size:.75rem;color:var(--rr-red);white-space:nowrap}
-.rr-band{margin:12px 0 0;padding:12px 16px;border-left:4px solid var(--rr-blue);background:#eaf1fe;border-radius:0 8px 8px 0;font-size:.98rem}
+.rr-band{margin:12px 0 0;padding:12px 16px;border-left:4px solid var(--rr-blue);background:var(--rr-tint);border-radius:0 8px 8px 0;font-size:.98rem}
 .rr-band b{color:var(--rr-acc)}
 .rr-band .link{display:block;font-size:.9em;margin-top:4px}
 .rr-zone{margin:10px 0}
@@ -62,7 +62,7 @@ export const REPORT_CSS = `
 .rr-tw{overflow-x:auto}
 .rr-zp th,.rr-zp td{font-variant-numeric:tabular-nums}
 .rr-zp th small,.rr-zp td small{display:block;font-weight:400;color:var(--rr-muted);font-size:.72em}
-.rr-zp .me{background:#eaf1fe}
+.rr-zp .me{background:var(--rr-tint)}
 .rr-zp th.me{color:var(--rr-blue)}
 .rr-zp td.you{font-weight:800;font-size:1.05em;border-left:2px solid var(--rr-blue)}
 .rr-zp th.you{border-left:2px solid var(--rr-blue)}
@@ -77,12 +77,73 @@ export const REPORT_CSS = `
 .rr-diag .link{display:block;font-size:.9em;margin-top:2px}
 .rr td.cm .link{display:block;font-size:.95em;margin-top:1px}
 .rr td.cm > div + div{margin-top:4px}
-.rr-next{background:var(--rr-soft);border:1px solid var(--rr-line);border-radius:12px;padding:14px 20px;margin-top:24px}
+.rr-next{background:var(--rr-tint);border:0;border-radius:12px;padding:14px 20px;margin-top:24px}
 .rr-next ol{margin:6px 0 0;padding-left:1.4em}
+.rr-extra{margin-top:26px;background:var(--rr-soft);border:1px solid var(--rr-line);border-radius:12px;padding:16px 20px}
+.rr-extra h4{margin:0 0 2px;font-size:.95rem;color:#334155}
+.rr-extra .lead{color:var(--rr-muted);font-size:.85rem;margin:0 0 10px}
+.rr-extra .rr-share{background:#fff}
+.rr-share{white-space:pre-wrap;font-family:inherit;font-size:.95rem;background:var(--rr-soft);border:1px solid var(--rr-line);border-radius:8px;padding:12px 14px;margin:8px 0 0}
+.rr-buttons{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.rr-copy,.rr-primary,.rr-btn{padding:7px 14px;font-size:.9rem;font-family:inherit;border-radius:6px;cursor:pointer;text-decoration:none;display:inline-block;line-height:1.4}
+.rr-copy,.rr-primary{color:#fff;background:var(--rr-blue);border:0}
+.rr-btn{color:var(--rr-blue);background:#fff;border:1px solid var(--rr-blue);font-weight:600}
+.rr a.rr-btn:hover{text-decoration:none}
+.rr-copy:hover,.rr-primary:hover,.rr-btn:hover{opacity:.85}
+@media print{ .rr-buttons{display:none} }
+.rr-note{margin-top:28px;padding:16px 20px;background:#fffbeb;border:1px solid #fcd34d;border-left:5px solid var(--rr-amber);border-radius:0 10px 10px 0}
+.rr-note h3{margin:0 0 10px;font-size:1rem;color:#92400e}
+.rr-note .headline{font-weight:700;color:var(--rr-red);margin:0 0 8px}
+.rr-note p{margin:0 0 8px}
+.rr-note .msg:last-child p:last-child{margin-bottom:0}
+.rr-note .msg + .msg{margin-top:14px;padding-top:14px;border-top:1px dashed #fcd34d}
 .rr-footer{margin-top:32px;color:var(--rr-muted);font-size:.8rem;border-top:1px solid var(--rr-line);padding-top:12px}
 @media print{ .rr{font-size:12.5px} .rr a::after{content:" (" attr(href) ")";font-size:.75em;color:var(--rr-muted);font-weight:400} .rr h2{break-after:avoid} .rr table,.rr svg,.rr-hero,.rr-next{break-inside:avoid} }
 @media (max-width:560px){ .rr-hero{grid-template-columns:1fr} .rr-score{font-size:2.4rem} .rr td.cm{display:none} }
 `;
+
+/* ==================== シェアの設定 ==================== */
+
+/** つぶやきの末尾に添える（本文とは1行空けて入る）。タグは増減しやすいよう配列で持つ */
+const SHARE_MENTION = "@japacojp";
+const SHARE_HASHTAGS = ["#基本情報技術者試験", "#じゃぱそんの基本情報"];
+
+/** 「動画にコメントする」の飛び先。「合格に繋がる模試の受け方」の動画にコメントを集める */
+const COMMENT_VIDEO_URL = "https://youtu.be/mhVYsuS7n6I";
+
+/** X の投稿画面を、本文を入れた状態で開く URL */
+function tweetUrl(shareText: string): string {
+  const text = `${shareText}\n\n${SHARE_MENTION}\n${SHARE_HASHTAGS.join(" ")}`;
+  return `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
+}
+
+/* ==================== じゃぱそんから一言 ==================== */
+
+/**
+ * 採点直後の画面にだけ出すメッセージ。保存した HTML には入れない（その場で読んでほしい話なので）。
+ * onlySets を書くとそのセットのときだけ出る。省略すればどの模試でも出る。
+ */
+const AUTHOR_NOTE_TITLE = "じゃぱそんから一言";
+
+const AUTHOR_MESSAGES: { headline: string; paragraphs: string[]; onlySets?: string[] }[] = [
+  {
+    headline: "※2回目を受けるのはちょっと待った※",
+    onlySets: ["1"],
+    paragraphs: [
+      "気持ちはわかりますが､1回目の振り返り･対策をしないと､また同じような点数になるだけ｡" +
+        "｢合格点ギリギリ(で落ちる)を繰り返す｣を､模擬試験で再現していることになります｡",
+      "2回目を受けるのは､見つけた課題を充分に対策してから､です｡" +
+        "(もう本番が近い方も､模擬試験2回目よりも､1回目の課題の対策を優先しましょう｡)"
+    ]
+  },
+  {
+    headline: "※正解した問題も､見直しを!!※",
+    paragraphs: [
+      "正解した問題も､解法が合っていたか(たまたま正解していないか)･より早く解けなかったかを確認しましょう!" +
+        "特に｢たまたま正解してしまった問題｣は､間違えた問題と同じように復習が必要です｡"
+    ]
+  }
+];
 
 /* ==================== 部品 ==================== */
 
@@ -370,14 +431,39 @@ function TimeUsageSection({ m }: { m: ReportModel }) {
   );
 }
 
+/** コピーボタン（画面表示用）。保存した HTML 側は buildReportHtml が同じ処理を仕込む */
+function copyShareText(e: { currentTarget: HTMLButtonElement }) {
+  const button = e.currentTarget;
+  const text = document.getElementById("rr-share-text")?.textContent ?? "";
+  const done = () => {
+    const before = button.textContent;
+    button.textContent = "コピーしました";
+    setTimeout(() => (button.textContent = before), 1500);
+  };
+  navigator.clipboard?.writeText(text).then(done, () => {
+    // clipboard が使えない環境向け。選択してもらう
+    const range = document.createRange();
+    const pre = document.getElementById("rr-share-text");
+    if (!pre) return;
+    range.selectNodeContents(pre);
+    const sel = window.getSelection();
+    sel?.removeAllRanges();
+    sel?.addRange(range);
+  });
+}
+
 /* ==================== 本体 ==================== */
 
-/** withStyle: 画面表示では CSS を同梱する。buildReportHtml は <head> に入れるので false */
-export function ResultReport({ model: m, withStyle = true }: { model: ReportModel; withStyle?: boolean }) {
+/**
+ * forScreen: 採点直後の画面に出すときは true。保存する HTML を作るときは false。
+ * 画面のときだけ CSS を同梱し、その場で読んでほしいメッセージも出す。
+ */
+export function ResultReport({ model: m, forScreen = true }: { model: ReportModel; forScreen?: boolean }) {
   const { input } = m;
+  const authorMessages = AUTHOR_MESSAGES.filter((msg) => !msg.onlySets || msg.onlySets.includes(input.set));
   return (
     <div className="rr">
-      {withStyle && <style>{REPORT_CSS}</style>}
+      {forScreen && <style>{REPORT_CSS}</style>}
       <div className="rr-header">
         <h1>基本情報 科目B {input.setLabel} 結果レポート</h1>
         <span className="rr-meta">
@@ -424,6 +510,60 @@ export function ResultReport({ model: m, withStyle = true }: { model: ReportMode
         </div>
       )}
 
+
+      {forScreen && authorMessages.length > 0 && (
+        <div className="rr-note">
+          <h3>{AUTHOR_NOTE_TITLE}</h3>
+          {authorMessages.map((msg) => (
+            <div className="msg" key={msg.headline}>
+              <p className="headline">{msg.headline}</p>
+              {msg.paragraphs.map((text, i) => (
+                <p key={i}>{text}</p>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {forScreen && (
+        <>
+          <h2>レポートを保存</h2>
+          <p className="rr-meta">
+            このページはサーバーに残りません。1枚のHTMLとして保存できます（印刷・PDF化もできます）。
+          </p>
+          <div className="rr-buttons">
+            <button className="rr-primary" type="button" onClick={() => downloadReport(m)}>
+              レポートを保存（HTML）
+            </button>
+            <button className="rr-btn" type="button" onClick={() => openReport(m)}>
+              別タブで開く
+            </button>
+          </div>
+        </>
+      )}
+
+      <div className="rr-extra">
+        <h4>おまけ：結果をシェア</h4>
+        <p className="lead">
+          よかったら、動画のコメント欄やXでどうぞ。どのゾーンで詰まったかが分かると、次の教材づくりの参考になります。
+          (じゃぱそんからのアドバイスももらえるかも･･?)
+        </p>
+        <pre className="rr-share" id="rr-share-text">{m.shareText}</pre>
+        <div className="rr-buttons">
+          <button className="rr-copy" type="button" onClick={copyShareText}>
+            この文をコピー
+          </button>
+        </div>
+        <div className="rr-buttons">
+          <a className="rr-btn" href={COMMENT_VIDEO_URL} target="_blank" rel="noopener noreferrer">
+            動画にコメントする
+          </a>
+          <a className="rr-btn" href={tweetUrl(m.shareText)} target="_blank" rel="noopener noreferrer">
+            Xでつぶやく
+          </a>
+        </div>
+      </div>
+
       <div className="rr-footer">
         このレポートはお使いのブラウザで生成されたもので、サーバーには保存されていません。
         受験コードは合格報告フォームに記入していただくと、模擬試験と本番の点数を突き合わせた分析ができます。　科目B 演習サイト
@@ -437,7 +577,7 @@ export function ResultReport({ model: m, withStyle = true }: { model: ReportMode
 /** 1枚の HTML として書き出す（画面と同じコンポーネント・同じ CSS） */
 export function buildReportHtml(model: ReportModel): string {
   const title = `${model.input.setLabel} 結果レポート ${fmtDate(model.input.date)}`;
-  const body = renderToStaticMarkup(<ResultReport model={model} withStyle={false} />);
+  const body = renderToStaticMarkup(<ResultReport model={model} forScreen={false} />);
   return `<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${escapeHtml(title)}</title>
 <style>
@@ -445,7 +585,30 @@ body{margin:0;background:#fff;font-family:-apple-system,"Segoe UI","Hiragino Kak
 .rr{padding:36px 22px 72px}
 @media print{.rr{padding:0}}
 ${REPORT_CSS}
-</style></head><body>${body}</body></html>`;
+</style></head><body>${body}
+<script>
+// 保存した HTML 用。画面表示のときは React 側が同じことをしている
+document.querySelector(".rr-copy")?.addEventListener("click", function () {
+  var pre = document.getElementById("rr-share-text");
+  var button = this;
+  if (!pre) return;
+  var done = function () {
+    var before = button.textContent;
+    button.textContent = "コピーしました";
+    setTimeout(function () { button.textContent = before; }, 1500);
+  };
+  var fallback = function () {
+    var range = document.createRange();
+    range.selectNodeContents(pre);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  };
+  if (navigator.clipboard) navigator.clipboard.writeText(pre.textContent).then(done, fallback);
+  else fallback();
+});
+</script>
+</body></html>`;
 }
 
 export function reportFileName(model: ReportModel): string {

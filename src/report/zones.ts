@@ -36,6 +36,19 @@ export type ZoneReport = {
 
 export type ExamReport = { time: ReportLine[]; zones: ZoneReport[] };
 
+/**
+ * ゾーン名の略称。コメント欄に貼る短い文で使う（正式名だと長すぎる）。
+ * zone("…") に渡している名前と対応させること。
+ */
+export const ZONE_SHORT: Record<string, string> = {
+  "基礎トレース": "基トレ",
+  "基礎読解": "基読",
+  "情報セキュリティ": "情セ",
+  "トレース": "トレ",
+  "読解": "読解",
+  "クセの強い問題": "クセ"
+};
+
 type SetConfig = {
   basicsTrace: number[];                 // 基礎（トレース系）。ノルマ=全問
   basicsReading: number[];               // 基礎（読解系）。ノルマ=全問

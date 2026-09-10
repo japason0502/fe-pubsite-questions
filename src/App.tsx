@@ -38,7 +38,7 @@ import { ExamDayNotes } from "./ExamDayNotes";
 import { buildExamReport, ExamReport } from "./report/zones";
 import { buildReportModel, fetchPopulation, type ReportModel, type ReportQuestion } from "./report/model";
 import { REVIEW_NOTES } from "./report/notes";
-import { ResultReport, downloadReport, openReport } from "./report/View";
+import { ResultReport } from "./report/View";
 import { CATEGORIES, categoryOf, sampleNumberOf, buildSampleOrder, isSampleQuestion, SAMPLE_BADGE, mogiBadgeOf, WEEKS } from "./questionGroups";
 import { TRIAL_MAX_NUMBER, TRIAL_PATHS, ROOT_IS_TRIAL, LP_URL, ANNOUNCE_SWITCH_DATE, ANNOUNCE_VALID_UNTIL, ANNOUNCE_POSTED_DATE, ANNOUNCE_ENABLED, NOTICES, MOGI_REQUIRES_REGISTRATION, MAIL_ENDPOINT } from "./trialConfig";
 
@@ -854,7 +854,6 @@ export default function App() {
     }
   }, [reviewMode]);
   /** 採点画面に出す8桁の受験コード（合格報告フォームとの突き合わせ用） */
-  const [resultCode, setResultCode] = useState<string | null>(null);
   // ===== 受験前アンケート（任意）。集計にのみ使う =====
   /** 97問講座の受講有無: "yes" | "no" | "" */
   const [svCourse, setSvCourse] = useState<string>(() => lsGet(SURVEY_COURSE_KEY) || "");
@@ -1201,7 +1200,6 @@ export default function App() {
     lsSet(statsKey, JSON.stringify(session));
     dwellRef.current = { id: null, at: 0, acc: {} };
     lsDel(dwellKey);
-    setResultCode(null);
     setResultReport(null);
     setReportModel(null);
     postStats({
@@ -1262,7 +1260,6 @@ export default function App() {
         ovr: r.ovr
       }))
     });
-    setResultCode(getExamCode());
     lsDel(statsKey);
     lsDel(dwellKey);
     statsRef.current = null;
@@ -2637,13 +2634,6 @@ export default function App() {
             {reportModel ? (
               <>
                 <ResultReport model={reportModel} />
-                <div className="result-actions">
-                  <button onClick={() => downloadReport(reportModel)}>レポートを保存（HTML）</button>
-                  <button className="outline" onClick={() => openReport(reportModel)}>
-                    別タブで開く
-                  </button>
-                </div>
-                <p className="result-note">※採点結果はサーバーに記録されません。「レポートを保存」でお手元に残してください。</p>
               </>
             ) : (
               <>
@@ -2736,39 +2726,6 @@ export default function App() {
             )}
             {!reportModel && (
               <p className="result-note">※採点結果は記録されません。スクリーンショット等で保存してください（例: Windows+Shift+S）。</p>
-            )}
-            {resultCode && (
-              <div
-                className="result-code"
-                style={{
-                  margin: "12px 0",
-                  padding: "10px 12px",
-                  border: "1px dashed currentColor",
-                  borderRadius: 4,
-                  fontSize: "0.9em",
-                  textAlign: "left",
-                  opacity: 0.9
-                }}
-              >
-                受験コード:{" "}
-                <strong style={{ fontFamily: "monospace", fontSize: "1.25em", letterSpacing: "0.12em" }}>
-                  {resultCode}
-                </strong>
-                <br />
-                このコードはお使いのブラウザごとに固定で､ガイダンス画面からいつでも確認できます｡合格報告フォームにこのコードを書いていただけると､模擬試験と本番の点数を突き合わせた分析ができます｡
-              </div>
-            )}
-            {mogiSet === "1" && (
-              <div className="result-review">
-                <a
-                  className="result-review-link"
-                  href="https://docs.google.com/document/d/1MNhQlraRNPBOnf-PFMSzMU5GPUkxLmxhEb8YyysK6ag/edit?usp=sharing"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  (受けた後に読んでください)全体の振り返り
-                </a>
-              </div>
             )}
             <button
               className="outline"
