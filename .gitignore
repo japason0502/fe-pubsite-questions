@@ -144,3 +144,12 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# ビルド結果の確認用に手元で作ったコピー（dist/ と違って名前がずれるので個別に）
+dist_check*/
+
+# 編集前のバックアップ。履歴は git にあるので追跡しない
+*.bak
+
+# 削除待ちの一時置き場
+_to_delete/
