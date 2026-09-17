@@ -50,7 +50,7 @@ export const ANNOUNCE_VALID_UNTIL = "2026/12/31";
  * 10/1 に true にすると、未登録の人は模試を開くときに登録案内が出るようになる。
  */
 /** 模試に受験日登録を必須にするか。10/1 に true へ */
-export const MOGI_REQUIRES_REGISTRATION = false;
+export const MOGI_REQUIRES_REGISTRATION = true;
 /** 受験日登録フォーム / 照合APIのURL（末尾スラッシュなし） */
 export const MAIL_ENDPOINT = "https://fe-mail.japason.workers.dev";
 
