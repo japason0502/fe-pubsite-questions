@@ -611,12 +611,6 @@ export default function App() {
   const urlParams = useMemo(() => new URLSearchParams(window.location.search), []);
   const qParam = urlParams.get("q");
   const embed = urlParams.get("embed") === "1";
-  // iframeの中にいるか。埋め込み中は「問題演習に戻る」を出さない
-  // （フレーム内で本体アプリに遷移してしまい、狭い枠に閉じ込められた行き止まりになるため）
-  const framed = useMemo(() => {
-    if (embed) return true;
-    try { return window.self !== window.top; } catch { return true; }
-  }, [embed]);
   const mockParam = urlParams.get("mock");
   // ?mock=1（模試1回目）／?mock=2（模試2回目）／?mock=r4（R4サンプル20問）。それ以外の値は通常演習扱い
   const mogiSet = mockParam === "1" || mockParam === "2" || mockParam === "r4" ? mockParam : null;
@@ -2835,11 +2829,9 @@ export default function App() {
               <button onClick={() => window.open(LP_URL, "_blank", "noopener")}>
                 有料版の案内を見る
               </button>
-              {!framed && (
-                <button className="outline" onClick={() => { window.location.href = window.location.pathname; }}>
-                  問題演習に戻る
-                </button>
-              )}
+              <button className="outline" onClick={() => { window.location.href = window.location.pathname; }}>
+                問題演習に戻る
+              </button>
             </div>
           </div>
         </div>
@@ -2900,11 +2892,9 @@ export default function App() {
               <button onClick={() => window.open(`${MAIL_ENDPOINT}/?code=${encodeURIComponent(getExamCode())}`, "_blank", "noopener")}>
                 受験日を登録する
               </button>
-              {!framed && (
-                <button className="outline" onClick={() => { window.location.href = window.location.pathname; }}>
-                  問題演習に戻る
-                </button>
-              )}
+              <button className="outline" onClick={() => { window.location.href = window.location.pathname; }}>
+                問題演習に戻る
+              </button>
             </div>
           </div>
         </div>
