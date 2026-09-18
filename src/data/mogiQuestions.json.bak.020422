@@ -1,0 +1,1805 @@
+[
+  {
+    "id": "m1",
+    "slug": "mogi1-1",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi1-mon1/",
+    "number": 1,
+    "title": "大域変数 ",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyText": "func2() を実行すると、【　】が出力される。",
+    "pseudoCode": [
+      "大域: 整数型: g ← 4",
+      "",
+      "○func1()",
+      "  整数型: a ← 5",
+      "  g ← g − a",
+      "",
+      "○func2()",
+      "  整数型: a ← 3",
+      "  g ← g × a",
+      "  func1()",
+      "  g ← g ＋ a",
+      "  gの値を出力"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "7"
+      },
+      {
+        "id": "c2",
+        "text": "10"
+      },
+      {
+        "id": "c3",
+        "text": "12"
+      },
+      {
+        "id": "c4",
+        "text": "15"
+      }
+    ],
+    "correctChoiceId": "c2"
+  },
+  {
+    "id": "m2",
+    "slug": "mogi1-2",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi1-mon2/",
+    "number": 2,
+    "title": "条件分岐",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyText": "関数 add を add(2) として呼び出したとき，戻り値は【　】である。",
+    "pseudoCode": [
+      "○ 整数型: add(整数型: n)",
+      "  if (n が 1と等しい)",
+      "      n ← n + 5",
+      "  elseif (nが2と等しくない)",
+      "      n ← n + 7",
+      "  else",
+      "      n ← n + 3",
+      "  endif",
+      "  return n"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "5"
+      },
+      {
+        "id": "c2",
+        "text": "9"
+      },
+      {
+        "id": "c3",
+        "text": "10"
+      },
+      {
+        "id": "c4",
+        "text": "12"
+      },
+      {
+        "id": "c5",
+        "text": "14"
+      }
+    ],
+    "correctChoiceId": "c1"
+  },
+  {
+    "id": "m3",
+    "slug": "mogi1-3",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi1-mon3/",
+    "number": 3,
+    "title": "2次元配列",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "関数 findPos を findPos({{4, 2, 7}, {1, 5, 3}, {6, 2, 8}}, 20) として呼び出したとき，戻り値の配列 の要素番号 2 の値は【　】となる。",
+    "pseudoCode": [
+      "○ 整数型の配列: findPos(整数型の二次元配列: data, 整数型: limit)",
+      "    整数型の配列: pos ← {−1, −1}",
+      "    整数型: i, j, sum ← 0",
+      "    for (i を 1 から data の行数 まで 1 ずつ増やす)",
+      "        for (j を 1 から data の列数 まで 1 ずつ増やす)",
+      "            sum ← sum ＋ data[i][j]",
+      "            if (sum ＞ limit)",
+      "                pos[1] ← i",
+      "                pos[2] ← j",
+      "                return pos",
+      "            endif",
+      "        endfor",
+      "    endfor",
+      "    return pos"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "1"
+      },
+      {
+        "id": "c2",
+        "text": "2"
+      },
+      {
+        "id": "c3",
+        "text": "3"
+      },
+      {
+        "id": "c4",
+        "text": "4"
+      },
+      {
+        "id": "c5",
+        "text": "−1"
+      }
+    ],
+    "correctChoiceId": "c3"
+  },
+  {
+    "id": "m4",
+    "slug": "mogi1-4",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi1-mon4/",
+    "number": 4,
+    "title": "最大公約数",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。",
+    "bodyText": "関数 func は，二つの正の整数 x と y の最大公約数を，除算法によるユークリッド互除法で求めて返す。除算法によるユークリッド互除法では，大きい方を小さい方で割った余りを新たな小さい方とする操作を，余りが 0 になるまで繰り返し，最後に残った数を最大公約数とする。",
+    "pseudoCode": [
+      "○整数型: func(整数型: x, 整数型: y)",
+      "  整数型: temp",
+      "  while (【 a 】)",
+      "    temp ← 【 b 】",
+      "    x ← y",
+      "    y ← temp",
+      "  endwhile",
+      "  return x"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "a：y ＝ 0　b：x mod y"
+      },
+      {
+        "id": "c2",
+        "text": "a：y ＝ 0　b：x − y"
+      },
+      {
+        "id": "c3",
+        "text": "a：y ＝ 0　b：x ÷ y の商"
+      },
+      {
+        "id": "c4",
+        "text": "a：y ＝ 0　b：y mod x"
+      },
+      {
+        "id": "c5",
+        "text": "a：y ≠ 0　b：x mod y"
+      },
+      {
+        "id": "c6",
+        "text": "a：y ≠ 0　b：x − y"
+      },
+      {
+        "id": "c7",
+        "text": "a：y ≠ 0　b：x ÷ y の商"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "a",
+        "b"
+      ],
+      "rows": [
+        [
+          "y ＝ 0",
+          "x mod y"
+        ],
+        [
+          "y ＝ 0",
+          "x − y"
+        ],
+        [
+          "y ＝ 0",
+          "x ÷ y の商"
+        ],
+        [
+          "y ＝ 0",
+          "y mod x"
+        ],
+        [
+          "y ≠ 0",
+          "x mod y"
+        ],
+        [
+          "y ≠ 0",
+          "x − y"
+        ],
+        [
+          "y ≠ 0",
+          "x ÷ y の商"
+        ]
+      ]
+    },
+    "correctChoiceId": "c5"
+  },
+  {
+    "id": "m5",
+    "slug": "mogi1-5",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi1-mon5/",
+    "number": 5,
+    "title": "カプレカ操作",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "　カプレカ操作とは，4桁の整数（各桁が全て同じものを除く）に対して，各桁の数字を大きい順に並べた整数から，小さい順に並べた整数を引く操作である。この操作を繰り返すと，どの数から始めても必ず 6174 に到達することが知られている。"
+      },
+      {
+        "type": "text",
+        "text": "　関数 kaprekar は，各桁が全て同じではない4桁の整数 n を受け取り，n が 6174 になるまでにカプレカ操作を繰り返した回数を返す。ここで，関数 toDesc(n) は n の各桁を大きい順に，関数 toAsc(n) は小さい順に並べた整数を返す。例えば toDesc(3524) は 5432を返し､toAsc(3524) は 2345を返す。先頭が 0 になる場合は，その分だけ桁数の少ない整数として扱う（例：0378 は 378）。"
+      }
+    ],
+    "pseudoCode": [
+      "○整数型: kaprekar(整数型: n)",
+      "  整数型: count ← 0",
+      "  while (n ≠ 6174)",
+      "    n ← 【 a 】",
+      "    count ← count ＋ 1",
+      "  endwhile",
+      "  return 【 b 】"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "a：toDesc(n) − toAsc(n)　b：count"
+      },
+      {
+        "id": "c2",
+        "text": "a：toDesc(n) − toAsc(n)　b：n"
+      },
+      {
+        "id": "c3",
+        "text": "a：toAsc(n) − toDesc(n)　b：count"
+      },
+      {
+        "id": "c4",
+        "text": "a：toAsc(n) − toDesc(n)　b：n"
+      },
+      {
+        "id": "c5",
+        "text": "a：toDesc(n) − n　b：count"
+      },
+      {
+        "id": "c6",
+        "text": "a：toDesc(n) − n　b：n"
+      },
+      {
+        "id": "c7",
+        "text": "a：n − toAsc(n)　b：count"
+      },
+      {
+        "id": "c8",
+        "text": "a：n − toAsc(n)　b：n"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "a",
+        "b"
+      ],
+      "rows": [
+        [
+          "toDesc(n) − toAsc(n)",
+          "count"
+        ],
+        [
+          "toDesc(n) − toAsc(n)",
+          "n"
+        ],
+        [
+          "toAsc(n) − toDesc(n)",
+          "count"
+        ],
+        [
+          "toAsc(n) − toDesc(n)",
+          "n"
+        ],
+        [
+          "toDesc(n) − n",
+          "count"
+        ],
+        [
+          "toDesc(n) − n",
+          "n"
+        ],
+        [
+          "n − toAsc(n)",
+          "count"
+        ],
+        [
+          "n − toAsc(n)",
+          "n"
+        ]
+      ]
+    },
+    "correctChoiceId": "c1"
+  },
+  {
+    "id": "m6",
+    "slug": "mogi1-6",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi1-mon6/",
+    "number": 6,
+    "title": "2進数変換",
+    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まり，二つの【　】には同じ答えが入る。",
+    "bodyText": "関数 toBinary は，引数として与えられた 0 より大きく 100 未満の整数を 8 桁の符号なしの 2 進数に変換し，上位桁から順に 1 ビットずつ要素に格納した整数型の配列を返す。例えば，引数として 50 を与えると，{0, 0, 1, 1, 0, 0, 1, 0} が返る。",
+    "pseudoCode": [
+      "○ 整数型の配列: toBinary(整数型: j)",
+      "    整数型の配列: out ← {0, 0, 0, 0, 0, 0, 0, 0}",
+      "    整数型: k",
+      "    for (k を 8 から 1 まで 1 ずつ減らす)",
+      "        out[k] ← j ÷ 【　】 の余り",
+      "        j ← j ÷ 【　】 の商",
+      "    endfor",
+      "    return out"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "2"
+      },
+      {
+        "id": "c2",
+        "text": "4"
+      },
+      {
+        "id": "c3",
+        "text": "8"
+      },
+      {
+        "id": "c4",
+        "text": "16"
+      },
+      {
+        "id": "c5",
+        "text": "32"
+      },
+      {
+        "id": "c6",
+        "text": "64"
+      }
+    ],
+    "correctChoiceId": "c1"
+  },
+  {
+    "id": "m7",
+    "slug": "mogi1-7",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi1-mon7/",
+    "number": 7,
+    "title": "再帰",
+    "questionText": "次のプログラム中の【　　　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "関数 f は非負の整数 n を引数にとり，その総和を返す関数である。"
+      },
+      {
+        "type": "text",
+        "text": "非負の整数 n の総和は n が 1 のときに 1 になり，それ以外の場合は 1 から n までの整数を全て足し合わせた数となる。"
+      }
+    ],
+    "pseudoCode": [
+      "○ 整数型: f(整数型: n)",
+      "  if (n ≤ 1)",
+      "    return 1",
+      "  endif",
+      "",
+      "  return 【　】"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "(n − 1) + f(n)"
+      },
+      {
+        "id": "c2",
+        "text": "f(n − 1)"
+      },
+      {
+        "id": "c3",
+        "text": "n"
+      },
+      {
+        "id": "c4",
+        "text": "n + (n − 1)"
+      },
+      {
+        "id": "c5",
+        "text": "n + f(1)"
+      },
+      {
+        "id": "c6",
+        "text": "n + f(n − 1)"
+      }
+    ],
+    "correctChoiceId": "c6"
+  },
+  {
+    "id": "m8",
+    "slug": "mogi1-8",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi1-mon8/",
+    "number": 8,
+    "title": "循環キュー",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は 0 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "　関数 enqueue は，引数で与えられた整数を循環型キューに格納する。格納できる場合は true を返し，格納できなかった場合は false を返す。"
+      },
+      {
+        "type": "text",
+        "text": "　関数 dequeue は，キューから値を取り出して返す。キューが空のときは未定義の値を返す。"
+      },
+      {
+        "type": "text",
+        "text": "　キューを，要素数が 8 である大域の整数型の配列 ringBuffer，次に値を取り出す位置を示す大域の変数 head，及び次の格納位置を示す大域の変数 tail，キューが満杯かどうかを示す大域の変数 fullFlag で表現する。循環型キューの初期状態を図に示す。図は，a,b,c,d,eの5つが循環型キューに格納されている状態を示す。"
+      },
+      {
+        "type": "text",
+        "text": "　プログラムでは，配列の領域外を参照してはならないものとする。"
+      },
+      {
+        "type": "table",
+        "caption": "図　循環型キューの初期状態",
+        "headers": [
+          "添字",
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7"
+        ],
+        "rows": [
+          [
+            "ringBuffer",
+            "d",
+            "e",
+            "x",
+            "y",
+            "z",
+            "a",
+            "b",
+            "c"
+          ],
+          [
+            "",
+            "",
+            "",
+            {
+              "text": "↑\ntail",
+              "align": "center"
+            },
+            "",
+            "",
+            {
+              "text": "↑\nhead",
+              "align": "center"
+            },
+            "",
+            ""
+          ]
+        ]
+      }
+    ],
+    "pseudoCode": [
+      "大域：整数型の配列：ringBuffer ← {d, e, x, y, z, a, b, c}",
+      "大域：整数型：head ← 5",
+      "大域：整数型：tail ← 2",
+      "大域：論理型：fullFlag ← false",
+      "",
+      "○ 論理型：enqueue(整数型：inputData)",
+      "    if (fullFlag が true と等しい)",
+      "        return false",
+      "    endif",
+      "    ringBuffer[tail] ← inputData",
+      "    tail ← (tail + 1) mod ringBuffer の要素数",
+      "    if (tailとheadが【 a 】)",
+      "        fullFlag ← true",
+      "    endif",
+      "    return true",
+      "",
+      "○ 整数型：dequeue()",
+      "    整数型：val ← 未定義の値",
+      "    if ((fullFlag が false と等しい) and (head と tail が等しい))",
+      "        return val",
+      "    endif",
+      "    val ← ringBuffer[head]",
+      "    head ← (head + 1) mod ringBuffer の要素数",
+      "    fullFlag ← 【 b 】",
+      "    return val"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "a：等しい　b：false"
+      },
+      {
+        "id": "c2",
+        "text": "a：等しい　b：true"
+      },
+      {
+        "id": "c3",
+        "text": "a：等しくない　b：false"
+      },
+      {
+        "id": "c4",
+        "text": "a：等しくない　b：true"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "a",
+        "b"
+      ],
+      "rows": [
+        [
+          "等しい",
+          "false"
+        ],
+        [
+          "等しい",
+          "true"
+        ],
+        [
+          "等しくない",
+          "false"
+        ],
+        [
+          "等しくない",
+          "true"
+        ]
+      ]
+    },
+    "correctChoiceId": "c1"
+  },
+  {
+    "id": "m9",
+    "slug": "mogi1-9",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi1-mon9/",
+    "number": 9,
+    "title": "2分木の走査",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "　手続 order は，図の 2 分木の，引数で指定した節を根とする部分木をたどりながら，全ての節番号を出力する。大域の配列 tree が図の 2 分木を表している。配列tree の要素は，対応する節の子の節番号を，左の子，右の子の順に格納した配列である。例えば，配列 tree の要素番号 1 の要素は，節番号 1 の子の節番号から成る配列であり，左の子の節番号 2，右の子の節番号 3 を配列｛2，3｝として格納する。"
+      },
+      {
+        "type": "text",
+        "text": "　手続 order を order(1)として呼び出すと，【　】 の順に出力される。"
+      },
+      {
+        "type": "image",
+        "src": "assets/image-20260109105105295.png",
+        "alt": "プログラムが扱う2分木"
+      },
+      {
+        "type": "text",
+        "text": "注記1　○の中の値は節番号である。\n注記2　子の節が一つの場合は，左の子の節とする。"
+      },
+      {
+        "type": "textCenter",
+        "text": "図　プログラムが扱う 2 分木"
+      }
+    ],
+    "pseudoCode": [
+      "大域: 整数型配列の配列: tree ← {{2, 3}, {4, 5}, {6, 7}, {8, 9}, {10, 11},",
+      "                              {12, 13}, {14}, {}, {}, {}, {},",
+      "                              {}, {}, {}}   // {} は要素数 0 の配列",
+      "",
+      "○order(整数型: n)",
+      "    if (tree[n] の要素数 が 2 と等しい)",
+      "        order(tree[n][1])",
+      "        order(tree[n][2])",
+      "        n を出力",
+      "    elseif (tree[n] の要素数 が 1 と等しい)",
+      "        order(tree[n][1])",
+      "        n を出力",
+      "    else",
+      "        n を出力",
+      "    endif"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "1 2 4 8 9 5 10 11 3 6 12 13 7 14"
+      },
+      {
+        "id": "c2",
+        "text": "8 4 9 2 10 5 11 1 12 6 13 3 14 7"
+      },
+      {
+        "id": "c3",
+        "text": "8 9 4 10 11 5 2 12 13 6 14 7 3 1"
+      },
+      {
+        "id": "c4",
+        "text": "1 2 3 4 5 6 7 8 9 10 11 12 13 14"
+      }
+    ],
+    "correctChoiceId": "c3"
+  },
+  {
+    "id": "m10",
+    "slug": "mogi1-10",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi1-mon10/",
+    "number": 10,
+    "title": "単方向リスト",
+    "questionText": "次のプログラム中の【 a 】，【 b 】に入れる正しい答えを，それぞれの解答群の中から選べ。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "手続 delLast は，単方向リストの末尾（最後）の要素を削除する手続である。リストには要素が 1 つ以上あるものとする。"
+      },
+      {
+        "type": "text",
+        "text": "クラス ListElement は，単方向リストの要素を表す。ListElement 型の変数はクラス ListElement のインスタンスの参照を格納するものとする。大域変数 listHead には，リストの先頭要素の参照があらかじめ格納されている。リストが空のときは，listHead は未定義である。"
+      },
+      {
+        "type": "table",
+        "headers": [
+          "メンバ変数",
+          "型",
+          "説明"
+        ],
+        "rows": [
+          [
+            "val",
+            "文字型",
+            "要素の値"
+          ],
+          [
+            "next",
+            "ListElement",
+            "次の要素の参照（次の要素がないときの状態は未定義）"
+          ]
+        ]
+      }
+    ],
+    "pseudoCode": [
+      "大域：ListElement: listHead   // リストの先頭要素が格納されている",
+      "",
+      "○delLast()",
+      "  ListElement: prev",
+      "",
+      "  if (listHead.next が 未定義)",
+      "    【 a 】 ← listHead.next",
+      "  else",
+      "    prev ← listHead",
+      "    while (prev.next.next が 未定義でない)",
+      "      prev ← prev.next",
+      "    endwhile",
+      "    prev.next ← 【 b 】",
+      "  endif"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "a：listHead　b：prev.next.next"
+      },
+      {
+        "id": "c2",
+        "text": "a：listHead　b：prev"
+      },
+      {
+        "id": "c3",
+        "text": "a：listHead　b：listHead"
+      },
+      {
+        "id": "c4",
+        "text": "a：listHead.next　b：prev.next.next"
+      },
+      {
+        "id": "c5",
+        "text": "a：listHead.next　b：prev"
+      },
+      {
+        "id": "c6",
+        "text": "a：listHead.next　b：listHead"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "a",
+        "b"
+      ],
+      "rows": [
+        [
+          "listHead",
+          "prev.next.next"
+        ],
+        [
+          "listHead",
+          "prev"
+        ],
+        [
+          "listHead",
+          "listHead"
+        ],
+        [
+          "listHead.next",
+          "prev.next.next"
+        ],
+        [
+          "listHead.next",
+          "prev"
+        ],
+        [
+          "listHead.next",
+          "listHead"
+        ]
+      ]
+    },
+    "correctChoiceId": "c1"
+  },
+  {
+    "id": "m11",
+    "slug": "mogi1-11",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi1-mon11/",
+    "number": 11,
+    "title": "出現回数",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "関数 count は，各要素が 1 以上 3 以下の整数である整数型の配列 data を引数にとり，要素数 3 の整数型の配列を返す。関数 count を count(【　】) として呼び出すと，戻り値は {2, 1, 3} となる。",
+    "pseudoCode": [
+      "○ 整数型の配列: count(整数型の配列: data)   // data の各要素は 1〜3",
+      "    整数型の配列: cnt ← { 3 個の 0 }",
+      "    整数型: i",
+      "    for (i を 1 から data の要素数 まで 1 ずつ増やす)",
+      "        cnt[data[i]] ← cnt[data[i]] + 1",
+      "    endfor",
+      "    return cnt"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "{3, 3, 3, 3, 2, 1}"
+      },
+      {
+        "id": "c2",
+        "text": "{3, 1, 2, 2, 1, 3}"
+      },
+      {
+        "id": "c3",
+        "text": "{1, 1, 1, 2, 3, 3}"
+      },
+      {
+        "id": "c4",
+        "text": "{3, 1, 3, 2, 1, 3}"
+      }
+    ],
+    "correctChoiceId": "c4"
+  },
+  {
+    "id": "m12",
+    "slug": "mogi1-12",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi1-mon12/",
+    "number": 12,
+    "title": "文字列の検査",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，文字列の文字番号は 1 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "関数 checkPw は，文字列 pw がパスワードとして安全かどうかを検査し，次の条件をすべて満たす場合に true を，一つでも満たさない場合に false を返す。"
+      },
+      {
+        "type": "table",
+        "headers": [
+          ""
+        ],
+        "rows": [
+          [
+            "・文字数が 8 以上である。\n・英大文字，英小文字，数字のすべてを，少なくとも 1 文字ずつ含む。\n・同じ文字が 3 個以上連続しない。"
+          ]
+        ]
+      },
+      {
+        "type": "text",
+        "text": "関数 checkPw が使う関数 isUpper は，文字 ch が英大文字のときに true を返す。関数 checkPw が使う関数 isLower は，文字 ch が英小文字のときに true を返す。関数 checkPw が使う関数 isDigit は，文字 ch が数字のときに true を返す。"
+      }
+    ],
+    "pseudoCode": [
+      "○論理型：checkPw（文字列型：pw）",
+      "  論理型：hasUpper ← false, hasLower ← false, hasDigit ← false",
+      "  整数型：i, run ← 1",
+      "  if（pw の文字数 が 8 未満）",
+      "    return false",
+      "  endif",
+      "  for（i を 1 から pw の文字数 まで 1 ずつ増やす）",
+      "    if（isUpper（pw の i 文字目））",
+      "      hasUpper ← true",
+      "    elseif（isLower（pw の i 文字目））",
+      "      hasLower ← true",
+      "    elseif（isDigit（pw の i 文字目））",
+      "      hasDigit ← true",
+      "    endif",
+      "    if（i が 2 以上）",
+      "      if（（pw の i 文字目）が（pw の（i − 1）文字目）と等しい）",
+      "        run ← run + 1",
+      "        if（run が【 a 】以上）",
+      "          return false",
+      "        endif",
+      "      else",
+      "        run ← 1",
+      "      endif",
+      "    endif",
+      "  endfor",
+      "  if（【 b 】）",
+      "    return true",
+      "  else",
+      "    return false",
+      "  endif"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "a：1　b：(hasUpper が true) and (hasLower が true) and (hasDigit が true)"
+      },
+      {
+        "id": "c2",
+        "text": "a：1　b：(hasUpper が true) or (hasLower が true) or (hasDigit が true)"
+      },
+      {
+        "id": "c3",
+        "text": "a：3　b：(hasUpper が true) and (hasLower が true) and (hasDigit が true)"
+      },
+      {
+        "id": "c4",
+        "text": "a：3　b：(hasUpper が true) or (hasLower が true) or (hasDigit が true)"
+      },
+      {
+        "id": "c5",
+        "text": "a：8　b：(hasUpper が true) and (hasLower が true) and (hasDigit が true)"
+      },
+      {
+        "id": "c6",
+        "text": "a：8　b：(hasUpper が true) or (hasLower が true) or (hasDigit が true)"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "a",
+        "b"
+      ],
+      "rows": [
+        [
+          "1",
+          "(hasUpper が true) and (hasLower が true) and (hasDigit が true)"
+        ],
+        [
+          "1",
+          "(hasUpper が true) or (hasLower が true) or (hasDigit が true)"
+        ],
+        [
+          "3",
+          "(hasUpper が true) and (hasLower が true) and (hasDigit が true)"
+        ],
+        [
+          "3",
+          "(hasUpper が true) or (hasLower が true) or (hasDigit が true)"
+        ],
+        [
+          "8",
+          "(hasUpper が true) and (hasLower が true) and (hasDigit が true)"
+        ],
+        [
+          "8",
+          "(hasUpper が true) or (hasLower が true) or (hasDigit が true)"
+        ]
+      ]
+    },
+    "correctChoiceId": "c3"
+  },
+  {
+    "id": "m13",
+    "slug": "mogi1-13",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi1-mon13/",
+    "number": 13,
+    "title": "線形探索（番兵法）",
+    "questionText": "次の記述中の【　　　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "関数 search は，引数 data で指定された配列に，引数 target で指定された値が含まれていれば一致した最初の要素番号を返し，含まれていなければ −1 を返す。"
+      },
+      {
+        "type": "text",
+        "text": "関数 search には不具合がある。例えば， data の【　　　】場合は，正しく動作しない。"
+      }
+    ],
+    "pseudoCode": [
+      "○ 整数型：search（整数型の配列：data，整数型：target）",
+      "  整数型：i，n",
+      "",
+      "  n ← data の要素数",
+      "  dataの末尾に target を追加",
+      "  i ← 1",
+      "",
+      "  while（data[i] ≠ target）",
+      "    i ← i ＋ 1",
+      "  endwhile",
+      "",
+      "  return i"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "要素数が 2 で，target が data の末尾要素の値と等しい"
+      },
+      {
+        "id": "c2",
+        "text": "要素数が 2 で，target が data の先頭要素の値と等しい"
+      },
+      {
+        "id": "c3",
+        "text": "いずれの要素ともtargetが一致しない"
+      },
+      {
+        "id": "c4",
+        "text": "複数の要素の値とtargetが一致する"
+      }
+    ],
+    "correctChoiceId": "c3"
+  },
+  {
+    "id": "m14",
+    "slug": "mogi1-14",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi1-mon14/",
+    "number": 14,
+    "title": "整列",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "次の手続 bubble は，大域の整数型の配列 data を昇順に整列する。手続 bubble を呼び出したとき，`/*** α ***/` の条件式が真となる回数は【　】回である。",
+    "pseudoCode": [
+      "大域: 整数型の配列: data ← {3, 2, 4, 5, 1}",
+      "",
+      "○ bubble()",
+      "    整数型: n ← data の要素数",
+      "    整数型: i, j, tmp",
+      "    for (i を 1 から n − 1 まで 1 ずつ増やす)",
+      "        for (j を n から i ＋ 1 まで 1 ずつ減らす)",
+      "            if (data[j] < data[j − 1])     /*** α ***/",
+      "                tmp ← data[j]",
+      "                data[j] ← data[j − 1]",
+      "                data[j − 1] ← tmp",
+      "            endif",
+      "        endfor",
+      "    endfor"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "3"
+      },
+      {
+        "id": "c2",
+        "text": "4"
+      },
+      {
+        "id": "c3",
+        "text": "5"
+      },
+      {
+        "id": "c4",
+        "text": "6"
+      }
+    ],
+    "correctChoiceId": "c3"
+  },
+  {
+    "id": "m15",
+    "slug": "mogi1-15",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi1-mon15/",
+    "number": 15,
+    "title": "ランレングス圧縮",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，文字列の文字番号は 1 から始まり，同じ文字の連続は 9 個以下とする。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "ランレングス圧縮とは，同じ文字が連続する部分を「文字＋連続した個数」に置き換えて，文字列を短く表現する圧縮方法である。"
+      },
+      {
+        "type": "text",
+        "text": "関数 rle は，文字列 text をランレングス圧縮した文字列を返す。例えば，関数 rle を rle(\"AAABBBBCC\") として呼び出すと,\"A3B4C2\" を返す。"
+      },
+      {
+        "type": "text",
+        "text": "関数 numToChar は，0～9 の整数を対応する数字の文字に変換する。例えば，numToChar(4) は文字 '4' を返す。"
+      }
+    ],
+    "pseudoCode": [
+      "○文字列型：rle（文字列型：text）",
+      "  文字列型：result ← \"\"",
+      "  整数型：n ← text の文字数",
+      "  整数型：i, cnt ← 1",
+      "  for（i を 2 から n まで 1 ずつ増やす）",
+      "    if（（text の i 文字目）が（text の（i − 1）文字目）と等しい）",
+      "      cnt ← cnt + 1",
+      "    else",
+      "      result ← result + （text の（i − 1）文字目） + numToChar（cnt）",
+      "      cnt ← 【 a 】",
+      "    endif",
+      "  endfor",
+      "  result ← result + （text の 【 b 】文字目） + numToChar（cnt）",
+      "  return result"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "a：0　b：n"
+      },
+      {
+        "id": "c2",
+        "text": "a：1　b：n"
+      },
+      {
+        "id": "c3",
+        "text": "a：cnt + 1　b：n"
+      },
+      {
+        "id": "c4",
+        "text": "a：0　b：n − 1"
+      },
+      {
+        "id": "c5",
+        "text": "a：1　b：n − 1"
+      },
+      {
+        "id": "c6",
+        "text": "a：cnt + 1　b：n − 1"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "a",
+        "b"
+      ],
+      "rows": [
+        [
+          "0",
+          "n"
+        ],
+        [
+          "1",
+          "n"
+        ],
+        [
+          "cnt + 1",
+          "n"
+        ],
+        [
+          "0",
+          "n − 1"
+        ],
+        [
+          "1",
+          "n − 1"
+        ],
+        [
+          "cnt + 1",
+          "n − 1"
+        ]
+      ]
+    },
+    "correctChoiceId": "c2"
+  },
+  {
+    "id": "m16",
+    "slug": "mogi1-16",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi1-mon16/",
+    "number": 16,
+    "title": "アクセス権限",
+    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "関数 hasRight は 8 ビット型の引数 flags と整数型の引数 i を受け取り，flags の i ビット目が 1 ならば true を，0 ならば false を返す。ここで，ビットは最下位から順に 1 ビット目，2 ビット目，…，8 ビット目と数える。"
+      },
+      {
+        "type": "text",
+        "text": "flags は利用者のアクセス権限を表しており，各ビットは表に示す権限に対応する。ビットが 1 のとき，その権限が許可されていることを表す。"
+      },
+      {
+        "type": "table",
+        "headers": [
+          "ビット",
+          "権限"
+        ],
+        "rows": [
+          [
+            "1 ビット目（最下位）",
+            "読取り"
+          ],
+          [
+            "2 ビット目",
+            "書込み"
+          ],
+          [
+            "3 ビット目",
+            "実行"
+          ],
+          [
+            "4 ビット目",
+            "削除"
+          ],
+          [
+            "5～8 ビット目",
+            "未使用（常に 0）"
+          ]
+        ]
+      },
+      {
+        "type": "text",
+        "text": "例えば，flags が 00000110（書込みと実行が許可）のとき，関数 hasRight を hasRight(flags, 2) として呼び出すと，戻り値は true となり，hasRight(flags, 1) として呼び出すと，戻り値は false となる。"
+      },
+      {
+        "type": "text",
+        "text": "なお，演算子 ∧ はビット単位の論理積，演算子 >> は論理右シフト，演算子 << は論理左シフトを表す。例えば，value >> n は value の値を n ビットだけ右に論理シフトし，value << n は value の値を n ビットだけ左に論理シフトする。"
+      }
+    ],
+    "pseudoCode": [
+      "○ 論理型: hasRight(8ビット型: flags, 整数型: i)",
+      "    8ビット型: w",
+      "    w ← 【　】",
+      "    if ((w ∧ 00000001) が 00000001 と等しい)",
+      "        return true",
+      "    else",
+      "        return false",
+      "    endif"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "flags >> (i − 1)"
+      },
+      {
+        "id": "c2",
+        "text": "flags >> i"
+      },
+      {
+        "id": "c3",
+        "text": "flags << (i − 1)"
+      },
+      {
+        "id": "c4",
+        "text": "flags << i"
+      }
+    ],
+    "correctChoiceId": "c1"
+  },
+  {
+    "id": "m17",
+    "slug": "mogi1-17",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi1-mon17/",
+    "number": 17,
+    "title": "可用性評価",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "A社は従業員300名のITサービス企業であり，ヘルプデスク業務のアウトソーシングサービスを提供している。A社はオンプレミスのシステムを所有しておらず，顧客向けサービスのほか，社内業務でもクラウドサービスを利用している。A社では，各従業員にPC及びスマートフォンを貸与している。スマートフォンは勤怠管理などの社内業務だけに利用している。"
+      },
+      {
+        "type": "text",
+        "text": "A社では，クラウドサービスについての可用性に関する重要度の評価（以下，可用性に関する重要度の評価を可用性評価という）を本来実施すべきであったが，実施できていなかった。そこで，A社の情報セキュリティリーダーであるB主任が，表1のとおり，A社がリスク評価で用いる可用性評価の基準を用いて可用性評価を実施することになった。"
+      },
+      {
+        "type": "table",
+        "caption": "表1　A社がリスク評価で用いる可用性評価の基準",
+        "headers": [
+          "重要度",
+          "可用性評価の基準",
+          "該当するサービスの例"
+        ],
+        "rows": [
+          [
+            "2",
+            "サービスが利用できなくなると自社だけではなく，顧客にも直ちに影響がある。",
+            "顧客に提供しているサービス，顧客にサービスを提供するために利用している外部のサービス"
+          ],
+          [
+            "1",
+            "サービスが利用できなくなると自社にだけ，直ちに影響がある。",
+            "重要度0のサービスを除く，社内で利用しているサービス"
+          ],
+          [
+            "0",
+            "サービスが利用できなくなっても自社及び顧客に，直ちに影響はない。",
+            "社内でデータの長期保存に利用しているサービス"
+          ]
+        ]
+      },
+      {
+        "type": "text",
+        "text": "B主任はA社が利用しているクラウドサービスについて可用性評価を実施し，利用方法及び可用性に関する重要度を表2のとおりまとめた。"
+      },
+      {
+        "type": "table",
+        "caption": "表2　B主任がまとめた可用性評価の結果（抜粋）",
+        "headers": [
+          "A社が利用しているクラウドサービス",
+          "利用方法",
+          "可用性に関する重要度"
+        ],
+        "rows": [
+          [
+            "電子メール",
+            "ヘルプデスク利用者からの電子メールによる問合せの受付及び回答に利用する。回答は原則として電子メールで行うが，回答に機密性の高い情報が含まれる場合は，あらかじめ登録されているヘルプデスク利用者の電話番号にA社から電話する。",
+            "a1"
+          ],
+          [
+            "人事・労務管理",
+            "マイナンバーを含む人事情報の管理及び労務管理に利用する。",
+            "a2"
+          ]
+        ]
+      },
+      {
+        "type": "text",
+        "text": "B主任は，表2の内容をA社の情報セキュリティ委員会に報告し，可用性に関する重要度が適切であることの承認を得た。"
+      },
+      {
+        "type": "text",
+        "text": "設問　表2中の a1 ， a2 に入れる数値の適切な組合せを，aに関する解答群の中から選べ。"
+      }
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "a1：0　a2：0"
+      },
+      {
+        "id": "c2",
+        "text": "a1：0　a2：1"
+      },
+      {
+        "id": "c3",
+        "text": "a1：0　a2：2"
+      },
+      {
+        "id": "c4",
+        "text": "a1：1　a2：0"
+      },
+      {
+        "id": "c5",
+        "text": "a1：1　a2：1"
+      },
+      {
+        "id": "c6",
+        "text": "a1：1　a2：2"
+      },
+      {
+        "id": "c7",
+        "text": "a1：2　a2：0"
+      },
+      {
+        "id": "c8",
+        "text": "a1：2　a2：1"
+      },
+      {
+        "id": "c9",
+        "text": "a1：2　a2：2"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "a1",
+        "a2"
+      ],
+      "rows": [
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "1"
+        ],
+        [
+          "0",
+          "2"
+        ],
+        [
+          "1",
+          "0"
+        ],
+        [
+          "1",
+          "1"
+        ],
+        [
+          "1",
+          "2"
+        ],
+        [
+          "2",
+          "0"
+        ],
+        [
+          "2",
+          "1"
+        ],
+        [
+          "2",
+          "2"
+        ]
+      ]
+    },
+    "correctChoiceId": "c8"
+  },
+  {
+    "id": "m18",
+    "slug": "mogi1-18",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi1-mon18/",
+    "number": 18,
+    "title": "偽警告/サポート詐欺",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "A社は，飲食店へのコンサルティングを行う従業員50名の企業である。A社の全てのPCでは，マルウェア対策ソフト（以下，Xソフトという）が有効にされている。ある日，総務部の情報セキュリティリーダーであるC課長は，部下のDさんから，次の連絡を受けた。"
+      },
+      {
+        "type": "table",
+        "headers": [
+          ""
+        ],
+        "rows": [
+          [
+            "・A社のPCのWebブラウザでWebサイトを閲覧していたところ，PCがマルウェアに感染しているとの警告画面（以下，警告画面という）が全画面に表示された。\n・警告画面が表示されたあと何もPCの操作をせずに直ちにC課長に連絡をした。"
+          ]
+        ]
+      },
+      {
+        "type": "text",
+        "text": "C課長は，情報システム部に報告した。情報システム部はDさんのPCを確認し，数時間後，図1のとおり報告した。"
+      },
+      {
+        "type": "table",
+        "headers": [
+          ""
+        ],
+        "rows": [
+          [
+            "1. 警告画面には，次が表示されていた。\n　・Xソフトの製品のロゴ\n　・マルウェアを削除するためのツールをインストールする指示\n　・サポートが必要な場合の電話番号とチャットウィンドウ\n2. 念のため，Xソフトを使ってDさんのPCをスキャンしたが，マルウェアは検出されなかった。また，警告画面の表示は，Xソフトによるものではないことを確認した。\n3. 昨今，類似した警告画面の事例の報告が日本国内で増えている。"
+          ]
+        ]
+      },
+      {
+        "type": "textCenter",
+        "text": "図1　情報システム部からの報告"
+      },
+      {
+        "type": "text",
+        "text": "A社では，警告画面が表示された場合の適切な対応について全従業員に周知することにした。"
+      },
+      {
+        "type": "text",
+        "text": "設問　周知すべきことはどれか。解答群のうち，最も適切なものを選べ。"
+      }
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "警告画面に，急いで対応する必要があるとの表示がある場合は，直ちに警告画面に表示された指示に従ってツールをインストールすること及びその具体的方法"
+      },
+      {
+        "id": "c2",
+        "text": "警告画面に表示された指示には従わずに，直ちにWebブラウザを終了すること及びその具体的方法"
+      },
+      {
+        "id": "c3",
+        "text": "警告画面に表示されたツールと競合しないように，Xソフトをアンインストールし，警告画面に表示された指示に従ってツールをインストールすること及びその具体的方法"
+      },
+      {
+        "id": "c4",
+        "text": "警告画面に表示された電話番号に直ちに連絡し，サポートオペレーターの指示に従うこと"
+      },
+      {
+        "id": "c5",
+        "text": "警告画面に表示されている，Xソフトの製品のロゴが，製品開発元のWebサイトに掲載されている正規の製品のロゴと同じである場合は，警告画面に表示された指示に従ってツールをインストールすること及びその具体的方法"
+      }
+    ],
+    "correctChoiceId": "c2"
+  },
+  {
+    "id": "m19",
+    "slug": "mogi1-19",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi1-mon19/",
+    "number": 19,
+    "title": "クラウドストレージ誤送信",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "A社は，従業員300名の部品メーカーである。A社ではこれまで，業務に必要なファイルを他社との間で受け渡す場合には電子メール（以下，メールという）を利用してきた。最近になって，取引先のB社から，ファイルの受渡しについては，Cサービスというクラウドストレージサービスを利用して欲しいとの要請を受けた。図1は，Cサービスを利用した場合のファイル受渡しの流れである。"
+      },
+      {
+        "type": "table",
+        "headers": [
+          ""
+        ],
+        "rows": [
+          [
+            "1. ファイルの送信者は，受信者に渡したいファイルをCサービス上にアップロードする。アップロードされたファイルは，Cサービス上では暗号化されて保存される。\n2. ファイルの送信者は，受信者をメールアドレスで指定して，ファイルのアクセス権を付与する。アクセス権の付与や取消しはいつでも行える。\n3. 受信者にアクセス権が付与されると，ファイルのダウンロード用URLが生成され，指定されたメールアドレスにメールで通知される。なお，URLには推測困難な文字列が含まれている。\n4. 受信者が，メールに記載されたURLにアクセスして自身のメールアドレスを入力すると，復号されたファイルがダウンロードされる。\n5. ファイルがダウンロードされると，送信者の利用者ID，アップロード日時，ファイル名，ファイルのダウンロード用URL，ダウンロードの際のアクセス元IPアドレス，4で入力したメールアドレス及びダウンロード日時がログに記録される。\n6. 送信者は，自身のアップロードしたファイルについて，ダウンロードのログを確認できる。\n注記　Cサービスとの通信にはHTTPS（HTTP over TLS）が用いられている。"
+          ]
+        ]
+      },
+      {
+        "type": "textCenter",
+        "text": "図1　ファイル受渡しの流れ"
+      },
+      {
+        "type": "text",
+        "text": "そこでA社では，Cサービスを利用した場合のリスクを評価するために，検討会を開催した。検討会において，情報セキュリティリーダーのD主任は，次のとおり説明した。"
+      },
+      {
+        "type": "html",
+        "html": "<blockquote>Cサービスを利用することによって，情報漏えいのリスクを低減でき，さらに情報漏えいの有無も確認できる。具体的には，ファイルの送信者は，誤ったメールアドレスを指定してメールを送信してしまった場合に，誤りに気付いた時点で，すぐに　a1　を行うことができる。次に，ファイルが　a2　されていないことがログによって確認できれば，　a3　していないと判断することができる。</blockquote>"
+      },
+      {
+        "type": "text",
+        "text": "設問　本文中の a1 〜 a3 に入れる次の字句の組合せはどれか。aに関する解答群のうち，最も適切なものを選べ。"
+      },
+      {
+        "type": "text",
+        "text": "・(一)　アクセス権の取消し\n・(二)　アップロード\n・(三)　情報漏えい\n・(四)　ダウンロード\n・(五)　メールで通知\n・(六)　メールに記載されたURLに受信者はまだアクセス"
+      }
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "a1：(一)　a2：(二)　a3：(三)"
+      },
+      {
+        "id": "c2",
+        "text": "a1：(一)　a2：(二)　a3：(六)"
+      },
+      {
+        "id": "c3",
+        "text": "a1：(一)　a2：(四)　a3：(三)"
+      },
+      {
+        "id": "c4",
+        "text": "a1：(一)　a2：(四)　a3：(六)"
+      },
+      {
+        "id": "c5",
+        "text": "a1：(五)　a2：(二)　a3：(三)"
+      },
+      {
+        "id": "c6",
+        "text": "a1：(五)　a2：(二)　a3：(六)"
+      },
+      {
+        "id": "c7",
+        "text": "a1：(五)　a2：(四)　a3：(三)"
+      },
+      {
+        "id": "c8",
+        "text": "a1：(五)　a2：(四)　a3：(六)"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "a1",
+        "a2",
+        "a3"
+      ],
+      "rows": [
+        [
+          "(一)",
+          "(二)",
+          "(三)"
+        ],
+        [
+          "(一)",
+          "(二)",
+          "(六)"
+        ],
+        [
+          "(一)",
+          "(四)",
+          "(三)"
+        ],
+        [
+          "(一)",
+          "(四)",
+          "(六)"
+        ],
+        [
+          "(五)",
+          "(二)",
+          "(三)"
+        ],
+        [
+          "(五)",
+          "(二)",
+          "(六)"
+        ],
+        [
+          "(五)",
+          "(四)",
+          "(三)"
+        ],
+        [
+          "(五)",
+          "(四)",
+          "(六)"
+        ]
+      ]
+    },
+    "correctChoiceId": "c3"
+  },
+  {
+    "id": "m20",
+    "slug": "mogi1-20",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi1-mon20/",
+    "number": 20,
+    "title": "匿名加工情報",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "A社は，スマートフォン用ヘルスケア関連アプリケーションソフトウェア（以下，Aアプリという）の開発，販売を行う会社である。Aアプリは，ヘルスケアデータ収集機能によって，利用者の体重や歩数のデータを収集するとともに，アンケート機能によって，勤務先の業種，年収などのデータを収集している。"
+      },
+      {
+        "type": "text",
+        "text": "営業部は，保険会社であるB社と共同のビジネスを検討している。その中で，Aアプリで収集したデータ及び今後収集するデータから匿名加工情報を作成した上で，その匿名加工情報をB社に第三者提供することを検討している。B社では，提供を受けた匿名加工情報を分析して，B社の保険商品のマーケティングに活用しようとしている。分析の対象は，年代，性別，年収区分，住んでいる地域区分及び勤務先の業種と体重及び歩数との関係である。ここで，地域区分とは，北海道，東北，南関東などの区分のことをいう。"
+      },
+      {
+        "type": "text",
+        "text": "加工対象となる\"個人情報データベース等\"（以下，加工対象情報という）は，表1の顧客属性データと表2のヘルスケアデータの2種類からなり，利用者番号によって関連付けられている。"
+      },
+      {
+        "type": "table",
+        "caption": "表1　顧客属性データ",
+        "headers": [
+          "利用者番号",
+          "氏名",
+          "性別",
+          "生年月日",
+          "電子メールアドレス",
+          "住所",
+          "勤務先の業種",
+          "年収"
+        ],
+        "rows": [
+          [
+            "114567",
+            "情報 一郎",
+            "男",
+            "1984年4月4日",
+            "ichiro@●●●.ne.jp",
+            "愛知県名古屋市中区上前津X-X-X",
+            "金融業",
+            "1,850万"
+          ],
+          [
+            "114568",
+            "積招 花子",
+            "女",
+            "2003年3月31日",
+            "sekimane@▲▲▲.ne.jp",
+            "東京都文京区本駒込X-X-X",
+            "小売業",
+            "380万"
+          ],
+          [
+            "114573",
+            "試験 五郎",
+            "男",
+            "1951年12月9日",
+            "shiken@■■■.ne.jp",
+            "東京都中央区月島X-X-X",
+            "製造業",
+            "630万"
+          ],
+          [
+            "…",
+            "…",
+            "…",
+            "…",
+            "…",
+            "…",
+            "…",
+            "…"
+          ]
+        ]
+      },
+      {
+        "type": "table",
+        "caption": "表2　ヘルスケアデータ",
+        "headers": [
+          "利用者番号",
+          "記録日",
+          "体重",
+          "歩数"
+        ],
+        "rows": [
+          [
+            "114567",
+            "202N年02月11日",
+            "121.3",
+            "5,321"
+          ],
+          [
+            "114568",
+            "202N年02月11日",
+            "43.5",
+            "33,012"
+          ],
+          [
+            "114568",
+            "202N年02月12日",
+            "43.0",
+            "12,007"
+          ],
+          [
+            "114573",
+            "202N年02月12日",
+            "63.0",
+            "7,604"
+          ],
+          [
+            "…",
+            "…",
+            "…",
+            "…"
+          ]
+        ]
+      },
+      {
+        "type": "text",
+        "text": "営業部の情報セキュリティリーダーであるC課長は，加工対象情報に含まれる各情報の項目について，適用する匿名加工情報の作成に係る手法（以下，匿名加工情報の作成に係る手法を匿名加工手法という）を表3にまとめた。"
+      },
+      {
+        "type": "table",
+        "caption": "表3　匿名加工手法",
+        "headers": [
+          "項番",
+          "手法名",
+          "解説"
+        ],
+        "rows": [
+          [
+            "(一)",
+            "項目削除",
+            "加工対象情報に含まれる個人情報の項目を削除すること。例えば，年齢のデータを加工対象情報から削除すること。"
+          ],
+          [
+            "(二)",
+            "一般化",
+            "加工対象情報に含まれる記述などについて，上位概念に置き換えること。例えば，購買履歴のデータで\"きゅうり\"を\"野菜\"に置き換えること。"
+          ],
+          [
+            "(三)",
+            "トップ（ボトム）コーディング",
+            "加工対象情報に含まれる数値について，特に大きい又は小さい数値をまとめること。例えば，年齢に関するデータで，\"98歳\"，\"115歳\"といった数値データを\"80歳以上\"というデータにまとめること。"
+          ],
+          [
+            "(四)",
+            "丸め",
+            "加工対象情報に含まれる数値について，四捨五入などして丸めること。例えば，生年月日から\"34歳\"とされる場合について，\"30代\"のように年代に置き換えること。"
+          ]
+        ]
+      },
+      {
+        "type": "text",
+        "text": "注記 本表は，個人情報保護委員会事務局\"仮名加工情報・匿名加工情報 信頼ある個人情報の利活用に向けて―制度編―(第2版)\"を基にC課長が作成した。"
+      },
+      {
+        "type": "text",
+        "text": "C課長は，加工対象情報である表1及び表2に示す各データに対して，表3の匿名加工手法を必要に応じて適用し匿名加工情報を作成する案を用意した。その案を法務部のD課長に報告したところ，D課長からは，想定するマーケティング用途にも有効であり，匿名加工手法の適用も適切であるとの回答を得た。"
+      },
+      {
+        "type": "text",
+        "text": "設問　解答群に示した3項目それぞれについて，C課長が適用した匿名加工手法はどれか。表3の手法のうち，適用したものの組合せを，解答群の中から選べ。なお，各項目に対して複数の匿名加工手法を適用しても構わないし，一つも適用せずに\"加工なし\"としても構わない。"
+      }
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "電子メールアドレス：加工なし　勤務先の業種：加工なし　体重：(三)"
+      },
+      {
+        "id": "c2",
+        "text": "電子メールアドレス：加工なし　勤務先の業種：加工なし　体重：(三)，(四)"
+      },
+      {
+        "id": "c3",
+        "text": "電子メールアドレス：加工なし　勤務先の業種：(一)　体重：(一)"
+      },
+      {
+        "id": "c4",
+        "text": "電子メールアドレス：加工なし　勤務先の業種：(一)　体重：(三)"
+      },
+      {
+        "id": "c5",
+        "text": "電子メールアドレス：加工なし　勤務先の業種：(一)　体重：(三)，(四)"
+      },
+      {
+        "id": "c6",
+        "text": "電子メールアドレス：(一)　勤務先の業種：加工なし　体重：(三)"
+      },
+      {
+        "id": "c7",
+        "text": "電子メールアドレス：(一)　勤務先の業種：加工なし　体重：(三)，(四)"
+      },
+      {
+        "id": "c8",
+        "text": "電子メールアドレス：(一)　勤務先の業種：(一)　体重：(一)"
+      },
+      {
+        "id": "c9",
+        "text": "電子メールアドレス：(一)　勤務先の業種：(一)　体重：(三)"
+      },
+      {
+        "id": "c10",
+        "text": "電子メールアドレス：(一)　勤務先の業種：(一)　体重：(三)，(四)"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "電子メールアドレス",
+        "勤務先の業種",
+        "体重"
+      ],
+      "rows": [
+        [
+          "加工なし",
+          "加工なし",
+          "(三)"
+        ],
+        [
+          "加工なし",
+          "加工なし",
+          "(三)，(四)"
+        ],
+        [
+          "加工なし",
+          "(一)",
+          "(一)"
+        ],
+        [
+          "加工なし",
+          "(一)",
+          "(三)"
+        ],
+        [
+          "加工なし",
+          "(一)",
+          "(三)，(四)"
+        ],
+        [
+          "(一)",
+          "加工なし",
+          "(三)"
+        ],
+        [
+          "(一)",
+          "加工なし",
+          "(三)，(四)"
+        ],
+        [
+          "(一)",
+          "(一)",
+          "(一)"
+        ],
+        [
+          "(一)",
+          "(一)",
+          "(三)"
+        ],
+        [
+          "(一)",
+          "(一)",
+          "(三)，(四)"
+        ]
+      ]
+    },
+    "correctChoiceId": "c7"
+  }
+]

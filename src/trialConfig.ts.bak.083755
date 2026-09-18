@@ -51,19 +51,6 @@ export const ANNOUNCE_VALID_UNTIL = "2026/12/31";
  */
 /** 模試に受験日登録を必須にするか。10/1 に true へ */
 export const MOGI_REQUIRES_REGISTRATION = true;
-/* ===== 模擬試験の版（set_rev） =====
- * 問題を直したら、そのセットの数字を1つ上げる。集計はこの値で前後を分ける。
- *
- *   セット全体の指標（所要時間の中央値・得点分布・合格率）を改訂の前後で比べるためのもの。
- *   問題ごとの前後は q_id で分かれる（中身を作り替えた問題には新しい id を振るルール）。
- *   例外は q_id を据え置いた問題（問11）で、そこは set_rev だけが頼り。
- *
- * 履歴:
- *   模試1  v1 = 公開時 / v2 = 2026-09-18 問5・問6・問11・問12 を改訂
- *   模試2  v1 = 公開時
- */
-export const SET_REV: Record<string, number> = { "1": 2, "2": 1, "r4": 1 };
-
 /** 受験日登録フォーム / 照合APIのURL（末尾スラッシュなし） */
 export const MAIL_ENDPOINT = "https://fe-mail.japason.workers.dev";
 
@@ -75,55 +62,12 @@ export const ANNOUNCE_POSTED_DATE = "2026/9/8";
  * body は改行がそのまま画面の改行になる。
  * URL変更のお知らせはここには書かない（ANNOUNCE_ENABLED が true の間、自動で一覧の先頭に入る）。
  */
-export type Notice = {
-  id: string;
-  /** 画面に出す日付。表示用なので書式は自由 */
-  date: string;
-  title: string;
-  /** 改行はそのまま画面の改行になる */
-  body: string;
-  /** 表示をやめる日（YYYY-MM-DD・その日いっぱいまで表示）。省略すると消えない */
-  until?: string;
-  /** 本文の左に小さく出す画像（public/ からの相対パス。例 "media/fe-book-cover.jpg"） */
-  image?: string;
-  /** 本文の下に出すボタン。期間限定の案内などで使う */
-  link?: { url: string; label: string };
-  /**
-   * モード選択画面の上に細いバナーを出す（link が必要）。
-   * ベルの中は自分から押した人しか見ないので、告知したいものだけ true にする。
-   * 出しっぱなしにすると効かなくなるので、必ず until とセットで使うこと。
-   */
-  banner?: string;
-};
-
-export const NOTICES: Notice[] = [
-  {
-    id: "2026-09-kindle",
-    date: "2026/9/18",
-    title: "Kindle本を出版しました",
-    // ↓ 価格の書き方に注意。「通常1,650円のところ」は、実際に1,650円で
-    //   販売した実績が無いと二重価格表示(景品表示法)に当たるおそれがある。
-    //   「10月以降は1,650円になります」という値上げの予告なら問題ない。
-    //   ただし実際に10月に値上げすること。
-    body: `97問動画の書籍版をKindleで発売開始しました｡
-本は一度に入る情報量が圧倒的に多く､復習に向いています｡
-動画で話しているポイントや補足も､よりわかりやすく整理し直しました｡動画と合わせてご利用ください｡
-
-9/27まで 250円 でご提供します（28日以降は 1,650円 になります）｡
-
-※運用テストを兼ねた特別価格です｡本の内容は随時アップデートしていきます｡`,
-    image: "media/fe-book-cover.jpg",
-    until: "2026-09-27",
-    link: { url: "https://amzn.to/4izfYAg", label: "詳細をチェック" },
-    banner: "【9/27まで特別価格】Kindle本を出版しました｡",
-  },
+export const NOTICES: { id: string; date: string; title: string; body: string }[] = [
   // 例:
   // {
   //   id: "2026-10-01-mogi3",
   //   date: "2026/10/1",
   //   title: "模擬試験3回目を追加しました",
   //   body: "モード選択の「模擬試験」から受験できます｡\n所要100分です｡",
-  //   until: "2026-10-31",
-  //   link: { url: "https://example.com/", label: "詳しく見る" },
   // },
 ];

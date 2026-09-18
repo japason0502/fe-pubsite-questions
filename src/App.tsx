@@ -40,7 +40,7 @@ import { buildReportModel, fetchPopulation, type ReportModel, type ReportQuestio
 import { REVIEW_NOTES } from "./report/notes";
 import { ResultReport } from "./report/View";
 import { CATEGORIES, categoryOf, sampleNumberOf, buildSampleOrder, isSampleQuestion, SAMPLE_BADGE, mogiBadgeOf, WEEKS } from "./questionGroups";
-import { TRIAL_MAX_NUMBER, TRIAL_PATHS, ROOT_IS_TRIAL, LP_URL, ANNOUNCE_SWITCH_DATE, ANNOUNCE_VALID_UNTIL, ANNOUNCE_POSTED_DATE, ANNOUNCE_ENABLED, NOTICES, MOGI_REQUIRES_REGISTRATION, MAIL_ENDPOINT } from "./trialConfig";
+import { TRIAL_MAX_NUMBER, TRIAL_PATHS, ROOT_IS_TRIAL, LP_URL, ANNOUNCE_SWITCH_DATE, ANNOUNCE_VALID_UNTIL, ANNOUNCE_POSTED_DATE, ANNOUNCE_ENABLED, NOTICES, MOGI_REQUIRES_REGISTRATION, MAIL_ENDPOINT, SET_REV } from "./trialConfig";
 
 const STORAGE_KEY = "exam-state";
 const MOGI_STORAGE_KEY = "exam-state-mogi"; // 模擬試験は保存キーを分けて通常演習の状態を汚さない
@@ -241,10 +241,16 @@ const urlNoticeBody = (
   </>
 );
 
+/** 今日（JST）。お知らせの表示期限の判定に使う */
+function todayJstStr(): string {
+  return new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 10);
+}
+
 /**
  * お知らせ一覧（新しいものが上）。
  * URL変更のお知らせは ANNOUNCE_URL があるときだけ先頭に入る（10/1以降は自動で消える）。
  * それ以外は src/trialConfig.ts の NOTICES に足す。
+ * until を書いたお知らせは、その日を過ぎると自動で消える（消し忘れ防止）。
  */
 const NOTICE_LIST: { id: string; date: string; title: string; body: ReactNode }[] = [
   // ブックマークの取り直しが要るのはルート（既存URL）を開いている人だけ。
@@ -252,13 +258,34 @@ const NOTICE_LIST: { id: string; date: string; title: string; body: ReactNode }[
   ...(ANNOUNCE_VISIBLE && normalizePath() === "/"
     ? [{ id: "url-change", date: ANNOUNCE_POSTED_DATE, title: "URL変更のお知らせ", body: urlNoticeBody }]
     : []),
-  ...NOTICES.map((n) => ({
+  ...NOTICES.filter((n) => !n.until || todayJstStr() <= n.until).map((n) => ({
     id: n.id,
     date: n.date,
     title: n.title,
-    body: <p style={{ whiteSpace: "pre-line" }}>{n.body}</p>,
+    body: (
+      <>
+        <div className={n.image ? "notice-withimg" : undefined}>
+          {n.image && <img className="notice-img" src={bodyAssetSrc(n.image)} alt="" />}
+          <p style={{ whiteSpace: "pre-line" }}>{n.body}</p>
+        </div>
+        {n.link && (
+          <p style={{ margin: "12px 0 0" }}>
+            <a className="notice-cta" href={n.link.url} target="_blank" rel="noopener">
+              {n.link.label}
+            </a>
+          </p>
+        )}
+      </>
+    ),
   })),
 ];
+
+/**
+ * モード選択の上に出す細いバナー。期限内で banner と link を持つ先頭の1件だけ。
+ * 2本並べると両方読まれなくなるので、意図的に1件に絞っている。
+ */
+const BANNER_NOTICE =
+  NOTICES.find((n) => n.banner && n.link && (!n.until || todayJstStr() <= n.until)) ?? null;
 
 /* ===== 受験日登録による模試のアンロック =====
  * 「登録済みかどうか」だけを端末に持つ。メールアドレスは保存しない。
@@ -1213,6 +1240,7 @@ export default function App() {
       sessionId: session.sid,
       clientId: getClientId(),
       set,
+      rev: SET_REV[set] ?? 1,
       attempt: session.attempt,
       startedAt: session.startedAt,
       device: detectDevice(),
@@ -1246,6 +1274,7 @@ export default function App() {
       sessionId: session.sid,
       clientId: getClientId(),
       set: mogiSet || "",
+      rev: SET_REV[mogiSet || ""] ?? 1,
       attempt: session.attempt,
       startedAt: session.startedAt,
       finishedAt: new Date().toISOString(),
@@ -1645,6 +1674,15 @@ export default function App() {
               >
                 🔔<span className="notice-bell-count">{NOTICE_LIST.length}</span>
               </button>
+            )}
+            {BANNER_NOTICE && (
+              <div className="notice-banner">
+                <span className="notice-banner-text">{BANNER_NOTICE.banner}</span>
+                {/* いきなり外部へ飛ばさない。お知らせを開いて前置きを読んでもらってから購入へ */}
+                <button className="notice-banner-cta" onClick={() => setShowNotices(true)}>
+                  くわしく見る
+                </button>
+              </div>
             )}
             <h3>{isMogi ? "模擬試験" : "モード選択"}</h3>
             <p>{isMogi ? "本番形式の模擬試験です。" : "開始するモードとオプションを選んでください。"}</p>

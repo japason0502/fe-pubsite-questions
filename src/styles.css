@@ -1448,6 +1448,92 @@ button:disabled {
 .notice-body p {
   margin: 0 0 0.6em;
 }
+/* モード選択の上に出す細いバナー。1行に収め、主役（モード選択）を邪魔しない */
+.notice-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  /* ベル（position:absolute で右上）と重ならないよう、その下から始める */
+  margin: 26px 0 1em;
+  padding: 8px 10px 8px 12px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  text-align: left;
+  line-height: 1.5;
+}
+.notice-banner-text {
+  flex: 1;
+  min-width: 0;
+  color: #1e3a8a;
+}
+.notice-banner-cta {
+  flex: none;
+  width: auto;
+  margin: 0;
+  border: 0;
+  cursor: pointer;
+  padding: 5px 12px;
+  background: #2563eb;
+  color: #fff;
+  border-radius: 5px;
+  text-decoration: none;
+  white-space: nowrap;
+  font-size: 0.8rem;
+}
+.notice-banner-cta:hover {
+  background: #1d4ed8;
+}
+@media (max-width: 480px) {
+  .notice-banner {
+    flex-wrap: wrap;
+  }
+  .notice-banner-text {
+    flex: 1 0 100%;
+  }
+}
+
+/* お知らせ本文に小さく画像を添えるとき（表紙など） */
+.notice-withimg {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.notice-withimg > p {
+  flex: 1;
+  min-width: 0;
+}
+.notice-img {
+  flex: none;
+  width: 96px;
+  height: auto;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+@media (max-width: 480px) {
+  .notice-img {
+    width: 72px;
+  }
+}
+
+/* お知らせ本文の下に置くボタン（期間限定の案内など） */
+.notice-cta {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 16px;
+  background: #2563eb;
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  text-align: center;
+  font-size: 0.9rem;
+}
+.notice-cta:hover {
+  background: #1d4ed8;
+}
 
 .random-note {
   margin: 2px 0 0;
