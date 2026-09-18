@@ -62,7 +62,8 @@ const R4_SAMPLE_ORDER = [
 const STATS_ENDPOINT = "https://fe-mogi-stats.japason.workers.dev";
 const STATS_SECRET = "cucpux-CLn1HwmnBsaYuMm0iv6r1pu_D"; // ← wrangler secret put POST_SECRET と一致
 const STATS_V = 1;
-/** 所要時間がこれ未満の受験は連打・冷やかしとみなし、finish自体を送信しない（Worker側でも同値で除外している） */
+/** 所要時間がこれ未満の受験は連打・冷やかしとみなし、finish自体を送信しない
+ *  （Worker側は書き込みはするが集計から同値で除外する。テスト実行だけはこの下限を無視する） */
 const STATS_MIN_ELAPSED_SEC = 1200; // 20分
 const CLIENT_ID_KEY = "stats-client-id";
 const ATTEMPT_KEY_PREFIX = "stats-attempt-";
@@ -145,7 +146,13 @@ function postStats(payload: Record<string, unknown>) {
         trial: IS_TRIAL,
         ...(isTestRun() ? { test: true } : {})
       })
-    }).catch(() => { /* 失敗しても学習体験に影響させない */ });
+    }).then(function (r) {
+      // 導通確認用。テスト実行のときだけ結果を出す（本番では静かなまま）
+      if (isTestRun()) console.log("[stats] " + String(payload.type) + " → " + r.status + " " + (r.ok ? "OK" : "NG"));
+    }).catch(function (e) {
+      if (isTestRun()) console.log("[stats] " + String(payload.type) + " → 送信失敗 " + String(e));
+      /* 失敗しても学習体験に影響させない */
+    });
   } catch {
     /* noop */
   }
@@ -1269,7 +1276,10 @@ export default function App() {
     const session = statsRef.current;
     if (!statsEnabled || !session) return;
     const elapsedSec = Math.max(0, MOGI_TIME - state.remainingSeconds);
-    if (elapsedSec >= STATS_MIN_ELAPSED_SEC) postStats({
+    // 20分未満は連打・冷やかしとみなし finish を送らない。
+    // ただしテスト実行(?testrun=1 / localhost / 講師モード)は導通確認のため素通しする。
+    // is_test=1 で保存されるので、本番の集計には混ざらない。
+    if (elapsedSec >= STATS_MIN_ELAPSED_SEC || isTestRun()) postStats({
       type: "finish",
       sessionId: session.sid,
       clientId: getClientId(),
