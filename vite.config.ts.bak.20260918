@@ -1,4 +1,3 @@
-import { resolve } from "node:path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { ROOT_IS_TRIAL } from "./src/trialConfig";
@@ -24,16 +23,6 @@ console.log(
 export default defineConfig(() => ({
   plugins: [react()],
   base: "/",
-  build: {
-    rollupOptions: {
-      input: {
-        // 演習サイト本体
-        main: resolve(__dirname, "index.html"),
-        // 採点レポートの再生成ページ。管理画面から iframe で開いて postMessage でデータを渡す
-        report: resolve(__dirname, "report.html"),
-      },
-    },
-  },
   define: {
     "import.meta.env.VITE_ANNOUNCE_PATH": JSON.stringify(announcePath),
   },

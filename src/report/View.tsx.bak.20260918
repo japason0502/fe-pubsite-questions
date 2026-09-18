@@ -8,10 +8,8 @@
  * CSS はクラス名を rr- で始めて、サイト側のスタイルと混ざらないようにしている。
  */
 
-import { useEffect, useState } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { ReportLine, ZoneReport } from "./zones";
-import { canNativeShare, downloadShareCard, drawShareCard, shareCardNative } from "./shareCard";
 import {
   FULL_SCORE, GUIDE_SEC, OVER_SEC, PASS_SCORE,
   fmtDate, fmtDelta, fmtSec,
@@ -85,20 +83,6 @@ export const REPORT_CSS = `
 .rr-extra h4{margin:0 0 2px;font-size:.95rem;color:#334155}
 .rr-extra .lead{color:var(--rr-muted);font-size:.85rem;margin:0 0 10px}
 .rr-extra .rr-share{background:#fff}
-.rr-card{display:block;width:100%;max-width:560px;margin:14px auto 0;border-radius:12px;box-shadow:0 6px 20px rgba(15,23,42,.14)}
-.rr-cardbtns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
-.rr-hint{color:var(--rr-muted);font-size:.78rem;text-align:center;margin:8px 0 0}
-.rr-snsnote{color:var(--rr-muted);font-size:.78rem;margin:8px 0 0}
-.rr-sns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.rr-sns-btn{flex:1 1 150px;text-align:center;padding:11px 14px;border-radius:8px;font-size:.9rem;font-weight:700;font-family:inherit;line-height:1.4;text-decoration:none;border:0;cursor:pointer}
-.rr a.rr-sns-btn:hover,.rr-sns-btn:hover{text-decoration:none;opacity:.85}
-.rr-x{background:#0f172a;color:#fff}
-.rr-yt{background:#fff;color:#334155;border:1px solid var(--rr-line)}
-.rr-share-main{background:var(--rr-blue);color:#fff;font-weight:700;padding:11px 24px;border:0;border-radius:8px;font-size:.95rem;font-family:inherit;cursor:pointer;line-height:1.4}
-.rr-share-main:hover{opacity:.85}
-.rr-fold{margin-top:16px}
-.rr-fold summary{cursor:pointer;color:var(--rr-muted);font-size:.85rem}
-.rr-fold[open] summary{margin-bottom:2px}
 .rr-share{white-space:pre-wrap;font-family:inherit;font-size:.95rem;background:var(--rr-soft);border:1px solid var(--rr-line);border-radius:8px;padding:12px 14px;margin:8px 0 0}
 .rr-buttons{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .rr-copy,.rr-primary,.rr-btn{padding:7px 14px;font-size:.9rem;font-family:inherit;border-radius:6px;cursor:pointer;text-decoration:none;display:inline-block;line-height:1.4}
@@ -131,19 +115,6 @@ const COMMENT_VIDEO_URL = "https://youtu.be/mhVYsuS7n6I";
 function tweetUrl(shareText: string): string {
   const text = `${shareText}\n\n${SHARE_MENTION}\n${SHARE_HASHTAGS.join(" ")}`;
   return `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
-}
-
-/**
- * 「動画にコメント」を押したときの下ごしらえ。
- * YouTube のコメント欄には画像を貼れないので、代わりに採点結果の文をコピーしておく。
- * 遷移（target="_blank"）は止めないよう、await せずに投げるだけにする。
- */
-function copyThenGo(shareText: string) {
-  try {
-    navigator.clipboard?.writeText(shareText);
-  } catch {
-    /* コピーできなくても動画には移動させる */
-  }
 }
 
 /* ==================== じゃぱそんから一言 ==================== */
@@ -481,52 +452,6 @@ function copyShareText(e: { currentTarget: HTMLButtonElement }) {
   });
 }
 
-/**
- * シェア用カード（PNG）のプレビューと、そこから出す導線。
- * canvas を使うので画面表示のときだけ。保存した HTML には入らない。
- *
- * 「結果をシェア」= OS の共有シート。画像とひとことをまとめて渡せるので、
- * 画像を保存 → アプリを開く → 添付、の手間が要らない（対応端末のみ）。
- */
-function ShareCard({ m }: { m: ReportModel }) {
-  const [src, setSrc] = useState("");
-  const [busy, setBusy] = useState(false);
-  useEffect(() => {
-    try {
-      setSrc(drawShareCard(m).toDataURL("image/png"));
-    } catch {
-      /* canvas が使えない環境では出さない。レポート本体には影響させない */
-    }
-  }, [m]);
-  if (!src) return null;
-
-  const onShare = () => {
-    setBusy(true);
-    shareCardNative(m, m.shareText).then((r) => {
-      setBusy(false);
-      // 画像付きの共有に対応していない端末は、保存に切り替える
-      if (r === "unsupported") downloadShareCard(m);
-    });
-  };
-
-  return (
-    <>
-      <img className="rr-card" src={src} alt="結果カード" />
-      <div className="rr-cardbtns">
-        {canNativeShare() && (
-          <button className="rr-share-main" type="button" onClick={onShare} disabled={busy}>
-            結果をシェア
-          </button>
-        )}
-        <button className="rr-btn" type="button" onClick={() => downloadShareCard(m)}>
-          画像を保存
-        </button>
-      </div>
-      <p className="rr-hint">画像を投稿に添付すると伝わりやすいです。</p>
-    </>
-  );
-}
-
 /* ==================== 本体 ==================== */
 
 /**
@@ -618,43 +543,25 @@ export function ResultReport({ model: m, forScreen = true }: { model: ReportMode
       )}
 
       <div className="rr-extra">
-        <h4>結果をシェア</h4>
+        <h4>おまけ：結果をシェア</h4>
         <p className="lead">
-          どのゾーンで詰まったかが分かると、次の教材づくりの参考になります。
+          よかったら、動画のコメント欄やXでどうぞ。どのゾーンで詰まったかが分かると、次の教材づくりの参考になります。
           (じゃぱそんからのアドバイスももらえるかも･･?)
         </p>
-
-        {forScreen && <ShareCard m={m} />}
-
-        <div className="rr-sns">
-          <a className="rr-sns-btn rr-x" href={tweetUrl(m.shareText)} target="_blank" rel="noopener noreferrer">
-            Xでシェア
+        <pre className="rr-share" id="rr-share-text">{m.shareText}</pre>
+        <div className="rr-buttons">
+          <button className="rr-copy" type="button" onClick={copyShareText}>
+            この文をコピー
+          </button>
+        </div>
+        <div className="rr-buttons">
+          <a className="rr-btn" href={COMMENT_VIDEO_URL} target="_blank" rel="noopener noreferrer">
+            動画にコメントする
           </a>
-          <a
-            className="rr-sns-btn rr-yt"
-            href={COMMENT_VIDEO_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => copyThenGo(m.shareText)}
-          >
-            動画にコメント
+          <a className="rr-btn" href={tweetUrl(m.shareText)} target="_blank" rel="noopener noreferrer">
+            Xでつぶやく
           </a>
         </div>
-        <p className="rr-snsnote">
-          「動画にコメント」は、採点結果の文をコピーしてから動画へ移動します。コメント欄に貼り付けてください
-          （コメント欄には画像を貼れないため）。
-        </p>
-
-        {/* 文だけ使いたい人向け。普段は畳んでおく */}
-        <details className="rr-fold">
-          <summary>テキストだけコピーする</summary>
-          <pre className="rr-share" id="rr-share-text">{m.shareText}</pre>
-          <div className="rr-buttons">
-            <button className="rr-copy" type="button" onClick={copyShareText}>
-              この文をコピー
-            </button>
-          </div>
-        </details>
       </div>
 
       <div className="rr-footer">

@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>採点レポート</title>
+    <style>
+      html, body { margin: 0; background: #fff; }
+    </style>
+  </head>
+  <body>
+    <!--
+      管理画面（集計レポート）から iframe で開き、postMessage で受験データを渡して使う。
+      単独で開いても何も表示しない＝このページ自体に認証もAPIも要らない。
+    -->
+    <div id="root"></div>
+    <script type="module" src="/src/report/standalone.tsx"></script>
+  </body>
+</html>
