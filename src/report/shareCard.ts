@@ -222,6 +222,30 @@ export function downloadShareCard(m: ReportModel): void {
   }, "image/png");
 }
 
+/**
+ * カード画像をクリップボードへ入れる。
+ *
+ * X の投稿画面は本文を URL で渡せるが画像は渡せない（intent が text/url/hashtags しか取らない）ので、
+ * 画像だけクリップボードに置いて、投稿欄で貼り付けてもらう。本文とは経路が別なので競合しない。
+ *
+ * ClipboardItem には Blob ではなく Promise<Blob> を渡すこと。
+ * await してから write すると、Safari が「ユーザー操作の外」とみなして拒否する。
+ */
+export function copyShareCardImage(m: ReportModel): Promise<boolean> {
+  try {
+    if (!navigator.clipboard || typeof ClipboardItem === "undefined") return Promise.resolve(false);
+    const blob = new Promise<Blob>((resolve, reject) => {
+      drawShareCard(m).toBlob((b) => (b ? resolve(b) : reject(new Error("toBlob failed"))), "image/png");
+    });
+    return navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]).then(
+      () => true,
+      () => false // 画像のコピーに対応していないブラウザ。本文だけで投稿はできる
+    );
+  } catch {
+    return Promise.resolve(false);
+  }
+}
+
 /** この端末で「共有」が使えそうか。押したあとの実判定は shareCardNative がやる */
 export function canNativeShare(): boolean {
   return typeof navigator !== "undefined" && typeof navigator.share === "function";

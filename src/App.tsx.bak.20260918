@@ -38,7 +38,7 @@ import { ExamDayNotes } from "./ExamDayNotes";
 import { buildExamReport, ExamReport } from "./report/zones";
 import { buildReportModel, fetchPopulation, type ReportModel, type ReportQuestion } from "./report/model";
 import { REVIEW_NOTES } from "./report/notes";
-import { ResultReport, downloadReport } from "./report/View";
+import { ResultReport } from "./report/View";
 import { CATEGORIES, categoryOf, sampleNumberOf, buildSampleOrder, isSampleQuestion, SAMPLE_BADGE, mogiBadgeOf, WEEKS } from "./questionGroups";
 import { TRIAL_MAX_NUMBER, TRIAL_PATHS, ROOT_IS_TRIAL, LP_URL, ANNOUNCE_SWITCH_DATE, ANNOUNCE_VALID_UNTIL, ANNOUNCE_POSTED_DATE, ANNOUNCE_ENABLED, NOTICES, MOGI_REQUIRES_REGISTRATION, MAIL_ENDPOINT, SET_REV } from "./trialConfig";
 
@@ -421,22 +421,6 @@ function MogiCautions() {
 
 const DEFAULT_TIME = 30 * 60; // 30 分
 const MOGI_TIME = 100 * 60; // 模擬試験 100 分（本番と同じ計測）
-
-/**
- * 滞在秒を1回分積むときの上限（秒）。
- * タブを離れている間は時計を止めているが、それでも止め損ねる経路がある
- * （PC のスリープ、モバイルのバックグラウンド強制終了、省電力モードなど）。
- * 連続でこれを超えたら「放置」とみなし、その分は積まない＝計測できなかった扱い(0)にする。
- * 中途半端な値を入れるより、測れていないと分かる方が集計で扱いやすい。
- */
-const DWELL_CHUNK_MAX_SEC = 30 * 60;
-
-/** 表示していた秒数。異常に長いもの（放置）は 0 として捨てる */
-function dwellChunkSec(fromMs: number): number {
-  const sec = Math.round((Date.now() - fromMs) / 1000);
-  if (sec <= 0) return 0;
-  return sec > DWELL_CHUNK_MAX_SEC ? 0 : sec;
-}
 const PER_QUESTION_TIME = 5 * 60; // 5 分
 const MIN_ZOOM = 0.5; // 50%
 const MAX_ZOOM = 1.5; // 150%
@@ -920,8 +904,6 @@ export default function App() {
   const [resultReport, setResultReport] = useState<ExamReport | null>(null);
   // 模試のリッチな結果レポート（画面表示と HTML 保存の両方に使う）。模試以外は null
   const [reportModel, setReportModel] = useState<ReportModel | null>(null);
-  /** レポートを閉じる前の確認ダイアログ。保存しないまま閉じると二度と出せないため */
-  const [showCloseConfirm, setShowCloseConfirm] = useState(false);
   /** 学習済み(自己申告)。問題IDごとに保存し、採点や「終了」では消さない＝学習の履歴として残る */
   const [studied, setStudied] = useState<Record<string, 1>>(() => {
     try {
@@ -1213,42 +1195,32 @@ export default function App() {
   useEffect(() => {
     const d = dwellRef.current;
     if (d.id && d.at) {
-      d.acc[d.id] = (d.acc[d.id] || 0) + dwellChunkSec(d.at);
+      d.acc[d.id] = (d.acc[d.id] || 0) + Math.round((Date.now() - d.at) / 1000);
       // 問題を移るたびに書き出す（タブを閉じられても直前までは残る）
       if (dwellEnabled) lsSet(dwellKey, JSON.stringify(d.acc));
     }
     const nextId = dwellActive ? questions[state.currentIndex]?.id ?? null : null;
     d.id = nextId;
-    // 画面が隠れている間は時計を起こさない（戻ってきたら visibilitychange で再開する）
-    d.at = nextId && document.visibilityState === "visible" ? Date.now() : 0;
+    d.at = nextId ? Date.now() : 0;
   }, [dwellActive, state.currentIndex, questions, dwellEnabled, dwellKey]);
 
-  // タブを閉じる/バックグラウンドへ回るときは、表示中の問題の秒を確定して「時計を止める」。
-  // 起点をずらすだけだと、離席している間も時間が回り続けて、戻ってきた瞬間に
-  // その問題へまとめて加算されてしまう（放置した回で何時間も付いてしまう）。
+  // タブを閉じる/バックグラウンドへ回るときも、表示中の問題の秒を確定して保存する
   useEffect(() => {
     if (!dwellEnabled) return;
     const flush = () => {
       const d = dwellRef.current;
       if (d.id && d.at) {
-        d.acc[d.id] = (d.acc[d.id] || 0) + dwellChunkSec(d.at);
+        d.acc[d.id] = (d.acc[d.id] || 0) + Math.round((Date.now() - d.at) / 1000);
+        d.at = Date.now(); // 二重計上しないよう起点を今にずらす
         lsSet(dwellKey, JSON.stringify(d.acc));
       }
-      d.at = 0; // 止める。画面に戻ってくるまで加算しない
     };
-    const resume = () => {
-      const d = dwellRef.current;
-      if (d.id && !d.at) d.at = Date.now();
-    };
-    const onVis = () => {
-      if (document.visibilityState === "hidden") flush();
-      else resume();
-    };
+    const onHide = () => { if (document.visibilityState === "hidden") flush(); };
     window.addEventListener("pagehide", flush);
-    document.addEventListener("visibilitychange", onVis);
+    document.addEventListener("visibilitychange", onHide);
     return () => {
       window.removeEventListener("pagehide", flush);
-      document.removeEventListener("visibilitychange", onVis);
+      document.removeEventListener("visibilitychange", onHide);
     };
   }, [dwellEnabled, dwellKey]);
 
@@ -1336,25 +1308,6 @@ export default function App() {
     lsDel(statsKey);
     lsDel(dwellKey);
     statsRef.current = null;
-  };
-
-  /** 採点結果を閉じて次に備える。模試はガイダンスへ、通常演習はモード選択へ戻す */
-  const closeResult = () => {
-    setShowCloseConfirm(false);
-    setShowResult(false);
-    if (isMogi) {
-      // 模擬試験はモード選択に戻らず、次の受験に備えてガイダンスからやり直し
-      setQuestionOverrides({});
-      setState((prev) => ({
-        ...prev,
-        mode: "exam",
-        practiceMode: false,
-        remainingSeconds: MOGI_TIME
-      }));
-      setShowGuidance(true);
-    } else {
-      setState((prev) => ({ ...prev, mode: null }));
-    }
   };
 
   const gradeExam = () => {
@@ -2728,35 +2681,6 @@ export default function App() {
         </div>
       )}
 
-      {showCloseConfirm && (
-        <div className="overlay overlay--confirm">
-          <div className="confirm-box" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
-            <h3 id="confirm-title">レポートを閉じますか？</h3>
-            <p>
-              このレポートは保存されていません。閉じると、もう一度表示することはできません。
-            </p>
-            <div className="confirm-actions">
-              <button
-                className="confirm-primary"
-                type="button"
-                onClick={() => {
-                  if (reportModel) downloadReport(reportModel);
-                  closeResult();
-                }}
-              >
-                保存して閉じる
-              </button>
-              <button className="confirm-danger" type="button" onClick={closeResult}>
-                保存せずに閉じる
-              </button>
-              <button className="confirm-cancel" type="button" onClick={() => setShowCloseConfirm(false)}>
-                キャンセル
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {showResult && (
         <div className="overlay">
           <div className={`overlay-content overlay-content--result${reportModel ? " overlay-content--report" : ""}`}>
@@ -2860,9 +2784,20 @@ export default function App() {
             <button
               className="outline"
               onClick={() => {
-                // レポートが出ているときは、保存しないまま閉じると二度と出せないので確認する
-                if (reportModel) setShowCloseConfirm(true);
-                else closeResult();
+                setShowResult(false);
+                if (isMogi) {
+                  // 模擬試験はモード選択に戻らず、次の受験に備えてガイダンスからやり直し
+                  setQuestionOverrides({});
+                  setState((prev) => ({
+                    ...prev,
+                    mode: "exam",
+                    practiceMode: false,
+                    remainingSeconds: MOGI_TIME
+                  }));
+                  setShowGuidance(true);
+                } else {
+                  setState((prev) => ({ ...prev, mode: null }));
+                }
               }}
             >
               閉じる

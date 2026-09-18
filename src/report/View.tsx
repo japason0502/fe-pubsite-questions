@@ -11,7 +11,7 @@
 import { useEffect, useState } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { ReportLine, ZoneReport } from "./zones";
-import { canNativeShare, downloadShareCard, drawShareCard, shareCardNative } from "./shareCard";
+import { canNativeShare, copyShareCardImage, downloadShareCard, drawShareCard, shareCardNative } from "./shareCard";
 import {
   FULL_SCORE, GUIDE_SEC, OVER_SEC, PASS_SCORE,
   fmtDate, fmtDelta, fmtSec,
@@ -81,6 +81,13 @@ export const REPORT_CSS = `
 .rr td.cm > div + div{margin-top:4px}
 .rr-next{background:var(--rr-tint);border:0;border-radius:12px;padding:14px 20px;margin-top:24px}
 .rr-next ol{margin:6px 0 0;padding-left:1.4em}
+.rr-cta{display:block;margin-top:16px;padding:16px 20px;background:var(--rr-blue);color:#fff;border-radius:12px;text-align:center;font-weight:700;font-size:1.05rem;text-decoration:none;box-shadow:0 4px 14px rgba(37,99,235,.28)}
+.rr a.rr-cta{color:#fff}
+.rr a.rr-cta:hover{text-decoration:none;opacity:.9}
+.rr-cta small{display:block;font-weight:400;font-size:.78rem;opacity:.88;margin-top:5px}
+button.rr-cta{width:100%;border:0;font-family:inherit;cursor:pointer}
+.rr-ctasub{display:block;text-align:center;font-size:.8rem;margin-top:8px}
+@media print{ .rr-saveblock{display:none} }
 .rr-extra{margin-top:26px;background:var(--rr-soft);border:1px solid var(--rr-line);border-radius:12px;padding:16px 20px}
 .rr-extra h4{margin:0 0 2px;font-size:.95rem;color:#334155}
 .rr-extra .lead{color:var(--rr-muted);font-size:.85rem;margin:0 0 10px}
@@ -89,6 +96,8 @@ export const REPORT_CSS = `
 .rr-cardbtns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
 .rr-hint{color:var(--rr-muted);font-size:.78rem;text-align:center;margin:8px 0 0}
 .rr-snsnote{color:var(--rr-muted);font-size:.78rem;margin:8px 0 0}
+.rr-snsnote ul{margin:4px 0 0;padding-left:1.2em}
+.rr-snsnote li{margin-top:2px}
 .rr-sns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .rr-sns-btn{flex:1 1 150px;text-align:center;padding:11px 14px;border-radius:8px;font-size:.9rem;font-weight:700;font-family:inherit;line-height:1.4;text-decoration:none;border:0;cursor:pointer}
 .rr a.rr-sns-btn:hover,.rr-sns-btn:hover{text-decoration:none;opacity:.85}
@@ -126,6 +135,15 @@ const SHARE_HASHTAGS = ["#基本情報技術者試験", "#じゃぱそんの基�
 
 /** 「動画にコメントする」の飛び先。「合格に繋がる模試の受け方」の動画にコメントを集める */
 const COMMENT_VIDEO_URL = "https://youtu.be/mhVYsuS7n6I";
+
+/**
+ * 全問の解説をまとめた記事。セットごとに用意できたら足す。
+ * 無いセットではボタンごと出さない（行き先のないボタンを見せない）。
+ */
+const REVIEW_INDEX_URL: Record<string, string> = {
+  "1": "https://mos.japason.co.jp/fe-kamokub-mogi1/",
+  "2": "https://mos.japason.co.jp/fe-kamokub-mogi2/"
+};
 
 /** X の投稿画面を、本文を入れた状態で開く URL */
 function tweetUrl(shareText: string): string {
@@ -527,6 +545,31 @@ function ShareCard({ m }: { m: ReportModel }) {
   );
 }
 
+/**
+ * レポートの保存。
+ * 閉じるときに確認ダイアログ（App.tsx）が出るので、冒頭では出さず末尾だけに置く。
+ */
+function SaveBlock({ m }: { m: ReportModel }) {
+  return (
+    <div className="rr-saveblock">
+      <button className="rr-cta" type="button" onClick={() => downloadReport(m)}>
+        レポートを保存（HTML）
+        <small>このページはサーバーに残りません。手元に残す場合はこちら</small>
+      </button>
+      <a
+        className="rr-ctasub"
+        href="#"
+        onClick={(e) => {
+          e.preventDefault();
+          openReport(m);
+        }}
+      >
+        別タブで開く（印刷・PDF保存はこちら）
+      </a>
+    </div>
+  );
+}
+
 /* ==================== 本体 ==================== */
 
 /**
@@ -585,6 +628,19 @@ export function ResultReport({ model: m, forScreen = true }: { model: ReportMode
         </div>
       )}
 
+      {/* 全問の解説へ。レポートを読み終えて「で、何をすれば」となるところに置く */}
+      {REVIEW_INDEX_URL[input.set] && (
+        <a
+          className="rr-cta"
+          href={REVIEW_INDEX_URL[input.set]}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          全{input.questions.length}問の振り返りはこちら
+          <small>間違えた問題だけでなく、正解した問題の見直しにも使えます</small>
+        </a>
+      )}
+
 
       {forScreen && authorMessages.length > 0 && (
         <div className="rr-note">
@@ -606,14 +662,7 @@ export function ResultReport({ model: m, forScreen = true }: { model: ReportMode
           <p className="rr-meta">
             このページはサーバーに残りません。1枚のHTMLとして保存できます（印刷・PDF化もできます）。
           </p>
-          <div className="rr-buttons">
-            <button className="rr-primary" type="button" onClick={() => downloadReport(m)}>
-              レポートを保存（HTML）
-            </button>
-            <button className="rr-btn" type="button" onClick={() => openReport(m)}>
-              別タブで開く
-            </button>
-          </div>
+          <SaveBlock m={m} />
         </>
       )}
 
@@ -627,7 +676,13 @@ export function ResultReport({ model: m, forScreen = true }: { model: ReportMode
         {forScreen && <ShareCard m={m} />}
 
         <div className="rr-sns">
-          <a className="rr-sns-btn rr-x" href={tweetUrl(m.shareText)} target="_blank" rel="noopener noreferrer">
+          <a
+            className="rr-sns-btn rr-x"
+            href={tweetUrl(m.shareText)}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => copyShareCardImage(m)}
+          >
             Xでシェア
           </a>
           <a
@@ -640,10 +695,17 @@ export function ResultReport({ model: m, forScreen = true }: { model: ReportMode
             動画にコメント
           </a>
         </div>
-        <p className="rr-snsnote">
-          「動画にコメント」は、採点結果の文をコピーしてから動画へ移動します。コメント欄に貼り付けてください
-          （コメント欄には画像を貼れないため）。
-        </p>
+        <div className="rr-snsnote">
+          どちらも、必要なものをコピーしてから移動します。
+          <ul>
+            <li>
+              <b>Xでシェア</b> … 本文は投稿欄に入ります。<b>画像はコピー</b>されるので、投稿欄で貼り付け（Ctrl+V / ⌘V）してください
+            </li>
+            <li>
+              <b>動画にコメント</b> … <b>採点結果の文がコピー</b>されます。コメント欄に貼り付けてください（コメント欄には画像を貼れません）
+            </li>
+          </ul>
+        </div>
 
         {/* 文だけ使いたい人向け。普段は畳んでおく */}
         <details className="rr-fold">
@@ -658,8 +720,7 @@ export function ResultReport({ model: m, forScreen = true }: { model: ReportMode
       </div>
 
       <div className="rr-footer">
-        このレポートはお使いのブラウザで生成されたもので、サーバーには保存されていません。
-        受験コードは合格報告フォームに記入していただくと、模擬試験と本番の点数を突き合わせた分析ができます。　科目B 演習サイト
+        このレポートはお使いのブラウザで生成されたもので、サーバーには保存されていません。　科目B 演習サイト
       </div>
     </div>
   );

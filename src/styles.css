@@ -1750,3 +1750,70 @@ button:disabled {
   font-size: 0.85em;
 }
 .mogi-toggle input { margin: 0; }
+
+/* ===== 閉じる前の確認ダイアログ ===== */
+/* 採点結果のオーバーレイ(z-index:100)の上に重ねる */
+.overlay--confirm {
+  z-index: 200;
+  background: rgba(15, 23, 42, 0.55);
+}
+
+.confirm-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 22px 24px 18px;
+  width: min(92vw, 420px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+}
+
+.confirm-box h3 {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+}
+
+.confirm-box p {
+  margin: 0 0 18px;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: #475569;
+}
+
+/* 縦に積む。上から「推奨」「破壊的」「取りやめ」の順 */
+.confirm-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.confirm-actions button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.confirm-actions button:hover {
+  opacity: 0.85;
+}
+
+.confirm-primary {
+  background: #2563eb;
+  color: #fff;
+  border: 0;
+  font-weight: 700;
+}
+
+.confirm-danger {
+  background: #fff;
+  color: #dc2626;
+  border: 1px solid #dc2626;
+  font-weight: 600;
+}
+
+.confirm-cancel {
+  background: #fff;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
