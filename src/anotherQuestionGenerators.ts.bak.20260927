@@ -358,52 +358,51 @@ function matrixToQ44Literal(matrix: number[][]): string {
   return `{${rows.join("，")}}`;
 }
 
+function valuesToQ44ChoiceText(values: number[]): string {
+  return `a={1，2，2，3，3，4，5}, b={1，2，3，4，5，4，5}, c={${toFullWidthCommaJoined(values)}}`;
+}
+
 function generateQ45Sparse(_baseQuestion: Question): GeneratedQuestionPatch {
-  // 非0要素の位置（行・列）は原問のまま、値（1が2個・2が3個・3が2個）の並びだけ変える。
-  // 解答群は原問と同じ 2×2 の作り：
-  //   a・b … 行番号と列番号を正しく読んだか（取り違えると a と b が入れ替わる）
-  //   c    … 行ごとに読んだか（正解）／列ごとに読んだか（誤り。4行目と3行目の値が入れ替わる）
+  // 非0要素数は7個のまま、1/2/3 の出現位置だけ変える
   const bag = [1, 1, 2, 2, 2, 3, 3];
-  const original = [3, 2, 2, 1, 3, 2, 1]; // 原問の行列の非0要素（行ごとの順）
-  let values: number[] = [...bag];
+  let correctValues: number[] = [...bag];
+
+  const original = [2, 3, 1, 2, 1, 3, 2];
   do {
-    values = shuffle([...bag]);
-    // values[4]（3行5列）と values[5]（4行4列）が同じだと、行ごと・列ごとの c が一致して誤答にならない
-  } while (values[4] === values[5] || values.every((v, i) => v === original[i]));
+    correctValues = shuffle([...bag]);
+  } while (correctValues.every((v, i) => v === original[i]));
 
-  const matrixLiteral = matrixToQ44Literal(createQ44MatrixFromValues(values));
-  const rowNos = "1，2，2，3，3，4，5";
-  const colNos = "1，2，3，4，5，4，5";
-  const cRight = toFullWidthCommaJoined(values);
-  const cWrong = toFullWidthCommaJoined([values[0], values[1], values[2], values[3], values[5], values[4], values[6]]);
-  const rightFirst = Math.random() < 0.5;
-  const c1 = rightFirst ? cRight : cWrong;
-  const c2 = rightFirst ? cWrong : cRight;
-  const rows = [
-    [rowNos, colNos, c1],
-    [rowNos, colNos, c2],
-    [colNos, rowNos, c1],
-    [colNos, rowNos, c2]
-  ];
+  const matrixLiteral = matrixToQ44Literal(createQ44MatrixFromValues(correctValues));
 
-  const choices: Choice[] = rows.map((r, index) => ({
-    id: CHOICE_IDS[index],
-    text: `a={${r[0]}}, b={${r[1]}}, c={${r[2]}}`
-  }));
-  // この問題は解答群を表で出すので choiceTable も一緒に差し替える（choices だけだと表が元のまま残る）
-  const choiceTable = { headers: ["a", "b", "c"], rows };
-  const correctChoiceId = CHOICE_IDS[rightFirst ? 0 : 1];
+  const candidates = new Set<string>();
+  candidates.add(correctValues.join(","));
+  while (candidates.size < 4) {
+    const candidate = shuffle([...bag]);
+    const key = candidate.join(",");
+    if (key !== correctValues.join(",")) candidates.add(key);
+  }
+
+  const ordered = shuffle(Array.from(candidates));
+  const choices: Choice[] = CHOICE_IDS.slice(0, 4).map((id, index) => {
+    const values = ordered[index].split(",").map(Number);
+    return {
+      id,
+      text: valuesToQ44ChoiceText(values)
+    };
+  });
+
+  const correctIndex = ordered.findIndex((value) => value === correctValues.join(","));
+  const correctChoiceId = CHOICE_IDS[correctIndex] ?? "a";
 
   return {
     bodyText: `要素の多くが 0 の行列を疎行列という。次のプログラムは，二次元配列に格納された行列のデータ量を削減するために，疎行列の格納に適したデータ構造に変換する。関数 transformSparseMatrix は，引数 matrix で二次元配列として与えられた行列を，整数型配列の配列に変換して返す。関数 transformSparseMatrix を transformSparseMatrix(${matrixLiteral}) として呼び出したときの戻り値は，{{【 a 】}，{【 b 】}，{【 c 】}} である。`,
     choices,
-    choiceTable,
     correctChoiceId,
     anotherTraceLines: [
       `matrix = ${matrixLiteral}`,
-      `a(行番号) = {${rowNos}}`,
-      `b(列番号) = {${colNos}}`,
-      `c(値) = {${cRight}}（行ごとに左から読む）`
+      `a(行番号) = {1，2，2，3，3，4，5}`,
+      `b(列番号) = {1，2，3，4，5，4，5}`,
+      `c(値) = {${toFullWidthCommaJoined(correctValues)}}`
     ]
   };
 }

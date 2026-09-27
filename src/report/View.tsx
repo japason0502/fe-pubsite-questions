@@ -98,11 +98,15 @@ button.rr-cta{width:100%;border:0;font-family:inherit;cursor:pointer}
 .rr-snsnote{color:var(--rr-muted);font-size:.78rem;margin:8px 0 0}
 .rr-snsnote ul{margin:4px 0 0;padding-left:1.2em}
 .rr-snsnote li{margin-top:2px}
-.rr-sns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.rr-sns-btn{flex:1 1 150px;text-align:center;padding:11px 14px;border-radius:8px;font-size:.9rem;font-weight:700;font-family:inherit;line-height:1.4;text-decoration:none;border:0;cursor:pointer}
+/* ボタンが1つのときに間延びしないよう、中央寄せ＋最大幅を持たせる */
+.rr-sns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;justify-content:center}
+.rr-sns-btn{flex:1 1 150px;max-width:320px;text-align:center;padding:11px 14px;border-radius:8px;font-size:.9rem;font-weight:700;font-family:inherit;line-height:1.4;text-decoration:none;border:0;cursor:pointer}
 .rr a.rr-sns-btn:hover,.rr-sns-btn:hover{text-decoration:none;opacity:.85}
-.rr-x{background:#0f172a;color:#fff}
-.rr-yt{background:#fff;color:#334155;border:1px solid var(--rr-line)}
+/* .rr a の色指定に負けないよう、a を含めた形で上書きする */
+.rr-x,.rr a.rr-x{background:#0f172a;color:#fff}
+.rr-yt,.rr a.rr-yt,.rr-book,.rr a.rr-book{background:#fff;color:#334155;border:1px solid var(--rr-line)}
+.rr-voice{background:#fffdf5;border-color:#fde68a}
+.rr-voice h4{color:#92400e}
 .rr-share-main{background:var(--rr-blue);color:#fff;font-weight:700;padding:11px 24px;border:0;border-radius:8px;font-size:.95rem;font-family:inherit;cursor:pointer;line-height:1.4}
 .rr-share-main:hover{opacity:.85}
 .rr-fold{margin-top:16px}
@@ -135,6 +139,10 @@ const SHARE_HASHTAGS = ["#基本情報技術者試験", "#じゃぱそんの基�
 
 /** 「動画にコメントする」の飛び先。「合格に繋がる模試の受け方」の動画にコメントを集める */
 const COMMENT_VIDEO_URL = "https://youtu.be/mhVYsuS7n6I";
+
+/** Kindle本のレビュー投稿画面。商品ページを経由せず、書く画面へ直接飛ばす */
+const BOOK_REVIEW_URL =
+  "https://www.amazon.co.jp/review/create-review/?ie=UTF8&channel=glance-detail&asin=B0HK2F6QMK";
 
 /**
  * 全問の解説をまとめた記事。セットごとに用意できたら足す。
@@ -685,27 +693,10 @@ export function ResultReport({ model: m, forScreen = true }: { model: ReportMode
           >
             Xでシェア
           </a>
-          <a
-            className="rr-sns-btn rr-yt"
-            href={COMMENT_VIDEO_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => copyThenGo(m.shareText)}
-          >
-            動画にコメント
-          </a>
         </div>
-        <div className="rr-snsnote">
-          どちらも、必要なものをコピーしてから移動します。
-          <ul>
-            <li>
-              <b>Xでシェア</b> … 本文は投稿欄に入ります。<b>画像はコピー</b>されるので、投稿欄で貼り付け（Ctrl+V / ⌘V）してください
-            </li>
-            <li>
-              <b>動画にコメント</b> … <b>採点結果の文がコピー</b>されます。コメント欄に貼り付けてください（コメント欄には画像を貼れません）
-            </li>
-          </ul>
-        </div>
+        <p className="rr-snsnote">
+          本文は投稿欄に入ります。<b>画像はコピー</b>されるので、投稿欄で貼り付け（Ctrl+V / ⌘V）してください。
+        </p>
 
         {/* 文だけ使いたい人向け。普段は畳んでおく */}
         <details className="rr-fold">
@@ -717,6 +708,32 @@ export function ResultReport({ model: m, forScreen = true }: { model: ReportMode
             </button>
           </div>
         </details>
+      </div>
+
+      {/* シェア（拡散）とは別枠。こちらは作り手へのフィードバック */}
+      <div className="rr-extra rr-voice">
+        <h4>感想をきかせてください</h4>
+        <p className="lead">
+          いただいた声は、次の教材づくりにそのまま反映します。ひとことで充分です。
+        </p>
+        <div className="rr-sns">
+          <a
+            className="rr-sns-btn rr-yt"
+            href={COMMENT_VIDEO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => copyThenGo(m.shareText)}
+          >
+            動画にコメントする
+          </a>
+          <a className="rr-sns-btn rr-book" href={BOOK_REVIEW_URL} target="_blank" rel="noopener noreferrer">
+            Kindle本にレビューを書く
+          </a>
+        </div>
+        <p className="rr-snsnote">
+          「動画にコメントする」を押すと<b>採点結果の文がコピー</b>されます。コメント欄に貼り付けてください
+          （コメント欄には画像を貼れません）。レビューは本を読んでくださった方向けです。
+        </p>
       </div>
 
       <div className="rr-footer">
