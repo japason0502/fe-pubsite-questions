@@ -588,14 +588,12 @@ function generateQ61(_baseQuestion: Question): GeneratedQuestionPatch {
 
   const pseudoLower = [
     "○ 8ビット型: getLowerBits(8ビット型: byte)",
-    "    8ビット型: rbyte ← byte",
     "    8ビット型: r ← 00000000",
     "        【　】",
     "    return r"
   ];
   const pseudoUpperPacked = [
     "○ 8ビット型: getUpperBitsPacked(8ビット型: byte)",
-    "    8ビット型: rbyte ← byte",
     "    8ビット型: r ← 00000000",
     "        【　】",
     "    return r"
@@ -612,13 +610,13 @@ function generateQ61(_baseQuestion: Question): GeneratedQuestionPatch {
     const resultBin = toBin8Byte(resultVal);
     const bodyText = `関数 getLowerBits は 8 ビット型の引数 byte を受け取り，下位${n}ビットを返す。例えば，getLowerBits(${byteBin}) の戻り値は ${resultBin} となる。\n\n${intro}`;
 
-    const correct = `r ← (rbyte ∧ ${maskLowerBin})`;
+    const correct = `r ← (byte ∧ ${maskLowerBin})`;
     // 誤答に >> は入れない（誤答が別解に見えるのを防ぐ）
     const four = shuffleFourChoices(
       correct,
-      `r ← (rbyte ∨ ${maskLowerBin})`,
-      `r ← (rbyte ∧ ${maskUpperBin})`,
-      `r ← (rbyte << ${k})`
+      `r ← (byte ∨ ${maskLowerBin})`,
+      `r ← (byte ∧ ${maskUpperBin})`,
+      `r ← (byte << ${k})`
     );
     return {
       bodyText,
@@ -649,13 +647,13 @@ function generateQ61(_baseQuestion: Question): GeneratedQuestionPatch {
   const resultBin = toBin8Byte(resultVal);
   const bodyText = `関数 getUpperBitsPacked は 8 ビット型の引数 byte を受け取り，上位${n}ビットを取り出し，右詰めにして返す。例えば，getUpperBitsPacked(${byteBin}) の戻り値は ${resultBin} となる。\n\n${intro}`;
 
-  const correct = `r ← (rbyte >> ${k})`;
+  const correct = `r ← (byte >> ${k})`;
   const four = shuffleFourChoices(
     correct,
-    `r ← (rbyte ∧ ${maskUpperBin})`,
-    `r ← (rbyte ∧ ${maskLowerBin})`,
-    `r ← (rbyte ∨ ${maskUpperBin})`,
-    `r ← (rbyte << ${k})`
+    `r ← (byte ∧ ${maskUpperBin})`,
+    `r ← (byte ∧ ${maskLowerBin})`,
+    `r ← (byte ∨ ${maskUpperBin})`,
+    `r ← (byte << ${k})`
   );
   return {
     bodyText,
