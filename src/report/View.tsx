@@ -138,7 +138,9 @@ const SHARE_MENTION = "@japacojp";
 const SHARE_HASHTAGS = ["#基本情報技術者試験", "#じゃぱそんの基本情報"];
 
 /** 「動画にコメントする」の飛び先。「合格に繋がる模試の受け方」の動画にコメントを集める */
-const COMMENT_VIDEO_URL = "https://youtu.be/mhVYsuS7n6I";
+// 短縮URL（youtu.be）だとスマホでアプリではなくブラウザ側で開き、未ログインでコメントがエラーになることがある。
+// Googleフォームから張っていた形（youtube.com/watch?v=…）に揃える（2026-09-29）
+const COMMENT_VIDEO_URL = "https://www.youtube.com/watch?v=mhVYsuS7n6I";
 
 /** Kindle本のレビュー投稿画面。商品ページを経由せず、書く画面へ直接飛ばす */
 const BOOK_REVIEW_URL =
@@ -721,7 +723,7 @@ export function ResultReport({ model: m, forScreen = true }: { model: ReportMode
             className="rr-sns-btn rr-yt"
             href={COMMENT_VIDEO_URL}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener"
             onClick={() => copyThenGo(m.shareText)}
           >
             動画にコメントする

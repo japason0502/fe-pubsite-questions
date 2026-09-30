@@ -25,9 +25,9 @@ export const TRIAL_MAX_NUMBER = 33;
 /** 体験版として振る舞うパス（前方一致） */
 export const TRIAL_PATHS = ["/trial/"];
 /** ルート（既存URL）を体験版にするか。10/1 に true へ切り替える */
-export const ROOT_IS_TRIAL = false;
-/** 有料版の案内先（LP）。仮URL */
-export const LP_URL = "https://example.com/fe-kamokub/";
+export const ROOT_IS_TRIAL = true;
+/** 有料版の案内先（LP） */
+export const LP_URL = "https://mos.japason.co.jp/fe-lp/";
 
 /**
  * ルート（既存URL）に移行のお知らせを出すか。
