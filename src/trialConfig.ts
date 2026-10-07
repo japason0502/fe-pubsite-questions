@@ -62,7 +62,7 @@ export const MOGI_REQUIRES_REGISTRATION = true;
  *   模試1  v1 = 公開時 / v2 = 2026-09-18 問5・問6・問11・問12 を改訂
  *   模試2  v1 = 公開時
  */
-export const SET_REV: Record<string, number> = { "1": 2, "2": 1, "r4": 1 };
+export const SET_REV: Record<string, number> = { "1": 2, "2": 1, "3": 1, "r4": 1 };
 
 /** 受験日登録フォーム / 照合APIのURL（末尾スラッシュなし） */
 export const MAIL_ENDPOINT = "https://fe-mail.japason.workers.dev";
@@ -89,8 +89,8 @@ export type Notice = {
   /** 本文の下に出すボタン。期間限定の案内などで使う */
   link?: { url: string; label: string };
   /**
-   * モード選択画面の上に細いバナーを出す（link が必要）。
-   * ベルの中は自分から押した人しか見ないので、告知したいものだけ true にする。
+   * モード選択画面の上に細いバナーを出す。お知らせの入口はこのバーだけ（ベルは 2026-10-07 に廃止）。
+   * banner が無いお知らせは画面に出ないので、出したいものには必ず書く。
    * 出しっぱなしにすると効かなくなるので、必ず until とセットで使うこと。
    */
   banner?: string;
@@ -117,6 +117,17 @@ export const NOTICES: Notice[] = [
     link: { url: "https://amzn.to/4izfYAg", label: "詳細をチェック" },
     banner: "【9/27まで特別価格】Kindle本を出版しました｡",
   },
+  {
+    id: "2026-10-07-mogi3",
+    date: "2026/10/7",
+    title: "模擬試験Cを追加しました",
+    body: `模擬試験Cを追加しました｡モード選択の「模擬試験」から受験できます｡所要100分です｡
+
+あわせて､模擬試験の名前を変更しました｡
+1回目 → A､2回目 → B です｡内容は変わっていません｡`,
+    until: "2026-11-07",
+    banner: "模擬試験Cを追加しました｡",
+  },
   // 例:
   // {
   //   id: "2026-10-01-mogi3",
@@ -127,3 +138,20 @@ export const NOTICES: Notice[] = [
   //   link: { url: "https://example.com/", label: "詳しく見る" },
   // },
 ];
+
+/* ===== 模擬試験の名前と並び順 =====
+ * 中のIDは "1" "2" のまま（URLの ?mock=1、受験途中の保存データ、集計の set_id はどれも変わらない）。
+ * 画面に出る名前だけを A・B…にしている。
+ * 模試メニューは上に置いたものほど先に受けられる＝データが集まる。定期的にここの並びを入れ替える。 */
+export const MOGI_NAMES: Record<string, string> = { "1": "A", "2": "B", "3": "C" };
+export const MOGI_MENU_ORDER: string[] = ["2", "1", "3"];
+/**
+ * 模試を選ぶボタンの下に出す注意書き。1行ずつ。空配列にすれば何も出ない。
+ */
+export const MOGI_MENU_NOTES: string[] = [
+  "※データ集計のため、表示順を不定期で変更しています。左から順に受験いただけると助かります。"
+];
+/**
+ * 模試ボタンの名前の下に小さく出す補足（2026/10/7 に 1→A、2→B へ改名したことを示す）。不要になったら消す。
+ */
+export const MOGI_SUBLABELS: Record<string, string> = { "1": "(旧1回目)", "2": "(旧2回目)" };

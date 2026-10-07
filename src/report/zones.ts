@@ -103,6 +103,26 @@ const CONFIG: Record<string, SetConfig> = {
     quotaReading: 1,  // 2問中1問
     quotaField: 3     // 6問中3問
     // ノルマ合計 = 2+3+3+2+1+3 = 14問 = 700点（①と同じ）
+  },
+  // 模試C（2026-10-07）。worker/src/report.ts の ZONES["3"] と合わせる
+  "3": {
+    basicsTrace: [1, 3],
+    basicsReading: [2, 4],
+    fieldByNumber: {
+      6: "2進数・ビット演算",
+      7: "再帰",
+      8: "キュー",
+      9: "再帰",
+      10: "単方向リスト"
+    },
+    trace: [11, 13, 14],
+    reading: [5, 12, 15, 16], // 模試Cは読解が4問・クセ強が5問（A・Bと形が違う）
+    security: [17, 18, 19, 20],
+    quotaSecurity: 3, // 4問中3問
+    quotaTrace: 2,    // 3問中2問
+    quotaReading: 3,  // 4問中3問
+    quotaField: 2     // 5問中2問
+    // ノルマ合計 = 2+2+3+2+3+2 = 14問 = 700点（A・Bと同じ）
   }
 };
 
@@ -223,7 +243,8 @@ export function buildExamReport(set: string | null, rows: ReportRow[]): ExamRepo
     got(cfg.reading) < cfg.quotaReading
       ? [{
           tone: "warn" as const,
-          text: `どちらもミスしています。読解問題への対応がもう一歩です｡`
+          // A・Bは2問中1問ノルマ＝未達なら「どちらも」だが、Cは4問あるので問番号で言う
+          text: `${miss(cfg.reading).length}問（${nums(miss(cfg.reading))}）ミスしています。読解問題への対応がもう一歩です｡`
         }]
       : []);
 

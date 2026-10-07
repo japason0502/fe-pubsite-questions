@@ -42,7 +42,7 @@ export type ReportQuestion = ReportRow & {
 export type ReportInput = {
   /** 模試セット（"1" | "2" | "r4"） */
   set: string;
-  /** 見出し用（例: 模擬試験①） */
+  /** 見出し用（例: 模擬試験A） */
   setLabel: string;
   date: Date;
   elapsedSec: number;
@@ -440,8 +440,8 @@ export function buildNextSteps(input: ReportInput, review: ReviewItem[], diagnos
  * 点数と「ノルマに届かなかったゾーン」だけを書く。URLは入れない（コメント欄では宣伝扱いされるため）。
  */
 export function buildShareText(input: ReportInput, score: number): string {
-  // "1" → 模擬試験1回目 / それ以外（r4 など）は見出しの名前をそのまま使う
-  const title = /^\d+$/.test(input.set) ? `模擬試験${input.set}回目` : input.setLabel;
+  // 見出しの名前（模擬試験A など）をそのまま使う
+  const title = input.setLabel;
   const under = (input.report?.zones ?? [])
     .filter((z) => !z.met)
     .map((z) => ZONE_SHORT[z.name] ?? z.name);

@@ -21,6 +21,10 @@ console.log(
       : "[announce] FULL_PATHS が空です。お知らせは出ません（Secret が build step に届いていない可能性）"
 );
 
+// 最終更新日＝ビルドした日（JST）。本番は push のたびに Actions がビルドするので「最後に push した日」になる
+const d = new Date(Date.now() + 9 * 3600_000);
+const buildDate = `${d.getUTCFullYear()}/${d.getUTCMonth() + 1}/${d.getUTCDate()}`;
+
 export default defineConfig(() => ({
   plugins: [react()],
   base: "/",
@@ -36,5 +40,6 @@ export default defineConfig(() => ({
   },
   define: {
     "import.meta.env.VITE_ANNOUNCE_PATH": JSON.stringify(announcePath),
+    "import.meta.env.VITE_BUILD_DATE": JSON.stringify(buildDate),
   },
 }));

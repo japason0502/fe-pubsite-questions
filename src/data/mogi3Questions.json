@@ -1,0 +1,1782 @@
+[
+  {
+    "id": "o1",
+    "slug": "mogi3-1",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi3-mon1/",
+    "number": 1,
+    "group": "trace-funcs",
+    "title": "関数の戻り値を次の関数に渡す",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "　手続 test を実行すると，「【　】」と出力される。"
+      }
+    ],
+    "pseudoCode": [
+      "○整数型: add(整数型: a, 整数型: b)",
+      "    return a ＋ b",
+      "",
+      "○整数型: twice(整数型: n)",
+      "    return n × 2",
+      "",
+      "○test()",
+      "    整数型: x ← 2",
+      "    整数型: y ← 3",
+      "    x ← twice(add(x, y))",
+      "    y ← add(x, y)",
+      "    xの値とyの値をこの順にコンマ区切りで出力する"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "5,8"
+      },
+      {
+        "id": "c2",
+        "text": "7,10"
+      },
+      {
+        "id": "c3",
+        "text": "10,13"
+      },
+      {
+        "id": "c4",
+        "text": "10,5"
+      },
+      {
+        "id": "c5",
+        "text": "10,6"
+      },
+      {
+        "id": "c6",
+        "text": "13,10"
+      }
+    ],
+    "correctChoiceId": "c3"
+  },
+  {
+    "id": "o2",
+    "slug": "mogi3-2",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi3-mon2/",
+    "number": 2,
+    "group": "read-branch",
+    "title": "うるう年の判定",
+    "questionText": "次のプログラム中の【 a 】〜【 c 】に入れる正しい答えの組合せを，解答群の中から選べ。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "　西暦 year 年がうるう年かどうかは，次の規則で決まる。\n（1）4 で割り切れる年はうるう年である。\n（2）ただし，100 で割り切れる年はうるう年ではない。\n（3）ただし，400 で割り切れる年はうるう年である。\n　例えば，2024 年はうるう年，1900 年はうるう年ではなく，2000 年はうるう年である。"
+      },
+      {
+        "type": "text",
+        "text": "　関数 isLeapYear は，year を受け取り，うるう年なら true を，そうでなければ false を返す。"
+      }
+    ],
+    "pseudoCode": [
+      "○論理型: isLeapYear(整数型: year)",
+      "    論理型: result",
+      "    if (year が 【 a 】 で割り切れる)",
+      "        result ← true",
+      "    elseif (year が 【 b 】 で割り切れる)",
+      "        result ← false",
+      "    elseif (year が 【 c 】 で割り切れる)",
+      "        result ← true",
+      "    else",
+      "        result ← false",
+      "    endif",
+      "    return result"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "a：4　b：100　c：400"
+      },
+      {
+        "id": "c2",
+        "text": "a：4　b：400　c：100"
+      },
+      {
+        "id": "c3",
+        "text": "a：100　b：400　c：4"
+      },
+      {
+        "id": "c4",
+        "text": "a：400　b：100　c：4"
+      },
+      {
+        "id": "c5",
+        "text": "a：400　b：4　c：100"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "a",
+        "b",
+        "c"
+      ],
+      "rows": [
+        [
+          "4",
+          "100",
+          "400"
+        ],
+        [
+          "4",
+          "400",
+          "100"
+        ],
+        [
+          "100",
+          "400",
+          "4"
+        ],
+        [
+          "400",
+          "100",
+          "4"
+        ],
+        [
+          "400",
+          "4",
+          "100"
+        ]
+      ]
+    },
+    "correctChoiceId": "c4"
+  },
+  {
+    "id": "o3",
+    "slug": "mogi3-3",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi3-mon3/",
+    "number": 3,
+    "group": "trace-for-array",
+    "title": "隣どうしの差",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "　diff({2, 5, 4, 9, 6, 8}) を実行したとき，戻り値の配列の要素番号 5 の値は【　】である。"
+      }
+    ],
+    "pseudoCode": [
+      "○整数型の配列: diff(整数型の配列: data)",
+      "    整数型の配列: out ← {}",
+      "    整数型: i",
+      "    for (i を 2 から data の要素数 まで 1 ずつ増やす)",
+      "        out の末尾に (data[i] − data[i − 1]) を追加する",
+      "    endfor",
+      "    return out"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "−3"
+      },
+      {
+        "id": "c2",
+        "text": "2"
+      },
+      {
+        "id": "c3",
+        "text": "−2"
+      },
+      {
+        "id": "c4",
+        "text": "3"
+      },
+      {
+        "id": "c5",
+        "text": "6"
+      },
+      {
+        "id": "c6",
+        "text": "8"
+      }
+    ],
+    "correctChoiceId": "c2"
+  },
+  {
+    "id": "o4",
+    "slug": "mogi3-4",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi3-mon4/",
+    "number": 4,
+    "group": "read-branch",
+    "title": "選択ソート（比較の向きと入れ替え先）",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は1から始まる。",
+    "bodyText": "手続 sortAsc は，整数型の配列 data を昇順に並べ替える。",
+    "pseudoCode": [
+      "○sortAsc(整数型の配列: data)",
+      "    整数型: last, k, pos",
+      "    for (last を dataの要素数 から 2 まで 1 ずつ減らす)",
+      "        pos ← 1",
+      "        for (k を 2 から last まで 1 ずつ増やす)",
+      "            if (data[k] が data[pos] 【 a 】)",
+      "                pos ← k",
+      "            endif",
+      "        endfor",
+      "        data[pos] と data[【 b 】] の値を入れ替える",
+      "    endfor"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "a：より小さい　b：last"
+      },
+      {
+        "id": "c2",
+        "text": "a：より小さい　b：last − 1"
+      },
+      {
+        "id": "c3",
+        "text": "a：より大きい　b：last"
+      },
+      {
+        "id": "c4",
+        "text": "a：より大きい　b：last − 1"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "a",
+        "b"
+      ],
+      "rows": [
+        [
+          "より小さい",
+          "last"
+        ],
+        [
+          "より小さい",
+          "last − 1"
+        ],
+        [
+          "より大きい",
+          "last"
+        ],
+        [
+          "より大きい",
+          "last − 1"
+        ]
+      ]
+    },
+    "correctChoiceId": "c3"
+  },
+  {
+    "id": "o5",
+    "slug": "mogi3-5",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi3-mon5/",
+    "number": 5,
+    "group": "read-expr",
+    "title": "分散の計算",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "n 個の値 x₁，x₂，…，xₙ の分散 V は，次の式で求められる。"
+      },
+      {
+        "type": "formula",
+        "text": "V = \\frac{x_1^2 + x_2^2 + \\cdots + x_n^2}{n} - \\left( \\frac{x_1 + x_2 + \\cdots + x_n}{n} \\right)^2"
+      },
+      {
+        "type": "text",
+        "text": "関数 variance は，要素数 1 以上の実数型の配列 data を受け取り，その要素の分散を返す。ここで，配列の要素番号は 1 から始まる。"
+      }
+    ],
+    "pseudoCode": [
+      "○実数型: variance(実数型の配列: data)",
+      "  整数型: n ← data の要素数",
+      "  実数型: sum ← 0",
+      "  実数型: squareSum ← 0",
+      "  整数型: i",
+      "  for (i を 1 から n まで 1 ずつ増やす)",
+      "    sum ← sum ＋ data[i]",
+      "    squareSum ← squareSum ＋ 【 a 】",
+      "  endfor",
+      "  return 【 b 】"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "a：data[i] × data[i]　b：squareSum ÷ n − (sum ÷ n) × (sum ÷ n)"
+      },
+      {
+        "id": "c2",
+        "text": "a：data[i] × data[i]　b：(squareSum − sum × sum) ÷ n"
+      },
+      {
+        "id": "c3",
+        "text": "a：data[i] × data[i]　b：squareSum ÷ n − sum × sum ÷ n"
+      },
+      {
+        "id": "c4",
+        "text": "a：sum × sum　b：squareSum ÷ n − (sum ÷ n) × (sum ÷ n)"
+      },
+      {
+        "id": "c5",
+        "text": "a：sum × sum　b：(squareSum − sum × sum) ÷ n"
+      },
+      {
+        "id": "c6",
+        "text": "a：sum × sum　b：squareSum ÷ n − sum × sum ÷ n"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "a",
+        "b"
+      ],
+      "rows": [
+        [
+          "data[i] × data[i]",
+          "squareSum ÷ n − (sum ÷ n) × (sum ÷ n)"
+        ],
+        [
+          "data[i] × data[i]",
+          "(squareSum − sum × sum) ÷ n"
+        ],
+        [
+          "data[i] × data[i]",
+          "squareSum ÷ n − sum × sum ÷ n"
+        ],
+        [
+          "sum × sum",
+          "squareSum ÷ n − (sum ÷ n) × (sum ÷ n)"
+        ],
+        [
+          "sum × sum",
+          "(squareSum − sum × sum) ÷ n"
+        ],
+        [
+          "sum × sum",
+          "squareSum ÷ n − sum × sum ÷ n"
+        ]
+      ]
+    },
+    "correctChoiceId": "c1"
+  },
+  {
+    "id": "o6",
+    "slug": "mogi3-6",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi3-mon6/",
+    "number": 6,
+    "group": "read-expr",
+    "title": "基数変換",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "　関数 toDigits は，整数 value を base 進数に変換し，下位の桁から順に digits[1]，digits[2]，… に格納して返す。value は base 進数で 6 桁以内に収まる 0 以上の整数とする。"
+      },
+      {
+        "type": "text",
+        "text": "　例えば，value が 50，base が 2 のとき，戻り値は {0, 1, 0, 0, 1, 1} である（50 は 2 進数で 110010）。"
+      }
+    ],
+    "pseudoCode": [
+      "○整数型の配列: toDigits(整数型: value, 整数型: base)",
+      "    整数型の配列: digits ← {6個の 0}",
+      "    整数型: k",
+      "    整数型: v ← value",
+      "    for (k を 1 から 6 まで 1 ずつ増やす)",
+      "        【 a 】",
+      "        【 b 】",
+      "    endfor",
+      "    return digits"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "a：v ← v ÷ base の商　b：digits[k] ← v ÷ base の余り"
+      },
+      {
+        "id": "c2",
+        "text": "a：v ← v ÷ base の余り　b：digits[k] ← v ÷ base の商"
+      },
+      {
+        "id": "c3",
+        "text": "a：digits[k] ← v ÷ base の商　b：v ← v ÷ base の余り"
+      },
+      {
+        "id": "c4",
+        "text": "a：digits[k] ← v ÷ base の余り　b：v ← v ÷ base の商"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "a",
+        "b"
+      ],
+      "rows": [
+        [
+          "v ← v ÷ base の商",
+          "digits[k] ← v ÷ base の余り"
+        ],
+        [
+          "v ← v ÷ base の余り",
+          "digits[k] ← v ÷ base の商"
+        ],
+        [
+          "digits[k] ← v ÷ base の商",
+          "v ← v ÷ base の余り"
+        ],
+        [
+          "digits[k] ← v ÷ base の余り",
+          "v ← v ÷ base の商"
+        ]
+      ]
+    },
+    "correctChoiceId": "c4"
+  },
+  {
+    "id": "o7",
+    "slug": "mogi3-7",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi3-mon7/",
+    "number": 7,
+    "group": "read-expr",
+    "title": "最大公約数（再帰）",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "　関数 func は，二つの正の整数 x と y の最大公約数を，除算法によるユークリッド互除法で求めて返す。除算法によるユークリッド互除法では，大きい方を小さい方で割った余りを新たな小さい方とする操作を，余りが 0 になるまで繰り返し，最後に残った数を最大公約数とする。"
+      }
+    ],
+    "pseudoCode": [
+      "○整数型: func(整数型: x, 整数型: y)",
+      "    if (【 a 】)",
+      "        return x",
+      "    endif",
+      "    return 【 b 】"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "a：y が 0 と等しい　b：func(y, x mod y)"
+      },
+      {
+        "id": "c2",
+        "text": "a：y が 0 と等しい　b：func(x mod y, y)"
+      },
+      {
+        "id": "c3",
+        "text": "a：y が 0 と等しい　b：func(x, x mod y)"
+      },
+      {
+        "id": "c4",
+        "text": "a：x mod y が 0 と等しい　b：func(y, x mod y)"
+      },
+      {
+        "id": "c5",
+        "text": "a：x mod y が 0 と等しい　b：func(x mod y, y)"
+      },
+      {
+        "id": "c6",
+        "text": "a：x mod y が 0 と等しい　b：func(x, x mod y)"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "a",
+        "b"
+      ],
+      "rows": [
+        [
+          "y が 0 と等しい",
+          "func(y, x mod y)"
+        ],
+        [
+          "y が 0 と等しい",
+          "func(x mod y, y)"
+        ],
+        [
+          "y が 0 と等しい",
+          "func(x, x mod y)"
+        ],
+        [
+          "x mod y が 0 と等しい",
+          "func(y, x mod y)"
+        ],
+        [
+          "x mod y が 0 と等しい",
+          "func(x mod y, y)"
+        ],
+        [
+          "x mod y が 0 と等しい",
+          "func(x, x mod y)"
+        ]
+      ]
+    },
+    "correctChoiceId": "c1"
+  },
+  {
+    "id": "o8",
+    "slug": "mogi3-8",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi3-mon8/",
+    "number": 8,
+    "group": "read-branch",
+    "title": "循環型キュー（折り返し）",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は 0 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "　関数 enqueue は，引数で与えられた文字を循環型キューに格納する。格納できる場合は true を返し，格納できなかった場合は false を返す。"
+      },
+      {
+        "type": "text",
+        "text": "　関数 dequeue は，キューから値を取り出して返す。キューが空のときは未定義の値を返す。"
+      },
+      {
+        "type": "text",
+        "text": "　キューを，要素数が 6 である大域の文字型の配列 ringBuffer，次に値を取り出す位置を示す大域の変数 head，及び次の格納位置を示す大域の変数 tail，キューが満杯かどうかを示す大域の変数 fullFlag で表現する。循環型キューの初期状態を図に示す。図は，a，b，c の 3 つが循環型キューに格納されている状態を示す。"
+      },
+      {
+        "type": "text",
+        "text": "　プログラムでは，配列の領域外を参照してはならないものとする。"
+      },
+      {
+        "type": "table",
+        "equalDataColumnWidths": true,
+        "caption": "図　循環型キューの初期状態",
+        "headers": [
+          "添字",
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        "rows": [
+          [
+            "ringBuffer",
+            "x",
+            "y",
+            "a",
+            "b",
+            "c",
+            "z"
+          ],
+          [
+            "",
+            "",
+            "",
+            {
+              "text": "↑\nhead",
+              "align": "center"
+            },
+            "",
+            "",
+            {
+              "text": "↑\ntail",
+              "align": "center"
+            }
+          ]
+        ]
+      }
+    ],
+    "pseudoCode": [
+      "大域：文字型の配列：ringBuffer ← {\"x\", \"y\", \"a\", \"b\", \"c\", \"z\"}",
+      "大域：整数型：head ← 2",
+      "大域：整数型：tail ← 5",
+      "大域：論理型：fullFlag ← false",
+      "",
+      "○論理型：enqueue(文字型：inputData)",
+      "    if (fullFlag が true と等しい)",
+      "        return false",
+      "    endif",
+      "    ringBuffer[tail] ← inputData",
+      "    tail ← 【 a 】",
+      "    if (tail と head が等しい)",
+      "        fullFlag ← true",
+      "    endif",
+      "    return true",
+      "",
+      "○文字型：dequeue()",
+      "    文字型：val ← 未定義の値",
+      "    if ((fullFlag が false と等しい) and (head と tail が等しい))",
+      "        return val",
+      "    endif",
+      "    val ← ringBuffer[head]",
+      "    head ← 【 b 】",
+      "    fullFlag ← false",
+      "    return val"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "a：(tail ＋ 1) mod ringBuffer の要素数　b：(head ＋ 1) mod ringBuffer の要素数"
+      },
+      {
+        "id": "c2",
+        "text": "a：(tail ＋ 1) mod ringBuffer の要素数　b：head ＋ 1"
+      },
+      {
+        "id": "c3",
+        "text": "a：tail ＋ 1　b：(head ＋ 1) mod ringBuffer の要素数"
+      },
+      {
+        "id": "c4",
+        "text": "a：tail ＋ 1　b：head ＋ 1"
+      },
+      {
+        "id": "c5",
+        "text": "a：tail mod ringBuffer の要素数　b：(head ＋ 1) mod ringBuffer の要素数"
+      },
+      {
+        "id": "c6",
+        "text": "a：tail mod ringBuffer の要素数　b：head ＋ 1"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "a",
+        "b"
+      ],
+      "rows": [
+        [
+          "(tail ＋ 1) mod ringBuffer の要素数",
+          "(head ＋ 1) mod ringBuffer の要素数"
+        ],
+        [
+          "(tail ＋ 1) mod ringBuffer の要素数",
+          "head ＋ 1"
+        ],
+        [
+          "tail ＋ 1",
+          "(head ＋ 1) mod ringBuffer の要素数"
+        ],
+        [
+          "tail ＋ 1",
+          "head ＋ 1"
+        ],
+        [
+          "tail mod ringBuffer の要素数",
+          "(head ＋ 1) mod ringBuffer の要素数"
+        ],
+        [
+          "tail mod ringBuffer の要素数",
+          "head ＋ 1"
+        ]
+      ]
+    },
+    "correctChoiceId": "c1"
+  },
+  {
+    "id": "o9",
+    "slug": "mogi3-9",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi3-mon9/",
+    "number": 9,
+    "group": "trace-funcs",
+    "title": "2分木のテキスト表現",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "　2 分木を，次の規則に従って 1 行の文字列で表す。この文字列をテキスト表現という。"
+      },
+      {
+        "type": "text",
+        "text": "（1）子のない節は，その節番号だけで表す。\n（2）子のある節は，(左の部分木，節番号，右の部分木) の形で表す。左の部分木と右の部分木の部分には，それぞれの部分木をこの規則で表した文字列を書く。\n（3）部分木が空のとき（子がない側）は，x と書く。"
+      },
+      {
+        "type": "text",
+        "text": "　例えば，図1 の 2 分木のテキスト表現は，それぞれ図の下に示した文字列になる。"
+      },
+      {
+        "type": "html",
+        "html": "<div style=\"display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:center;align-items:flex-end;margin:8px 0\"><div style=\"flex:1 1 140px;max-width:180px;text-align:center\"><svg viewBox=\"0 0 140 110\" style=\"width:100%;max-width:140px;display:block;margin:0 auto\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"sans-serif\"><line x1=\"70\" y1=\"25\" x2=\"35\" y2=\"85\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"70\" y1=\"25\" x2=\"105\" y2=\"85\" stroke=\"#333\" stroke-width=\"1.6\"/><circle cx=\"70\" cy=\"25\" r=\"17\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"70\" y=\"30.5\" text-anchor=\"middle\" font-size=\"16\" fill=\"#111\">2</text><circle cx=\"35\" cy=\"85\" r=\"17\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"35\" y=\"90.5\" text-anchor=\"middle\" font-size=\"16\" fill=\"#111\">1</text><circle cx=\"105\" cy=\"85\" r=\"17\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"105\" y=\"90.5\" text-anchor=\"middle\" font-size=\"16\" fill=\"#111\">3</text></svg><div style=\"margin-top:4px\">(1，2，3)</div></div><div style=\"flex:1 1 140px;max-width:180px;text-align:center\"><svg viewBox=\"0 0 140 110\" style=\"width:100%;max-width:140px;display:block;margin:0 auto\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"sans-serif\"><line x1=\"70\" y1=\"25\" x2=\"35\" y2=\"85\" stroke=\"#333\" stroke-width=\"1.6\"/><circle cx=\"70\" cy=\"25\" r=\"17\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"70\" y=\"30.5\" text-anchor=\"middle\" font-size=\"16\" fill=\"#111\">2</text><circle cx=\"35\" cy=\"85\" r=\"17\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"35\" y=\"90.5\" text-anchor=\"middle\" font-size=\"16\" fill=\"#111\">1</text></svg><div style=\"margin-top:4px\">(1，2，x)</div></div><div style=\"flex:1 1 140px;max-width:180px;text-align:center\"><svg viewBox=\"0 0 140 170\" style=\"width:100%;max-width:140px;display:block;margin:0 auto\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"sans-serif\"><line x1=\"90\" y1=\"25\" x2=\"55\" y2=\"85\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"55\" y1=\"85\" x2=\"20\" y2=\"145\" stroke=\"#333\" stroke-width=\"1.6\"/><circle cx=\"90\" cy=\"25\" r=\"17\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"90\" y=\"30.5\" text-anchor=\"middle\" font-size=\"16\" fill=\"#111\">5</text><circle cx=\"55\" cy=\"85\" r=\"17\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"55\" y=\"90.5\" text-anchor=\"middle\" font-size=\"16\" fill=\"#111\">2</text><circle cx=\"20\" cy=\"145\" r=\"17\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"20\" y=\"150.5\" text-anchor=\"middle\" font-size=\"16\" fill=\"#111\">1</text></svg><div style=\"margin-top:4px\">((1，2，x)，5，x)</div></div></div><p class=\"question-body-text\" style=\"text-align:center;margin:4px 0 12px\">図1　テキスト表現の例</p>"
+      },
+      {
+        "type": "text",
+        "text": "　手続 printTree は，引数 n で指定した節を根とする部分木のテキスト表現を出力する。出力は改行せずに続けて行う。\n　大域の配列 left と right は，図2 の 2 分木を表している。left[n] と right[n] は，それぞれ節 n の左の子と右の子の節番号であり，子がない場合は 0 である。例えば，節 3 には右の子（節 6）だけがあるので，left[3] は 0，right[3] は 6 である。"
+      },
+      {
+        "type": "html",
+        "html": "<div style=\"margin:8px 0\"><svg viewBox=\"0 0 400 245\" style=\"width:100%;max-width:400px;display:block;margin:0 auto\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"sans-serif\"><line x1=\"200\" y1=\"25\" x2=\"110\" y2=\"90\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"200\" y1=\"25\" x2=\"290\" y2=\"90\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"110\" y1=\"90\" x2=\"65\" y2=\"155\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"110\" y1=\"90\" x2=\"155\" y2=\"155\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"290\" y1=\"90\" x2=\"335\" y2=\"155\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"155\" y1=\"155\" x2=\"115\" y2=\"220\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"335\" y1=\"155\" x2=\"300\" y2=\"220\" stroke=\"#333\" stroke-width=\"1.6\"/><line x1=\"335\" y1=\"155\" x2=\"370\" y2=\"220\" stroke=\"#333\" stroke-width=\"1.6\"/><circle cx=\"200\" cy=\"25\" r=\"17\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"200\" y=\"30.5\" text-anchor=\"middle\" font-size=\"16\" fill=\"#111\">1</text><circle cx=\"110\" cy=\"90\" r=\"17\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"110\" y=\"95.5\" text-anchor=\"middle\" font-size=\"16\" fill=\"#111\">2</text><circle cx=\"290\" cy=\"90\" r=\"17\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"290\" y=\"95.5\" text-anchor=\"middle\" font-size=\"16\" fill=\"#111\">3</text><circle cx=\"65\" cy=\"155\" r=\"17\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"65\" y=\"160.5\" text-anchor=\"middle\" font-size=\"16\" fill=\"#111\">4</text><circle cx=\"155\" cy=\"155\" r=\"17\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"155\" y=\"160.5\" text-anchor=\"middle\" font-size=\"16\" fill=\"#111\">5</text><circle cx=\"335\" cy=\"155\" r=\"17\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"335\" y=\"160.5\" text-anchor=\"middle\" font-size=\"16\" fill=\"#111\">6</text><circle cx=\"115\" cy=\"220\" r=\"17\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"115\" y=\"225.5\" text-anchor=\"middle\" font-size=\"16\" fill=\"#111\">7</text><circle cx=\"300\" cy=\"220\" r=\"17\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"300\" y=\"225.5\" text-anchor=\"middle\" font-size=\"16\" fill=\"#111\">8</text><circle cx=\"370\" cy=\"220\" r=\"17\" fill=\"#fff\" stroke=\"#333\" stroke-width=\"1.6\"/><text x=\"370\" y=\"225.5\" text-anchor=\"middle\" font-size=\"16\" fill=\"#111\">9</text></svg></div><p class=\"question-body-text\" style=\"text-align:center;margin:4px 0 12px\">図2　プログラムが扱う 2 分木（○の中の値は節番号）</p>"
+      },
+      {
+        "type": "text",
+        "text": "　手続 printTree を printTree(1) として呼び出すと，【　】が出力される。"
+      }
+    ],
+    "pseudoCode": [
+      "大域: 整数型の配列: left ← {2, 4, 0, 0, 7, 8, 0, 0, 0}",
+      "大域: 整数型の配列: right ← {3, 5, 6, 0, 0, 9, 0, 0, 0}",
+      "",
+      "○printTree(整数型: n)",
+      "    if (n ＝ 0)",
+      "        \"x\" を出力する",
+      "    elseif (left[n] ＝ 0 and right[n] ＝ 0)",
+      "        n を出力する",
+      "    else",
+      "        \"(\" を出力する",
+      "        printTree(left[n])",
+      "        \"，\" を出力する",
+      "        n を出力する",
+      "        \"，\" を出力する",
+      "        printTree(right[n])",
+      "        \")\" を出力する",
+      "    endif"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "((4，2，(7，5))，1，(3，(8，6，9)))"
+      },
+      {
+        "id": "b",
+        "text": "(((x，4，x)，2，((x，7，x)，5，x))，1，(x，3，((x，8，x)，6，(x，9，x))))"
+      },
+      {
+        "id": "c",
+        "text": "((4，2，(7，5，x))，1，(x，3，(8，6，9)))"
+      },
+      {
+        "id": "d",
+        "text": "(((9，6，8)，3，x)，1，((x，5，7)，2，4))"
+      },
+      {
+        "id": "e",
+        "text": "(1，(2，4，(5，7，x))，(3，x，(6，8，9)))"
+      },
+      {
+        "id": "f",
+        "text": "((4，(7，x，5)，2)，(x，(8，9，6)，3)，1)"
+      }
+    ],
+    "correctChoiceId": "c"
+  },
+  {
+    "id": "o10",
+    "slug": "mogi3-10",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi3-mon10/",
+    "number": 10,
+    "group": "read-expr",
+    "title": "単方向リスト（配列表現）・先頭の要素の削除",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "　単方向リストを，配列 dataList と配列 pointerList の二つの配列で表現する。dataList にはリストの要素の値を，pointerList にはリストの次の要素に対応する dataList の要素番号を格納する。大域変数 listHead には，リストの先頭の要素に対応する要素番号を格納する。単方向リストの末尾に対応する pointerList の要素は未定義である。"
+      },
+      {
+        "type": "text",
+        "text": "　図は，値が 10，20，30，40 の順に並んだ単方向リストを表す。"
+      },
+      {
+        "type": "table",
+        "equalDataColumnWidths": true,
+        "caption": "図　単方向リストの状態",
+        "headers": [
+          "要素番号",
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "rows": [
+          [
+            "dataList",
+            "30",
+            "10",
+            "40",
+            "20"
+          ],
+          [
+            "pointerList",
+            "3",
+            "4",
+            {
+              "text": "未定義",
+              "shaded": true
+            },
+            "1"
+          ]
+        ]
+      },
+      {
+        "type": "text",
+        "text": "　関数 delHead は，リストの先頭の要素を削除し，削除した要素の値を返す。リストには要素が二つ以上あるものとする。"
+      }
+    ],
+    "pseudoCode": [
+      "大域: 整数型の配列: dataList ← {30, 10, 40, 20}",
+      "大域: 整数型の配列: pointerList ← {3, 4, 未定義の値, 1}",
+      "大域: 整数型: listHead ← 2",
+      "",
+      "○整数型: delHead()",
+      "    整数型: val",
+      "    val ← dataList[【 a 】]",
+      "    listHead ← 【 b 】",
+      "    return val"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "a：listHead　b：pointerList[listHead]"
+      },
+      {
+        "id": "c2",
+        "text": "a：listHead　b：listHead ＋ 1"
+      },
+      {
+        "id": "c3",
+        "text": "a：listHead　b：pointerList[pointerList[listHead]]"
+      },
+      {
+        "id": "c4",
+        "text": "a：1　b：pointerList[listHead]"
+      },
+      {
+        "id": "c5",
+        "text": "a：1　b：listHead ＋ 1"
+      },
+      {
+        "id": "c6",
+        "text": "a：1　b：pointerList[pointerList[listHead]]"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "a",
+        "b"
+      ],
+      "rows": [
+        [
+          "listHead",
+          "pointerList[listHead]"
+        ],
+        [
+          "listHead",
+          "listHead ＋ 1"
+        ],
+        [
+          "listHead",
+          "pointerList[pointerList[listHead]]"
+        ],
+        [
+          "1",
+          "pointerList[listHead]"
+        ],
+        [
+          "1",
+          "listHead ＋ 1"
+        ],
+        [
+          "1",
+          "pointerList[pointerList[listHead]]"
+        ]
+      ]
+    },
+    "correctChoiceId": "c1"
+  },
+  {
+    "id": "o11",
+    "slug": "mogi3-11",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi3-mon11/",
+    "number": 11,
+    "group": "trace-for-nest",
+    "title": "挿入ソート（挿入する直前の配列）",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "　手続 insertionSort は，大域の整数型の配列 data の要素を昇順に整列する。\n　なお，論理積 and は，左側の条件式が偽のときは右側の条件式を評価しない。\n　手続 insertionSort を呼び出したとき，/*** α ***/ の行が 3 回目に実行される直前の data の内容は【　】である。",
+    "pseudoCode": [
+      "大域: 整数型の配列: data ← {4, 1, 5, 2, 3}",
+      "",
+      "○insertionSort()",
+      "    整数型: i, j, key",
+      "    for (i を 2 から dataの要素数 まで 1 ずつ増やす)",
+      "        key ← data[i]",
+      "        j ← i − 1",
+      "        while ((j ≧ 1) and (data[j] ＞ key))",
+      "            data[j + 1] ← data[j]",
+      "            j ← j − 1",
+      "        endwhile",
+      "        data[j + 1] ← key          /*** α ***/",
+      "    endfor"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "{1, 2, 4, 5, 3}"
+      },
+      {
+        "id": "b",
+        "text": "{1, 4, 5, 2, 3}"
+      },
+      {
+        "id": "c",
+        "text": "{1, 4, 5, 5, 3}"
+      },
+      {
+        "id": "d",
+        "text": "{1, 4, 4, 5, 3}"
+      },
+      {
+        "id": "e",
+        "text": "{1, 2, 4, 4, 5}"
+      }
+    ],
+    "correctChoiceId": "d"
+  },
+  {
+    "id": "o12",
+    "slug": "mogi3-12",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi3-mon12/",
+    "number": 12,
+    "group": "read-expr",
+    "title": "末尾から一致する文字数",
+    "questionText": "次のプログラム中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "　関数 suffixLength は，引数として与えられた要素数 1 以上の二つの文字型の配列 s1 と s2 を末尾から比較し，末尾から連続して一致する文字の個数を返す。関数 suffixLength に与える s1，s2 及び戻り値の例を表に示す。",
+    "bodyTable": {
+      "caption": "表　関数 suffixLength に与える s1，s2 及び戻り値の例",
+      "headers": [
+        "s1",
+        "s2",
+        "戻り値"
+      ],
+      "rows": [
+        [
+          "{\"a\", \"p\", \"p\", \"l\", \"e\"}",
+          "{\"a\", \"p\", \"p\", \"l\", \"e\"}",
+          "5"
+        ],
+        [
+          "{\"t\", \"a\", \"l\", \"k\", \"i\", \"n\", \"g\"}",
+          "{\"w\", \"a\", \"l\", \"k\", \"i\", \"n\", \"g\"}",
+          "6"
+        ],
+        [
+          "{\"s\", \"i\", \"n\", \"g\"}",
+          "{\"r\", \"u\", \"n\", \"n\", \"i\", \"n\", \"g\"}",
+          "3"
+        ],
+        [
+          "{\"c\", \"a\", \"t\"}",
+          "{\"d\", \"o\", \"g\"}",
+          "0"
+        ]
+      ]
+    },
+    "pseudoCode": [
+      "○整数型: suffixLength(文字型の配列: s1, 文字型の配列: s2)",
+      "    整数型: i",
+      "    整数型: n1 ← s1の要素数",
+      "    整数型: n2 ← s2の要素数",
+      "    整数型: minN ← n1",
+      "    if (n2 ＜ n1)",
+      "        minN ← n2",
+      "    endif",
+      "    for (i を 1 から minN まで 1 ずつ増やす)",
+      "        if (【　】)",
+      "            return i − 1",
+      "        endif",
+      "    endfor",
+      "    return minN"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "s1[minN − i ＋ 1] ＝ s2[minN − i ＋ 1]"
+      },
+      {
+        "id": "b",
+        "text": "s1[minN − i ＋ 1] ≠ s2[minN − i ＋ 1]"
+      },
+      {
+        "id": "c",
+        "text": "s1[n1 − i ＋ 1] ＝ s2[n2 − i ＋ 1]"
+      },
+      {
+        "id": "d",
+        "text": "s1[n1 − i ＋ 1] ≠ s2[n2 − i ＋ 1]"
+      }
+    ],
+    "correctChoiceId": "d"
+  },
+  {
+    "id": "o13",
+    "slug": "mogi3-13",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi3-mon13/",
+    "number": 13,
+    "group": "trace-while",
+    "title": "バブルソート（早期終了フラグの不具合）",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は1から始まる。",
+    "bodyText": "手続 bubbleSort は，整数型の配列 data を昇順に整列する。\n手続 bubbleSort には不具合がある。例えば，data が【　】のときは，正しく整列されない。",
+    "pseudoCode": [
+      "○bubbleSort(整数型の配列: data)",
+      "    整数型: i",
+      "    論理型: swapped ← true",
+      "    while (swapped が true と等しい)",
+      "        for (i を 1 から (dataの要素数 − 1) まで 1 ずつ増やす)",
+      "            swapped ← false",
+      "            if (data[i] が data[i ＋ 1] より大きい)",
+      "                data[i] と data[i ＋ 1] の値を入れ替える",
+      "                swapped ← true",
+      "            endif",
+      "        endfor",
+      "    endwhile"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "{2, 1, 3, 4}"
+      },
+      {
+        "id": "c2",
+        "text": "{1, 3, 2, 4}"
+      },
+      {
+        "id": "c3",
+        "text": "{2, 3, 1, 4}"
+      },
+      {
+        "id": "c4",
+        "text": "{4, 1, 2, 3}"
+      }
+    ],
+    "correctChoiceId": "c3"
+  },
+  {
+    "id": "o14",
+    "slug": "mogi3-14",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi3-mon14/",
+    "number": 14,
+    "group": "trace-for-array",
+    "title": "ハッシュ表への格納",
+    "questionText": "次の記述中の【　】に入れる正しい答えを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyText": "関数 add は，引数で指定された正の整数 value を大域の整数型の配列 hashArray に格納する。格納できた場合は true を返し，格納できなかった場合は false を返す。手続 test は，関数 add を呼び出して，hashArray に正の整数を格納する。手続 test の処理が終了した直後の hashArray の内容は，【　】である。",
+    "pseudoCode": [
+      "大域: 整数型の配列: hashArray",
+      "○論理型: add(整数型: value)",
+      "    整数型: h ← calcHash(value)",
+      "    整数型: i, n",
+      "    for (i を 0 から hashArray の要素数 − 1 まで 1 ずつ増やす)",
+      "        n ← ((h ＋ i − 1) mod hashArray の要素数) ＋ 1",
+      "        if (hashArray[n] ＝ −1)",
+      "            hashArray[n] ← value",
+      "            return true",
+      "        endif",
+      "    endfor",
+      "    return false",
+      "",
+      "○整数型: calcHash(整数型: value)",
+      "    return (value mod hashArray の要素数) ＋ 1",
+      "",
+      "○test()",
+      "    hashArray ← {5個の −1}",
+      "    add(13)",
+      "    add(24)",
+      "    add(38)"
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "{−1, −1, 13, 24, 38}"
+      },
+      {
+        "id": "c2",
+        "text": "{−1, −1, 38, 13, 24}"
+      },
+      {
+        "id": "c3",
+        "text": "{−1, −1, −1, 13, 24}"
+      },
+      {
+        "id": "c4",
+        "text": "{−1, −1, −1, 38, 24}"
+      },
+      {
+        "id": "c5",
+        "text": "{38, −1, −1, 13, 24}"
+      }
+    ],
+    "correctChoiceId": "c5"
+  },
+  {
+    "id": "o15",
+    "slug": "mogi3-15",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi3-mon15/",
+    "number": 15,
+    "group": "read-branch",
+    "title": "最寄りの配送拠点（最小値の探索）",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "　道路が東西と南北に碁盤の目のように通っている町で，配達先から最も近い配送拠点を選ぶ。町の地点は座標 (x, y) で表す。道路に沿ってしか進めないので，2 地点の距離は，x 座標の差の絶対値と y 座標の差の絶対値の和とする。例えば，(1, 2) と (4, 0) の距離は 3 ＋ 2 ＝ 5 である。\n　関数 nearestBase は，配送拠点の x 座標，y 座標，拠点名をそれぞれ格納した配列 x，y，baseName と，配達先の座標 qx，qy を引数として受け取り，配達先からの距離が最小の配送拠点の拠点名を返す。x[i]，y[i]，baseName[i] が i 番目の配送拠点を表す。距離が最小の配送拠点が複数あるときは，要素番号が最も小さいものを選ぶ。ここで，x，y，baseName の要素数は同じであり，1 以上である。\n　表の配送拠点について，配達先を (3, 3) として関数 nearestBase を呼び出すと，\"たんぽぽ支店\" を返す。"
+      },
+      {
+        "type": "table",
+        "caption": "表　配送拠点",
+        "headers": [
+          "i",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        "rows": [
+          [
+            "x[i]",
+            "1",
+            "5",
+            "6",
+            "2",
+            "4"
+          ],
+          [
+            "y[i]",
+            "1",
+            "4",
+            "0",
+            "4",
+            "2"
+          ],
+          [
+            "baseName[i]",
+            "\"あさがお支店\"",
+            "\"ひまわり支店\"",
+            "\"すずらん支店\"",
+            "\"たんぽぽ支店\"",
+            "\"もみじ支店\""
+          ]
+        ],
+        "equalDataColumnWidths": true
+      }
+    ],
+    "pseudoCode": [
+      "○文字列型: nearestBase(整数型の配列: x, 整数型の配列: y, 文字列型の配列: baseName, 整数型: qx, 整数型: qy)",
+      "    整数型: i, d, minD, minIndex",
+      "    minIndex ← 1",
+      "    minD ← (x[1] − qx) の絶対値 ＋ (y[1] − qy) の絶対値",
+      "    for (i を 2 から xの要素数 まで 1 ずつ増やす)",
+      "        d ← 【 a 】",
+      "        if (【 b 】)",
+      "            minD ← d",
+      "            minIndex ← i",
+      "        endif",
+      "    endfor",
+      "    return baseName[minIndex]"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "a：(x[i] − qx ＋ y[i] − qy) の絶対値　b：d ＜ minD"
+      },
+      {
+        "id": "b",
+        "text": "a：(x[i] − qx ＋ y[i] − qy) の絶対値　b：d ≦ minD"
+      },
+      {
+        "id": "c",
+        "text": "a：(x[i] − qx) の絶対値 ＋ (y[i] − qy) の絶対値　b：d ＜ minD"
+      },
+      {
+        "id": "d",
+        "text": "a：(x[i] − qx) の絶対値 ＋ (y[i] − qy) の絶対値　b：d ≦ minD"
+      },
+      {
+        "id": "e",
+        "text": "a：(x[i] − x[i − 1]) の絶対値 ＋ (y[i] − y[i − 1]) の絶対値　b：d ＜ minD"
+      },
+      {
+        "id": "f",
+        "text": "a：(x[i] − x[i − 1]) の絶対値 ＋ (y[i] − y[i − 1]) の絶対値　b：d ≦ minD"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "a",
+        "b"
+      ],
+      "rows": [
+        [
+          "(x[i] − qx ＋ y[i] − qy) の絶対値",
+          "d ＜ minD"
+        ],
+        [
+          "(x[i] − qx ＋ y[i] − qy) の絶対値",
+          "d ≦ minD"
+        ],
+        [
+          "(x[i] − qx) の絶対値 ＋ (y[i] − qy) の絶対値",
+          "d ＜ minD"
+        ],
+        [
+          "(x[i] − qx) の絶対値 ＋ (y[i] − qy) の絶対値",
+          "d ≦ minD"
+        ],
+        [
+          "(x[i] − x[i − 1]) の絶対値 ＋ (y[i] − y[i − 1]) の絶対値",
+          "d ＜ minD"
+        ],
+        [
+          "(x[i] − x[i − 1]) の絶対値 ＋ (y[i] − y[i − 1]) の絶対値",
+          "d ≦ minD"
+        ]
+      ]
+    },
+    "correctChoiceId": "c"
+  },
+  {
+    "id": "o16",
+    "slug": "mogi3-16",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi3-mon16/",
+    "number": 16,
+    "group": "read-expr",
+    "title": "混同行列と適合率",
+    "questionText": "次のプログラム中の【 a 】と【 b 】に入れる正しい答えの組合せを，解答群の中から選べ。ここで，配列の要素番号は 1 から始まる。",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "　データを 2 種類に分類するモデルについて，正解と予測の組合せごとに件数を数えた表を混同行列という。ここでは，メールが迷惑メールかどうかを判定するモデルを考える。迷惑メールを 1，迷惑メールでないものを 0 で表す。表1に 8 通のメールの正解と予測を，表2に表1の混同行列を示す。"
+      },
+      {
+        "type": "table",
+        "caption": "表1　8 通のメールの正解と予測",
+        "headers": [
+          "i",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8"
+        ],
+        "rows": [
+          [
+            "正解",
+            "1",
+            "0",
+            "1",
+            "1",
+            "0",
+            "1",
+            "1",
+            "0"
+          ],
+          [
+            "予測",
+            "1",
+            "1",
+            "0",
+            "1",
+            "0",
+            "0",
+            "1",
+            "1"
+          ]
+        ],
+        "equalDataColumnWidths": true
+      },
+      {
+        "type": "table",
+        "caption": "表2　表1の混同行列（単位　通）",
+        "headers": [
+          "",
+          "予測が 0",
+          "予測が 1"
+        ],
+        "rows": [
+          [
+            "正解が 0",
+            "1",
+            "2"
+          ],
+          [
+            "正解が 1",
+            "2",
+            "3"
+          ]
+        ]
+      },
+      {
+        "type": "text",
+        "text": "　関数 precision は，メールごとの正解を格納した整数型の配列 actual と，モデルの予測を格納した整数型の配列 pred を引数として受け取り，適合率を返す。actual[i] と pred[i] は，それぞれ i 番目のメールの正解と予測であり，値は 0 又は 1 である。関数 precision は，まず，混同行列を整数型の二次元配列 matrix に数える。matrix の行は混同行列の行に，列は混同行列の列に対応する。次に，matrix を用いて適合率を求めて返す。適合率とは，予測が 1 であったメールのうち，正解も 1 であったメールの割合である。ここで，actual と pred の要素数は同じであり，pred には 1 が一つ以上含まれる。\n　例えば，表1のメールについて関数 precision を呼び出すと，0.6 を返す。"
+      }
+    ],
+    "pseudoCode": [
+      "○実数型: precision(整数型の配列: actual, 整数型の配列: pred)",
+      "    整数型の二次元配列: matrix ← {{0, 0}, {0, 0}}",
+      "    整数型: i",
+      "    for (i を 1 から actualの要素数 まで 1 ずつ増やす)",
+      "        matrix[【 a 】] の値に 1 を加える",
+      "    endfor",
+      "    return 【 b 】  /* 実数として計算する */"
+    ],
+    "choices": [
+      {
+        "id": "a",
+        "text": "a：actual[i], pred[i]　b：matrix[2, 2] ÷ (matrix[1, 2] ＋ matrix[2, 2])"
+      },
+      {
+        "id": "b",
+        "text": "a：actual[i], pred[i]　b：matrix[2, 2] ÷ (matrix[2, 1] ＋ matrix[2, 2])"
+      },
+      {
+        "id": "c",
+        "text": "a：actual[i], pred[i]　b：matrix[1, 2] ÷ (matrix[1, 2] ＋ matrix[2, 2])"
+      },
+      {
+        "id": "d",
+        "text": "a：actual[i] ＋ 1, pred[i] ＋ 1　b：matrix[2, 2] ÷ (matrix[1, 2] ＋ matrix[2, 2])"
+      },
+      {
+        "id": "e",
+        "text": "a：actual[i] ＋ 1, pred[i] ＋ 1　b：matrix[2, 2] ÷ (matrix[2, 1] ＋ matrix[2, 2])"
+      },
+      {
+        "id": "f",
+        "text": "a：actual[i] ＋ 1, pred[i] ＋ 1　b：matrix[1, 2] ÷ (matrix[1, 2] ＋ matrix[2, 2])"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "a",
+        "b"
+      ],
+      "rows": [
+        [
+          "actual[i], pred[i]",
+          "matrix[2, 2] ÷ (matrix[1, 2] ＋ matrix[2, 2])"
+        ],
+        [
+          "actual[i], pred[i]",
+          "matrix[2, 2] ÷ (matrix[2, 1] ＋ matrix[2, 2])"
+        ],
+        [
+          "actual[i], pred[i]",
+          "matrix[1, 2] ÷ (matrix[1, 2] ＋ matrix[2, 2])"
+        ],
+        [
+          "actual[i] ＋ 1, pred[i] ＋ 1",
+          "matrix[2, 2] ÷ (matrix[1, 2] ＋ matrix[2, 2])"
+        ],
+        [
+          "actual[i] ＋ 1, pred[i] ＋ 1",
+          "matrix[2, 2] ÷ (matrix[2, 1] ＋ matrix[2, 2])"
+        ],
+        [
+          "actual[i] ＋ 1, pred[i] ＋ 1",
+          "matrix[1, 2] ÷ (matrix[1, 2] ＋ matrix[2, 2])"
+        ]
+      ]
+    },
+    "correctChoiceId": "d"
+  },
+  {
+    "id": "o17",
+    "slug": "mogi3-17",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi3-mon17/",
+    "number": 17,
+    "title": "入室権限の2点の不備",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "　X社は，データ通信サービス及び通話サービス（以下，両サービスを併せてXサービスという）を提供している企業である。X社の利用者サポート部（以下，US部という）の主な業務は，Xサービスの顧客からの問合せへの対応業務（以下，X業務という）である。\n　US部では，業務効率化の一環として，X業務の3割を外部に委託することにした。その委託先の第一候補がY社である。"
+      },
+      {
+        "type": "text",
+        "text": "〔Y社の概要〕\n　Y社は，コールセンタサービスを提供する従業員数200名の企業である。Y社のカスタマサービス部（以下，Y-CS部という）には，管理職6名，一般従業員5名，パートタイマ50名が所属している。ここで，一般従業員とは，管理職及びパートタイマを除く従業員をいう。"
+      },
+      {
+        "type": "text",
+        "text": "　Y社は，従業員を対象に，原則4月及び10月の1日に社内の定期人事異動がある。また，これらの時期以外でも組織再編，業務の見直しなどの理由で人事異動がある。Y-CS部のパートタイマは，1年間で約2割が退職する。人事総務部は，欠員補充のために，ほぼ同数を新規に採用している。"
+      },
+      {
+        "type": "text",
+        "text": "〔Y社の情報セキュリティ対策〕\n　Y社は，東京都内の7階建てビルの3～5階に入居しており，他の階には別の企業が入居している。ビルの出入りは誰でも可能であり，階段やエレベータを使用して，各階に移動できる。Y社の入退管理を図1に示す。"
+      },
+      {
+        "type": "table",
+        "headers": [
+          ""
+        ],
+        "rows": [
+          [
+            "・各階には業務エリアが一つずつある。各業務エリアには出入口が2か所あり，入室時に6桁の暗証番号によってドアを解錠する入退管理システムが設置されている。\n・暗証番号は各業務エリアで異なる。\n・システム管理部は，4月及び10月の1日に各業務エリアの暗証番号を更新する。暗証番号は，各業務エリアの入室権限を与えた従業員だけに事前に通知する。\n・システム管理部の通知後は，人事異動によって配属された従業員への暗証番号の通知は各部で行う。\n・共連れで入室すること及び他部の従業員に暗証番号を教えることは禁止している。\n・Y社の従業員以外が視察や情報セキュリティ調査などの目的で業務エリアに入室する場合，Y社の管理職が同行し，入室中は指定のネックストラップを常時着用させる。\n・各業務エリアの出入口付近には監視カメラが設置されており，毎日24時間録画している。\n・業務エリアに出入りする際の持ち物検査は行っていない。"
+          ]
+        ]
+      },
+      {
+        "type": "textCenter",
+        "text": "図1　Y社の入退管理"
+      },
+      {
+        "type": "text",
+        "text": "　3階はY-CS部の，また，4階及び5階は他部の業務エリアである。X業務は，3階の業務エリアで実施する。\n　Y-CS部の管理職及び一般従業員は，5階の会議室で営業部の従業員と会議をすることが多いので，3階及び5階への入室権限が与えられている。"
+      },
+      {
+        "type": "text",
+        "text": "〔X社の情報セキュリティ要求事項と評価〕\n　US部のG課長は，X業務の外部への委託における情報セキュリティ要求事項（以下，X要求事項という）を取りまとめた。G課長は，Y社を訪問し，X要求事項を基に，Y-CS部従業員へのヒアリング及び設備状況の目視による確認などを行った。その後，表2のとおり評価結果と評価根拠をまとめてY社に事実確認を依頼したところ，\"事実だ\"との回答があった。評価結果は次のルールに従って記入した。\n・要求事項を満たす場合：\"OK\"\n・要求事項を満たさない場合：\"NG\""
+      },
+      {
+        "type": "table",
+        "caption": "表2　X要求事項に対するY社の対策の評価結果と評価根拠（抜粋）",
+        "headers": [
+          "項番",
+          "要求事項",
+          "評価結果",
+          "評価根拠"
+        ],
+        "rows": [
+          [
+            {
+              "text": "8",
+              "align": "center"
+            },
+            "X業務を実施する業務エリアへの入室は，入室権限が与えられている従業員だけに制限すること",
+            {
+              "text": "NG",
+              "align": "center"
+            },
+            "入室権限に，2点の不備がある。"
+          ]
+        ]
+      },
+      {
+        "type": "text",
+        "text": "設問　表2中の項番8の評価根拠にある2点の不備はどれか。次の(一)～(六)のうち，該当するものを二つ挙げた組合せを，解答群の中から選べ。\n(一)　Y-CS部の従業員が3階の業務エリアに入室できる。\n(二)　Y-CS部のパートタイマが5階の業務エリアに入室できる。\n(三)　営業部の従業員が3階の業務エリアに入室できる。\n(四)　システム管理部の従業員が5階の業務エリアに入室できる。\n(五)　退職者の一部が3階の業務エリアに入室できる。\n(六)　元Y-CS部の従業員が，他部門に異動した後も，3階の業務エリアに入室できる。"
+      }
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "(一)，(二)"
+      },
+      {
+        "id": "c2",
+        "text": "(二)，(四)"
+      },
+      {
+        "id": "c3",
+        "text": "(二)，(五)"
+      },
+      {
+        "id": "c4",
+        "text": "(二)，(六)"
+      },
+      {
+        "id": "c5",
+        "text": "(三)，(五)"
+      },
+      {
+        "id": "c6",
+        "text": "(三)，(六)"
+      },
+      {
+        "id": "c7",
+        "text": "(四)，(六)"
+      },
+      {
+        "id": "c8",
+        "text": "(五)，(六)"
+      }
+    ],
+    "correctChoiceId": "c8",
+    "field": "security"
+  },
+  {
+    "id": "o18",
+    "slug": "mogi3-18",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi3-mon18/",
+    "number": 18,
+    "title": "情報セキュリティ事故と対策",
+    "field": "security",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "自動車の販売代理店であるA社は，Webサイトで自動車のカタログ請求を受け付けている。Webサイトは，Webアプリケーションソフト（以下，Webアプリという）とデータベースで構成されている。Webサイトの管理はB氏が行っている。\n\n〔カタログ請求者の情報の登録〕\n　A社では，表1の目的で，カタログ請求者の情報を保持し，利用することの同意を，カタログ請求者から得ている。"
+      },
+      {
+        "type": "table",
+        "caption": "表1　カタログ請求者の情報を保持し，利用する目的",
+        "headers": [
+          "項番",
+          "目的"
+        ],
+        "rows": [
+          [
+            {
+              "text": "1",
+              "align": "center"
+            },
+            "情報提供や購入支援を行う。"
+          ],
+          [
+            {
+              "text": "2",
+              "align": "center"
+            },
+            "カタログ請求者が別のカタログを請求したいときなどに，登録した電子メールアドレスとパスワードを使用してログインできるようにする。"
+          ]
+        ]
+      },
+      {
+        "type": "text",
+        "text": "　同意が得られたときは，氏名，住所，電話番号，電子メールアドレス，パスワード，購入予定時期，購入予算，希望車種などの情報を，Webアプリに入力してもらい，データベースに登録している。パスワードはハッシュ化して，それ以外の情報は平文で，データベースに格納している。A社では，カタログ請求者から要求があったときにだけ，データベースからそのカタログ請求者の情報を消去する運用としている。\n\n〔カタログ請求者への対応〕\n　A社では，カタログ請求者へのカタログ送付後の購入支援を，データベースに登録されている情報を基に，電子メールと電話で行っている。\n\n〔情報セキュリティ事故の発生〕\n　ある日，A社の社員から，“A社のカタログ請求者一覧と称する情報が，インターネットの掲示板に公開されている”とB氏に連絡があった。公開されている情報をB氏が確認したところ，データベースに登録されている情報の一部であったので，自社のデータベースから情報が流出したと判断して上司に報告した。B氏は上司からの指示を受けて，Webサイトのサービスを停止し，情報が流出した原因と流出した情報の範囲を特定することにした。\n\n〔情報セキュリティ事故の原因と流出した情報の範囲〕\n　B氏の調査の結果，WebアプリにSQLインジェクションの脆弱性があることが分かった。そのことからB氏は，攻撃者がインターネット経由でSQLインジェクション攻撃を行い，データベースに登録されているカタログ請求者の情報を不正に取得したと推測した。Webサーバとデータベースではアクセスログを取得しない設定にしていたこともあり，流出した情報の範囲は特定できなかった。そこで，データベースに登録されている全ての情報が流出したことを前提に，A社では，データベースに登録されている全てのカタログ請求者に情報の流出について連絡するとともに，対策を講じることにした。連絡の対象には，何年も前にカタログを請求したきりで，その後A社と取引のない人も多く含まれていた。\n\n〔情報セキュリティ事故を踏まえたシステム面での対策〕\n　B氏は，今回の情報セキュリティ事故を踏まえたシステム面での対策案を，表2のようにまとめた。"
+      },
+      {
+        "type": "table",
+        "caption": "表2　情報セキュリティ事故を踏まえたシステム面での対策案",
+        "headers": [
+          "目的",
+          "対策"
+        ],
+        "rows": [
+          [
+            "SQLインジェクション攻撃からの防御",
+            "（省略）"
+          ],
+          [
+            "情報流出リスクの低減",
+            "・【　】"
+          ],
+          [
+            "情報流出の原因と流出した情報の範囲の特定",
+            "（省略）"
+          ]
+        ]
+      },
+      {
+        "type": "text",
+        "text": "設問　表2中の【　】に入れる対策はどれか。解答群のうち，最も適切なものを選べ。"
+      }
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "カタログ請求者の情報の保管期間を定め，同意を得た上で，期間を過ぎた情報を消去する"
+      },
+      {
+        "id": "c2",
+        "text": "カタログ送付後に，カタログ請求者の情報を直ちに消去する"
+      },
+      {
+        "id": "c3",
+        "text": "カタログ請求者の情報を定期的にバックアップする"
+      },
+      {
+        "id": "c4",
+        "text": "カタログ請求者に送る電子メールにデジタル署名を付ける"
+      }
+    ],
+    "correctChoiceId": "c1"
+  },
+  {
+    "id": "o19",
+    "slug": "mogi3-19",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi3-mon19/",
+    "number": 19,
+    "title": "自己点検で NA を付ける項目",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "　R社は従業員数600名の投資コンサルティング会社であり，顧客の個人情報（以下，顧客情報という）を取り扱っている。\n　R社では，従業員にノートPC又はデスクトップPCのどちらかを貸与している。貸与しているPCのうち，ノートPCだけが，リモート接続サービスによる社内ネットワークへの接続を許可されている。\n　海外営業部の部員は10人で，顧客は500人弱である。各部員は，担当顧客に，電子メールや電話を使って営業を行っている。海外営業部の部員は，出張がなく，全員がデスクトップPCだけを使っている。"
+      },
+      {
+        "type": "text",
+        "text": "〔CSAの実施〕\n　R社監査部は，1年に1回，被監査部門が自部門の活動を自ら評価するCSA（Control Self Assessment：統制自己評価）方式で情報セキュリティ監査を実施している。海外営業部では，情報セキュリティリーダーのW氏が，監査部から送付されてきたCSAシートに従って，職場の状況を観察したり，部員にヒアリングしたりして評価を行った。CSAシートの評価結果は表1のルールに従って記入する。W氏の評価結果を表2に示す。"
+      },
+      {
+        "type": "table",
+        "caption": "表1　評価結果の記入ルール",
+        "headers": [
+          "評価結果",
+          "記入する場合"
+        ],
+        "rows": [
+          [
+            {
+              "text": "OK",
+              "align": "center"
+            },
+            "評価項目どおりに実施している場合"
+          ],
+          [
+            {
+              "text": "(OK)",
+              "align": "center"
+            },
+            "評価項目どおりには実施していないが，代替コントロールによって，\"OK\"の場合と同程度にリスクが低減されていると考える場合（代替コントロールを具体的に評価根拠欄に記入する。）"
+          ],
+          [
+            {
+              "text": "NG",
+              "align": "center"
+            },
+            "評価項目どおりには実施しておらず，かつ，代替コントロールによって評価項目に関するリスクが抑えられているわけではないと考える場合"
+          ],
+          [
+            {
+              "text": "NA",
+              "align": "center"
+            },
+            "評価項目に関するリスクがそもそも存在しない場合"
+          ]
+        ]
+      },
+      {
+        "type": "table",
+        "caption": "表2　CSAシート（海外営業部の評価結果）（抜粋）",
+        "headers": [
+          "No.",
+          "評価項目",
+          "評価結果",
+          "評価根拠"
+        ],
+        "rows": [
+          [
+            {
+              "text": "10",
+              "align": "center"
+            },
+            "貸与PCには会社が許可したソフトウェアだけがインストールされている。",
+            {
+              "text": "OK",
+              "align": "center"
+            },
+            "全部員に口頭で確認した。"
+          ],
+          [
+            {
+              "text": "11",
+              "align": "center"
+            },
+            "リモート接続のためのパスワードを90日ごとに変更している。",
+            {
+              "text": "【　　　】",
+              "align": "center"
+            },
+            {
+              "text": "【　　　】",
+              "align": "center"
+            }
+          ],
+          [
+            {
+              "text": "25",
+              "align": "center"
+            },
+            "業務用アプリケーションの利用者IDの登録・変更・削除をルールどおり実施している。",
+            {
+              "text": "OK",
+              "align": "center"
+            },
+            "承認済みの利用者ID登録申請書を証跡として添付。"
+          ],
+          [
+            {
+              "text": "29",
+              "align": "center"
+            },
+            "業務用アプリケーションの利用者ID棚卸をルールどおり3か月に一度実施している。",
+            {
+              "text": "OK",
+              "align": "center"
+            },
+            "利用者ID棚卸記録を証跡として添付。"
+          ]
+        ]
+      },
+      {
+        "type": "text",
+        "text": "設問　表2中の No.11 の【　　　】に入れる評価結果と評価根拠の組合せはどれか。解答群のうち，最も適切なものを選べ。"
+      }
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "評価結果：OK　評価根拠：会社のルールで決められている。"
+      },
+      {
+        "id": "c2",
+        "text": "評価結果：NG　評価根拠：誰も1回も変更をしていない。"
+      },
+      {
+        "id": "c3",
+        "text": "評価結果：NG　評価根拠：リモート接続ができない。"
+      },
+      {
+        "id": "c4",
+        "text": "評価結果：NA　評価根拠：部内ではリモート接続は誰も行わない。"
+      }
+    ],
+    "choiceTable": {
+      "headers": [
+        "評価結果",
+        "評価根拠"
+      ],
+      "rows": [
+        [
+          "OK",
+          "会社のルールで決められている。"
+        ],
+        [
+          "NG",
+          "誰も1回も変更をしていない。"
+        ],
+        [
+          "NG",
+          "リモート接続ができない。"
+        ],
+        [
+          "NA",
+          "部内ではリモート接続は誰も行わない。"
+        ]
+      ]
+    },
+    "correctChoiceId": "c4",
+    "field": "security"
+  },
+  {
+    "id": "o20",
+    "slug": "mogi3-20",
+    "explanationUrl": "https://mos.japason.co.jp/fe-kamokub-mogi3-mon20/",
+    "number": 20,
+    "title": "ログ管理システム",
+    "field": "security",
+    "bodyBlocks": [
+      {
+        "type": "text",
+        "text": "中堅の製造業であるB社では，他社で発生した情報漏えい事件を受けて，社内の業務システムへの不正アクセスを早期に検知するための仕組みを強化することになった。B社では，業務システムのアクセスログ（以下，ログという）を一元管理するために，ログ管理システムを構築することにした。ログ管理システムの対象になる業務システムは，勤務管理システム，販売管理システム，生産管理システム及び品質管理システムの四つである。各管理システムには，1台のサーバが割り当てられている。\n\n〔業務システムの利用とログの説明（抜粋）〕\n　B社の社員は，固定のIPアドレスが設定されている端末から，一意に社員を特定できる社員IDで，業務システムのうちの一つにログインし，“参照”，“更新”，“ダウンロード”の操作を行う。社員が，業務システムにログインしたときに“参照”のログがログファイルに書き込まれる。また，ダウンロードの都度，そのデータ量を記録したログがログファイルに書き込まれる。一人の社員が，同時に複数の業務システムを使わないこと，及び，業務システム全体からデータを1日に5Mバイトを超えてダウンロードしないことを業務システムの利用規程で定めている。\n\n〔ログ管理システムの概要（抜粋）〕\n　各業務システムのログは，ログ管理システムが集めて，ログ集積ファイルで一元管理する。ログには，業務システムを識別するための業務IDや，社員が実施した操作を示す，“参照”，“更新”，“ダウンロード”の操作種別などが含まれている。\n\n〔ログ管理システムの要件（抜粋）〕\n(1) ログ集積ファイルを基に，いつ，誰が，どの端末からどの業務システムをどのように操作したかが追跡できる。\n(2) ログ管理システムのサーバ上のログファイルに書き込む処理は，ログ管理システムへのログインを必要とする。\n(3) ログ管理システムの管理者（以下，ログ管理者という）と業務システムの管理者だけが，ログ集積ファイルを参照できる。\n(4) ログ管理者は，ログ集積ファイルをログ管理システムから外部の機器に出力することができる。\n(5) ログ管理システムから外部の機器に出力される外部ログ集積ファイルには，改ざんと漏えいを防止する対策を講じる。\n(6) 各サーバ間の通信には，公開鍵暗号方式を利用する。\n(7) ログ集積ファイルに書き込まれたログが一定条件を満たした際には，電子メールでログ管理者に通報する。"
+      },
+      {
+        "type": "text",
+        "text": "設問　〔ログ管理システムの要件（抜粋）〕の(7)でいう一定条件として適切なものを二つ挙げた組合せは，次のうちどれか。解答群のうち，最も適切なものを選べ。ここで，条件はいずれも，同じ社員IDのログに対するものとする。\n(一)　1日中“参照”のログだけが書き込まれたとき\n(二)　ある業務システムの連続した“更新”のログの間に，別の業務システムのログが書き込まれたとき\n(三)　同じ業務システムの“参照”と“更新”のログが連続して書き込まれたとき\n(四)　業務システムからダウンロードされたデータ量が1日で5Mバイトを超えたとき\n(五)　特定の業務システムの“参照”のログが15分間，書き込まれていないとき"
+      }
+    ],
+    "choices": [
+      {
+        "id": "c1",
+        "text": "(一)，(二)"
+      },
+      {
+        "id": "c2",
+        "text": "(一)，(三)"
+      },
+      {
+        "id": "c3",
+        "text": "(一)，(五)"
+      },
+      {
+        "id": "c4",
+        "text": "(二)，(三)"
+      },
+      {
+        "id": "c5",
+        "text": "(二)，(四)"
+      },
+      {
+        "id": "c6",
+        "text": "(三)，(四)"
+      }
+    ],
+    "correctChoiceId": "c5"
+  }
+]

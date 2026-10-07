@@ -6,6 +6,7 @@ import "katex/dist/katex.min.css";
 import questionsData from "./data/questions.json";
 import mogiQuestionsData from "./data/mogiQuestions.json";
 import mogi2QuestionsData from "./data/mogi2Questions.json";
+import mogi3QuestionsData from "./data/mogi3Questions.json";
 
 /**
  * questions.json の "ref" を模試側の本文で埋める。
@@ -28,7 +29,7 @@ function resolveQuestionRefs(list: Question[], sources: Question[]): Question[] 
 /** 通常演習の問題（参照解決済み）。questions.json を直接読む代わりにこちらを使う */
 const NORMAL_QUESTIONS: Question[] = resolveQuestionRefs(
   questionsData as Question[],
-  [...(mogiQuestionsData as Question[]), ...(mogi2QuestionsData as Question[])]
+  [...(mogiQuestionsData as Question[]), ...(mogi2QuestionsData as Question[]), ...(mogi3QuestionsData as Question[])]
 );
 import r4ExtraData from "./data/r4Extra.json";
 import { BodyBlock, BodyTable, BodyTableCell, ExamState, Question } from "./types";
@@ -39,12 +40,13 @@ import { buildExamReport, ExamReport } from "./report/zones";
 import { buildReportModel, fetchPopulation, type ReportModel, type ReportQuestion } from "./report/model";
 import { REVIEW_NOTES } from "./report/notes";
 import { ResultReport, downloadReport } from "./report/View";
-import { CATEGORIES, categoryOf, sampleNumberOf, buildSampleOrder, isSampleQuestion, SAMPLE_BADGE, mogiBadgeOf, WEEKS } from "./questionGroups";
-import { TRIAL_MAX_NUMBER, TRIAL_PATHS, ROOT_IS_TRIAL, LP_URL, ANNOUNCE_SWITCH_DATE, ANNOUNCE_VALID_UNTIL, ANNOUNCE_POSTED_DATE, ANNOUNCE_ENABLED, NOTICES, MOGI_REQUIRES_REGISTRATION, MAIL_ENDPOINT, SET_REV } from "./trialConfig";
+import { CATEGORIES, categoryOf, sampleNumberOf, buildSampleOrder, isSampleQuestion, SAMPLE_BADGE, mogiBadgeOf, WEEKS, questionNumberText } from "./questionGroups";
+import { TRIAL_MAX_NUMBER, TRIAL_PATHS, ROOT_IS_TRIAL, LP_URL, ANNOUNCE_SWITCH_DATE, ANNOUNCE_VALID_UNTIL, ANNOUNCE_POSTED_DATE, ANNOUNCE_ENABLED, NOTICES, MOGI_REQUIRES_REGISTRATION, MAIL_ENDPOINT, SET_REV, MOGI_NAMES, MOGI_MENU_ORDER, MOGI_MENU_NOTES, MOGI_SUBLABELS } from "./trialConfig";
 
 const STORAGE_KEY = "exam-state";
 const MOGI_STORAGE_KEY = "exam-state-mogi"; // 模擬試験は保存キーを分けて通常演習の状態を汚さない
 const MOGI2_STORAGE_KEY = "exam-state-mogi-2"; // 模試2回目用
+const MOGI3_STORAGE_KEY = "exam-state-mogi-3"; // 模試3回目（C）用
 const MOGI_R4_STORAGE_KEY = "exam-state-mogi-r4"; // R4サンプル模試用
 const SHOW_MOGI_KEY = "show-mogi-used"; // 模擬試験で使用中の問題も一覧に出すか（既定OFF）
 const STUDIED_KEY = "study-done";
@@ -253,19 +255,28 @@ function todayJstStr(): string {
   return new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 10);
 }
 
+/** 最終更新日（ビルドした日。vite.config.ts で埋め込む）。モード選択の右上に出す */
+const BUILD_DATE: string = import.meta.env.VITE_BUILD_DATE ?? "";
+
 /**
  * お知らせ一覧（新しいものが上）。
  * URL変更のお知らせは ANNOUNCE_URL があるときだけ先頭に入る（10/1以降は自動で消える）。
  * それ以外は src/trialConfig.ts の NOTICES に足す。
- * until を書いたお知らせは、その日を過ぎると自動で消える（消し忘れ防止）。
+ * until はバーを出す期限。一覧（⚙設定 →「お知らせ一覧」）には期限が過ぎても残る（2026-10-07〜）。
  */
+/** "2026/10/7" → 20261007（並べ替え用）。読めない日付は 0＝一番下 */
+function noticeDateKey(date: string): number {
+  const m = date.match(/(\d{4})\D(\d{1,2})\D(\d{1,2})/);
+  return m ? Number(m[1]) * 10000 + Number(m[2]) * 100 + Number(m[3]) : 0;
+}
+
 const NOTICE_LIST: { id: string; date: string; title: string; body: ReactNode }[] = [
   // ブックマークの取り直しが要るのはルート（既存URL）を開いている人だけ。
   // 移行先や体験版のパスで開いている人には出さない
   ...(ANNOUNCE_VISIBLE && normalizePath() === "/"
     ? [{ id: "url-change", date: ANNOUNCE_POSTED_DATE, title: "URL変更のお知らせ", body: urlNoticeBody }]
     : []),
-  ...NOTICES.filter((n) => !n.until || todayJstStr() <= n.until).map((n) => ({
+  ...NOTICES.map((n) => ({
     id: n.id,
     date: n.date,
     title: n.title,
@@ -285,14 +296,17 @@ const NOTICE_LIST: { id: string; date: string; title: string; body: ReactNode }[
       </>
     ),
   })),
-];
+].sort((a, b) => noticeDateKey(b.date) - noticeDateKey(a.date)); // 新しい順（NOTICES に書いた順は問わない）
 
 /**
- * モード選択の上に出す細いバナー。期限内で banner と link を持つ先頭の1件だけ。
+ * モード選択の上に出す細いバナー。期限内で banner を持つ先頭の1件だけ。
  * 2本並べると両方読まれなくなるので、意図的に1件に絞っている。
+ * ベルを外したので、お知らせ一覧の入口はこのバーだけ（2026-10-07）。link は無くてもよい。
  */
 const BANNER_NOTICE =
-  NOTICES.find((n) => n.banner && n.link && (!n.until || todayJstStr() <= n.until)) ?? null;
+  NOTICES.find((n) => n.banner && (!n.until || todayJstStr() <= n.until)) ?? null;
+/** バーの×で閉じたお知らせの id（端末に1件だけ持つ） */
+const BANNER_CLOSED_KEY = "notice-banner-closed";
 
 /* ===== 受験日登録による模試のアンロック =====
  * 「登録済みかどうか」だけを端末に持つ。メールアドレスは保存しない。
@@ -369,9 +383,38 @@ const RANDOM_POOL_IDS = RANDOM_POOL_SOURCE.map((q) => q.id);
 const RANDOM_POOL_TRACE_IDS = RANDOM_POOL_SOURCE.filter(
   (q) => categoryOf(q.group) === "trace"
 ).map((q) => q.id);
+/**
+ * ランダム出題に混ぜられる模試の問題。問1〜16（アルゴリズム）だけで、問17〜20は情報セキュリティなので除く。
+ * 模試を開ける端末（受験日登録済み）でだけ選べる。
+ */
+type MogiSetKey = "1" | "2" | "3";
+const MOGI_RANDOM_SOURCE: Record<MogiSetKey, Question[]> = {
+  "1": (mogiQuestionsData as Question[]).filter((q) => q.number <= 16 && q.field !== "security"),
+  "2": (mogi2QuestionsData as Question[]).filter((q) => q.number <= 16 && q.field !== "security"),
+  "3": (mogi3QuestionsData as Question[]).filter((q) => q.number <= 16 && q.field !== "security")
+};
+const MOGI_RANDOM_BY_ID = new Map(
+  [...MOGI_RANDOM_SOURCE["1"], ...MOGI_RANDOM_SOURCE["2"], ...MOGI_RANDOM_SOURCE["3"]].map((q) => [q.id, q] as const)
+);
+/** 模試の問題がトレース系か。group が無いと categoryOf はトレース系を返すので、group が付いているものだけ数える */
+const isTraceMogi = (q: Question) => Boolean(q.group) && categoryOf(q.group) === "trace";
+/** ランダム出題の母集団（選んだ模試の問題を足したもの） */
+function randomPoolIds(traceOnly: boolean, mogiSets: MogiSetKey[] = []): string[] {
+  const ids = [...(traceOnly ? RANDOM_POOL_TRACE_IDS : RANDOM_POOL_IDS)];
+  mogiSets.forEach((s) =>
+    MOGI_RANDOM_SOURCE[s].forEach((q) => {
+      if (!traceOnly || isTraceMogi(q)) ids.push(q.id);
+    })
+  );
+  return ids;
+}
+/** ランダム出題に混ぜた模試の問題なら「模試A」などを返す（問番号が通常問題とかぶるので見分けに使う） */
+function mogiRandomBadge(q?: { id: string; slug?: string }): string | null {
+  return q && MOGI_RANDOM_BY_ID.has(q.id) ? mogiBadgeOf(q.slug) : null;
+}
 /** 母集団から count 問をシャッフルして取り出す（出題順もシャッフルのまま） */
-function pickRandomIds(count: number, traceOnly = false): string[] {
-  const pool = [...(traceOnly ? RANDOM_POOL_TRACE_IDS : RANDOM_POOL_IDS)];
+function pickRandomIds(count: number, traceOnly = false, mogiSets: MogiSetKey[] = []): string[] {
+  const pool = randomPoolIds(traceOnly, mogiSets);
   for (let i = pool.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [pool[i], pool[j]] = [pool[j], pool[i]];
@@ -393,6 +436,8 @@ type StartOptions = {
   randomTraceOnly?: boolean;
   /** ランダム出題の時点で「値を変えてもう一度」を自動適用する */
   randomAnother?: boolean;
+  /** ランダム出題に混ぜる模試（"1"=模試A, "2"=模試B）。空なら混ぜない */
+  randomMogiSets?: MogiSetKey[];
 };
 
 /** 模擬試験の受け方 動画 */
@@ -669,7 +714,7 @@ export default function App() {
   }, [embed]);
   const mockParam = urlParams.get("mock");
   // ?mock=1（模試1回目）／?mock=2（模試2回目）／?mock=r4（R4サンプル20問）。それ以外の値は通常演習扱い
-  const mogiSet = mockParam === "1" || mockParam === "2" || mockParam === "r4" ? mockParam : null;
+  const mogiSet = mockParam === "1" || mockParam === "2" || mockParam === "3" || mockParam === "r4" ? mockParam : null;
   const isMogi = mogiSet !== null;
   // ?lock=1: 埋め込み用ロック。指定した模試から他モードへ移動できない
   // （ガイダンスの「モード選択に戻る」を非表示にする。採点・復習モード等はそのまま使える）
@@ -684,8 +729,8 @@ export default function App() {
    * サンプル問題かどうかは slug の有無で見る（slug が付いているのは IPA の公開問題だけ）。
    * 開放されるのは名指しされた1問だけで、一覧から他の問題へは行けない。
    */
-  const matchesQParam = (q: { id?: string; number: number; slug?: string | null }) =>
-    !!qParam && (q.slug === qParam || q.id === qParam || String(q.number) === qParam);
+  const matchesQParam = (q: { id?: string; number: number; slug?: string | null; label?: string }) =>
+    !!qParam && (q.slug === qParam || q.id === qParam || String(q.number) === qParam || q.label === qParam);
   const isLocked = (q?: { id?: string; number: number; slug?: string | null } | null) =>
     isTrial && !!q && q.number > TRIAL_MAX_NUMBER && !(!!q.slug && matchesQParam(q));
   /** 体験版のロック案内。"locked"=対象外の問題/模試を開いた, "next"=上限の問題で「次へ」 */
@@ -697,10 +742,15 @@ export default function App() {
   );
   /** お知らせ一覧（モード選択のベルアイコンから開く） */
   const [showNotices, setShowNotices] = useState(false);
+  // お知らせ一覧で最初から開いておく1件（バーの「くわしく見る」から来たときだけ。⚙からは全部閉じた状態）
+  const [noticeOpenId, setNoticeOpenId] = useState<string | null>(null);
+  // バーの×で閉じたお知らせの id。同じお知らせは端末ごとに二度と出さない（新しいお知らせは id が違うので出る）
+  const [bannerClosedId, setBannerClosedId] = useState<string | null>(() => lsGet(BANNER_CLOSED_KEY));
 
   const allQuestions = useMemo<Question[]>(() => {
     if (mogiSet === "1") return mogiQuestionsData as Question[];
     if (mogiSet === "2") return mogi2QuestionsData as Question[];
+    if (mogiSet === "3") return mogi3QuestionsData as Question[];
     if (mogiSet === "r4") {
       const byId = new Map<string, Question>();
       NORMAL_QUESTIONS.forEach((q) => byId.set(q.id, q));
@@ -716,7 +766,7 @@ export default function App() {
     return NORMAL_QUESTIONS;
   }, [mogiSet]);
   const storageKey =
-    mogiSet === "r4" ? MOGI_R4_STORAGE_KEY : mogiSet === "2" ? MOGI2_STORAGE_KEY : isMogi ? MOGI_STORAGE_KEY : STORAGE_KEY;
+    mogiSet === "r4" ? MOGI_R4_STORAGE_KEY : mogiSet === "2" ? MOGI2_STORAGE_KEY : mogiSet === "3" ? MOGI3_STORAGE_KEY : isMogi ? MOGI_STORAGE_KEY : STORAGE_KEY;
   const examDefaultTime = isMogi ? MOGI_TIME : DEFAULT_TIME;
   const deepLinkIndex = useMemo(() => {
     if (!qParam) return -1;
@@ -724,6 +774,7 @@ export default function App() {
     let i = allQuestions.findIndex((x) => x.slug === qParam);
     if (i < 0) i = allQuestions.findIndex((x) => x.id === qParam);
     if (i < 0) i = allQuestions.findIndex((x) => String(x.number) === qParam);
+    if (i < 0) i = allQuestions.findIndex((x) => x.label === qParam); // 追加演習の表示番号（?q=R0801）
     return i;
   }, [allQuestions, qParam]);
 
@@ -835,6 +886,8 @@ export default function App() {
           : null;
     if (!ids || ids.length === 0) return allQuestions;
     const byId = new Map(allQuestions.map((q) => [q.id, q] as const));
+    // ランダム出題には模試の問題が混ざることがある（通常の問題一覧には無いので足す）
+    if (state.randomIds) MOGI_RANDOM_BY_ID.forEach((q, id) => { if (!byId.has(id)) byId.set(id, q); });
     return ids.map((id) => byId.get(id)).filter((q): q is Question => Boolean(q));
   }, [allQuestions, state.randomIds, sampleOrder]);
 
@@ -881,7 +934,7 @@ export default function App() {
     total: questions.length,
     unanswered: questions.length
   });
-  const [resultDetails, setResultDetails] = useState<{ number: number; status: "correct" | "incorrect" | "unanswered" }[]>([]);
+  const [resultDetails, setResultDetails] = useState<{ number: number; label?: string; status: "correct" | "incorrect" | "unanswered" }[]>([]);
   const [gradeNowResult, setGradeNowResult] = useState<{
     questionId: string;
     questionNumber: number;
@@ -895,20 +948,22 @@ export default function App() {
     traceLines?: string[];
   } | null>(null);
   // 模試の復習モード: ONで各問に「今すぐ採点」「解説へ」を表示。ページを閉じても保持。
+  // 模試ごとに別々に覚える（模試Aの復習でONにしたまま、まだ受けていない模試Cを開くと、答えが見えてしまうため）
+  const reviewModeKey = `${REVIEW_MODE_KEY}-${mogiSet || ""}`;
   const [reviewMode, setReviewMode] = useState<boolean>(() => {
     try {
-      return localStorage.getItem(REVIEW_MODE_KEY) === "1";
+      return localStorage.getItem(reviewModeKey) === "1";
     } catch {
       return false;
     }
   });
   useEffect(() => {
     try {
-      localStorage.setItem(REVIEW_MODE_KEY, reviewMode ? "1" : "0");
+      localStorage.setItem(reviewModeKey, reviewMode ? "1" : "0");
     } catch {
       /* localStorage 不可でも無視 */
     }
-  }, [reviewMode]);
+  }, [reviewMode, reviewModeKey]);
   /** 採点画面に出す8桁の受験コード（合格報告フォームとの突き合わせ用） */
   // ===== 受験前アンケート（任意）。集計にのみ使う =====
   /** 97問講座の受講有無: "yes" | "no" | "" */
@@ -1361,7 +1416,7 @@ export default function App() {
     const total = questions.length;
     let correct = 0;
     let unanswered = 0;
-    const details: { number: number; status: "correct" | "incorrect" | "unanswered" }[] = [];
+    const details: { number: number; label?: string; status: "correct" | "incorrect" | "unanswered" }[] = [];
     const statsRows: {
       id: string; n: number; sel: string; cor: string; ok: number; rev: number; ovr: number;
     }[] = [];
@@ -1372,6 +1427,9 @@ export default function App() {
       const q = override ? { ...baseQuestion, ...override } : baseQuestion;
       const ans = state.answers[q.id];
       const ok = Boolean(ans && q.correctChoiceId && ans === q.correctChoiceId);
+      // ランダム出題に混ぜた模試の問題は「A問03」と出す（通常問題の問3と区別する。結果の枠が狭いので記号1文字だけ）
+      const mogiBadge = mogiRandomBadge(q);
+      const label = mogiBadge ? `${mogiBadge.slice(-1)}問${String(q.number).padStart(2, "0")}` : q.label;
       statsRows.push({
         id: q.id,
         n: q.number,
@@ -1393,14 +1451,14 @@ export default function App() {
       });
       if (!ans) {
         unanswered += 1;
-        details.push({ number: q.number, status: "unanswered" });
+        details.push({ number: q.number, label, status: "unanswered" });
         return;
       }
       if (ok) {
         correct += 1;
-        details.push({ number: q.number, status: "correct" });
+        details.push({ number: q.number, label, status: "correct" });
       } else {
-        details.push({ number: q.number, status: "incorrect" });
+        details.push({ number: q.number, label, status: "incorrect" });
       }
     });
     sendStatsFinish(statsRows, correct, unanswered);
@@ -1418,7 +1476,7 @@ export default function App() {
       for (const r of reportQuestions) r.sec = dwellRef.current.acc[r.id] || 0;
       const input = {
         set: mogiSet,
-        setLabel: mogiSet === "2" ? "模擬試験②" : mogiSet === "r4" ? "R4サンプル模試" : "模擬試験①",
+        setLabel: mogiSet === "r4" ? "R4サンプル模試" : `模擬試験${MOGI_NAMES[mogiSet ?? "1"] ?? mogiSet}`,
         date: new Date(),
         elapsedSec: Math.max(0, MOGI_TIME - state.remainingSeconds),
         totalSec: MOGI_TIME,
@@ -1468,18 +1526,20 @@ export default function App() {
     showQuestionNumber,
     randomCount,
     randomTraceOnly,
-    randomAnother
+    randomAnother,
+    randomMogiSets
   }: StartOptions) => {
     setQuestionOverrides({});
     // 模擬試験は開始前にガイダンス画面を挟む（閉じるまでタイマーは動かない）
     if (isMogi) setShowGuidance(true);
     // 抽選はここで1回だけ行う（以後は state.randomIds を使うので、画面遷移で引き直されない）
-    const randomIds = randomCount ? pickRandomIds(randomCount, randomTraceOnly) : null;
+    const randomIds = randomCount ? pickRandomIds(randomCount, randomTraceOnly, randomMogiSets ?? []) : null;
     // 「値を変える」がONなら、抽選した問題のうち対応しているものを開始時点で作り直す
     if (randomIds && randomAnother) {
       const overrides: Record<string, Partial<Question>> = {};
       randomIds.forEach((id) => {
-        const base = NORMAL_QUESTIONS.find((q) => q.id === id);
+        // 模試の問題を混ぜたときは模試側から引く
+        const base = NORMAL_QUESTIONS.find((q) => q.id === id) ?? MOGI_RANDOM_BY_ID.get(id);
         if (!base || base.another !== 1) return;
         const generated = generateAnotherQuestion(base);
         if (generated) overrides[id] = generated;
@@ -1722,22 +1782,31 @@ export default function App() {
       {!state.mode && (
         <div className="overlay">
           <div className="overlay-content overlay-content--mode-select">
-            {NOTICE_LIST.length > 0 && (
-              <button
-                className="outline notice-bell"
-                onClick={() => setShowNotices(true)}
-                aria-label="お知らせ"
-                title="お知らせ"
-              >
-                🔔<span className="notice-bell-count">{NOTICE_LIST.length}</span>
-              </button>
-            )}
-            {BANNER_NOTICE && (
+            {/* ベル（🔔＋件数）は外した（2026-10-07）。お知らせは下のバーか、⚙設定の「お知らせ一覧」から開く */}
+            {BUILD_DATE && <span className="site-updated">最終更新 {BUILD_DATE}</span>}
+            {BANNER_NOTICE && bannerClosedId !== BANNER_NOTICE.id && (
               <div className="notice-banner">
                 <span className="notice-banner-text">{BANNER_NOTICE.banner}</span>
                 {/* いきなり外部へ飛ばさない。お知らせを開いて前置きを読んでもらってから購入へ */}
-                <button className="notice-banner-cta" onClick={() => setShowNotices(true)}>
+                <button
+                  className="notice-banner-cta"
+                  onClick={() => {
+                    setNoticeOpenId(BANNER_NOTICE.id);
+                    setShowNotices(true);
+                  }}
+                >
                   くわしく見る
+                </button>
+                <button
+                  className="notice-banner-close"
+                  aria-label="このお知らせを閉じる"
+                  title="閉じる"
+                  onClick={() => {
+                    lsSet(BANNER_CLOSED_KEY, BANNER_NOTICE.id);
+                    setBannerClosedId(BANNER_NOTICE.id);
+                  }}
+                >
+                  ×
                 </button>
               </div>
             )}
@@ -1760,7 +1829,7 @@ export default function App() {
         <div className="overlay overlay--mask">
           <div className="overlay-content">
             <h3>ガイダンス</h3>
-            <p>これから模擬試験{mogiSet === "r4" ? "" : mogiSet === "2" ? "（2回目）" : "（1回目）"}を開始します。</p>
+            <p>これから模擬試験{mogiSet === "r4" ? "" : MOGI_NAMES[mogiSet ?? "1"] ?? ""}を開始します。</p>
             <ul className="guidance-list" style={{ textAlign: "left", lineHeight: 1.8 }}>
               <li>問題数は全20問です。</li>
               <li>「試験開始」を押すと100分の計測が始まります。</li>
@@ -1944,8 +2013,10 @@ export default function App() {
                 ? formatQuestionNumber(currentQuestion.number)
                 : !state.showQuestionNumber
                   ? currentQuestion.title
+                  : currentQuestion.label
+                    ? `${currentQuestion.label}: ${currentQuestion.title}`
                   : Number.isInteger(currentQuestion.number)
-                    ? `${currentQuestion.number}問: ${currentQuestion.title}`
+                    ? `${mogiRandomBadge(currentQuestion) ? mogiRandomBadge(currentQuestion) + " " : ""}${currentQuestion.number}問: ${currentQuestion.title}`
                     : `${Math.floor(currentQuestion.number)}#問: ${currentQuestion.title}`}
             </h2>
             {!isMogi && currentQuestion.selfSolve === 1 ? (
@@ -2105,7 +2176,8 @@ export default function App() {
                 </button>
               </>
             )}
-            {currentQuestion.another === 1 && (
+            {/* 模擬試験A・B は本番中に値が変わると困るので，復習モードのときだけ出す */}
+            {currentQuestion.another === 1 && !((mogiSet === "1" || mogiSet === "2" || mogiSet === "3") && !reviewMode) && (
               <>
                 <button type="button" className="outline" onClick={handleAnotherRun}>
                   値を変えてもう一度
@@ -2270,6 +2342,20 @@ export default function App() {
             <p style={{ fontSize: "0.8em", opacity: 0.75, textAlign: "left", marginTop: "0.8em" }}>
               ここでの変更はすぐに反映され､次回以降も保持されます｡
             </p>
+            {NOTICE_LIST.length > 0 && (
+              <p className="settings-notices">
+                <button
+                  className="outline"
+                  onClick={() => {
+                    setShowSettings(false);
+                    setNoticeOpenId(null);
+                    setShowNotices(true);
+                  }}
+                >
+                  お知らせ一覧
+                </button>
+              </p>
+            )}
           </div>
         </div>
       )}
@@ -2302,11 +2388,11 @@ export default function App() {
                       answered ? "answered" : "unanswered"
                     } ${done ? "studied" : ""} ${review ? "review" : ""}`}
                   >
-                    {label ?? (Number.isInteger(q.number) ? `問${q.number}` : `問${Math.floor(q.number)}#`)}
+                    {label ?? (q.label ?? (Number.isInteger(q.number) ? `問${q.number}` : `問${Math.floor(q.number)}#`))}
                     {/* サンプル問題(本試験の公開問題)であることを年度バッジで示す。
                         サンプルタブは年度別に並んでいるので付けない（label指定あり＝サンプルタブ） */}
-                    {!label && (mogiBadgeOf(q.ref) ? (
-                      <span className="q-badge">{mogiBadgeOf(q.ref)}</span>
+                    {!label && ((mogiBadgeOf(q.ref) ?? mogiRandomBadge(q)) ? (
+                      <span className="q-badge">{mogiBadgeOf(q.ref) ?? mogiRandomBadge(q)}</span>
                     ) : isSampleQuestion(q.title ?? "") ? (
                       <span className="q-badge">{SAMPLE_BADGE}</span>
                     ) : null)}
@@ -2477,7 +2563,8 @@ export default function App() {
                               cell(
                                 q,
                                 idx,
-                                `問${n}(${Number.isInteger(q.number) ? q.number : `${Math.floor(q.number)}#`})`
+                                // 追加演習の問題（label 付き）は講座の番号が無いので、年度内の問番号だけ出す
+                                q.label ? `問${n}` : `問${n}(${questionNumberText(q)})`
                               )
                             )}
                           </div>
@@ -2785,15 +2872,18 @@ export default function App() {
                 const mark = d.status === "correct" ? "○" : d.status === "incorrect" ? "×" : "－";
                 return (
                   <span
-                    key={d.number}
+                    key={d.label ?? d.number}
                     className={`result-cell result-cell--${d.status}`}
                   >
-                    問{String(d.number).padStart(2, "0")}
+                    {d.label ?? `問${String(d.number).padStart(2, "0")}`}
                     {mark}
                   </span>
                 );
               })}
             </div>
+            {resultDetails.some((d) => d.label) && (
+              <p className="result-note">問番号の前のA・Bは､模擬試験A・Bの問題です</p>
+            )}
             {resultReport && (
               <div
                 className="result-report"
@@ -3023,7 +3113,7 @@ export default function App() {
         </div>
       )}
 
-      {/* お知らせ一覧。モード選択のベルアイコンから開く */}
+      {/* お知らせ一覧。モード選択のバーの「くわしく見る」と、⚙設定の「お知らせ一覧」から開く */}
       {showNotices && (
         <div className="overlay">
           <div className="overlay-content notice-modal">
@@ -3034,12 +3124,15 @@ export default function App() {
               </button>
             </div>
             <div className="notice-list">
+              {/* タイトルだけ並べ、押したら全文（2026-10-07） */}
               {NOTICE_LIST.map((n) => (
-                <article key={n.id} className="notice-item">
-                  <p className="notice-date">{n.date}</p>
-                  <h4 className="notice-title">{n.title}</h4>
+                <details key={n.id} className="notice-item" open={n.id === noticeOpenId}>
+                  <summary>
+                    <span className="notice-date">{n.date}</span>
+                    <span className="notice-title">{n.title}</span>
+                  </summary>
                   <div className="notice-body">{n.body}</div>
-                </article>
+                </details>
               ))}
             </div>
           </div>
@@ -3080,7 +3173,30 @@ function ModePicker({ isMogi = false, isTrial = false, onStart, onTrialLock, mog
   const [randomTraceOnly, setRandomTraceOnly] = useState(false);
   // 値を変える方が練習になるので既定でON
   const [randomAnother, setRandomAnother] = useState(true);
-  const randomPoolSize = randomTraceOnly ? RANDOM_POOL_TRACE_IDS.length : RANDOM_POOL_IDS.length;
+  // 模試の問題を混ぜる（既定OFF）。模試を開ける端末（受験日登録済み）だけに出す
+  const canMixMogi = !mogiLocked && !isTrial;
+  const [randomMogi1, setRandomMogi1] = useState(false);
+  const [randomMogi2, setRandomMogi2] = useState(false);
+  const [randomMogi3, setRandomMogi3] = useState(false);
+  const randomMogiOn: Record<MogiSetKey, boolean> = { "1": randomMogi1, "2": randomMogi2, "3": randomMogi3 };
+  const setRandomMogi: Record<MogiSetKey, (on: boolean) => void> = {
+    "1": setRandomMogi1,
+    "2": setRandomMogi2,
+    "3": setRandomMogi3
+  };
+  const randomMogiSets: MogiSetKey[] = canMixMogi
+    ? (["1", "2", "3"] as const).filter((k) => randomMogiOn[k])
+    : [];
+  const randomPoolSize = randomPoolIds(randomTraceOnly, randomMogiSets).length;
+  /** その模試から何問足されるか（トレース系のみなら、そのうちのトレース系だけ） */
+  const mogiAddCount = (s: MogiSetKey) =>
+    MOGI_RANDOM_SOURCE[s].filter((q) => !randomTraceOnly || isTraceMogi(q)).length;
+  // 母集団が減って、選んでいた問題数が選べなくなったら、選べる中で一番多い数に下げる
+  useEffect(() => {
+    if (randomCount <= randomPoolSize) return;
+    const fallback = [...RANDOM_COUNTS].reverse().find((n) => n <= randomPoolSize);
+    if (fallback) setRandomCount(fallback);
+  }, [randomPoolSize, randomCount]);
 
   const isPractice = mode === "practice";
   // 演習モードは時間を計らない。試験モードは計る（手動切り替えは廃止）
@@ -3146,12 +3262,26 @@ function ModePicker({ isMogi = false, isTrial = false, onStart, onTrialLock, mog
           <button className="outline" onClick={() => goMogi("r4")}>
             R4サンプル
           </button>
-          <button className="outline" onClick={() => goMogi("1")}>
-            1回目
-          </button>
-          <button className="outline" onClick={() => goMogi("2")}>
-            2回目
-          </button>
+          {/* 並び順は trialConfig の MOGI_MENU_ORDER。上にあるほど先に受けられる */}
+          {MOGI_MENU_ORDER.map((s) => (
+            <button key={s} className="outline" onClick={() => goMogi(s)}>
+              模擬試験{MOGI_NAMES[s] ?? s}
+              {MOGI_SUBLABELS[s] && (
+                <span style={{ display: "block", fontSize: "0.75em", fontWeight: "normal", opacity: 0.75 }}>
+                  {MOGI_SUBLABELS[s]}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+      {!isMogi && showMogiMenu && MOGI_MENU_NOTES.length > 0 && (
+        <div className="mogi-menu-notes" style={{ marginTop: "0.5em", fontSize: "0.85em", color: "#64748b", lineHeight: 1.6 }}>
+          {MOGI_MENU_NOTES.map((t) => (
+            <p key={t} style={{ margin: "0.2em 0" }}>
+              {t}
+            </p>
+          ))}
         </div>
       )}
       {!isMogi && !showMogiMenu ? (
@@ -3248,18 +3378,9 @@ function ModePicker({ isMogi = false, isTrial = false, onStart, onTrialLock, mog
                 <input
                   type="checkbox"
                   checked={randomTraceOnly}
-                  onChange={(e) => {
-                    const on = e.target.checked;
-                    setRandomTraceOnly(on);
-                    const size = on ? RANDOM_POOL_TRACE_IDS.length : RANDOM_POOL_IDS.length;
-                    // 選べなくなる数を選んだままにしない
-                    if (randomCount > size) {
-                      const fallback = [...RANDOM_COUNTS].reverse().find((n) => n <= size);
-                      if (fallback) setRandomCount(fallback);
-                    }
-                  }}
+                  onChange={(e) => setRandomTraceOnly(e.target.checked)}
                 />{" "}
-                トレース系のみ（{RANDOM_POOL_TRACE_IDS.length}問から出題）
+                トレース系のみ（{randomPoolIds(true, randomMogiSets).length}問から出題）
               </label>
               <label className="random-opt">
                 <input
@@ -3269,6 +3390,41 @@ function ModePicker({ isMogi = false, isTrial = false, onStart, onTrialLock, mog
                 />{" "}
                 値を変えられる問題は､値を変える
               </label>
+              {canMixMogi && (
+                <>
+                  <label className="random-opt">
+                    <input
+                      type="checkbox"
+                      checked={randomMogi1 || randomMogi2 || randomMogi3}
+                      // 一部だけ選んでいるときは「一部」の表示にする
+                      ref={(el) => {
+                        if (el) {
+                          const n = [randomMogi1, randomMogi2, randomMogi3].filter(Boolean).length;
+                          el.indeterminate = n > 0 && n < 3;
+                        }
+                      }}
+                      onChange={(e) => {
+                        // 親を入れたら全部、外したら全部外す
+                        const on = e.target.checked;
+                        setRandomMogi1(on);
+                        setRandomMogi2(on);
+                        setRandomMogi3(on);
+                      }}
+                    />{" "}
+                    模試の問題も含める
+                  </label>
+                  {(["1", "2", "3"] as const).map((s) => (
+                    <label key={s} className="random-opt" style={{ marginLeft: "1.6em" }}>
+                      <input
+                        type="checkbox"
+                        checked={randomMogiOn[s]}
+                        onChange={(e) => setRandomMogi[s](e.target.checked)}
+                      />{" "}
+                      模試{MOGI_NAMES[s]}（{mogiAddCount(s)}問）
+                    </label>
+                  ))}
+                </>
+              )}
               <p className="random-note">基礎･情報セキュリティを除いて､ランダムに出題します</p>
             </div>
           )}
@@ -3287,7 +3443,8 @@ function ModePicker({ isMogi = false, isTrial = false, onStart, onTrialLock, mog
               showQuestionNumber,
               randomCount: isMogi || !randomOn ? null : randomCount,
               randomTraceOnly: randomOn && randomTraceOnly,
-              randomAnother: randomOn && randomAnother
+              randomAnother: randomOn && randomAnother,
+              randomMogiSets: randomOn ? randomMogiSets : []
             })
           }
         >

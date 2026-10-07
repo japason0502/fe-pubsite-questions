@@ -1,4 +1,5 @@
 import { BodyBlock, BodyTableCell, Choice, Question } from "./types";
+import { mogiAnotherGenerators } from "./mogiAnotherGenerators";
 
 export type GeneratedQuestionPatch = Pick<
   Question,
@@ -1611,7 +1612,9 @@ const anotherQuestionGenerators: Record<string, AnotherQuestionGenerator> = {
   q76: generateQ76,
   q83: generateQ83,
   q84: generateQ84,
-  q81: generateQ86
+  q81: generateQ86,
+  // 模擬試験A・B の問題（id: m1〜 / n1〜）
+  ...mogiAnotherGenerators
 };
 
 export function generateAnotherQuestion(baseQuestion: Question): GeneratedQuestionPatch | null {

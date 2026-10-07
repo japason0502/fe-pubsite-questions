@@ -8,10 +8,8 @@
  * CSS はクラス名を rr- で始めて、サイト側のスタイルと混ざらないようにしている。
  */
 
-import { useEffect, useState } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { ReportLine, ZoneReport } from "./zones";
-import { canNativeShare, copyShareCardImage, downloadShareCard, drawShareCard, shareCardNative } from "./shareCard";
 import {
   FULL_SCORE, GUIDE_SEC, OVER_SEC, PASS_SCORE,
   fmtDate, fmtDelta, fmtSec,
@@ -133,18 +131,10 @@ button.rr-cta{width:100%;border:0;font-family:inherit;cursor:pointer}
 
 /* ==================== シェアの設定 ==================== */
 
-/** つぶやきの末尾に添える（本文とは1行空けて入る）。タグは増減しやすいよう配列で持つ */
-const SHARE_MENTION = "@japacojp";
-const SHARE_HASHTAGS = ["#基本情報技術者試験", "#じゃぱそんの基本情報"];
-
 /** 「動画にコメントする」の飛び先。「合格に繋がる模試の受け方」の動画にコメントを集める */
 // 短縮URL（youtu.be）だとスマホでアプリではなくブラウザ側で開き、未ログインでコメントがエラーになることがある。
 // Googleフォームから張っていた形（youtube.com/watch?v=…）に揃える（2026-09-29）
 const COMMENT_VIDEO_URL = "https://www.youtube.com/watch?v=mhVYsuS7n6I";
-
-/** Kindle本のレビュー投稿画面。商品ページを経由せず、書く画面へ直接飛ばす */
-const BOOK_REVIEW_URL =
-  "https://www.amazon.co.jp/review/create-review/?ie=UTF8&channel=glance-detail&asin=B0HK2F6QMK";
 
 /**
  * 全問の解説をまとめた記事。セットごとに用意できたら足す。
@@ -154,12 +144,6 @@ const REVIEW_INDEX_URL: Record<string, string> = {
   "1": "https://mos.japason.co.jp/fe-kamokub-mogi1/",
   "2": "https://mos.japason.co.jp/fe-kamokub-mogi2/"
 };
-
-/** X の投稿画面を、本文を入れた状態で開く URL */
-function tweetUrl(shareText: string): string {
-  const text = `${shareText}\n\n${SHARE_MENTION}\n${SHARE_HASHTAGS.join(" ")}`;
-  return `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
-}
 
 /**
  * 「動画にコメント」を押したときの下ごしらえ。
@@ -184,13 +168,13 @@ const AUTHOR_NOTE_TITLE = "じゃぱそんから一言";
 
 const AUTHOR_MESSAGES: { headline: string; paragraphs: string[]; onlySets?: string[] }[] = [
   {
-    headline: "※2回目を受けるのはちょっと待った※",
-    onlySets: ["1"],
+    headline: "※次の模擬試験を受けるのはちょっと待った※",
+    onlySets: ["1", "2"],
     paragraphs: [
-      "気持ちはわかりますが､1回目の振り返り･対策をしないと､また同じような点数になるだけ｡" +
+      "気持ちはわかりますが､今回の振り返り･対策をしないと､また同じような点数になるだけ｡" +
         "｢合格点ギリギリ(で落ちる)を繰り返す｣を､模擬試験で再現していることになります｡",
-      "2回目を受けるのは､見つけた課題を充分に対策してから､です｡" +
-        "(もう本番が近い方も､模擬試験2回目よりも､1回目の課題の対策を優先しましょう｡)"
+      "次の模擬試験を受けるのは､見つけた課題を充分に対策してから､です｡" +
+        "(もう本番が近い方も､次の模擬試験よりも､今回の課題の対策を優先しましょう｡)"
     ]
   },
   {
@@ -488,73 +472,6 @@ function TimeUsageSection({ m }: { m: ReportModel }) {
   );
 }
 
-/** コピーボタン（画面表示用）。保存した HTML 側は buildReportHtml が同じ処理を仕込む */
-function copyShareText(e: { currentTarget: HTMLButtonElement }) {
-  const button = e.currentTarget;
-  const text = document.getElementById("rr-share-text")?.textContent ?? "";
-  const done = () => {
-    const before = button.textContent;
-    button.textContent = "コピーしました";
-    setTimeout(() => (button.textContent = before), 1500);
-  };
-  navigator.clipboard?.writeText(text).then(done, () => {
-    // clipboard が使えない環境向け。選択してもらう
-    const range = document.createRange();
-    const pre = document.getElementById("rr-share-text");
-    if (!pre) return;
-    range.selectNodeContents(pre);
-    const sel = window.getSelection();
-    sel?.removeAllRanges();
-    sel?.addRange(range);
-  });
-}
-
-/**
- * シェア用カード（PNG）のプレビューと、そこから出す導線。
- * canvas を使うので画面表示のときだけ。保存した HTML には入らない。
- *
- * 「結果をシェア」= OS の共有シート。画像とひとことをまとめて渡せるので、
- * 画像を保存 → アプリを開く → 添付、の手間が要らない（対応端末のみ）。
- */
-function ShareCard({ m }: { m: ReportModel }) {
-  const [src, setSrc] = useState("");
-  const [busy, setBusy] = useState(false);
-  useEffect(() => {
-    try {
-      setSrc(drawShareCard(m).toDataURL("image/png"));
-    } catch {
-      /* canvas が使えない環境では出さない。レポート本体には影響させない */
-    }
-  }, [m]);
-  if (!src) return null;
-
-  const onShare = () => {
-    setBusy(true);
-    shareCardNative(m, m.shareText).then((r) => {
-      setBusy(false);
-      // 画像付きの共有に対応していない端末は、保存に切り替える
-      if (r === "unsupported") downloadShareCard(m);
-    });
-  };
-
-  return (
-    <>
-      <img className="rr-card" src={src} alt="結果カード" />
-      <div className="rr-cardbtns">
-        {canNativeShare() && (
-          <button className="rr-share-main" type="button" onClick={onShare} disabled={busy}>
-            結果をシェア
-          </button>
-        )}
-        <button className="rr-btn" type="button" onClick={() => downloadShareCard(m)}>
-          画像を保存
-        </button>
-      </div>
-      <p className="rr-hint">画像を投稿に添付すると伝わりやすいです。</p>
-    </>
-  );
-}
-
 /**
  * レポートの保存。
  * 閉じるときに確認ダイアログ（App.tsx）が出るので、冒頭では出さず末尾だけに置く。
@@ -676,43 +593,7 @@ export function ResultReport({ model: m, forScreen = true }: { model: ReportMode
         </>
       )}
 
-      <div className="rr-extra">
-        <h4>結果をシェア</h4>
-        <p className="lead">
-          どのゾーンで詰まったかが分かると、次の教材づくりの参考になります。
-          (じゃぱそんからのアドバイスももらえるかも･･?)
-        </p>
-
-        {forScreen && <ShareCard m={m} />}
-
-        <div className="rr-sns">
-          <a
-            className="rr-sns-btn rr-x"
-            href={tweetUrl(m.shareText)}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => copyShareCardImage(m)}
-          >
-            Xでシェア
-          </a>
-        </div>
-        <p className="rr-snsnote">
-          本文は投稿欄に入ります。<b>画像はコピー</b>されるので、投稿欄で貼り付け（Ctrl+V / ⌘V）してください。
-        </p>
-
-        {/* 文だけ使いたい人向け。普段は畳んでおく */}
-        <details className="rr-fold">
-          <summary>テキストだけコピーする</summary>
-          <pre className="rr-share" id="rr-share-text">{m.shareText}</pre>
-          <div className="rr-buttons">
-            <button className="rr-copy" type="button" onClick={copyShareText}>
-              この文をコピー
-            </button>
-          </div>
-        </details>
-      </div>
-
-      {/* シェア（拡散）とは別枠。こちらは作り手へのフィードバック */}
+      {/* 作り手へのフィードバック。「結果をシェア」枠は使われていなかったので外した（2026-10-07） */}
       <div className="rr-extra rr-voice">
         <h4>感想をきかせてください</h4>
         <p className="lead">
@@ -728,13 +609,9 @@ export function ResultReport({ model: m, forScreen = true }: { model: ReportMode
           >
             動画にコメントする
           </a>
-          <a className="rr-sns-btn rr-book" href={BOOK_REVIEW_URL} target="_blank" rel="noopener noreferrer">
-            Kindle本にレビューを書く
-          </a>
         </div>
         <p className="rr-snsnote">
-          「動画にコメントする」を押すと<b>採点結果の文がコピー</b>されます。コメント欄に貼り付けてください
-          （コメント欄には画像を貼れません）。レビューは本を読んでくださった方向けです。
+          押すと<b>採点結果の文がコピー</b>されます。コメント欄に貼り付けてください。
         </p>
       </div>
 
@@ -759,28 +636,6 @@ body{margin:0;background:#fff;font-family:-apple-system,"Segoe UI","Hiragino Kak
 @media print{.rr{padding:0}}
 ${REPORT_CSS}
 </style></head><body>${body}
-<script>
-// 保存した HTML 用。画面表示のときは React 側が同じことをしている
-document.querySelector(".rr-copy")?.addEventListener("click", function () {
-  var pre = document.getElementById("rr-share-text");
-  var button = this;
-  if (!pre) return;
-  var done = function () {
-    var before = button.textContent;
-    button.textContent = "コピーしました";
-    setTimeout(function () { button.textContent = before; }, 1500);
-  };
-  var fallback = function () {
-    var range = document.createRange();
-    range.selectNodeContents(pre);
-    var sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-  };
-  if (navigator.clipboard) navigator.clipboard.writeText(pre.textContent).then(done, fallback);
-  else fallback();
-});
-</script>
 </body></html>`;
 }
 

@@ -88,6 +88,23 @@ export const CATEGORIES: Category[] = [
   }
   ,
   {
+    // 追加演習：本講座（0〜97の学習順）に入れない問題の置き場所。
+    // 番号は number（1001〜、内部用の連番）とは別に、表示用の label を振る。ジャンルごとに頭文字＋2桁で、
+    // 後から足しても他のジャンルの番号がずれない。
+    //   公開問題 … R＋年度2桁＋問番号2桁（R0801＝令和8年度 問1）
+    //   情報セキュリティ … セ01〜 ／ 穴埋め … 穴01〜 ／ トレース … ト01〜
+    key: "extra",
+    label: "追加演習",
+    groups: [
+      {
+        key: "extra-sample",
+        name: "公開問題",
+        desc: "講座の収録後に公開された問題です｡追加演習にご利用ください｡"
+      }
+    ]
+  }
+  ,
+  {
     key: "sample",
     label: "(サンプル問題のみ)",
     groups: [],
@@ -97,6 +114,7 @@ export const CATEGORIES: Category[] = [
       { name: "令和5年度", prefix: "R5問" },
       { name: "令和6年度", prefix: "R6問" },
       { name: "令和7年度", prefix: "R7問" },
+      { name: "令和8年度", prefix: "R8問" },
       { name: "情報セキュリティマネジメント R5", prefix: "SG R5問", noOrder: true },
       { name: "情報セキュリティマネジメント R6", prefix: "SG R6問", noOrder: true },
       { name: "情報セキュリティマネジメント R7", prefix: "SG R7問", noOrder: true },
@@ -142,7 +160,7 @@ export function buildSampleOrder<T extends { id: string; title?: string }>(
  * ペース配分の考え方:
  *   - 1週目は内容が軽いので倍速（毎日開く習慣づけを優先）
  *   - 5〜7週目は再帰・ビット演算・データ構造・数学系で重いので土日を減らす
- *   - 8週目は模擬試験①のぶん問題数を抑える
+ *   - 8週目は模擬試験のぶん問題数を抑える
  */
 /** label: タブに出す名前（未指定なら「N週目」）。pace が空の週はペース表示を出さない */
 export type Week = { week: number; from: number; to: number; pace: string; note?: string; label?: string };
@@ -155,12 +173,19 @@ export const WEEKS: Week[] = [
   { week: 5, from: 58, to: 68, pace: "平日1問・土日3問" },
   { week: 6, from: 69, to: 79, pace: "平日1問・土日3問" },
   { week: 7, from: 80, to: 90, pace: "平日1問・土日3問" },
-  { week: 8, from: 91, to: 97, pace: "平日1問・土日4問", note: "最後に模擬試験①を受けましょう" },
+  { week: 8, from: 91, to: 97, pace: "平日1問・土日4問", note: "最後に模擬試験を1つ受けましょう" },
   // 8週の計画には含めない、余力のある人向けの追加ぶん
   // 講座本体は 0〜97。901〜 は学習順に乗らない問題（追加演習・模試で使うもの）の置き場所で、
   // 週の進行には含めないが、週別表示から消えないようこの受け皿に入れておく。
-  { week: 9, from: 800, to: 999, pace: "", label: "追加演習" }
+  // 追加演習タブの問題（label 付き）は 1001〜 を使う
+  { week: 9, from: 800, to: 9999, pace: "", label: "追加演習" }
 ];
+
+/** 画面に出す番号（「問」は付けない）。label があればそれ、小数（4.1 など）は「4#」 */
+export function questionNumberText(q: { number: number; label?: string }): string {
+  if (q.label) return q.label;
+  return Number.isInteger(q.number) ? String(q.number) : `${Math.floor(q.number)}#`;
+}
 
 /** 一覧のボタンに出すバッジ文言（サンプル問題であることだけを示す） */
 export const SAMPLE_BADGE = "公開";
@@ -168,8 +193,9 @@ export const SAMPLE_BADGE = "公開";
 /** 模擬試験で使っている問題に付けるバッジ。ref（模試側の slug。例: "mogi1-19"）から模試の回を読む */
 export function mogiBadgeOf(ref?: string): string | null {
   if (!ref) return null;
-  if (ref.startsWith("mogi1-")) return "模試①";
-  if (ref.startsWith("mogi2-")) return "模試②";
+  if (ref.startsWith("mogi1-")) return "模試A";
+  if (ref.startsWith("mogi2-")) return "模試B";
+  if (ref.startsWith("mogi3-")) return "模試C";
   return "模試";
 }
 

@@ -22,7 +22,9 @@ import type { Question } from "../types";
 import questionsData from "../data/questions.json";
 import mogiQuestionsData from "../data/mogiQuestions.json";
 import mogi2QuestionsData from "../data/mogi2Questions.json";
+import mogi3QuestionsData from "../data/mogi3Questions.json";
 import r4ExtraData from "../data/r4Extra.json";
+import { MOGI_NAMES } from "../trialConfig";
 
 /** 母集団の取得先。App.tsx の STATS_ENDPOINT と同じ（population.json は認証不要） */
 const STATS_ENDPOINT = "https://fe-mogi-stats.japason.workers.dev";
@@ -70,6 +72,7 @@ const BY_ID: Map<string, Question> = (() => {
     ...(questionsData as Question[]),
     ...(r4ExtraData as Question[]),
     ...(mogi2QuestionsData as Question[]),
+    ...(mogi3QuestionsData as Question[]),
     ...(mogiQuestionsData as Question[])
   ];
   for (const q of all) m.set(q.id, q);
@@ -77,9 +80,8 @@ const BY_ID: Map<string, Question> = (() => {
 })();
 
 function setLabelOf(set: string): string {
-  if (set === "2") return "模擬試験②";
   if (set === "r4") return "R4サンプル模試";
-  return "模擬試験①";
+  return `模擬試験${MOGI_NAMES[set] ?? set}`;
 }
 
 /* ==================== 組み立て ==================== */

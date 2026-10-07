@@ -43,6 +43,11 @@ export type Question = {
   /** 埋め込み/ディープリンク用の安定キー（?q=slug）。例: "r6-mon1"。add-slugs.mjs で付与 */
   slug?: string;
   number: number;
+  /**
+   * 表示用の番号（追加演習だけに付ける）。例: "R0801"（公開問題 令和8年度 問1）, "セ01", "穴01", "ト01"。
+   * number は解説画像・集計・並び順に使うので数値のまま残し、画面に出す番号だけをこちらで持つ。
+   */
+  label?: string;
   /** 一覧の分野分けで属するグループのキー（questionGroups.ts の Group.key と対応） */
   group?: string;
   title: string;

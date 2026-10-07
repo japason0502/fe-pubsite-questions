@@ -280,6 +280,8 @@ button.small {
   /* 文字と一緒に余白も広がるよう em で持つ（6px/10px 相当） */
   padding: 0.375em 0.625em;
   text-align: center;
+  /* 1つの穴に2行の処理が入る解答群（例：出力して，合計に加える）を改行して見せる */
+  white-space: pre-line;
 }
 
 .choice-table thead th {
@@ -1382,6 +1384,21 @@ button:disabled {
 }
 
 /* モード選択のお知らせベル（右上） */
+/* モード選択の右上に出す最終更新日（ベルがあった場所） */
+.site-updated {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 0.72rem;
+  color: #94a3b8;
+  line-height: 1;
+}
+.settings-notices {
+  margin: 1em 0 0;
+  padding-top: 0.8em;
+  border-top: 1px solid #e5e7eb;
+  text-align: left;
+}
 .notice-bell {
   position: absolute;
   top: 12px;
@@ -1430,17 +1447,38 @@ button:disabled {
 }
 .notice-item + .notice-item {
   border-top: 1px solid #e2e8f0;
-  margin-top: 1.2em;
-  padding-top: 1.2em;
+}
+/* 1行＝日付＋タイトル。押すと下に全文が開く */
+.notice-item summary {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 0.7em 0.2em;
+  cursor: pointer;
+  list-style: none;
+}
+.notice-item summary::-webkit-details-marker {
+  display: none;
+}
+.notice-item summary::after {
+  content: "▸";
+  margin-left: auto;
+  color: #94a3b8;
+}
+.notice-item[open] summary::after {
+  content: "▾";
+}
+.notice-item[open] .notice-body {
+  padding: 0 0.2em 1em;
 }
 .notice-date {
-  margin: 0;
+  flex: none;
   font-size: 0.8rem;
   color: #64748b;
 }
 .notice-title {
-  margin: 0.2em 0 0.6em;
-  font-size: 1.05rem;
+  font-size: 0.98rem;
+  font-weight: 600;
 }
 .notice-body {
   line-height: 1.7;
@@ -1453,8 +1491,8 @@ button:disabled {
   display: flex;
   align-items: center;
   gap: 10px;
-  /* ベル（position:absolute で右上）と重ならないよう、その下から始める */
-  margin: 26px 0 1em;
+  /* 右上の「最終更新」と重ならないよう、少しだけ下げる */
+  margin: 14px 0 1em;
   padding: 8px 10px 8px 12px;
   background: #eff6ff;
   border: 1px solid #bfdbfe;
@@ -1485,12 +1523,36 @@ button:disabled {
 .notice-banner-cta:hover {
   background: #1d4ed8;
 }
+/* バーを閉じる×。目立たせず、押しやすい大きさだけ確保する */
+.notice-banner-close {
+  flex: none;
+  width: auto;
+  margin: 0;
+  padding: 2px 6px;
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.notice-banner-close:hover {
+  color: #1e3a8a;
+}
 @media (max-width: 480px) {
   .notice-banner {
     flex-wrap: wrap;
   }
   .notice-banner-text {
-    flex: 1 0 100%;
+    flex: 1 0 calc(100% - 40px);
+  }
+  /* 狭い画面では×を文の右に残し、「くわしく見る」だけ次の行へ */
+  .notice-banner-close {
+    order: -1;
+    margin-left: auto;
+  }
+  .notice-banner-text {
+    order: -2;
   }
 }
 
