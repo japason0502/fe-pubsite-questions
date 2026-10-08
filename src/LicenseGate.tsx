@@ -69,6 +69,7 @@ function initial(): { key: string | null; state: State } {
 export default function LicenseGate({ children }: { children: React.ReactNode }) {
   const [{ key, state: first }] = useState(initial);
   const [state, setState] = useState<State>(first);
+  const [maxDevices, setMaxDevices] = useState(3);
 
   const check = useCallback(async () => {
     if (!key) return;
@@ -81,6 +82,7 @@ export default function LicenseGate({ children }: { children: React.ReactNode })
       const r = await res.json();
       if (r?.ok) { lsSet(OK_LS, String(Date.now())); setState("ok"); return; }
       lsDel(OK_LS);
+      if (r?.reason === "limit" && Number(r?.max) > 0) setMaxDevices(Number(r.max));
       setState(r?.reason === "revoked" ? "revoked" : r?.reason === "limit" ? "limit" : "notfound");
     } catch {
       const okAt = Number(lsGet(OK_LS) || 0);
@@ -109,8 +111,8 @@ export default function LicenseGate({ children }: { children: React.ReactNode })
   if (state === "limit")
     return (
       <Card title="利用できる端末数の上限に達しています">
-        <p>この専用URLは3台までの端末でご利用いただけます｡</p>
-        <p>端末を買い替えた場合などは､<a href={CONTACT_URL} target="_blank" rel="noreferrer">お問い合わせ</a>ください｡</p>
+        <p>この専用URLは{maxDevices}台までの端末でご利用いただけます｡</p>
+        <p>端末を買い替えた場合や､事情により利用台数を増やしたい場合は､<a href={CONTACT_URL} target="_blank" rel="noreferrer">お問い合わせ</a>ください｡</p>
       </Card>
     );
   return (
