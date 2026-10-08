@@ -41,7 +41,7 @@ import { buildReportModel, fetchPopulation, type ReportModel, type ReportQuestio
 import { REVIEW_NOTES } from "./report/notes";
 import { ResultReport, downloadReport } from "./report/View";
 import { CATEGORIES, categoryOf, sampleNumberOf, buildSampleOrder, isSampleQuestion, SAMPLE_BADGE, mogiBadgeOf, WEEKS, questionNumberText } from "./questionGroups";
-import { TRIAL_MAX_NUMBER, TRIAL_PATHS, ROOT_IS_TRIAL, LP_URL, ANNOUNCE_SWITCH_DATE, ANNOUNCE_VALID_UNTIL, ANNOUNCE_POSTED_DATE, ANNOUNCE_ENABLED, NOTICES, MOGI_REQUIRES_REGISTRATION, MAIL_ENDPOINT, SET_REV, MOGI_NAMES, MOGI_MENU_ORDER, MOGI_MENU_NOTES, MOGI_SUBLABELS, KINDLE_LIMITS } from "./trialConfig";
+import { TRIAL_MAX_NUMBER, TRIAL_PATHS, ROOT_IS_TRIAL, LP_URL, ANNOUNCE_SWITCH_DATE, ANNOUNCE_VALID_UNTIL, ANNOUNCE_POSTED_DATE, ANNOUNCE_ENABLED, NOTICES, MOGI_REQUIRES_REGISTRATION, MAIL_ENDPOINT, SET_REV, MOGI_NAMES, MOGI_MENU_ORDER, MOGI_MENU_NOTES, MOGI_SUBLABELS, KINDLE_LIMITS, TRIAL_DIRECT_MOGI } from "./trialConfig";
 
 const STORAGE_KEY = "exam-state";
 const MOGI_STORAGE_KEY = "exam-state-mogi"; // 模擬試験は保存キーを分けて通常演習の状態を汚さない
@@ -204,6 +204,15 @@ function detectEdition(): Edition {
 }
 const EDITION: Edition = detectEdition();
 const IS_KINDLE = EDITION === "kindle";
+/**
+ * この端末でフル版・Kindle版を開いたことがあるか。localStorage はパスが違っても同じオリジンなら共通なので、
+ * ルート（体験版）からでも読める。体験版から直接URLで模試を受けた人に「体験版の案内」を出すかの判定に使う。
+ */
+const FULL_SEEN_KEY = "full-edition-seen";
+// 埋め込み（?embed=1）は localStorage に一切保存しない決まりなので書かない
+const IS_EMBED_AT_LOAD = (() => { try { return new URLSearchParams(window.location.search).get("embed") === "1"; } catch { return false; } })();
+if ((EDITION === "full" || EDITION === "kindle") && !IS_EMBED_AT_LOAD) lsSet(FULL_SEEN_KEY, "1");
+const HAS_SEEN_FULL = !!lsGet(FULL_SEEN_KEY);
 /** Kindle版で出さない問題か（判定はここ1か所） */
 function isHiddenForKindle(q: { number: number; group?: string }): boolean {
   if (!IS_KINDLE) return false;
@@ -746,6 +755,8 @@ export default function App() {
   // 体験版（パスで判定。詳細は detectTrial）。メニューは全問見せて、上限より先の問題と模試をロックする。
   // 保存キーは本番と共有する（体験版で解いた進捗を、有料版へそのまま引き継げるようにするため）。
   const isTrial = IS_TRIAL;
+  /** 体験版だが、直接URLで開ける模試（TRIAL_DIRECT_MOGI）を開いている。登録不要・受験後に体験版を案内する */
+  const trialDirectMogi = isTrial && mogiSet !== null && TRIAL_DIRECT_MOGI.includes(mogiSet);
   /**
    * 体験版でロックされる問題か。判定はここ1箇所だけ（上限は TRIAL_MAX_NUMBER）。
    * 例外がひとつある。?q= で名指しされたサンプル問題は、体験版でもロックしない。
@@ -2873,6 +2884,16 @@ export default function App() {
         <div className="overlay">
           <div className={`overlay-content overlay-content--result${reportModel ? " overlay-content--report" : ""}`}>
             <h3>採点結果</h3>
+            {trialDirectMogi && !HAS_SEEN_FULL && (
+              <div style={{ textAlign: "left", margin: "0 0 14px", padding: "12px 16px", border: "2px solid #1f5fa8", borderRadius: 8, background: "#f3f6fa", lineHeight: 1.7 }}>
+                <b>受験お疲れさまでした｡</b>
+                <br />
+                科目Bの問題演習は､演習サイトの体験版(無料)で続けられます｡
+                <div style={{ marginTop: 8 }}>
+                  <button onClick={() => { window.location.href = "/"; }}>体験版で問題演習を始める</button>
+                </div>
+              </div>
+            )}
             {reportModel ? (
               <>
                 <ResultReport model={reportModel} />
@@ -3054,7 +3075,7 @@ export default function App() {
       )}
 
       {/* 体験版で模試URL（?mock=）を直接開いたとき。閉じられない（問題演習へ戻すだけ） */}
-      {isTrial && isMogi && (
+      {isTrial && isMogi && !trialDirectMogi && (
         <div className="overlay overlay--mask">
           <div className="overlay-content trial-lock">
             <h3>模擬試験は体験版の対象外です</h3>
