@@ -26,24 +26,35 @@ jobs:
           cache: "npm"
 
       - run: npm ci
-      # FULL_PATHS はビルドにも渡す（vite.config.ts が1個目だけをお知らせ用に埋め込む）
+      # SITE_PATHS_LEGACY はビルドにも渡す（ROOT_IS_TRIAL=false の間だけ、vite.config.ts が1個目をお知らせ用に埋め込む）
       - run: npm run build
         env:
-          FULL_PATHS: ${{ secrets.FULL_PATHS }}
+          SITE_PATHS_LEGACY: ${{ secrets.SITE_PATHS_LEGACY }}
 
-      # 同じ index.html を複数のパスに置く（SPAは location.pathname で体験版/フル版を判定する）。
-      #   /trial/        … 体験版（テスト用、秘密ではない）
-      #   /<秘密パス>/   … フル版。GitHub Secrets の FULL_PATHS にカンマ区切りで登録する
-      #                    （例: abc123xyz,def456uvw）。1個目以外は JS に埋め込まないので、ここでしか使わない。
-      - name: Copy entry pages (trial / full)
+      # 同じ index.html を複数のパスに置く（SPAはパスと <meta name="fe-edition"> で版を判定する）。
+      #   /trial/                     … 体験版（テスト用、秘密ではない）
+      #   SITE_PATHS_LEGACY のパス    … フル版。無料で配った人向け＋これまでのKindle本に載せたURL
+      #   SITE_PATHS_COURSE のパス    … フル版。本講座（有料）の購入者向け
+      #   SITE_PATHS_KINDLE のパス    … Kindle版。新しい版のKindle本に載せるURL
+      # どれもカンマ区切りで複数書ける。パスの値は JS に入れない（ここでフォルダを作るだけ）。
+      - name: Copy entry pages (trial / legacy / course / kindle)
         env:
-          FULL_PATHS: ${{ secrets.FULL_PATHS }}
+          SITE_PATHS_LEGACY: ${{ secrets.SITE_PATHS_LEGACY }}
+          SITE_PATHS_COURSE: ${{ secrets.SITE_PATHS_COURSE }}
+          SITE_PATHS_KINDLE: ${{ secrets.SITE_PATHS_KINDLE }}
         run: |
-          for p in trial $(echo "$FULL_PATHS" | tr ',' ' '); do
-            p="${p#/}"; p="${p%/}"
-            [ -z "$p" ] && continue
-            mkdir -p "dist/$p" && cp dist/index.html "dist/$p/index.html"
-          done
+          place() { # $1=パス $2=版
+            p="${1#/}"; p="${p%/}"
+            [ -z "$p" ] && return
+            mkdir -p "dist/$p"
+            sed "s#<head>#<head><meta name=\"fe-edition\" content=\"$2\">#" dist/index.html > "dist/$p/index.html"
+          }
+          place trial trial
+          for p in $(echo "$SITE_PATHS_LEGACY" | tr ',' ' '); do place "$p" full; done
+          for p in $(echo "$SITE_PATHS_COURSE" | tr ',' ' '); do place "$p" full; done
+          for p in $(echo "$SITE_PATHS_KINDLE" | tr ',' ' '); do place "$p" kindle; done
+          # 登録漏れに気づけるようにログに件数だけ出す（パスの値は出さない）
+          echo "legacy=$(echo "$SITE_PATHS_LEGACY" | tr ',' '\n' | grep -c .) course=$(echo "$SITE_PATHS_COURSE" | tr ',' '\n' | grep -c .) kindle=$(echo "$SITE_PATHS_KINDLE" | tr ',' '\n' | grep -c .)"
 
       - uses: actions/upload-pages-artifact@v3
         with:

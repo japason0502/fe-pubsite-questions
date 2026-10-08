@@ -41,7 +41,7 @@ import { buildReportModel, fetchPopulation, type ReportModel, type ReportQuestio
 import { REVIEW_NOTES } from "./report/notes";
 import { ResultReport, downloadReport } from "./report/View";
 import { CATEGORIES, categoryOf, sampleNumberOf, buildSampleOrder, isSampleQuestion, SAMPLE_BADGE, mogiBadgeOf, WEEKS, questionNumberText } from "./questionGroups";
-import { TRIAL_MAX_NUMBER, TRIAL_PATHS, ROOT_IS_TRIAL, LP_URL, ANNOUNCE_SWITCH_DATE, ANNOUNCE_VALID_UNTIL, ANNOUNCE_POSTED_DATE, ANNOUNCE_ENABLED, NOTICES, MOGI_REQUIRES_REGISTRATION, MAIL_ENDPOINT, SET_REV, MOGI_NAMES, MOGI_MENU_ORDER, MOGI_MENU_NOTES, MOGI_SUBLABELS } from "./trialConfig";
+import { TRIAL_MAX_NUMBER, TRIAL_PATHS, ROOT_IS_TRIAL, LP_URL, ANNOUNCE_SWITCH_DATE, ANNOUNCE_VALID_UNTIL, ANNOUNCE_POSTED_DATE, ANNOUNCE_ENABLED, NOTICES, MOGI_REQUIRES_REGISTRATION, MAIL_ENDPOINT, SET_REV, MOGI_NAMES, MOGI_MENU_ORDER, MOGI_MENU_NOTES, MOGI_SUBLABELS, KINDLE_LIMITS } from "./trialConfig";
 
 const STORAGE_KEY = "exam-state";
 const MOGI_STORAGE_KEY = "exam-state-mogi"; // 模擬試験は保存キーを分けて通常演習の状態を汚さない
@@ -192,6 +192,27 @@ function detectTrial(): boolean {
 const IS_TRIAL = detectTrial();
 
 /**
+ * 版（trial / kindle / full）。Kindle版かどうかは、pages.yml が SITE_PATHS_KINDLE のパスに置く
+ * index.html に埋め込む <meta name="fe-edition" content="kindle"> で見る（パス自体はJSに入れない）。
+ * 何を出さないかは trialConfig.ts の KINDLE_LIMITS。今は空＝フル版と同じ。
+ */
+type Edition = "trial" | "kindle" | "full";
+function detectEdition(): Edition {
+  if (IS_TRIAL) return "trial";
+  const m = document.querySelector('meta[name="fe-edition"]')?.getAttribute("content");
+  return m === "kindle" ? "kindle" : "full";
+}
+const EDITION: Edition = detectEdition();
+const IS_KINDLE = EDITION === "kindle";
+/** Kindle版で出さない問題か（判定はここ1か所） */
+function isHiddenForKindle(q: { number: number; group?: string }): boolean {
+  if (!IS_KINDLE) return false;
+  return q.number > KINDLE_LIMITS.maxNumber || KINDLE_LIMITS.hideGroups.includes(q.group ?? "");
+}
+/** Kindle版で出さない模試か */
+const isMogiHiddenForKindle = (set: string) => IS_KINDLE && KINDLE_LIMITS.hideMogi.includes(set);
+
+/**
  * 今いるURLの先頭セグメント（ルートなら ""）。集計で「どのURL経由か」を見分けるのに送る。
  * 秘密のパスをここに書いてはいない＝ブラウザが自分の居場所を報告しているだけなので、
  * JSにもDBにもパスは残らない。パス→free/paid の対応表は Worker の Secret が持つ。
@@ -205,7 +226,7 @@ const PATH_SEG: string = (() => {
 })();
 /**
  * ルート（既存URL）に出す「新URLへ移ってね」のお知らせ先。
- * vite.config.ts が FULL_PATHS の1個目から組み立てて注入する（ROOT_IS_TRIAL=true なら空）。
+ * vite.config.ts が SITE_PATHS_LEGACY の1個目から組み立てて注入する（ROOT_IS_TRIAL=true なら空）。
  * 空ならお知らせは出さない。
  */
 const ANNOUNCE_URL: string = (() => {
@@ -376,7 +397,7 @@ function postLessonOpen(payload: Record<string, unknown>) {
 
 /** ランダム出題の母集団。基礎練習問題(basic)と情報セキュリティ(field)を除いた問題のid */
 const RANDOM_POOL_SOURCE = NORMAL_QUESTIONS.filter(
-  (q) => !q.basic && q.field !== "security"
+  (q) => !q.basic && q.field !== "security" && !isHiddenForKindle(q)
 );
 const RANDOM_POOL_IDS = RANDOM_POOL_SOURCE.map((q) => q.id);
 /** トレース系だけに絞った母集団（分野タブの「トレース系」と同じ範囲） */
@@ -714,7 +735,10 @@ export default function App() {
   }, [embed]);
   const mockParam = urlParams.get("mock");
   // ?mock=1（模試1回目）／?mock=2（模試2回目）／?mock=r4（R4サンプル20問）。それ以外の値は通常演習扱い
-  const mogiSet = mockParam === "1" || mockParam === "2" || mockParam === "3" || mockParam === "r4" ? mockParam : null;
+  const mogiSet =
+    (mockParam === "1" || mockParam === "2" || mockParam === "3" || mockParam === "r4") && !isMogiHiddenForKindle(mockParam)
+      ? mockParam
+      : null;
   const isMogi = mogiSet !== null;
   // ?lock=1: 埋め込み用ロック。指定した模試から他モードへ移動できない
   // （ガイダンスの「モード選択に戻る」を非表示にする。採点・復習モード等はそのまま使える）
@@ -763,7 +787,8 @@ export default function App() {
       });
     }
     // 体験版でも絞らない（メニューは全問見せる。上限より先は isLocked で止める）
-    return NORMAL_QUESTIONS;
+    // Kindle版だけは KINDLE_LIMITS で「出さない」問題を除く（今は空なので全問）
+    return IS_KINDLE ? NORMAL_QUESTIONS.filter((q) => !isHiddenForKindle(q)) : NORMAL_QUESTIONS;
   }, [mogiSet]);
   const storageKey =
     mogiSet === "r4" ? MOGI_R4_STORAGE_KEY : mogiSet === "2" ? MOGI2_STORAGE_KEY : mogiSet === "3" ? MOGI3_STORAGE_KEY : isMogi ? MOGI_STORAGE_KEY : STORAGE_KEY;
@@ -3263,7 +3288,7 @@ function ModePicker({ isMogi = false, isTrial = false, onStart, onTrialLock, mog
             R4サンプル
           </button>
           {/* 並び順は trialConfig の MOGI_MENU_ORDER。上にあるほど先に受けられる */}
-          {MOGI_MENU_ORDER.map((s) => (
+          {MOGI_MENU_ORDER.filter((s) => !isMogiHiddenForKindle(s)).map((s) => (
             <button key={s} className="outline" onClick={() => goMogi(s)}>
               模擬試験{MOGI_NAMES[s] ?? s}
               {MOGI_SUBLABELS[s] && (

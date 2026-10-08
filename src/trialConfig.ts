@@ -6,19 +6,40 @@
  * ロックの判定は App.tsx の isLocked() 1箇所に集約してあるので、上限を変えるときは
  * TRIAL_MAX_NUMBER を書き換えるだけでよい。
  *
- * URLの種類（GitHub Pages）:
- *   /            … 既存URL。ROOT_IS_TRIAL=false ならフル版＋移行のお知らせ、true なら体験版
+ * URLの種類（GitHub Pages）: 下の「版（エディション）」の表を参照
+ *   /            … ROOT_IS_TRIAL=true なら体験版、false ならフル版＋移行のお知らせ
  *   /trial/      … 体験版（テスト用、秘密ではない）
- *   /<秘密パス>/ … フル版。GitHub Secrets の FULL_PATHS にカンマ区切りで登録する
- *                  1個目 = 既存者向け（年内）。ROOT_IS_TRIAL=false の間だけ、お知らせ用にJSへ埋め込まれる
- *                  2個目以降 = 購入者向け（恒久）。JSには一切入らない
+ *   /<秘密パス>/ … Secret SITE_PATHS_LEGACY / SITE_PATHS_COURSE / SITE_PATHS_KINDLE に登録したパス
  *
- * 10/1 の作業: ROOT_IS_TRIAL を true にして push（お知らせと1個目の埋め込みは自動で消える）
- * 年明けの作業: Secret FULL_PATHS から1個目を消して push
+ * 年明けの作業: 無料で配った人向けを閉じるなら SITE_PATHS_LEGACY から該当パスを消して push
+ *              （ただし、これまでのKindle本に載せたURLも同じパスなので、閉じる前に本の差し替えを済ませること）
  *
  * ローカルで試すとき（Secret は手元に来ないので環境変数で代用）:
- *   PowerShell: $env:FULL_PATHS="testpath,dummy"; npm run dev
+ *   PowerShell: $env:SITE_PATHS_LEGACY="testpath"; npm run dev
+ *   Kindle版の見え方: index.html の <head> に <meta name="fe-edition" content="kindle"> を一時的に足して npm run dev
  */
+
+/* ===== 版（エディション）=====
+ * どの版かは URL のパスで決まる。パスの中身は GitHub Secrets だけが持つ（JSには入れない）。
+ *
+ *   Secret 名            | 誰向け                                        | 版
+ *   ---------------------+-----------------------------------------------+--------
+ *   SITE_PATHS_LEGACY    | 無料で配った人向け＋これまでのKindle本に載せたURL | フル版
+ *   SITE_PATHS_COURSE    | 本講座（有料）の購入者向け                      | フル版
+ *   SITE_PATHS_KINDLE    | Kindle本（新しい版から載せるURL）               | Kindle版
+ *   （/trial/ と、ROOT_IS_TRIAL=true のときのルートは体験版）
+ *
+ * Kindle版は今はフル版と同じ中身。あとで絞りたくなったら KINDLE_LIMITS を書き換えるだけでよい。
+ * 絞るときは体験版のような「ロック」ではなく「出さない」（本の読者に足りないものを見せないため）。
+ */
+export const KINDLE_LIMITS = {
+  /** この番号より大きい問題を出さない（Infinity＝絞らない）。例: 97 にすると本の97問だけになる */
+  maxNumber: Infinity as number,
+  /** 出さない問題グループのキー（questionGroups.ts のキー）。例: ["sec-extra"] */
+  hideGroups: [] as string[],
+  /** 出さない模試のID（"1" "2" "3" "r4"）。?mock= で直接来ても通常演習として開く */
+  hideMogi: [] as string[],
+};
 
 /** 体験版で解ける上限の問番号（枝番 4.1 / 16.1 等も、この値以下なら解ける） */
 export const TRIAL_MAX_NUMBER = 33;
