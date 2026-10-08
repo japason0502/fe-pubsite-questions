@@ -110,6 +110,12 @@ export const SET_REV: Record<string, number> = { "1": 2, "2": 1, "3": 1, "r4": 1
 /** 受験日登録フォーム / 照合APIのURL（末尾スラッシュなし） */
 export const MAIL_ENDPOINT = "https://fe-mail.japason.workers.dev";
 
+/**
+ * 有料版（SITE_PATHS_COURSE_KEY のパス）で専用URL（?k=キー）を必須にするか。LicenseGate.tsx。
+ * キーの発行・停止は fe-mail Worker（Teachable の Webhook）。Worker が不調のときは false にして push すれば外れる。
+ */
+export const LICENSE_REQUIRED = true;
+
 /** URL変更のお知らせを出した日（お知らせ一覧に表示する） */
 export const ANNOUNCE_POSTED_DATE = "2026/9/8";
 

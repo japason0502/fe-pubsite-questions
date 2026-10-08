@@ -196,11 +196,12 @@ const IS_TRIAL = detectTrial();
  * index.html に埋め込む <meta name="fe-edition" content="kindle"> で見る（パス自体はJSに入れない）。
  * 何を出さないかは trialConfig.ts の KINDLE_LIMITS。今は空＝フル版と同じ。
  */
-type Edition = "trial" | "kindle" | "full";
+type Edition = "trial" | "kindle" | "full" | "course";
 function detectEdition(): Edition {
   if (IS_TRIAL) return "trial";
   const m = document.querySelector('meta[name="fe-edition"]')?.getAttribute("content");
-  return m === "kindle" ? "kindle" : "full";
+  // course＝有料版。中身はフル版と同じで、専用URLのチェック（LicenseGate.tsx）だけが加わる
+  return m === "kindle" ? "kindle" : m === "course" ? "course" : "full";
 }
 const EDITION: Edition = detectEdition();
 const IS_KINDLE = EDITION === "kindle";
@@ -211,7 +212,7 @@ const IS_KINDLE = EDITION === "kindle";
 const FULL_SEEN_KEY = "full-edition-seen";
 // 埋め込み（?embed=1）は localStorage に一切保存しない決まりなので書かない
 const IS_EMBED_AT_LOAD = (() => { try { return new URLSearchParams(window.location.search).get("embed") === "1"; } catch { return false; } })();
-if ((EDITION === "full" || EDITION === "kindle") && !IS_EMBED_AT_LOAD) lsSet(FULL_SEEN_KEY, "1");
+if ((EDITION === "full" || EDITION === "kindle" || EDITION === "course") && !IS_EMBED_AT_LOAD) lsSet(FULL_SEEN_KEY, "1");
 const HAS_SEEN_FULL = !!lsGet(FULL_SEEN_KEY);
 /** Kindle版で出さない問題か（判定はここ1か所） */
 function isHiddenForKindle(q: { number: number; group?: string }): boolean {
@@ -2886,7 +2887,7 @@ export default function App() {
       )}
 
       {showTrialCta && (
-        <div className="overlay" style={{ zIndex: 1000 }}>
+        <div className="overlay" style={{ zIndex: 1000, background: "rgba(8, 12, 20, 0.88)", backdropFilter: "blur(3px)" }}>
           <div className="overlay-content" style={{ maxWidth: 520, width: "92%", padding: 0, overflow: "hidden", textAlign: "center" }}>
             <div style={{ background: "linear-gradient(135deg, #ff9a00 0%, #ff5e3a 100%)", color: "#fff", padding: "18px 22px 16px" }}>
               <div style={{ fontSize: "0.78em", fontWeight: 700, letterSpacing: "0.18em", opacity: 0.95 }}>SPECIAL OFFER</div>

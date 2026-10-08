@@ -34,13 +34,15 @@ jobs:
       # 同じ index.html を複数のパスに置く（SPAはパスと <meta name="fe-edition"> で版を判定する）。
       #   /trial/                     … 体験版（テスト用、秘密ではない）
       #   SITE_PATHS_LEGACY のパス    … フル版。無料で配った人向け＋これまでのKindle本に載せたURL
-      #   SITE_PATHS_COURSE のパス    … フル版。本講座（有料）の購入者向け
+      #   SITE_PATHS_COURSE のパス    … フル版。本講座（有料）の購入者向け（これまでの共通URL。チェックなしで開ける）
+      #   SITE_PATHS_COURSE_KEY のパス … 有料版(course)。フル版＋専用URL(?k=)のチェック。Teachableの購入通知で発行するURLはここ
       #   SITE_PATHS_KINDLE のパス    … Kindle版。新しい版のKindle本に載せるURL
       # どれもカンマ区切りで複数書ける。パスの値は JS に入れない（ここでフォルダを作るだけ）。
       - name: Copy entry pages (trial / legacy / course / kindle)
         env:
           SITE_PATHS_LEGACY: ${{ secrets.SITE_PATHS_LEGACY }}
           SITE_PATHS_COURSE: ${{ secrets.SITE_PATHS_COURSE }}
+          SITE_PATHS_COURSE_KEY: ${{ secrets.SITE_PATHS_COURSE_KEY }}
           SITE_PATHS_KINDLE: ${{ secrets.SITE_PATHS_KINDLE }}
         run: |
           place() { # $1=パス $2=版
@@ -52,9 +54,10 @@ jobs:
           place trial trial
           for p in $(echo "$SITE_PATHS_LEGACY" | tr ',' ' '); do place "$p" full; done
           for p in $(echo "$SITE_PATHS_COURSE" | tr ',' ' '); do place "$p" full; done
+          for p in $(echo "$SITE_PATHS_COURSE_KEY" | tr ',' ' '); do place "$p" course; done
           for p in $(echo "$SITE_PATHS_KINDLE" | tr ',' ' '); do place "$p" kindle; done
           # 登録漏れに気づけるようにログに件数だけ出す（パスの値は出さない）
-          echo "legacy=$(echo "$SITE_PATHS_LEGACY" | tr ',' '\n' | grep -c .) course=$(echo "$SITE_PATHS_COURSE" | tr ',' '\n' | grep -c .) kindle=$(echo "$SITE_PATHS_KINDLE" | tr ',' '\n' | grep -c .)"
+          echo "legacy=$(echo "$SITE_PATHS_LEGACY" | tr ',' '\n' | grep -c .) course=$(echo "$SITE_PATHS_COURSE" | tr ',' '\n' | grep -c .) course_key=$(echo "$SITE_PATHS_COURSE_KEY" | tr ',' '\n' | grep -c .) kindle=$(echo "$SITE_PATHS_KINDLE" | tr ',' '\n' | grep -c .)"
 
       - uses: actions/upload-pages-artifact@v3
         with:
