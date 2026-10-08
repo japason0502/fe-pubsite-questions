@@ -116,42 +116,7 @@ export default function LicenseGate({ children }: { children: React.ReactNode })
   return (
     <Card title={state === "notfound" ? "このURLは無効です" : "専用URLから開いてください"}>
       <p>演習サイトは､<b>ご購入時のメールアドレスにお送りした専用URL</b>から開けます｡</p>
-      <p>メールが見つからない場合は､ご購入時のメールアドレスを入力してください｡専用URLを再送します｡</p>
-      <ResendForm />
     </Card>
-  );
-}
-
-function ResendForm() {
-  const [email, setEmail] = useState("");
-  const [phase, setPhase] = useState<"idle" | "sending" | "done" | "error">("idle");
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setPhase("sending");
-    try {
-      const res = await fetch(MAIL_ENDPOINT + "/license/resend", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email })
-      });
-      const r = await res.json();
-      setPhase(r?.ok ? "done" : "error");
-    } catch { setPhase("error"); }
-  };
-  if (phase === "done")
-    return (
-      <p style={{ background: "#ecfdf5", padding: "12px 14px", borderRadius: 8 }}>
-        ご購入時のメールアドレスであれば､数分以内に専用URLが届きます｡届かない場合は迷惑メールフォルダもご確認のうえ､
-        <a href={CONTACT_URL} target="_blank" rel="noreferrer">お問い合わせ</a>ください｡
-      </p>
-    );
-  return (
-    <form onSubmit={submit} style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 8 }}>
-      <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="ご購入時のメールアドレス"
-        style={{ flex: "1 1 220px", padding: "10px 12px", fontSize: 16, border: "1px solid #cbd5e1", borderRadius: 8 }} />
-      <button style={btn} disabled={phase === "sending"}>{phase === "sending" ? "送信中…" : "専用URLを再送する"}</button>
-      {phase === "error" && <p style={{ color: "#b91c1c", width: "100%", margin: 0 }}>送信できませんでした｡時間をおいてお試しください｡</p>}
-    </form>
   );
 }
 
