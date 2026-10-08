@@ -41,7 +41,7 @@ import { buildReportModel, fetchPopulation, type ReportModel, type ReportQuestio
 import { REVIEW_NOTES } from "./report/notes";
 import { ResultReport, downloadReport } from "./report/View";
 import { CATEGORIES, categoryOf, sampleNumberOf, buildSampleOrder, isSampleQuestion, SAMPLE_BADGE, mogiBadgeOf, WEEKS, questionNumberText } from "./questionGroups";
-import { TRIAL_MAX_NUMBER, TRIAL_PATHS, ROOT_IS_TRIAL, LP_URL, ANNOUNCE_SWITCH_DATE, ANNOUNCE_VALID_UNTIL, ANNOUNCE_POSTED_DATE, ANNOUNCE_ENABLED, NOTICES, MOGI_REQUIRES_REGISTRATION, MAIL_ENDPOINT, SET_REV, MOGI_NAMES, MOGI_MENU_ORDER, MOGI_MENU_NOTES, MOGI_SUBLABELS, KINDLE_LIMITS, TRIAL_DIRECT_MOGI } from "./trialConfig";
+import { TRIAL_MAX_NUMBER, TRIAL_PATHS, ROOT_IS_TRIAL, LP_URL, ANNOUNCE_SWITCH_DATE, ANNOUNCE_VALID_UNTIL, ANNOUNCE_POSTED_DATE, ANNOUNCE_ENABLED, NOTICES, MOGI_REQUIRES_REGISTRATION, MAIL_ENDPOINT, SET_REV, MOGI_NAMES, MOGI_MENU_ORDER, MOGI_MENU_NOTES, MOGI_SUBLABELS, KINDLE_LIMITS, TRIAL_DIRECT_MOGI, TRIAL_MOGI_CTA } from "./trialConfig";
 
 const STORAGE_KEY = "exam-state";
 const MOGI_STORAGE_KEY = "exam-state-mogi"; // 模擬試験は保存キーを分けて通常演習の状態を汚さない
@@ -1429,10 +1429,15 @@ export default function App() {
     statsRef.current = null;
   };
 
+  /** 体験版から直接受けた模試の採点後に出す案内（TRIAL_MOGI_CTA） */
+  const [showTrialCta, setShowTrialCta] = useState(false);
+
   /** 採点結果を閉じて次に備える。模試はガイダンスへ、通常演習はモード選択へ戻す */
   const closeResult = () => {
     setShowCloseConfirm(false);
     setShowResult(false);
+    // 体験版から直接URLで模試を受けた人（購入者を除く）には、閉じたあとに案内を出す
+    if (trialDirectMogi && !HAS_SEEN_FULL) setShowTrialCta(true);
     if (isMogi) {
       // 模擬試験はモード選択に戻らず、次の受験に備えてガイダンスからやり直し
       setQuestionOverrides({});
@@ -2880,20 +2885,42 @@ export default function App() {
         </div>
       )}
 
+      {showTrialCta && (
+        <div className="overlay" style={{ zIndex: 1000 }}>
+          <div className="overlay-content" style={{ maxWidth: 520, width: "92%", padding: 0, overflow: "hidden", textAlign: "center" }}>
+            <div style={{ background: "linear-gradient(135deg, #ff9a00 0%, #ff5e3a 100%)", color: "#fff", padding: "18px 22px 16px" }}>
+              <div style={{ fontSize: "0.78em", fontWeight: 700, letterSpacing: "0.18em", opacity: 0.95 }}>SPECIAL OFFER</div>
+              <div style={{ fontSize: "1.25em", fontWeight: 800, lineHeight: 1.45, marginTop: 4 }}>{TRIAL_MOGI_CTA.title}</div>
+            </div>
+            <div style={{ padding: "18px 22px 20px", lineHeight: 1.85 }}>
+              <p style={{ margin: 0, textAlign: "left", whiteSpace: "pre-line" }}>{TRIAL_MOGI_CTA.body}</p>
+              {TRIAL_MOGI_CTA.badge && (
+                <div style={{ display: "inline-block", marginTop: 16, padding: "2px 14px", borderRadius: 999, background: "#fff3c4", color: "#b45309", fontWeight: 800, fontSize: "0.9em", border: "1px solid #f5c26b" }}>
+                  {TRIAL_MOGI_CTA.badge}
+                </div>
+              )}
+              <button
+                onClick={() => window.open(TRIAL_MOGI_CTA.url, "_blank", "noopener")}
+                style={{ display: "block", width: "100%", marginTop: 10, padding: "14px 16px", fontSize: "1.08em", fontWeight: 800, color: "#fff", background: "#ff6a00", border: "none", borderRadius: 999, boxShadow: "0 4px 0 #c24e00", cursor: "pointer" }}
+              >
+                {TRIAL_MOGI_CTA.button} ▶
+              </button>
+              <button
+                className="outline"
+                onClick={() => setShowTrialCta(false)}
+                style={{ marginTop: 14, fontSize: "0.85em", padding: "4px 14px" }}
+              >
+                閉じる
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showResult && (
         <div className="overlay">
           <div className={`overlay-content overlay-content--result${reportModel ? " overlay-content--report" : ""}`}>
             <h3>採点結果</h3>
-            {trialDirectMogi && !HAS_SEEN_FULL && (
-              <div style={{ textAlign: "left", margin: "0 0 14px", padding: "12px 16px", border: "2px solid #1f5fa8", borderRadius: 8, background: "#f3f6fa", lineHeight: 1.7 }}>
-                <b>受験お疲れさまでした｡</b>
-                <br />
-                科目Bの問題演習は､演習サイトの体験版(無料)で続けられます｡
-                <div style={{ marginTop: 8 }}>
-                  <button onClick={() => { window.location.href = "/"; }}>体験版で問題演習を始める</button>
-                </div>
-              </div>
-            )}
             {reportModel ? (
               <>
                 <ResultReport model={reportModel} />
