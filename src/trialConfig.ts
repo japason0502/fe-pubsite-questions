@@ -36,7 +36,9 @@ export const KINDLE_LIMITS = {
   /** この番号より大きい問題を出さない（Infinity＝絞らない）。例: 97 にすると本の97問だけになる */
   maxNumber: Infinity as number,
   /** 出さない問題グループのキー（questionGroups.ts のキー）。例: ["sec-extra"] */
-  hideGroups: [] as string[],
+  // 追加演習を足すときは、Kindle版で出さないならここにもグループを書き足す（書き忘れると本の読者にも出る）
+  // extra-sample（R8 公開問題）は出す。番号（maxNumber）で絞ると R8 まで消えるのでグループで外す（2026-10-08）
+  hideGroups: ["sec-extra", "extra-fill"] as string[],
   /** 出さない模試のID（"1" "2" "3" "r4"）。?mock= で直接来ても通常演習として開く */
   hideMogi: [] as string[],
 };
